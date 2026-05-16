@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FF14 고난도 제작 가이드 | 우주개척 7.4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c10;
+            color: #ddd8ce;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 메인 컨테이너 */
+        .app-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 24px 60px;
+        }
+
+        /* 헤더 */
+        .site-header {
+            text-align: center;
+            padding: 48px 0 32px;
+            border-bottom: 1px solid #2a2e3c;
+            margin-bottom: 32px;
+        }
+        .site-header h1 {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #e6d5b8;
+            letter-spacing: 0.05em;
+        }
+        .site-header h1 span {
+            color: #c9aa5f;
+        }
+        .patch-badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 4px 12px;
+            border: 1px solid #c9aa5f;
+            border-radius: 30px;
+            font-size: 12px;
+            color: #c9aa5f;
+            background: rgba(201,170,95,0.1);
+        }
+        .sub {
+            color: #8a867c;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        /* 네비게이션 탭 */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #2a2e3c;
+            padding-bottom: 8px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #9a968c;
+            cursor: pointer;
+            transition: 0.2s;
+            border-radius: 40px;
+        }
+        .tab-btn:hover {
+            color: #e6d5b8;
+            background: #1e212a;
+        }
+        .tab-btn.active {
+            background: #c9aa5f;
+            color: #0a0c10;
+            font-weight: 700;
+        }
+
+        /* 탭 콘텐츠 */
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .tab-pane.active-pane {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* 카드 공통 */
+        .card {
+            background: #13161f;
+            border: 1px solid #2a2e3c;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #c9aa5f;
+            border-left: 4px solid #c9aa5f;
+            padding-left: 14px;
+            margin-bottom: 20px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .info-box {
+            background: #0e1119;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #2a2e3c;
+        }
+        .info-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #e6d5b8;
+            margin-bottom: 12px;
+        }
+        .skill-chip {
+            display: inline-block;
+            background: #1e212a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 3px 5px 3px 0;
+            border: 1px solid #3a3e4a;
+        }
+        .skill-chip.highlight {
+            border-color: #c9aa5f;
+            color: #c9aa5f;
+        }
+        .state-table, .skill-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .state-table th, .skill-table th {
+            text-align: left;
+            padding: 10px 6px;
+            background: #1a1e28;
+            color: #c9aa5f;
+            font-weight: 600;
+        }
+        .state-table td, .skill-table td {
+            padding: 10px 6px;
+            border-bottom: 1px solid #252a36;
+            vertical-align: top;
+        }
+        .calc-group {
+            margin-bottom: 20px;
+        }
+        .calc-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        input, select {
+            background: #0a0c10;
+            border: 1px solid #3a3e4a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #e6d5b8;
+            font-size: 14px;
+            width: 100%;
+            max-width: 260px;
+        }
+        .calc-result {
+            background: #0e1119;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+        .result-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #c9aa5f;
+        }
+        hr {
+            border-color: #2a2e3c;
+            margin: 16px 0;
+        }
+        .footnote {
+            font-size: 12px;
+            color: #8a867c;
+            margin-top: 8px;
+        }
+        @media (max-width: 680px) {
+            .app-container {
+                padding: 0 16px 40px;
+            }
+            .card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="site-header">
+        <h1>⚒️ 고난도 제작 <span>가이드</span></h1>
+        <div class="patch-badge">우주개척 7.4 기준</div>
+        <div class="sub">매크로만 누르던 당신을 위한 · 상황 판단 연습장</div>
+    </div>
+
+    <!-- 탭 메뉴 -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="guide">📖 시작가이드</button>
+        <button class="tab-btn" data-tab="skills">✨ 스킬</button>
+        <button class="tab-btn" data-tab="state">🌀 상태</button>
+        <button class="tab-btn" data-tab="example">🎯 예시</button>
+        <button class="tab-btn" data-tab="calc">📊 계산기</button>
+    </div>
+
+    <!-- ========================= 탭 1 : 시작가이드 ========================= -->
+    <div id="guide" class="tab-pane active-pane">
+        <div class="card">
+            <div class="card-title">0. 들어가기 전에</div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="background:#1a1e28; padding:12px 16px; border-radius:12px; flex:1; min-width:150px">❓ 지금 비레고 써도 되나?</div>
+                <div style="background:#1a1e28; padding:12px 16px; border-radius:12px; flex:1; min-width:150px">❓ 스택 더 쌓아야 하나?</div>
+                <div style="background:#1a1e28; padding:12px 16px; border-radius:12px; flex:1; min-width:150px">❓ 이거 품질 부족한데?</div>
+            </div>
+            <p style="margin-bottom:12px">이 가이드는 <strong>판단을 대신해주지 않아요</strong>. 옆에서 참고하며 연습하는 도구입니다.<br>
+            고난도 제작은 <strong>필수 콘텐츠가 아니에요</strong> – 도전하고 싶은 분만 하면 됩니다.</p>
+            <div class="info-box">
+                ✅ 최소 준비 장비<br>
+                • 공작깃 제작 세트 (금단 필수)<br>
+                • 초공간 도구 (오이지스 도구)<br>
+                • HQ 음식 (CP 버프) + 명인 약액 HQ
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📌 절대조건 3가지 (몰입 전 필수)</div>
+            <div style="display:grid; gap:12px">
+                <div><span class="skill-chip highlight">교묘한 손놀림</span> – 65렙 잡퀘 필수, 8회마다 내구+5</div>
+                <div><span class="skill-chip highlight">성급한 손길 / 강행작업</span> – CP 0 확률 스킬 (성공률 60%/50%)</div>
+                <div><span class="skill-chip highlight">⚠️ 내구도 10 이하에서 내구 10짜리 스킬 금지</span> – 즉사 방지</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">⚡ 고난도 제작 흐름 (5단계)</div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:10px">
+                <div><strong>① 작업량 올리기</strong><br>확신 오프너 → 강행/공경</div>
+                <div><strong>② 정신집중 쌓기</strong><br>10스택 목표, 혁신+절약가공</div>
+                <div><strong>③ 품질 쌓기</strong><br>내구·CP 허락하는 한 최대로</div>
+                <div><strong>④ 마무리 콤보</strong><br>혁신 → 장족의 발전 → 비레고 (CP 74~80)</div>
+                <div><strong>⑤ 완성</strong><br>작업 1딸깍!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================= 탭 2 : 스킬 ========================= -->
+    <div id="skills" class="tab-pane">
+        <div class="card">
+            <div class="card-title">✨ 자주 쓰는 핵심 스킬</div>
+            <table class="skill-table">
+                <thead><tr><th>스킬</th><th>효과</th><th>CP</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>확신</td><td>작업+300, 다음 작업 100% 성공</td><td>6</td></tr>
+                    <tr><td>진가</td><td>품질+300 + 정신집중+1</td><td>6</td></tr>
+                    <tr><td>공경</td><td>4회 작업량 50% 증가</td><td>18</td></tr>
+                    <tr><td>혁신</td><td>4회 품질 50% 증가</td><td>18</td></tr>
+                    <tr><td>장족의 발전</td><td>3회 중 1회 품질 100% 증가</td><td>32</td></tr>
+                    <tr><td>비레고의 축복</td><td>정신집중 × 20 (최대 300) 품질</td><td>24</td></tr>
+                    <tr><td>교묘한 손놀림</td><td>8회 공정 후 내구+5</td><td>96</td></tr>
+                    <tr><td>강행작업</td><td>작업+500 (성공률 50%)</td><td>0</td></tr>
+                    <tr><td>성급한 손길</td><td>품질+100 (60%), 성공시 대담한 손길 가능</td><td>0</td></tr>
+                    <tr><td>집중가공</td><td>품질+150 + 정신집중+1 (고품질 한정)</td><td>18</td></tr>
+                </tbody>
+            </table>
+            <div class="footnote">※ CP 0 스킬은 운에 맡겨야 하지만 CP 부족시 생명줄</div>
+        </div>
+    </div>
+
+    <!-- ========================= 탭 3 : 상태 ========================= -->
+    <div id="state" class="tab-pane">
+        <div class="card">
+            <div class="card-title">🌀 초보자 필수 상태 4개</div>
+            <table class="state-table">
+                <thead><tr><th>상태</th><th>효과</th><th>추천 스킬</th></tr></thead>
+                <tbody>
+                    <tr><td>★ 고품질</td><td>품질 상승량 1.5배</td><td>집중가공, CP 부족시 비결</td></tr>
+                    <tr><td>★ 고효율</td><td>CP 소비 50% 감소</td><td>교묘한 손놀림 (리필) > 근검절약 > 밑가공</td></tr>
+                    <tr><td>안정</td><td>확률 스킬 성공률 25% 증가</td><td>강행작업 / 성급한 손길</td></tr>
+                    <tr><td>견고</td><td>내구도 감소 50%</td><td>절약 가공 (내구 가르기), 절약 작업</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card">
+            <div class="card-title">📌 숙련 후 익히면 좋은 상태</div>
+            <div class="grid-2">
+                <div class="info-box"><strong>완강</strong> – 내구 50% 감소 + 다음 공정 견고 고정<br>→ 견고 마스터 후 활용</div>
+                <div class="info-box"><strong>빠른 진행</strong> – 작업량 1.5배<br>→ 강행작업으로 폭발적 작업량</div>
+                <div class="info-box"><strong>길조</strong> – 다음 공정 고품질 확정<br>→ 장족+집중가공 콤보</div>
+                <div class="info-box"><strong>장기 지속</strong> – 스킬 효과 +2회<br>→ 교손, 근검절약 리필에 최적</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================= 탭 4 : 예시 ========================= -->
+    <div id="example" class="tab-pane">
+        <div class="card">
+            <div class="card-title">🎯 실제 제작 예시 (A-EX 레시피, 작업량 8500)</div>
+            <div style="background:#0e1119; padding:16px; border-radius:12px;">
+                <p><strong>오프너 : 확신 → 공경 → 교묘한 손놀림</strong> (작업량 우선 확보)</p>
+                <ul style="margin-left:20px; margin-top:10px;">
+                    <li>✔ 안정 상태 → 강행작업 (성공시 작업량 대폭)</li>
+                    <li>✔ 고품질 상태 → 집중가공 (스택 + 품질)</li>
+                    <li>✔ 고효율 → 교묘한 손놀림 리필 (내구 관리)</li>
+                    <li>✔ 견고 → 절약가공 or 밑가공 (내구 가르기)</li>
+                    <li>✔ 마무리 : 혁신 → 장족의 발전 → 비레고 (CP 약 80 남겨야 함)</li>
+                </ul>
+                <div class="footnote" style="margin-top:12px">※ 시트 예시 참고: 품질 17332/20300, 내구 45/80 상황에서 마무리 진입 성공</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">💡 내구 가르기 개념</div>
+            <p>견고 상태에서 절약가공(내구 5 소모) → 내구도를 0 또는 5로 끝나지 않게 자르면 <strong>마지막 공정 하나를 더 진행</strong> 할 수 있음.<br>
+            예: 내구 12 → 7 → 2 (중간에 교손으로 회복 가능)</p>
+        </div>
+    </div>
+
+    <!-- ========================= 탭 5 : 계산기 ========================= -->
+    <div id="calc" class="tab-pane">
+        <div class="card">
+            <div class="card-title">📐 작업량 계산기 (실시간)</div>
+            <div class="calc-group">
+                <label>내 작업숙련도 (음식+약액 포함)</label>
+                <input type="number" id="craftsmanship" value="5811" step="1">
+            </div>
+            <div class="calc-group">
+                <label>공경 버프</label>
+                <select id="ingenuity">
+                    <option value="1.0">없음</option>
+                    <option value="1.5" selected>적용 (1.5배)</option>
+                </select>
+            </div>
+            <div class="calc-result">
+                <div><span class="skill-chip">강행작업(효율500)</span> → <strong id="resultRush" class="result-number">0</strong> 작업량</div>
+                <div><span class="skill-chip">모범작업(효율180)</span> → <strong id="resultMaster" class="result-number">0</strong> 작업량</div>
+                <div><span class="skill-chip">작업(효율120)</span> → <strong id="resultWork" class="result-number">0</strong> 작업량</div>
+                <div><span class="skill-chip">절약작업(효율180)</span> → <strong id="resultThrifty" class="result-number">0</strong> (내구 5 소모)</div>
+            </div>
+            <div class="footnote">※ 기본 작업량 공식 = (작업숙련도 × 0.08 × 효율) + 2 (반올림). 게임 내 실제와 약간 차이 있지만 참고용.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📈 품질 계산기 (기본 가공)</div>
+            <div class="calc-group">
+                <label>가공숙련도 (음식+약액)</label>
+                <input type="number" id="craftsmanshipQual" value="5580" step="1">
+            </div>
+            <div class="calc-group">
+                <label>혁신 버프</label>
+                <select id="innovation">
+                    <option value="1.0">없음</option>
+                    <option value="1.5" selected>적용 (1.5배)</option>
+                </select>
+            </div>
+            <div class="calc-result">
+                <div>가공(효율100) : <strong id="basicTouch" class="result-number">0</strong></div>
+                <div>중급 가공(125) : <strong id="midTouch" class="result-number">0</strong></div>
+                <div>상급 가공(150) : <strong id="highTouch" class="result-number">0</strong></div>
+                <div>밑가공(효율200) : <strong id="underTouch" class="result-number">0</strong> (내구 20)</div>
+                <div>비레고의 축복(스택10,효율300) : <strong id="blessing" class="result-number">0</strong> (장족+혁신시 추가)</div>
+            </div>
+            <div class="footnote">※ 정신집중 10스택 + 비레고 기본효율 300, 장족+혁신 시 1.5×2=3배 → 실제 품질은 약 3배로 계산</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 작업량 계산 함수 (기본 공식: (숙련도 * 0.08 * 효율) + 2 , 반올림)
+    function calcWork(craft, efficiency, ingenuity = 1.0) {
+        let base = craft * 0.08 * efficiency * ingenuity;
+        return Math.floor(base + 2);
+    }
+
+    // 품질 계산 (가공)
+    function calcQuality(craft, efficiency, innovation = 1.0) {
+        let base = craft * 0.08 * efficiency * innovation;
+        return Math.floor(base + 2);
+    }
+
+    function updateAllCalculators() {
+        // 작업 계산
+        let craftVal = parseFloat(document.getElementById('craftsmanship').value);
+        if (isNaN(craftVal)) craftVal = 5811;
+        let ingenuityVal = parseFloat(document.getElementById('ingenuity').value);
+        
+        const rushEff = 500;
+        const masterEff = 180;
+        const workEff = 120;
+        const thriftyEff = 180;
+        
+        document.getElementById('resultRush').innerText = calcWork(craftVal, rushEff, ingenuityVal);
+        document.getElementById('resultMaster').innerText = calcWork(craftVal, masterEff, ingenuityVal);
+        document.getElementById('resultWork').innerText = calcWork(craftVal, workEff, ingenuityVal);
+        document.getElementById('resultThrifty').innerText = calcWork(craftVal, thriftyEff, ingenuityVal);
+        
+        // 품질 계산
+        let qualVal = parseFloat(document.getElementById('craftsmanshipQual').value);
+        if (isNaN(qualVal)) qualVal = 5580;
+        let innovVal = parseFloat(document.getElementById('innovation').value);
+        
+        const touch100 = 100;
+        const touch125 = 125;
+        const touch150 = 150;
+        const under200 = 200;
+        const blessing300 = 300;
+        
+        let basic = calcQuality(qualVal, touch100, innovVal);
+        let mid = calcQuality(qualVal, touch125, innovVal);
+        let high = calcQuality(qualVal, touch150, innovVal);
+        let under = calcQuality(qualVal, under200, innovVal);
+        // 비레고: 기본 효율 300, 장족+혁신이면 보통 1.5*2 = 3배, 여기서는 innovVal이 1.5면 여기에 장족 추가 2배까지 곱해서 3배로 표시 (유저 편의)
+        let blessingBase = calcQuality(qualVal, blessing300, 1.0); // 혁신 없이 순수
+        let finalBless = Math.floor(blessingBase * innovVal * 2.0); // 장족+혁신 효과 간이 적용
+        document.getElementById('basicTouch').innerText = basic;
+        document.getElementById('midTouch').innerText = mid;
+        document.getElementById('highTouch').innerText = high;
+        document.getElementById('underTouch').innerText = under;
+        document.getElementById('blessing').innerText = finalBless;
+    }
+    
+    // 입력 이벤트
+    document.getElementById('craftsmanship').addEventListener('input', updateAllCalculators);
+    document.getElementById('ingenuity').addEventListener('change', updateAllCalculators);
+    document.getElementById('craftsmanshipQual').addEventListener('input', updateAllCalculators);
+    document.getElementById('innovation').addEventListener('change', updateAllCalculators);
+    
+    // 탭 전환
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = document.querySelectorAll('.tab-pane');
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-tab');
+            panes.forEach(pane => pane.classList.remove('active-pane'));
+            document.getElementById(targetId).classList.add('active-pane');
+            tabs.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+    
+    // 초기 계산 실행
+    updateAllCalculators();
+</script>
+</body>
+</html>
