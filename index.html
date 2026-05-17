@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>파판14 고난도 제작 가이드</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #070c12;
@@ -86,6 +86,21 @@ body::before{
 .patch-badge .t-label{opacity:0;transition:opacity .2s .05s;}
 .sidebar:hover .patch-badge .t-label{opacity:1;}
 
+/* THEME BTN */
+.theme-btn{
+  display:flex;align-items:center;gap:12px;
+  width:100%;padding:8px 14px;
+  background:none;border:none;
+  font-family:'Noto Sans KR',sans-serif;font-size:12px;
+  color:var(--text-dim);cursor:pointer;
+  white-space:nowrap;overflow:hidden;
+  transition:color .15s;text-align:left;
+}
+.theme-btn .t-icon{font-size:16px;flex-shrink:0;width:26px;text-align:center;display:flex;align-items:center;justify-content:center;}
+.theme-btn .t-label{opacity:0;transition:opacity .2s .05s;}
+.sidebar:hover .theme-btn .t-label{opacity:1;}
+.theme-btn:hover{color:var(--accent);}
+
 /* MAIN */
 .main-wrap{margin-left:52px;padding:28px 32px 80px;max-width:920px;width:100%;position:relative;z-index:1;transition:margin-left .25s cubic-bezier(.4,0,.2,1);}
 .tab-panel{display:none;}
@@ -95,7 +110,7 @@ body::before{
 /* ── PAGE HERO ── */
 .page-hero{padding:28px 0 22px;margin-bottom:24px;border-bottom:1px solid var(--border);}
 .eyebrow{font-size:9px;letter-spacing:.28em;color:var(--accent-dim);text-transform:uppercase;margin-bottom:8px;}
-.page-hero h1{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:var(--text-bright);letter-spacing:.02em;margin-bottom:4px;}
+.page-hero h1{font-family:'Noto Sans KR',sans-serif;font-size:22px;font-weight:700;color:var(--text-bright);letter-spacing:.02em;margin-bottom:4px;}
 .page-hero h1 em{color:var(--accent);font-style:normal;}
 .page-hero p{color:var(--text-dim);font-size:12px;}
 
@@ -128,7 +143,7 @@ body::before{
   text-align:center;padding:14px 18px;margin-bottom:22px;
   border-top:1px solid var(--border);border-bottom:1px solid var(--border);
 }
-.y-text{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.12em;margin-bottom:2px;}
+.y-text{font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.12em;margin-bottom:2px;}
 .y-sub{font-size:11px;color:var(--text-dim);}
 
 /* ── WORRY GRID ── */
@@ -159,7 +174,10 @@ body::before{
 .rule-item:last-child{border-bottom:none;}
 .rule-item.danger .rule-title{color:var(--red);}
 .rule-item.important .rule-title{color:var(--accent);}
-.rule-icon{font-size:14px;flex-shrink:0;margin-top:2px;}
+.rule-icon{flex-shrink:0;margin-top:2px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);}
+.rule-item.danger .rule-icon{color:var(--red);}
+.rule-item.important .rule-icon{color:var(--accent);}
+.nav-num{display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--surface2);border-radius:4px;flex-shrink:0;border:1px solid var(--border);color:var(--text-dim);}
 .rule-title{font-weight:700;color:var(--text-bright);font-size:13px;margin-bottom:2px;}
 .rule-desc{font-size:12px;color:var(--text-dim);line-height:1.6;}
 .rule-desc strong{color:var(--red);}
@@ -298,7 +316,7 @@ body::before{
 .u-text.dim{color:var(--text-dim);}
 
 /* ── FOOTER ── */
-.site-footer{text-align:center;padding:20px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);position:relative;z-index:1;}
+.site-footer{margin-left:54px;padding:16px 32px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);text-align:center;}
 
 /* RESPONSIVE */
 @media(max-width:640px){
@@ -321,23 +339,28 @@ body::before{
 <aside class="sidebar">
   <div class="sidebar-top">
     <div class="sidebar-logo">
-      <span class="logo-icon">⚒️</span>
+      <span class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg></span>
       <span class="logo-text">파판14 고난도 제작</span>
     </div>
   </div>
   <nav class="sidebar-nav">
-    <button class="tab-btn active" data-tab="home"><span class="t-icon">🗺</span><span class="t-label">메인</span></button>
-    <button class="tab-btn" data-tab="start"><span class="t-icon">🏠</span><span class="t-label">시작가이드</span></button>
-    <button class="tab-btn" data-tab="skill"><span class="t-icon">⚔️</span><span class="t-label">스킬</span></button>
-    <button class="tab-btn" data-tab="status"><span class="t-icon">🌀</span><span class="t-label">상태</span></button>
-    <button class="tab-btn" data-tab="summary"><span class="t-icon">📋</span><span class="t-label">요약</span></button>
-    <button class="tab-btn" data-tab="example"><span class="t-icon">📖</span><span class="t-label">예시</span></button>
-    <button class="tab-btn" data-tab="calc"><span class="t-icon">⚙️</span><span class="t-label">작업계산기</span></button>
-    <button class="tab-btn" data-tab="qualcalc"><span class="t-icon">✨</span><span class="t-label">품질계산기</span></button>
+    <button class="tab-btn active" data-tab="home"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="t-label">메인</span></button>
+    <button class="tab-btn" data-tab="start"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span class="t-label">시작가이드</span></button>
+    <button class="tab-btn" data-tab="skill"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span><span class="t-label">스킬</span></button>
+    <button class="tab-btn" data-tab="status"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><span class="t-label">상태</span></button>
+    <button class="tab-btn" data-tab="summary"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span class="t-label">요약</span></button>
+    <button class="tab-btn" data-tab="example"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="t-label">예시</span></button>
+    <button class="tab-btn" data-tab="calc"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></span><span class="t-label">작업계산기</span></button>
+    <button class="tab-btn" data-tab="qualcalc"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="t-label">품질계산기</span></button>
   </nav>
   <div class="sidebar-bottom">
+    <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()">
+      <span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+      <span class="t-label" id="theme-label">라이트 모드</span>
+    </button>
     <div class="patch-badge">
-      <span class="t-icon">📌</span><span class="t-label">7.5 기준</span>
+      <span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+      <span class="t-label">7.5 패치 기준</span>
     </div>
   </div>
 </aside>
@@ -364,12 +387,12 @@ body::before{
   <div class="section">
     <div class="section-title"><div class="num">→</div>탭 바로가기</div>
     <div class="nav-links">
-      <div class="nav-link" onclick="switchTab('start')"><div class="nav-num">🏠</div><div><div class="nav-title">시작가이드</div><div class="nav-desc">처음 도전하는 분을 위한 입문</div></div></div>
-      <div class="nav-link" onclick="switchTab('skill')"><div class="nav-num">⚔️</div><div><div class="nav-title">스킬</div><div class="nav-desc">스킬 역할과 사용 타이밍</div></div></div>
-      <div class="nav-link" onclick="switchTab('status')"><div class="nav-num">🌀</div><div><div class="nav-title">상태</div><div class="nav-desc">상태별 대응법</div></div></div>
-      <div class="nav-link" onclick="switchTab('summary')"><div class="nav-num">📋</div><div><div class="nav-title">요약</div><div class="nav-desc">실전 치트시트</div></div></div>
-      <div class="nav-link" onclick="switchTab('example')"><div class="nav-num">📖</div><div><div class="nav-title">예시</div><div class="nav-desc">실제 제작 흐름 따라가기</div></div></div>
-      <div class="nav-link" onclick="switchTab('calc')"><div class="nav-num">⚙️</div><div><div class="nav-title">작업계산기</div><div class="nav-desc">작숙으로 작업량 계산</div></div></div>
+      <div class="nav-link" onclick="switchTab('start')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div><div class="nav-title">시작가이드</div><div class="nav-desc">처음 도전하는 분을 위한 입문</div></div></div>
+      <div class="nav-link" onclick="switchTab('skill')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div><div class="nav-title">스킬</div><div class="nav-desc">스킬 역할과 사용 타이밍</div></div></div>
+      <div class="nav-link" onclick="switchTab('status')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div class="nav-title">상태</div><div class="nav-desc">상태별 대응법</div></div></div>
+      <div class="nav-link" onclick="switchTab('summary')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><div><div class="nav-title">요약</div><div class="nav-desc">실전 치트시트</div></div></div>
+      <div class="nav-link" onclick="switchTab('example')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div><div class="nav-title">예시</div><div class="nav-desc">실제 제작 흐름 따라가기</div></div></div>
+      <div class="nav-link" onclick="switchTab('calc')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></div><div><div class="nav-title">작업계산기</div><div class="nav-desc">작숙으로 작업량 계산</div></div></div>
     </div>
   </div>
 
@@ -411,10 +434,10 @@ body::before{
   <div class="section">
     <div class="section-title"><div class="num">1</div>최소 준비 장비</div>
     <div class="checklist">
-      <div class="checklist-item"><div class="check-icon">✦</div><div><div class="item-name">공작깃 제작 세트 <span class="tag tr">금단 필수</span></div><div class="item-desc">금단 없이는 수치가 너무 낮아요.</div></div></div>
-      <div class="checklist-item"><div class="check-icon">✦</div><div><div class="item-name">초공간 도구 (오이지스 도구)</div><div class="item-desc">우주개척 고난도에서는 거의 필수예요.</div></div></div>
-      <div class="checklist-item"><div class="check-icon">✦</div><div><div class="item-name">HQ 음식 (CP 버프 있는 것)</div><div class="item-desc">로네크 스테이크, 세비체 등. CP 확보가 핵심!</div></div></div>
-      <div class="checklist-item"><div class="check-icon">✦</div><div><div class="item-name">명인의 약액 HQ</div><div class="item-desc">수치를 한 뼘씩 올려줘요. 음식이랑 항상 세트.</div></div></div>
+      <div class="checklist-item"><div class="check-icon"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="item-name">공작깃 제작 세트 <span class="tag tr">금단 필수</span></div><div class="item-desc">금단 없이는 수치가 너무 낮아요.</div></div></div>
+      <div class="checklist-item"><div class="check-icon"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="item-name">초공간 도구 (오이지스 도구)</div><div class="item-desc">우주개척 고난도에서는 거의 필수예요.</div></div></div>
+      <div class="checklist-item"><div class="check-icon"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="item-name">HQ 음식 (CP 버프 있는 것)</div><div class="item-desc">로네크 스테이크, 세비체 등. CP 확보가 핵심!</div></div></div>
+      <div class="checklist-item"><div class="check-icon"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="item-name">명인의 약액 HQ</div><div class="item-desc">수치를 한 뼘씩 올려줘요. 음식이랑 항상 세트.</div></div></div>
     </div>
   </div>
 
@@ -431,9 +454,9 @@ body::before{
   <div class="section">
     <div class="section-title"><div class="num">3</div>절대조건 3가지 — 모르면 시작 ❌</div>
     <div class="rules-grid">
-      <div class="rule-item important"><div class="rule-icon">⚙️</div><div><div class="rule-title">교묘한 손놀림 반드시 해금!</div><div class="rule-desc">65렙 각 직업 잡퀘 완료 후 사용 가능. 8회 공정마다 내구도 +5 회복 → 고난도 제작의 생명줄이에요.</div></div></div>
-      <div class="rule-item"><div class="rule-icon">🎲</div><div><div class="rule-title">성급한 손길 / 강행작업은 CP 0짜리 확률 스킬</div><div class="rule-desc">성공률 60% / 50%. CP 없을 때 운명에 맡기는 스킬이에요. 요시다를 외치며 도전합시다.</div></div></div>
-      <div class="rule-item danger"><div class="rule-icon">⚠️</div><div><div class="rule-title">내구도 10 이하에서 내구 10짜리 스킬 절대 금지!</div><div class="rule-desc"><strong>내구도 0 = 즉시 제작 종료.</strong> 교손 믿고 내구 10에서 10짜리 스킬 쓰면 바로 끝나요.</div></div></div>
+      <div class="rule-item important"><div class="rule-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 0-14.14 0"/><path d="M4 12H2"/><path d="M22 12h-2"/><path d="M12 22v-2"/><path d="M12 4V2"/><path d="M17.66 17.66l-1.41-1.41"/><path d="M6.34 6.34L4.93 4.93"/><path d="M17.66 6.34l1.41-1.41"/><path d="M6.34 17.66l-1.41 1.41"/></svg></div><div><div class="rule-title">교묘한 손놀림 반드시 해금!</div><div class="rule-desc">65렙 각 직업 잡퀘 완료 후 사용 가능. 8회 공정마다 내구도 +5 회복 → 고난도 제작의 생명줄이에요.</div></div></div>
+      <div class="rule-item"><div class="rule-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="12" height="12" x="2" y="10" rx="2" ry="2"/><path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"/><path d="M6 18h.01"/><path d="M10 14h.01"/><path d="M15 6h.01"/><path d="M18 9h.01"/></svg></div><div><div class="rule-title">성급한 손길 / 강행작업은 CP 0짜리 확률 스킬</div><div class="rule-desc">성공률 60% / 50%. CP 없을 때 운명에 맡기는 스킬이에요. 요시다를 외치며 도전합시다.</div></div></div>
+      <div class="rule-item danger"><div class="rule-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div><div><div class="rule-title">내구도 10 이하에서 내구 10짜리 스킬 절대 금지!</div><div class="rule-desc"><strong>내구도 0 = 즉시 제작 종료.</strong> 교손 믿고 내구 10에서 10짜리 스킬 쓰면 바로 끝나요.</div></div></div>
     </div>
   </div>
 
@@ -471,9 +494,9 @@ body::before{
   <div class="section">
     <div class="section-title"><div class="num ol">→</div>다음으로 볼 탭</div>
     <div class="nav-links">
-      <div class="nav-link" onclick="switchTab('skill')"><div class="nav-num">⚔️</div><div><div class="nav-title">스킬 탭</div><div class="nav-desc">각 스킬이 어떤 역할인지</div></div></div>
-      <div class="nav-link" onclick="switchTab('status')"><div class="nav-num">🌀</div><div><div class="nav-title">상태 탭</div><div class="nav-desc">상태 뜨면 어떻게 반응할지</div></div></div>
-      <div class="nav-link" onclick="switchTab('example')"><div class="nav-num">📖</div><div><div class="nav-title">예시 탭</div><div class="nav-desc">실제 제작 흐름 따라가보기</div></div></div>
+      <div class="nav-link" onclick="switchTab('skill')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div><div class="nav-title">스킬 탭</div><div class="nav-desc">각 스킬이 어떤 역할인지</div></div></div>
+      <div class="nav-link" onclick="switchTab('status')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div class="nav-title">상태 탭</div><div class="nav-desc">상태 뜨면 어떻게 반응할지</div></div></div>
+      <div class="nav-link" onclick="switchTab('example')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div><div class="nav-title">예시 탭</div><div class="nav-desc">실제 제작 흐름 따라가보기</div></div></div>
     </div>
   </div>
 </div>
@@ -840,7 +863,7 @@ body::before{
     <p>지역별 레시피에 맞는 마무리 로테이션을 찾아줘요</p>
   </div>
   <div style="padding:32px 0;max-width:480px">
-    <div style="font-size:28px;margin-bottom:14px">🔧</div>
+    <div style="font-size:28px;margin-bottom:14px"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
     <div style="font-size:15px;font-weight:700;color:var(--text-bright);margin-bottom:8px">준비 중이에요</div>
     <div style="font-size:13px;color:var(--text-dim);line-height:1.8">
       지역별 레시피 설정 + 마무리 로테이션 추천 기능을 작업 중이에요.<br><br>
@@ -850,12 +873,11 @@ body::before{
 </div>
 
 </main>
+</div><!-- /layout -->
 
 <footer class="site-footer">
-  파판14 고난도 제작 가이드 · 아뮬 작성 · 7.5 패치 기준
+  아뮬@카벙클 작성
 </footer>
-
-</div>
 
 <script>
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -865,6 +887,19 @@ function switchTab(id) {
   tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
   tabPanels.forEach(p => p.classList.toggle('active', p.id === 'tab-' + id));
   window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  const label = document.getElementById('theme-label');
+  const svgEl = document.querySelector('#theme-toggle .t-icon svg');
+  if (isLight) {
+    label.textContent = '다크 모드';
+    svgEl.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  } else {
+    label.textContent = '라이트 모드';
+    svgEl.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
 }
 
 function calcCraft() {
