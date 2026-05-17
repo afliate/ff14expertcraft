@@ -4,33 +4,163 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>파판14 고난도 제작 가이드</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
+/* DARK MODE (기본) — 우주/네온 테마 */
 :root {
-  --bg:#0e0f14; --surface:#16181f; --surface2:#1e2029; --border:#2a2d3a;
-  --gold:#c8a96e; --gold-light:#e8c98a; --gold-dim:#8a7050;
-  --blue:#5b8fd4; --blue-light:#7aabee; --green:#5aab7a; --red:#c45e5e;
-  --text:#d4d0c8; --text-dim:#8a8880; --text-bright:#f0ece0;
+  --bg:#07080f;
+  --surface:#0f1120;
+  --surface2:#161829;
+  --border:#232640;
+  --accent:#7c6aff;        /* 보라 네온 — 메인 포인트 */
+  --accent-dim:#4a3fa0;
+  --accent-glow:rgba(124,106,255,.18);
+  --cyan:#3de8c8;          /* 민트/청록 — 서브 포인트 */
+  --cyan-dim:#1a8a76;
+  --green:#4ddb8a;
+  --red:#ff5e6a;
+  --text:#cdd0e0;
+  --text-dim:#6b7090;
+  --text-bright:#eef0ff;
+  /* 하위호환 — 기존 코드가 --gold 참조하는 부분 */
+  --gold:var(--accent);
+  --gold-light:var(--cyan);
+  --gold-dim:var(--accent-dim);
+  --blue:var(--accent);
+  --blue-light:var(--cyan);
+}
+/* LIGHT MODE */
+body.light {
+  --bg:#f0f2fa;
+  --surface:#ffffff;
+  --surface2:#e8eaf5;
+  --border:#c8cce0;
+  --accent:#5a4bcc;
+  --accent-dim:#8878e0;
+  --accent-glow:rgba(90,75,204,.12);
+  --cyan:#1a8a76;
+  --cyan-dim:#2aaa96;
+  --green:#2a8a58;
+  --red:#cc3344;
+  --text:#1a1c2e;
+  --text-dim:#6068a0;
+  --text-bright:#0a0c1a;
+  --gold:var(--accent);
+  --gold-light:var(--cyan);
+  --gold-dim:var(--accent-dim);
+  --blue:var(--accent);
+  --blue-light:var(--cyan);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7;min-height:100vh;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 10%,rgba(91,143,212,.05) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(200,169,110,.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+.page-hero h1{font-family:'Nanum Gothic',sans-serif;}
+.page-hero h1 span{font-family:'Nanum Gothic',sans-serif;}
+.section-title{font-family:'Nanum Gothic',sans-serif;}
+.yoshida-box .y-text{font-family:'Nanum Gothic',sans-serif;}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 60% 40% at 15% 20%, rgba(124,106,255,.08) 0%, transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 75%, rgba(61,232,200,.06) 0%, transparent 60%),
+  radial-gradient(ellipse 30% 30% at 60% 10%, rgba(124,106,255,.04) 0%, transparent 50%);
+  pointer-events:none;z-index:0;}
+body.light::before{background:
+  radial-gradient(ellipse 60% 40% at 15% 20%, rgba(90,75,204,.06) 0%, transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 75%, rgba(26,138,118,.04) 0%, transparent 60%);
+  pointer-events:none;z-index:0;}
 
-/* HEADER */
-.site-header{position:sticky;top:0;z-index:100;background:rgba(14,15,20,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
-.header-inner{max-width:960px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px;}
-.site-title{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:var(--gold);white-space:nowrap;flex-shrink:0;}
-.site-title span{color:var(--text-dim);font-weight:400;font-size:11px;margin-left:6px;}
-.nav-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.tab-btn{background:none;border:none;padding:6px 11px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;color:var(--text-dim);cursor:pointer;border-radius:4px;white-space:nowrap;transition:color .2s,background .2s;}
-.tab-btn:hover{color:var(--text);background:var(--surface);}
-.tab-btn.active{color:var(--gold);background:rgba(200,169,110,.1);}
-.patch-badge{font-size:10px;padding:2px 8px;border:1px solid var(--gold-dim);border-radius:2px;color:var(--gold-dim);white-space:nowrap;flex-shrink:0;}
+/* ── 전체 레이아웃 ── */
+.layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;top:0;left:0;height:100vh;
+  width:54px;
+  background:rgba(7,8,15,.98);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  z-index:200;
+  transition:width .25s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+}
+.sidebar:hover{ width:200px; }
+body.light .sidebar{ background:rgba(240,242,250,.98); }
+
+.sidebar-top{
+  padding:16px 0 12px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sidebar-logo{
+  display:flex;align-items:center;gap:10px;
+  padding:0 14px;height:36px;
+  white-space:nowrap;overflow:hidden;
+}
+.sidebar-logo .logo-icon{ font-size:18px;flex-shrink:0;width:26px;text-align:center; }
+.sidebar-logo .logo-text{
+  font-family:'Nanum Gothic',sans-serif;font-size:12px;font-weight:800;
+  color:var(--gold);opacity:0;transition:opacity .2s .05s;
+  white-space:nowrap;
+}
+.sidebar:hover .logo-text{ opacity:1; }
+
+.sidebar-nav{ flex:1;padding:8px 0;overflow-y:auto;scrollbar-width:none; }
+.sidebar-nav::-webkit-scrollbar{display:none;}
+
+.tab-btn{
+  display:flex;align-items:center;gap:12px;
+  width:100%;padding:10px 14px;
+  background:none;border:none;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;
+  color:var(--text-dim);cursor:pointer;
+  white-space:nowrap;overflow:hidden;
+  transition:color .15s,background .15s;
+  text-align:left;
+}
+.tab-btn .t-icon{ font-size:16px;flex-shrink:0;width:26px;text-align:center; }
+.tab-btn .t-label{ opacity:0;transition:opacity .2s .05s; }
+.sidebar:hover .tab-btn .t-label{ opacity:1; }
+.tab-btn:hover{ color:var(--text);background:rgba(255,255,255,.05); }
+.tab-btn.active{ color:var(--accent);background:var(--accent-glow); }
+.tab-btn.active .t-icon svg{ filter:drop-shadow(0 0 6px var(--accent)); }
+body.light .tab-btn:hover{ background:rgba(0,0,0,.04); }
+
+.sidebar-bottom{
+  padding:12px 0;border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.theme-btn{
+  display:flex;align-items:center;gap:12px;
+  width:100%;padding:8px 14px;
+  background:none;border:none;
+  font-family:'Noto Sans KR',sans-serif;font-size:12px;
+  color:var(--text-dim);cursor:pointer;
+  white-space:nowrap;overflow:hidden;
+  transition:color .15s;text-align:left;
+}
+.theme-btn .t-icon{ font-size:16px;flex-shrink:0;width:26px;text-align:center; }
+.theme-btn .t-label{ opacity:0;transition:opacity .2s .05s; }
+.sidebar:hover .theme-btn .t-label{ opacity:1; }
+.theme-btn:hover{ color:var(--gold); }
+
+.patch-badge{
+  display:flex;align-items:center;gap:12px;
+  padding:6px 14px;font-size:11px;color:var(--text-dim);
+  white-space:nowrap;overflow:hidden;
+}
+.patch-badge .t-icon{ font-size:13px;flex-shrink:0;width:26px;text-align:center; }
+.patch-badge .t-label{ opacity:0;transition:opacity .2s .05s; }
+.sidebar:hover .patch-badge .t-label{ opacity:1; }
 
 /* MAIN */
-.main-wrap{max-width:900px;margin:0 auto;padding:32px 20px 80px;position:relative;z-index:1;}
+.main-wrap{
+  margin-left:54px;
+  padding:32px 32px 80px;
+  max-width:940px;
+  width:100%;
+  position:relative;z-index:1;
+  transition:margin-left .25s cubic-bezier(.4,0,.2,1);
+}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;animation:fadeUp .3s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
@@ -44,13 +174,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* PAGE HERO */
 .page-hero{text-align:center;padding:36px 0 28px;margin-bottom:28px;border-bottom:1px solid var(--border);}
 .page-hero .eyebrow{font-size:10px;letter-spacing:.3em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:10px;}
-.page-hero h1{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;color:var(--text-bright);letter-spacing:.05em;margin-bottom:6px;}
+.page-hero h1{font-family:'Nanum Gothic',sans-serif;font-size:24px;font-weight:700;color:var(--text-bright);letter-spacing:.05em;margin-bottom:6px;}
 .page-hero h1 span{color:var(--gold);}
 .page-hero p{color:var(--text-dim);font-size:13px;}
 
 /* YOSHIDA */
 .yoshida-box{background:linear-gradient(135deg,rgba(200,169,110,.08) 0%,rgba(200,169,110,.03) 100%);border:1px solid rgba(200,169,110,.25);border-radius:4px;padding:14px 18px;text-align:center;margin-bottom:26px;}
-.yoshida-box .y-text{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:3px;}
+.yoshida-box .y-text{font-family:'Nanum Gothic',sans-serif;font-size:15px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:3px;}
 .yoshida-box .y-sub{font-size:12px;color:var(--text-dim);}
 
 /* WORRY */
@@ -206,41 +336,130 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* RESPONSIVE */
 @media(max-width:640px){
+  .sidebar{ width:44px; }
+  .sidebar:hover{ width:180px; }
+  .main-wrap{ margin-left:44px; padding:20px 14px 60px; }
   .worry-grid{grid-template-columns:1fr;}
   .stat-grid{grid-template-columns:1fr 1fr;}
   .opener-compare{grid-template-columns:1fr;}
   .nav-links{grid-template-columns:1fr;}
   .calc-grid{grid-template-columns:1fr;}
   .skill-card{grid-template-columns:1fr;}
-  .site-title span{display:none;}
   .tbl{font-size:11px;}
   .tbl th,.tbl td{padding:5px 7px;}
 }
 </style>
 </head>
 <body>
+<div class="layout">
 
-<header class="site-header">
-  <div class="header-inner">
-    <div class="site-title">파판14 고난도 제작 가이드 <span>by 아뮬@카벙클</span></div>
-    <nav class="nav-tabs">
-      <button class="tab-btn active" data-tab="start">🏠 시작가이드</button>
-      <button class="tab-btn" data-tab="skill">⚔️ 스킬</button>
-      <button class="tab-btn" data-tab="status">🌀 상태</button>
-      <button class="tab-btn" data-tab="summary">📋 요약</button>
-      <button class="tab-btn" data-tab="example">📖 예시</button>
-      <button class="tab-btn" data-tab="calc">🔢 계산기</button>
-    </nav>
-    <div class="patch-badge">7.4 기준</div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⚒️</span>
+      <span class="logo-text">파판14 고난도 제작</span>
+    </div>
   </div>
-</header>
+
+  <nav class="sidebar-nav">
+    <button class="tab-btn active" data-tab="home"><span class="t-icon">🗺</span><span class="t-label">메인</span></button>
+    <button class="tab-btn" data-tab="start"><span class="t-icon">🏠</span><span class="t-label">시작가이드</span></button>
+    <button class="tab-btn" data-tab="skill"><span class="t-icon">⚔️</span><span class="t-label">스킬</span></button>
+    <button class="tab-btn" data-tab="status"><span class="t-icon">🌀</span><span class="t-label">상태</span></button>
+    <button class="tab-btn" data-tab="summary"><span class="t-icon">📋</span><span class="t-label">요약</span></button>
+    <button class="tab-btn" data-tab="example"><span class="t-icon">📖</span><span class="t-label">예시</span></button>
+    <button class="tab-btn" data-tab="calc"><span class="t-icon">⚙️</span><span class="t-label">작업계산기</span></button>
+    <button class="tab-btn" data-tab="qualcalc"><span class="t-icon">✨</span><span class="t-label">품질계산기</span></button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()">
+      <span class="t-icon">☀️</span><span class="t-label">라이트 모드</span>
+    </button>
+    <div class="patch-badge">
+      <span class="t-icon">📌</span><span class="t-label">7.5 기준</span>
+    </div>
+  </div>
+</aside>
 
 <main class="main-wrap">
 
 <!-- ══════════════════════════════════════
+     TAB 0 · 메인
+══════════════════════════════════════ -->
+<div id="tab-home" class="tab-panel active">
+  <div class="page-hero">
+    <div class="eyebrow">Eorzea Crafting Guide</div>
+    <h1>파판14 <span>고난도 제작</span> 가이드</h1>
+    <p>우주개척 고난도 제작 입문부터 실전까지</p>
+  </div>
+
+  <!-- 업데이트 내역 -->
+  <div class="section">
+    <div class="section-title"><div class="num">📋</div>업데이트 내역</div>
+    <div style="display:grid;gap:6px;">
+      <div style="display:flex;gap:12px;align-items:baseline;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:10px 14px;">
+        <span style="font-size:11px;color:var(--gold-dim);white-space:nowrap;font-weight:700;">2025.05</span>
+        <span style="font-size:12px;color:var(--text);">사이트 최초 공개 — 시작가이드 / 스킬 / 상태 / 요약 / 예시 / 작업계산기</span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:baseline;background:var(--surface);border:1px solid rgba(200,169,110,.2);border-radius:4px;padding:10px 14px;">
+        <span style="font-size:11px;color:var(--gold-dim);white-space:nowrap;font-weight:700;">준비중</span>
+        <span style="font-size:12px;color:var(--text-dim);">품질계산기 — 지역별 레시피 설정 + 마무리 로테이션 추천</span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:baseline;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:10px 14px;">
+        <span style="font-size:11px;color:var(--text-dim);white-space:nowrap;font-weight:700;">예정</span>
+        <span style="font-size:12px;color:var(--text-dim);">예시 추가 — 동경의만 / 각 지역별 공정 예시</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 탭 바로가기 -->
+  <div class="section">
+    <div class="section-title"><div class="num">→</div>탭 바로가기</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div class="nav-link" onclick="switchTab('start')">
+        <div class="nav-num">🏠</div>
+        <div class="nav-info"><div class="nav-title">시작가이드</div><div class="nav-desc">처음 도전하는 분을 위한 입문</div></div>
+      </div>
+      <div class="nav-link" onclick="switchTab('skill')">
+        <div class="nav-num">⚔️</div>
+        <div class="nav-info"><div class="nav-title">스킬</div><div class="nav-desc">스킬 역할과 사용 타이밍</div></div>
+      </div>
+      <div class="nav-link" onclick="switchTab('status')">
+        <div class="nav-num">🌀</div>
+        <div class="nav-info"><div class="nav-title">상태</div><div class="nav-desc">상태별 대응법</div></div>
+      </div>
+      <div class="nav-link" onclick="switchTab('summary')">
+        <div class="nav-num">📋</div>
+        <div class="nav-info"><div class="nav-title">요약</div><div class="nav-desc">실전 치트시트</div></div>
+      </div>
+      <div class="nav-link" onclick="switchTab('example')">
+        <div class="nav-num">📖</div>
+        <div class="nav-info"><div class="nav-title">예시</div><div class="nav-desc">실제 제작 흐름 따라가기</div></div>
+      </div>
+      <div class="nav-link" onclick="switchTab('calc')">
+        <div class="nav-num">⚙️</div>
+        <div class="nav-info"><div class="nav-title">작업계산기</div><div class="nav-desc">작숙으로 작업량 계산</div></div>
+      </div>
+      <div class="nav-link" onclick="switchTab('qualcalc')" style="opacity:.6;">
+        <div class="nav-num">✨</div>
+        <div class="nav-info"><div class="nav-title">품질계산기</div><div class="nav-desc">준비 중이에요</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 안내 -->
+  <div class="guide-note">
+    이 가이드는 패치 <strong style="color:var(--text-bright)">7.5 기준</strong>으로 작성됐어요.<br>
+    내용 오류나 추가 제안은 디스코드 <strong style="color:var(--text-bright)">am_p_m</strong> 으로 알려주세요.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
      TAB 1 · 시작가이드
 ══════════════════════════════════════ -->
-<div id="tab-start" class="tab-panel active">
+<div id="tab-start" class="tab-panel">
   <div class="page-hero">
     <div class="eyebrow">Eorzea Crafting Guide</div>
     <h1>고난도 제작 <span>시작가이드</span></h1>
@@ -665,20 +884,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <!-- ══════════════════════════════════════
-     TAB 6 · 계산기
+     TAB 6 · 작업량 계산기
 ══════════════════════════════════════ -->
 <div id="tab-calc" class="tab-panel">
   <div class="page-hero">
-    <div class="eyebrow">Calculator</div>
-    <h1><span>제작</span> 계산기</h1>
-    <p>수치를 입력하면 작업량·품질 결과를 바로 확인해요</p>
+    <div class="eyebrow">Progress Calculator</div>
+    <h1><span>작업량</span> 계산기</h1>
+    <p>작숙 수치로 스킬별 작업량을 계산해요</p>
   </div>
 
-  <div class="calc-grid">
-    <!-- 작업량 계산기 -->
+  <div style="max-width:480px">
     <div class="calc-card">
       <div class="calc-title">⚙️ 작업량 계산기</div>
-      <div class="calc-sub">작숙 수치로 스킬별 작업량을 확인해요</div>
+      <div class="calc-sub">작숙 수치와 레시피 요구치를 입력하면 강행·모범작업 횟수를 알려줘요</div>
       <div class="f-row"><label class="f-label">작업 숙련도 (작숙)</label><input class="f-input" id="c-lv" type="number" placeholder="예: 5430"></div>
       <div class="f-row"><label class="f-label">레시피 작업량 요구치</label><input class="f-input" id="c-req" type="number" placeholder="예: 9900"></div>
       <button class="calc-btn" onclick="calcCraft()">계산하기</button>
@@ -686,61 +904,38 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="r-row"><span class="r-label">강행작업 1회</span><span class="r-value" id="r-gh">—</span></div>
         <div class="r-row"><span class="r-label">모범작업 1회</span><span class="r-value" id="r-mb">—</span></div>
         <div class="r-row"><span class="r-label">작업 1회</span><span class="r-value" id="r-jk">—</span></div>
-        <div class="r-row"><span class="r-label">확신+강행 1딜</span><span class="r-value" id="r-hw">—</span></div>
+        <div class="r-row"><span class="r-label">확신+강행 1회</span><span class="r-value" id="r-hw">—</span></div>
         <div class="r-sub" id="r-cc"></div>
       </div>
     </div>
+  </div>
+  <div class="guide-note" style="margin-top:16px;max-width:480px;font-size:12px">
+    ⚠️ 계산 공식은 7.x 근사치 기반이에요. 정확한 수치는 Teamcraft 시뮬레이터에서 확인을 추천해요.
+  </div>
+</div>
 
-    <!-- 품질 계산기 -->
-    <div class="calc-card">
-      <div class="calc-title">✨ 품질 계산기</div>
-      <div class="calc-sub">마무리 콤보 품질을 미리 확인해요</div>
-      <div class="f-row"><label class="f-label">가공 숙련도 (가숙)</label><input class="f-input" id="q-lv" type="number" placeholder="예: 5023"></div>
-      <div class="f-row"><label class="f-label">정신집중 스택 수 (0~10)</label><input class="f-input" id="q-st" type="number" placeholder="10" min="0" max="10"></div>
-      <div class="f-row"><label class="f-label">목표 품질 (선택)</label><input class="f-input" id="q-tg" type="number" placeholder="예: 20300"></div>
-      <button class="calc-btn" onclick="calcQual()">계산하기</button>
-      <div class="calc-result" id="qual-res">
-        <div class="r-row"><span class="r-label">혁신 + 장족 + 비레고</span><span class="r-value" id="r-q1">—</span></div>
-        <div class="r-row"><span class="r-label">혁신 + 비레고 (장족 없이)</span><span class="r-value" id="r-q2">—</span></div>
-        <div class="r-row"><span class="r-label">비레고만</span><span class="r-value" id="r-q3">—</span></div>
-        <div class="r-sub" id="r-qc"></div>
-        <div class="r-warn" id="r-qw"></div>
-      </div>
-    </div>
+<!-- ══════════════════════════════════════
+     TAB 7 · 품질 계산기
+══════════════════════════════════════ -->
+<div id="tab-qualcalc" class="tab-panel">
+  <div class="page-hero">
+    <div class="eyebrow">Quality Calculator</div>
+    <h1><span>품질</span> 계산기</h1>
+    <p>지역별 레시피에 맞는 마무리 로테이션을 찾아줘요</p>
   </div>
 
-  <!-- 기준값 표 -->
-  <div class="section" style="margin-top:24px">
-    <div class="section-title"><div class="num ol">📋</div>장비별 기준 수치</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div class="calc-card" style="padding:14px">
-        <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;font-weight:700">풀금단 기준</div>
-        <table style="width:100%;font-size:12px;border-collapse:collapse">
-          <tr style="color:var(--text-dim);font-size:10px"><th style="text-align:left;padding:2px 0">장비</th><th style="text-align:right">작숙</th><th style="text-align:right">가숙</th><th style="text-align:right">CP</th></tr>
-          <tr><td style="padding:3px 0;color:var(--text)">공작깃</td><td style="text-align:right;color:var(--gold)">5,812</td><td style="text-align:right;color:var(--gold)">5,083</td><td style="text-align:right;color:var(--gold)">649</td></tr>
-          <tr><td style="padding:3px 0;color:var(--text)">공작깃+초공간</td><td style="text-align:right;color:var(--gold)">5,867</td><td style="text-align:right;color:var(--gold)">5,424</td><td style="text-align:right;color:var(--gold)">649</td></tr>
-          <tr><td style="padding:3px 0;color:var(--text)">행성기술자 등화</td><td style="text-align:right;color:var(--gold)">5,635</td><td style="text-align:right;color:var(--gold)">4,969</td><td style="text-align:right;color:var(--gold)">583</td></tr>
-        </table>
-      </div>
-      <div class="calc-card" style="padding:14px">
-        <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;font-weight:700">자주 쓰는 음식 HQ 버프</div>
-        <table style="width:100%;font-size:12px;border-collapse:collapse">
-          <tr style="color:var(--text-dim);font-size:10px"><th style="text-align:left;padding:2px 0">음식</th><th style="text-align:right">작숙</th><th style="text-align:right">가숙</th><th style="text-align:right">CP</th></tr>
-          <tr><td style="padding:3px 0;color:var(--text)">알 이 페브레</td><td style="text-align:right;color:var(--blue-light)">+115</td><td style="text-align:right;color:var(--blue-light)">+100</td><td style="text-align:right;color:var(--text-dim)">—</td></tr>
-          <tr><td style="padding:3px 0;color:var(--text)">세비체</td><td style="text-align:right;color:var(--blue-light)">+150</td><td style="text-align:right;color:var(--text-dim)">—</td><td style="text-align:right;color:var(--blue-light)">+96</td></tr>
-          <tr><td style="padding:3px 0;color:var(--text)">로네크 스테이크</td><td style="text-align:right;color:var(--text-dim)">—</td><td style="text-align:right;color:var(--blue-light)">+97</td><td style="text-align:right;color:var(--blue-light)">+92</td></tr>
-        </table>
-      </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:40px 32px;text-align:center;max-width:500px;margin:0 auto;">
+    <div style="font-size:32px;margin-bottom:16px">🔧</div>
+    <div style="font-size:16px;font-weight:800;color:var(--text-bright);margin-bottom:10px">준비 중이에요</div>
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.8">
+      지역별 레시피 설정 + 마무리 로테이션 추천 기능을<br>
+      작업 중이에요. 조금만 기다려주세요!<br><br>
+      <span style="color:var(--gold-dim);font-size:12px">파엔나 / 오이지스 / 동경의만 레시피별로<br>최적 마무리 로테이션을 추천해드릴 예정이에요.</span>
     </div>
   </div>
 </div>
 
 </main>
-
-<footer class="site-footer">
-  파판14 고난도 제작 가이드 &nbsp;·&nbsp; 작성자: 아뮬@카벙클 &nbsp;·&nbsp; 패치 7.4 기준<br>
-  문의: 디스코드 am_p_m
-</footer>
 
 <script>
 // TAB
@@ -753,12 +948,19 @@ function switchTab(id) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+// THEME
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  const btn = document.getElementById('theme-toggle');
+  btn.querySelector('.t-icon').textContent = isLight ? '🌙' : '☀️';
+  btn.querySelector('.t-label').textContent = isLight ? '다크 모드' : '라이트 모드';
+}
+
 // 작업량 계산
 function calcCraft() {
   const lv = parseFloat(document.getElementById('c-lv').value);
   const req = parseFloat(document.getElementById('c-req').value);
   if (!lv) return;
-  // 7.x 근사 공식
   const jk = Math.floor(lv * 0.0656 + 0.5);
   const mb = Math.floor(lv * 0.0984 + 0.5);
   const gh = Math.floor(lv * 0.2741 + 0.5);
@@ -773,29 +975,7 @@ function calcCraft() {
   }
   document.getElementById('craft-res').classList.add('show');
 }
-
-// 품질 계산
-function calcQual() {
-  const lv = parseFloat(document.getElementById('q-lv').value);
-  const st = Math.min(parseFloat(document.getElementById('q-st').value) || 0, 10);
-  const tg = parseFloat(document.getElementById('q-tg').value);
-  if (!lv) return;
-  const base = Math.floor(lv * 0.1291 + 0.5);
-  const stackMult = (100 + st * 20) / 100;
-  const q3 = Math.floor(base * stackMult);
-  const q2 = Math.floor(base * 1.5 * stackMult);
-  const q1 = Math.floor(base * 1.5 * 2 * stackMult);
-  document.getElementById('r-q1').textContent = q1.toLocaleString();
-  document.getElementById('r-q2').textContent = q2.toLocaleString();
-  document.getElementById('r-q3').textContent = q3.toLocaleString();
-  document.getElementById('r-qc').textContent = `가숙 ${lv.toLocaleString()} 기준, 스택 ${st}개 계산 결과예요.`;
-  if (tg && q1 < tg) {
-    document.getElementById('r-qw').textContent = `⚠ 마무리 콤보로 목표 품질보다 ${(tg - q1).toLocaleString()} 부족해요. 품질 쌓기 구간에서 더 올려야 해요.`;
-  } else {
-    document.getElementById('r-qw').textContent = tg ? `✅ 목표 품질 달성 가능해요!` : '';
-  }
-  document.getElementById('qual-res').classList.add('show');
-}
 </script>
+</div><!-- /layout -->
 </body>
 </html>
