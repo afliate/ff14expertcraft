@@ -7,27 +7,43 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #070c12;
-  --surface: #0c1420;
-  --surface2: #101a28;
-  --border: #182436;
+  --bg: #131920;
+  --surface: #0f1a24;
+  --surface2: #131e2a;
+  --border: #1c2d3e;
   --accent: #3ecfaa;
   --accent-dim: #1e8a72;
   --accent-glow: rgba(62,207,170,.12);
   --sky: #5ab8d4;
   --sky-dim: #2a7090;
-  --text: #b8ccd8;
-  --text-dim: #4a6878;
-  --text-bright: #ddeef8;
+  --text: #c8dce8;
+  --text-dim: #7a96a8;
+  --text-bright: #eef6ff;
   --red: #e05060;
   --green: #4dc890;
   --yellow: #c8b840;
+}
+body.light {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface2: #e4edf5;
+  --border: #c8d8e8;
+  --accent: #1a9478;
+  --accent-dim: #2ab898;
+  --accent-glow: rgba(26,148,120,.1);
+  --sky: #2a7090;
+  --sky-dim: #4a90b0;
+  --text: #1a2a38;
+  --text-dim: #4a6070;
+  --text-bright: #0a1620;
+  --red: #c03040;
+  --green: #1a8050;
+  --yellow: #806020;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7;min-height:100vh;}
 
-/* 배경 별 효과 */
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
@@ -42,13 +58,12 @@ body::before{
     radial-gradient(1px 1px at 92% 55%, rgba(255,255,255,.3) 0%, transparent 0%);
 }
 
-/* ── 레이아웃 ── */
 .layout{display:flex;min-height:100vh;}
 
 /* SIDEBAR */
 .sidebar{
   position:fixed;top:0;left:0;height:100vh;
-  width:52px;background:rgba(7,12,18,.96);
+  width:52px;background:rgba(13,18,24,.96);
   border-right:1px solid var(--border);
   display:flex;flex-direction:column;
   z-index:200;transition:width .25s cubic-bezier(.4,0,.2,1);overflow:hidden;
@@ -86,7 +101,6 @@ body::before{
 .patch-badge .t-label{opacity:0;transition:opacity .2s .05s;}
 .sidebar:hover .patch-badge .t-label{opacity:1;}
 
-/* THEME BTN */
 .theme-btn{
   display:flex;align-items:center;gap:12px;
   width:100%;padding:8px 14px;
@@ -128,7 +142,7 @@ body::before{
   font-size:9px;font-weight:900;color:var(--accent);flex-shrink:0;
 }
 
-/* ── GUIDE NOTE (인용) ── */
+/* ── GUIDE NOTE ── */
 .guide-note{
   border-left:2px solid var(--accent-dim);
   padding:10px 14px;
@@ -138,21 +152,122 @@ body::before{
 }
 .guide-note strong{color:var(--text-bright);}
 
-/* ── YOSHIDA ── */
-.yoshida-box{
-  text-align:center;padding:14px 18px;margin-bottom:22px;
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+/* ────────────────────────────────────────────
+   메인탭 전용
+──────────────────────────────────────────── */
+
+/* 인트로 블록 */
+.home-intro{
+  padding:36px 0 32px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:32px;
 }
+.home-eyebrow{
+  font-size:9px;letter-spacing:.3em;color:var(--accent-dim);
+  text-transform:uppercase;margin-bottom:14px;
+}
+.home-title{
+  font-size:28px;font-weight:900;color:var(--text-bright);
+  line-height:1.25;letter-spacing:.01em;margin-bottom:10px;
+}
+.home-title em{color:var(--accent);font-style:normal;}
+.home-sub{
+  font-size:13px;color:var(--text-dim);line-height:1.8;
+  max-width:480px;
+}
+.home-sub strong{color:var(--text);}
+
+/* 시작 CTA */
+.home-cta{
+  margin-top:24px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;
+  background:var(--accent);border:none;border-radius:3px;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;
+  color:var(--bg);cursor:pointer;
+  transition:opacity .15s,transform .1s;letter-spacing:.02em;
+}
+.cta-btn:hover{opacity:.9;transform:translateY(-1px);}
+.cta-sub-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:11px 18px;
+  background:transparent;border:1px solid var(--border);border-radius:3px;
+  font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;
+  color:var(--text-dim);cursor:pointer;
+  transition:border-color .15s,color .15s;
+}
+.cta-sub-btn:hover{border-color:var(--accent-dim);color:var(--text);}
+
+/* 바로가기 카드 */
+.home-links{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:32px;
+}
+.home-link{
+  background:var(--surface);
+  padding:14px 16px;
+  cursor:pointer;
+  transition:background .15s;
+  display:flex;flex-direction:column;gap:3px;
+}
+.home-link:hover{background:var(--surface2);}
+.home-link:hover .hl-title{color:var(--accent);}
+.hl-num{font-size:9px;color:var(--text-dim);letter-spacing:.06em;margin-bottom:2px;}
+.hl-title{font-size:13px;font-weight:700;color:var(--text-bright);transition:color .15s;}
+.hl-desc{font-size:11px;color:var(--text-dim);line-height:1.5;}
+
+/* 패치 메모 */
+.home-patch{
+  font-size:11px;color:var(--text-dim);
+  padding:10px 0 0;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;
+}
+.home-patch span{color:var(--accent-dim);font-weight:700;}
+
+/* 업데이트 내역 (하단 조용히) */
+.update-section{
+  margin-top:40px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+}
+.update-label{
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--text-dim);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.update-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.update-rows{}
+.update-row{
+  display:flex;gap:14px;align-items:baseline;
+  padding:6px 0;
+  border-bottom:1px solid rgba(28,45,62,.5);
+  font-size:11px;
+}
+.update-row:last-child{border-bottom:none;}
+.u-date{color:var(--accent-dim);font-weight:700;white-space:nowrap;min-width:50px;}
+.u-text{color:var(--text-dim);}
+.u-text.done{color:var(--text);}
+
+/* ── 나머지 탭 공통 (기존과 동일) ── */
+.yoshida-box{text-align:center;padding:14px 18px;margin-bottom:22px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
 .y-text{font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.12em;margin-bottom:2px;}
 .y-sub{font-size:11px;color:var(--text-dim);}
 
-/* ── WORRY GRID ── */
 .worry-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
 .worry-card{padding:10px 12px;font-size:12px;color:var(--text-dim);border-bottom:1px solid var(--border);position:relative;}
 .worry-card::before{content:'"';font-size:20px;color:var(--border);position:absolute;top:4px;left:6px;font-family:serif;line-height:1;}
 .worry-card p{padding-left:10px;}
 
-/* ── CHECKLIST ── */
 .checklist{display:grid;gap:5px;}
 .checklist-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
 .checklist-item:last-child{border-bottom:none;}
@@ -160,7 +275,6 @@ body::before{
 .item-name{font-weight:700;color:var(--text-bright);font-size:13px;}
 .item-desc{font-size:11px;color:var(--text-dim);margin-top:1px;}
 
-/* ── STAT GRID ── */
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .stat-card{padding:12px 10px;border-bottom:2px solid var(--border);text-align:center;}
 .stat-card:first-child{border-bottom-color:var(--accent-dim);}
@@ -168,7 +282,6 @@ body::before{
 .stat-desc{font-size:10px;color:var(--text-dim);margin-bottom:5px;line-height:1.5;}
 .stat-goal{font-size:10px;color:var(--sky);letter-spacing:.02em;}
 
-/* ── RULES ── */
 .rules-grid{display:grid;gap:6px;}
 .rule-item{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);}
 .rule-item:last-child{border-bottom:none;}
@@ -177,12 +290,10 @@ body::before{
 .rule-icon{flex-shrink:0;margin-top:2px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);}
 .rule-item.danger .rule-icon{color:var(--red);}
 .rule-item.important .rule-icon{color:var(--accent);}
-.nav-num{display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--surface2);border-radius:4px;flex-shrink:0;border:1px solid var(--border);color:var(--text-dim);}
 .rule-title{font-weight:700;color:var(--text-bright);font-size:13px;margin-bottom:2px;}
 .rule-desc{font-size:12px;color:var(--text-dim);line-height:1.6;}
 .rule-desc strong{color:var(--red);}
 
-/* ── FLOW ── */
 .flow-steps{display:grid;gap:0;}
 .flow-step{display:grid;grid-template-columns:36px 1fr;position:relative;}
 .flow-step:not(:last-child) .step-line{position:absolute;left:17px;top:36px;bottom:0;width:1px;background:var(--border);}
@@ -201,13 +312,11 @@ body::before{
 .chip{border:1px solid var(--border);border-radius:2px;padding:1px 7px;font-size:10px;color:var(--text-dim);}
 .chip.hi{border-color:var(--accent-dim);color:var(--accent);}
 
-/* ── TAGS ── */
 .tag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:2px;margin-left:4px;vertical-align:middle;font-weight:400;}
 .tg{border:1px solid var(--accent-dim);color:var(--accent-dim);}
 .tb{border:1px solid var(--sky-dim);color:var(--sky);}
 .tr{border:1px solid rgba(224,80,96,.4);color:var(--red);}
 
-/* ── OPENER ── */
 .opener-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .opener-card{padding:14px;border-top:2px solid var(--border);}
 .opener-card.confirm{border-top-color:var(--accent-dim);}
@@ -220,15 +329,13 @@ body::before{
 .opener-tip{font-size:11px;color:var(--text-dim);line-height:1.5;}
 .beg-rec{margin-top:8px;font-size:11px;color:var(--accent-dim);border-top:1px solid var(--border);padding-top:6px;}
 
-/* ── NAV LINKS ── */
 .nav-links{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .nav-link{padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid var(--border);transition:border-color .2s;}
 .nav-link:hover{border-bottom-color:var(--accent-dim);}
-.nav-num{font-size:12px;flex-shrink:0;}
+.nav-num{display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--surface2);border-radius:4px;flex-shrink:0;border:1px solid var(--border);color:var(--text-dim);}
 .nav-title{font-weight:700;font-size:12px;color:var(--text-bright);}
 .nav-desc{font-size:10px;color:var(--text-dim);margin-top:1px;}
 
-/* ── SKILL CARDS ── */
 .skill-group{margin-bottom:16px;}
 .skill-group-title{font-size:9px;font-weight:700;color:var(--text-dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;padding-left:8px;border-left:2px solid var(--border);}
 .skill-cards{display:grid;gap:4px;}
@@ -241,7 +348,6 @@ body::before{
 .sk-stats{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;}
 .sp-pill{font-size:10px;padding:1px 6px;border-radius:10px;border:1px solid var(--border);color:var(--text-dim);}
 
-/* ── STATUS CARDS ── */
 .status-cards{display:grid;gap:5px;}
 .status-card{padding:10px 0;border-bottom:1px solid var(--border);}
 .status-card:last-child{border-bottom:none;}
@@ -253,7 +359,6 @@ body::before{
 .status-action strong{color:var(--text);font-weight:700;}
 .recommend{margin-top:4px;padding-left:8px;border-left:1px solid var(--accent-dim);font-size:11px;color:var(--accent-dim);}
 
-/* ── TABLES ── */
 .tbl{width:100%;border-collapse:collapse;font-size:12px;}
 .tbl th{padding:7px 10px;text-align:left;color:var(--accent);font-weight:700;font-size:10px;border-bottom:1px solid var(--border);letter-spacing:.06em;text-transform:uppercase;}
 .tbl td{padding:7px 10px;border-bottom:1px solid rgba(24,36,54,.8);}
@@ -268,7 +373,6 @@ body::before{
 .stat-line{padding:5px 10px;font-size:11px;color:var(--accent-dim);border-top:1px solid var(--border);}
 .finish-row td{color:var(--accent);}
 
-/* ── EXAMPLE CARD ── */
 .example-card{margin-bottom:20px;border-top:1px solid var(--border);padding-top:16px;}
 .example-header{margin-bottom:10px;}
 .example-title{font-weight:700;color:var(--text-bright);font-size:13px;margin-bottom:6px;}
@@ -277,27 +381,14 @@ body::before{
 .review-box{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);line-height:1.7;}
 .review-box strong{color:var(--text);}
 
-/* ── CALC ── */
 .calc-card{padding:18px 0;max-width:440px;}
 .calc-title{font-weight:900;font-size:14px;color:var(--text-bright);margin-bottom:2px;}
 .calc-sub{font-size:12px;color:var(--text-dim);margin-bottom:14px;}
 .f-row{margin-bottom:8px;}
 .f-label{font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:3px;display:block;}
-.f-input{
-  width:100%;background:var(--surface);
-  border:none;border-bottom:1px solid var(--border);
-  padding:7px 0;color:var(--text-bright);
-  font-family:'Noto Sans KR',sans-serif;font-size:13px;outline:none;
-  transition:border-color .2s;background:transparent;
-}
+.f-input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:7px 0;color:var(--text-bright);font-family:'Noto Sans KR',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
 .f-input:focus{border-bottom-color:var(--accent);}
-.calc-btn{
-  margin-top:10px;padding:9px 24px;
-  background:transparent;border:1px solid var(--accent-dim);
-  border-radius:2px;color:var(--accent);
-  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;
-  cursor:pointer;transition:background .2s,border-color .2s;letter-spacing:.04em;
-}
+.calc-btn{margin-top:10px;padding:9px 24px;background:transparent;border:1px solid var(--accent-dim);border-radius:2px;color:var(--accent);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s;letter-spacing:.04em;}
 .calc-btn:hover{background:var(--accent-glow);border-color:var(--accent);}
 .calc-result{margin-top:14px;display:none;border-top:1px solid var(--border);padding-top:12px;}
 .calc-result.show{display:block;}
@@ -307,18 +398,8 @@ body::before{
 .r-value{font-size:16px;font-weight:900;color:var(--accent);}
 .r-sub{font-size:11px;color:var(--text-dim);margin-top:6px;}
 
-/* ── UPDATE LIST ── */
-.update-list{display:grid;gap:5px;}
-.update-row{display:flex;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border);}
-.update-row:last-child{border-bottom:none;}
-.u-date{font-size:11px;color:var(--accent-dim);white-space:nowrap;font-weight:700;min-width:52px;}
-.u-text{font-size:12px;color:var(--text);}
-.u-text.dim{color:var(--text-dim);}
-
-/* ── FOOTER ── */
 .site-footer{margin-left:54px;padding:16px 32px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);text-align:center;}
 
-/* RESPONSIVE */
 @media(max-width:640px){
   .sidebar{width:44px;}
   .sidebar:hover{width:180px;}
@@ -327,6 +408,7 @@ body::before{
   .stat-grid{grid-template-columns:1fr 1fr;}
   .opener-compare{grid-template-columns:1fr;}
   .nav-links{grid-template-columns:1fr;}
+  .home-links{grid-template-columns:1fr;}
   .skill-card{grid-template-columns:1fr;}
   .tbl{font-size:11px;}
   .tbl th,.tbl td{padding:5px 7px;}
@@ -352,6 +434,7 @@ body::before{
     <button class="tab-btn" data-tab="example"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="t-label">예시</span></button>
     <button class="tab-btn" data-tab="calc"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></span><span class="t-label">작업계산기</span></button>
     <button class="tab-btn" data-tab="qualcalc"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="t-label">품질계산기</span></button>
+    <button class="tab-btn" data-tab="gear"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span><span class="t-label">금단표</span></button>
   </nav>
   <div class="sidebar-bottom">
     <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()">
@@ -367,39 +450,89 @@ body::before{
 
 <main class="main-wrap">
 
-<!-- TAB 0 · 메인 -->
+<!-- TAB 0 · 메인 (새 버전) -->
 <div id="tab-home" class="tab-panel active">
-  <div class="page-hero">
-    <div class="eyebrow">Eorzea Crafting Guide</div>
-    <h1>파판14 <em>고난도 제작</em> 가이드</h1>
-    <p>우주개척 고난도 제작 입문부터 실전까지</p>
-  </div>
 
-  <div class="section">
-    <div class="section-title"><div class="num">📋</div>업데이트 내역</div>
-    <div class="update-list">
-      <div class="update-row"><span class="u-date">2025.05</span><span class="u-text">사이트 최초 공개 — 시작가이드 / 스킬 / 상태 / 요약 / 예시 / 작업계산기</span></div>
-      <div class="update-row"><span class="u-date">준비중</span><span class="u-text dim">품질계산기 — 지역별 레시피 설정 + 마무리 로테이션 추천</span></div>
-      <div class="update-row"><span class="u-date">예정</span><span class="u-text dim">예시 추가 — 동경의만 / 각 지역별 공정 예시</span></div>
+  <!-- 인트로 -->
+  <div class="home-intro">
+    <div class="home-eyebrow">Eorzea Crafting Guide · 7.5</div>
+    <div class="home-title">파판14 <em>고난도 제작</em><br>손제작 가이드</div>
+    <p class="home-sub">
+      우주개척 고난도 제작은 매크로가 사실상 불가능해요.<br>
+      이 가이드는 <strong>처음 손제작에 도전하는 분</strong>을 위해 만들었어요.<br>
+      완벽함보다 <strong>판단을 연습하는 것</strong>이 목표예요.
+    </p>
+    <div class="home-cta">
+      <button class="cta-btn" onclick="switchTab('start')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        시작가이드 보기
+      </button>
+      <button class="cta-sub-btn" onclick="switchTab('summary')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        바로 요약 치트시트
+      </button>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-title"><div class="num">→</div>탭 바로가기</div>
-    <div class="nav-links">
-      <div class="nav-link" onclick="switchTab('start')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div><div class="nav-title">시작가이드</div><div class="nav-desc">처음 도전하는 분을 위한 입문</div></div></div>
-      <div class="nav-link" onclick="switchTab('skill')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div><div class="nav-title">스킬</div><div class="nav-desc">스킬 역할과 사용 타이밍</div></div></div>
-      <div class="nav-link" onclick="switchTab('status')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div class="nav-title">상태</div><div class="nav-desc">상태별 대응법</div></div></div>
-      <div class="nav-link" onclick="switchTab('summary')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><div><div class="nav-title">요약</div><div class="nav-desc">실전 치트시트</div></div></div>
-      <div class="nav-link" onclick="switchTab('example')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div><div class="nav-title">예시</div><div class="nav-desc">실제 제작 흐름 따라가기</div></div></div>
-      <div class="nav-link" onclick="switchTab('calc')"><div class="nav-num"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></div><div><div class="nav-title">작업계산기</div><div class="nav-desc">작숙으로 작업량 계산</div></div></div>
+  <!-- 탭 바로가기 -->
+  <div class="home-links">
+    <div class="home-link" onclick="switchTab('skill')">
+      <div class="hl-num">SKILL</div>
+      <div class="hl-title">스킬</div>
+      <div class="hl-desc">역할과 사용 타이밍</div>
+    </div>
+    <div class="home-link" onclick="switchTab('status')">
+      <div class="hl-num">STATUS</div>
+      <div class="hl-title">상태</div>
+      <div class="hl-desc">상태별 대응법</div>
+    </div>
+    <div class="home-link" onclick="switchTab('example')">
+      <div class="hl-num">EXAMPLE</div>
+      <div class="hl-title">예시</div>
+      <div class="hl-desc">실제 제작 흐름</div>
+    </div>
+    <div class="home-link" onclick="switchTab('calc')">
+      <div class="hl-num">CALC</div>
+      <div class="hl-title">작업계산기</div>
+      <div class="hl-desc">작숙으로 작업량 계산</div>
+    </div>
+    <div class="home-link" onclick="switchTab('gear')">
+      <div class="hl-num">GEAR</div>
+      <div class="hl-title">금단표</div>
+      <div class="hl-desc">단계별 수치 & 링크</div>
+    </div>
+    <div class="home-link" onclick="switchTab('qualcalc')">
+      <div class="hl-num">QUALITY</div>
+      <div class="hl-title">품질계산기</div>
+      <div class="hl-desc">준비 중</div>
     </div>
   </div>
 
-  <div class="guide-note">
-    이 가이드는 패치 <strong>7.5 기준</strong>으로 작성됐어요.<br>
-    내용 오류나 추가 제안은 디스코드 <strong>am_p_m</strong> 으로 알려주세요.
+  <!-- 패치 메모 -->
+  <div class="home-patch">
+    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>7.5 패치 기준</span> · 내용 오류·제안은 디스코드 <span>am_p_m</span> 으로
   </div>
+
+  <!-- 업데이트 내역 (하단에 조용히) -->
+  <div class="update-section">
+    <div class="update-label">업데이트 내역</div>
+    <div class="update-rows">
+      <div class="update-row">
+        <span class="u-date">2025.05</span>
+        <span class="u-text done">사이트 최초 공개 — 시작가이드 / 스킬 / 상태 / 요약 / 예시 / 작업계산기</span>
+      </div>
+      <div class="update-row">
+        <span class="u-date">준비중</span>
+        <span class="u-text">품질계산기 — 지역별 레시피 설정 + 마무리 로테이션 추천</span>
+      </div>
+      <div class="update-row">
+        <span class="u-date">예정</span>
+        <span class="u-text">예시 추가 — 동경의만 / 각 지역별 공정 예시</span>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- TAB 1 · 시작가이드 -->
@@ -508,7 +641,6 @@ body::before{
     <h1><em>스킬</em> 가이드</h1>
     <p>다 외울 필요 없어요. 지금 상황에 맞는 스킬을 고르는 게 핵심이에요.</p>
   </div>
-
   <div class="section">
     <div class="section-title"><div class="num">1</div>절대조건 — 이것만 알면 시작 가능</div>
     <div class="skill-cards">
@@ -517,7 +649,6 @@ body::before{
       <div class="skill-card imp"><div><div class="sk-name">강행작업 <span class="tag tr">CP 0</span></div><div class="sk-sub">내구 10 소비</div></div><div><div class="sk-desc">작업량 +500, 성공률 50%. CP 아끼면서 작업량 채울 때 핵심. 오프너 폭발력!</div><div class="sk-stats"><span class="sp-pill">효율 500</span><span class="sp-pill">성공률 50%</span></div></div></div>
     </div>
   </div>
-
   <div class="section">
     <div class="section-title"><div class="num">2</div>자주 쓰는 스킬</div>
     <div class="skill-group">
@@ -556,7 +687,6 @@ body::before{
       </div>
     </div>
   </div>
-
   <div class="section">
     <div class="section-title"><div class="num">3</div>숙련 후에 익히면 좋은 스킬</div>
     <div class="skill-group">
@@ -598,63 +728,23 @@ body::before{
     <h1><em>상태</em> 가이드</h1>
     <p>상태가 뜨면 어떻게 반응할지 — 초보자용 4개부터 익혀요</p>
   </div>
-
-  <div class="guide-note" style="margin-bottom:22px">
-    모든 상태를 다 외울 필요 없어요.<br>
-    <strong>★ 별표 친 4개</strong>만 먼저 익히고, 나머지는 천천히 하나씩 익혀가면 돼요.
-  </div>
-
+  <div class="guide-note" style="margin-bottom:22px">모든 상태를 다 외울 필요 없어요.<br><strong>★ 별표 친 4개</strong>만 먼저 익히고, 나머지는 천천히 하나씩 익혀가면 돼요.</div>
   <div class="section">
     <div class="section-title"><div class="num">1</div>초보자 필수 4개 상태 ★</div>
     <div class="status-cards">
-      <div class="status-card pri">
-        <div class="status-header"><div class="status-name">★ 고품질</div><div class="status-effect">품질 상승량 ×1.5배</div></div>
-        <div class="status-action">뜨면 거의 무조건 <strong>집중가공</strong> 우선. 정신집중 스택이 충분하고 CP가 부족하면 <strong>비결</strong>로 CP 회복도 가능.
-          <div class="recommend">💡 품질 올리는 중 → 집중가공 / CP 급할 때 → 비결</div></div>
-      </div>
-      <div class="status-card pri">
-        <div class="status-header"><div class="status-name">★ 고효율</div><div class="status-effect">스킬 소비 CP 50% 감소</div></div>
-        <div class="status-action">CP가 비싼 내구 관리 스킬부터 써요. <strong>교묘한 손놀림</strong>이 1~2회 남아 있다면 가차없이 바로 리필!
-          <div class="recommend">💡 교묘 우선 → 완벽한 땜질 → 밑가공 고려</div></div>
-      </div>
-      <div class="status-card pri">
-        <div class="status-header"><div class="status-name">안정</div><div class="status-effect">확률 스킬 성공률 +25%</div></div>
-        <div class="status-action">강행작업 75%, 성급한 손길 85%로 올라가요. 작업량 부족 → <strong>강행작업</strong>, 품질 부족 → <strong>성급한 손길/대담한 손길</strong>.
-          <div class="recommend">💡 이미 페이즈가 거의 끝났다면 그냥 흘러가도 돼요</div></div>
-      </div>
-      <div class="status-card pri">
-        <div class="status-header"><div class="status-name">견고 (내구 가르기)</div><div class="status-effect">내구도 감소량 50% 감소</div></div>
-        <div class="status-action">5내구 스킬을 쓸 때 내구가 0이나 5로 끝나지 않게 "잘라두는" 게 핵심이에요.<br>
-          <strong>❌ 나쁜 예:</strong> 내구 10 → 5 → 0 (제작 종료)<br>
-          <strong>✅ 좋은 예:</strong> 내구 12 → 7 → 2 (스킬 1회 더 가능!)
-          <div class="recommend">💡 CP 아껴야 할 때 → 강행 / 품질 올릴 때 → 밑가공</div></div>
-      </div>
+      <div class="status-card pri"><div class="status-header"><div class="status-name">★ 고품질</div><div class="status-effect">품질 상승량 ×1.5배</div></div><div class="status-action">뜨면 거의 무조건 <strong>집중가공</strong> 우선. 정신집중 스택이 충분하고 CP가 부족하면 <strong>비결</strong>로 CP 회복도 가능.<div class="recommend">💡 품질 올리는 중 → 집중가공 / CP 급할 때 → 비결</div></div></div>
+      <div class="status-card pri"><div class="status-header"><div class="status-name">★ 고효율</div><div class="status-effect">스킬 소비 CP 50% 감소</div></div><div class="status-action">CP가 비싼 내구 관리 스킬부터 써요. <strong>교묘한 손놀림</strong>이 1~2회 남아 있다면 가차없이 바로 리필!<div class="recommend">💡 교묘 우선 → 완벽한 땜질 → 밑가공 고려</div></div></div>
+      <div class="status-card pri"><div class="status-header"><div class="status-name">안정</div><div class="status-effect">확률 스킬 성공률 +25%</div></div><div class="status-action">강행작업 75%, 성급한 손길 85%로 올라가요. 작업량 부족 → <strong>강행작업</strong>, 품질 부족 → <strong>성급한 손길/대담한 손길</strong>.<div class="recommend">💡 이미 페이즈가 거의 끝났다면 그냥 흘러가도 돼요</div></div></div>
+      <div class="status-card pri"><div class="status-header"><div class="status-name">견고 (내구 가르기)</div><div class="status-effect">내구도 감소량 50% 감소</div></div><div class="status-action">5내구 스킬을 쓸 때 내구가 0이나 5로 끝나지 않게 "잘라두는" 게 핵심이에요.<br><strong>❌ 나쁜 예:</strong> 내구 10 → 5 → 0 (제작 종료)<br><strong>✅ 좋은 예:</strong> 내구 12 → 7 → 2 (스킬 1회 더 가능!)<div class="recommend">💡 CP 아껴야 할 때 → 강행 / 품질 올릴 때 → 밑가공</div></div></div>
     </div>
   </div>
-
   <div class="section">
     <div class="section-title"><div class="num">2</div>숙련 후 익히면 좋은 상태들</div>
     <div class="status-cards">
-      <div class="status-card">
-        <div class="status-header"><div class="status-name">★★ 완강</div><div class="status-effect">내구 감소 50% + 다음 공정 확정 견고</div></div>
-        <div class="status-action">견고가 연속으로 온다고 생각하면 돼요. 내구도 여유가 생기니 밑가공 등 내구 많이 쓰는 스킬 사용 가능.
-          <div class="recommend">💡 작업량 채우는 중 → 강행 / 품질 중 → 성손 / CP 여유 → 밑가공</div></div>
-      </div>
-      <div class="status-card">
-        <div class="status-header"><div class="status-name">★★ 빠른 진행</div><div class="status-effect">작업 진행량 ×1.5배</div></div>
-        <div class="status-action">작업량 올리는 중이라면 강행작업이 더 효율적이에요.
-          <div class="recommend">💡 작업량 부족 → 강행작업</div></div>
-      </div>
-      <div class="status-card">
-        <div class="status-header"><div class="status-name">★★ 길조</div><div class="status-effect">다음 공정 확정 고품질 (기적의물질 제외)</div></div>
-        <div class="status-action">정신집중 5스택 이상이면 <strong>장족의 발전 + 집중가공</strong> 콤보가 매우 효율적.
-          <div class="recommend">💡 스택 5↑ → 장족 + 집중가공 / 스택 낮음 → 혁신 or 절약가공</div></div>
-      </div>
-      <div class="status-card">
-        <div class="status-header"><div class="status-name">★★ 장기 지속</div><div class="status-effect">스킬 효과 +2회 연장</div></div>
-        <div class="status-action">교묘한 손놀림, 근검절약 같은 내구 관리 스킬에 쓰는 게 제일 이득이에요.
-          <div class="recommend">💡 교묘한손놀림 / 근검절약 우선</div></div>
-      </div>
+      <div class="status-card"><div class="status-header"><div class="status-name">★★ 완강</div><div class="status-effect">내구 감소 50% + 다음 공정 확정 견고</div></div><div class="status-action">견고가 연속으로 온다고 생각하면 돼요. 내구도 여유가 생기니 밑가공 등 내구 많이 쓰는 스킬 사용 가능.<div class="recommend">💡 작업량 채우는 중 → 강행 / 품질 중 → 성손 / CP 여유 → 밑가공</div></div></div>
+      <div class="status-card"><div class="status-header"><div class="status-name">★★ 빠른 진행</div><div class="status-effect">작업 진행량 ×1.5배</div></div><div class="status-action">작업량 올리는 중이라면 강행작업이 더 효율적이에요.<div class="recommend">💡 작업량 부족 → 강행작업</div></div></div>
+      <div class="status-card"><div class="status-header"><div class="status-name">★★ 길조</div><div class="status-effect">다음 공정 확정 고품질 (기적의물질 제외)</div></div><div class="status-action">정신집중 5스택 이상이면 <strong>장족의 발전 + 집중가공</strong> 콤보가 매우 효율적.<div class="recommend">💡 스택 5↑ → 장족 + 집중가공 / 스택 낮음 → 혁신 or 절약가공</div></div></div>
+      <div class="status-card"><div class="status-header"><div class="status-name">★★ 장기 지속</div><div class="status-effect">스킬 효과 +2회 연장</div></div><div class="status-action">교묘한 손놀림, 근검절약 같은 내구 관리 스킬에 쓰는 게 제일 이득이에요.<div class="recommend">💡 교묘한손놀림 / 근검절약 우선</div></div></div>
     </div>
   </div>
 </div>
@@ -666,67 +756,22 @@ body::before{
     <h1><em>요약</em> 치트시트</h1>
     <p>게임 옆에 켜두고 상태별 반응 빠르게 확인하세요</p>
   </div>
-
   <div class="section">
     <div class="section-title"><div class="num">1</div>작업량 올리기 구간 — 상태별 추천</div>
-    <div style="overflow-x:auto">
-    <table class="tbl">
-      <tr><th>상태</th><th>확신 오프너</th><th>진가 오프너</th></tr>
-      <tr><td class="col-s">보통</td><td class="col-k">공경 → 강행작업</td><td class="col-k">절약가공</td></tr>
-      <tr><td class="col-s">★ 고품질</td><td class="col-k">집중가공 → 집중작업 → 비결 → 공경</td><td class="col-k">집중가공</td></tr>
-      <tr><td class="col-s">견고</td><td class="col-k">공경 → 절약작업/가공</td><td class="col-k">첫 견고: 절약 → 강행작업</td></tr>
-      <tr><td class="col-s">안정</td><td class="col-k">공경 → 강행작업</td><td class="col-k">강행작업</td></tr>
-      <tr><td class="col-s">★ 고효율</td><td class="col-k">교묘한손놀림 → 장기절약</td><td class="col-k">교묘한손놀림 → 장기절약</td></tr>
-      <tr><td class="col-s">장기 지속</td><td class="col-k">공경 → 강행작업</td><td class="col-k">근검/장기절약/교묘</td></tr>
-      <tr><td class="col-s">빠른 진행</td><td class="col-k">강행작업</td><td class="col-k">강행작업</td></tr>
-      <tr><td class="col-s">길조</td><td class="col-k">공경 → 집중작업</td><td class="col-k">강행작업 / 성급한손길</td></tr>
-    </table>
-    </div>
+    <div style="overflow-x:auto"><table class="tbl"><tr><th>상태</th><th>확신 오프너</th><th>진가 오프너</th></tr><tr><td class="col-s">보통</td><td class="col-k">공경 → 강행작업</td><td class="col-k">절약가공</td></tr><tr><td class="col-s">★ 고품질</td><td class="col-k">집중가공 → 집중작업 → 비결 → 공경</td><td class="col-k">집중가공</td></tr><tr><td class="col-s">견고</td><td class="col-k">공경 → 절약작업/가공</td><td class="col-k">첫 견고: 절약 → 강행작업</td></tr><tr><td class="col-s">안정</td><td class="col-k">공경 → 강행작업</td><td class="col-k">강행작업</td></tr><tr><td class="col-s">★ 고효율</td><td class="col-k">교묘한손놀림 → 장기절약</td><td class="col-k">교묘한손놀림 → 장기절약</td></tr><tr><td class="col-s">장기 지속</td><td class="col-k">공경 → 강행작업</td><td class="col-k">근검/장기절약/교묘</td></tr><tr><td class="col-s">빠른 진행</td><td class="col-k">강행작업</td><td class="col-k">강행작업</td></tr><tr><td class="col-s">길조</td><td class="col-k">공경 → 집중작업</td><td class="col-k">강행작업 / 성급한손길</td></tr></table></div>
   </div>
-
   <div class="section">
     <div class="section-title"><div class="num">2</div>정신집중 쌓기 구간 — 상태별 추천</div>
-    <div style="overflow-x:auto">
-    <table class="tbl">
-      <tr><th>상태</th><th>추천 스킬</th></tr>
-      <tr><td class="col-s">보통</td><td class="col-k">절약가공 / 성급한손길</td></tr>
-      <tr><td class="col-s">★ 고품질</td><td class="col-k">집중가공</td></tr>
-      <tr><td class="col-s">견고</td><td class="col-k">가공 콤보 / 성급한손길 / 밑가공</td></tr>
-      <tr><td class="col-s">안정</td><td class="col-k">강행작업 / 성급한손길</td></tr>
-      <tr><td class="col-s">★ 고효율</td><td class="col-k">교묘한손놀림 우선 → 장기절약 / 밑가공</td></tr>
-      <tr><td class="col-s">장기 지속</td><td class="col-k">근검절약 / 교묘한손놀림 / 혁신</td></tr>
-      <tr><td class="col-s">길조</td><td class="col-k">절약가공 / 성급한손길</td></tr>
-    </table>
-    </div>
+    <div style="overflow-x:auto"><table class="tbl"><tr><th>상태</th><th>추천 스킬</th></tr><tr><td class="col-s">보통</td><td class="col-k">절약가공 / 성급한손길</td></tr><tr><td class="col-s">★ 고품질</td><td class="col-k">집중가공</td></tr><tr><td class="col-s">견고</td><td class="col-k">가공 콤보 / 성급한손길 / 밑가공</td></tr><tr><td class="col-s">안정</td><td class="col-k">강행작업 / 성급한손길</td></tr><tr><td class="col-s">★ 고효율</td><td class="col-k">교묘한손놀림 우선 → 장기절약 / 밑가공</td></tr><tr><td class="col-s">장기 지속</td><td class="col-k">근검절약 / 교묘한손놀림 / 혁신</td></tr><tr><td class="col-s">길조</td><td class="col-k">절약가공 / 성급한손길</td></tr></table></div>
   </div>
-
   <div class="section">
     <div class="section-title"><div class="num">3</div>마무리 로테이션 — CP별 조합</div>
-    <div style="overflow-x:auto">
-    <table class="tbl">
-      <tr><th>내구 소모</th><th>CP 소모</th><th>스킬 조합</th><th>비고</th></tr>
-      <tr><td>10</td><td>56</td><td class="col-k">혁신 → 비레고</td><td style="font-size:11px;color:var(--text-dim)">최소 마무리</td></tr>
-      <tr><td>10</td><td>74</td><td class="col-k">혁신 → 장족 → 비레고</td><td style="font-size:11px;color:var(--text-dim)">기본 추천 ★</td></tr>
-      <tr><td>20</td><td>92</td><td class="col-k">혁신 → 장족 → 밑가공 → 비레고</td><td></td></tr>
-      <tr><td>20</td><td>99</td><td class="col-k">혁신(2회 유지) → 장족 → 비레고</td><td></td></tr>
-      <tr><td>30</td><td>110</td><td class="col-k">혁신 → 장족 → 상급가공 → 비레고</td><td></td></tr>
-      <tr><td>16</td><td>202</td><td class="col-k">장족 → 혁신 → 밑가공 → 비레고</td><td style="font-size:11px;color:var(--text-dim)">전문 추천</td></tr>
-    </table>
-    </div>
-    <div class="guide-note" style="margin-top:10px;font-size:12px">
-      💡 자신의 <strong>혁신+장족+비레고(10스택)</strong> 품질 수치를 미리 계산해두면 편해요. → 계산기 탭에서 확인!
-    </div>
+    <div style="overflow-x:auto"><table class="tbl"><tr><th>CP</th><th>내구</th><th>스킬 조합</th><th>비고</th></tr><tr><td><strong style="color:var(--text-bright)">54</strong></td><td>10</td><td class="col-k">[신속한혁신] → 장족 → 비레고</td><td style="font-size:11px;color:var(--accent)">전문장인 전용</td></tr><tr><td><strong style="color:var(--text-bright)">74</strong></td><td>10</td><td class="col-k">장족 → 혁신 → 비레고</td><td style="font-size:11px;color:var(--text-bright)">기본 ★</td></tr><tr><td><strong style="color:var(--text-bright)">124</strong></td><td>30</td><td class="col-k">혁신 → 절약가공 → 절약가공 → 장족 → 비레고</td><td></td></tr><tr><td><strong style="color:var(--text-bright)">156</strong></td><td>40</td><td class="col-k">주시경과+상급가공 → 장족 → 혁신 → 주시경과+상급가공 → 장족 → 비레고</td><td></td></tr><tr><td><strong style="color:var(--text-bright)">186</strong></td><td>60</td><td class="col-k">장족 → 혁신 → 밑가공 → 밑가공 → 장족 → 비레고</td><td style="font-size:11px;color:var(--text-bright)">최고효율 ★</td></tr><tr><td><strong style="color:var(--text-bright)">202</strong></td><td>15</td><td class="col-k">장족 → 혁신 → 근검절약 → 밑가공 → 장족 → 비레고</td><td style="font-size:11px;color:var(--text-dim)">내구 적을 때</td></tr></table></div>
+    <div class="guide-note" style="margin-top:10px;font-size:12px">💡 <strong>장족의 발전 = 장족 / 비레고의 축복 = 비레고</strong>로 줄여서 표기했어요.</div>
   </div>
-
   <div class="section">
     <div class="section-title"><div class="num">4</div>내구 가르기 핵심 원리</div>
-    <div class="guide-note">
-      <strong>내구 가르기란?</strong> 내구도 뒷자리가 0이나 5로 끝나지 않게 자르는 것.<br><br>
-      <strong style="color:var(--red)">❌ 나쁜 예:</strong> 내구 10 → 5 → 0 → 제작 종료<br>
-      <strong style="color:var(--green)">✅ 좋은 예:</strong> 내구 12 → 7 → 2 → 스킬 1회 더 가능!<br><br>
-      견고 상태에서 절약가공(내구 5의 절반 = 2.5 → 올림 → 3)을 쓰면 뒷자리가 2로 남아요.<br>
-      교묘한 손놀림 +5 회복 후에도 7이 되어 0/5로 안 떨어지므로 추가 공정이 가능해져요.
-    </div>
+    <div class="guide-note"><strong>내구 가르기란?</strong> 내구도 뒷자리가 0이나 5로 끝나지 않게 자르는 것.<br><br><strong style="color:var(--red)">❌ 나쁜 예:</strong> 내구 10 → 5 → 0 → 제작 종료<br><strong style="color:var(--green)">✅ 좋은 예:</strong> 내구 12 → 7 → 2 → 스킬 1회 더 가능!<br><br>견고 상태에서 절약가공(내구 5의 절반 = 2.5 → 올림 → 3)을 쓰면 뒷자리가 2로 남아요.<br>교묘한 손놀림 +5 회복 후에도 7이 되어 0/5로 안 떨어지므로 추가 공정이 가능해져요.</div>
   </div>
 </div>
 
@@ -737,93 +782,26 @@ body::before{
     <h1><em>예시</em> — 실제 제작 흐름</h1>
     <p>상태별 판단을 직접 보면서 흐름을 익혀보세요</p>
   </div>
-
-  <div class="guide-note" style="margin-bottom:20px">
-    예시에서 <strong>왜 그 스킬을 선택했는지</strong> 코멘트와 함께 적어뒀어요.<br>
-    따라가면서 판단 흐름을 익히는 게 목표예요.
-  </div>
-
+  <div class="guide-note" style="margin-bottom:20px">예시에서 <strong>왜 그 스킬을 선택했는지</strong> 코멘트와 함께 적어뒀어요.<br>따라가면서 판단 흐름을 익히는 게 목표예요.</div>
   <div class="example-card">
     <div class="example-header">
       <div class="example-title">★ 예시 1 — A-1 설비공사 필수품 보충 (파엔나/오이지스 계열)</div>
-      <div class="example-meta">
-        <span class="meta-pill">작업량 9,900</span>
-        <span class="meta-pill">품질 20,300</span>
-        <span class="meta-pill">내구 80</span>
-        <span class="meta-pill">중금 금단 · 노 전문</span>
-        <span class="meta-pill">로네크 HQ + 약액 HQ</span>
-      </div>
+      <div class="example-meta"><span class="meta-pill">작업량 9,900</span><span class="meta-pill">품질 20,300</span><span class="meta-pill">내구 80</span><span class="meta-pill">중금 금단 · 노 전문</span><span class="meta-pill">로네크 HQ + 약액 HQ</span></div>
     </div>
-    <div style="overflow-x:auto">
-    <table class="tbl">
-      <tr><th>#</th><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
-      <tr class="phase-row"><td colspan="5">── 오프너 구간 ──</td></tr>
-      <tr><td>1</td><td>보통</td><td class="sk-used">확신</td><td></td><td class="cmt">작업량이 많이 필요하므로 확신 오프너</td></tr>
-      <tr><td>2</td><td>안정</td><td class="sk-used">공경</td><td></td><td class="cmt">강행 전 버프 확보</td></tr>
-      <tr><td>3</td><td>보통</td><td class="sk-used">강행작업</td><td class="ok">성공</td><td class="cmt"></td></tr>
-      <tr><td>4</td><td>고품질</td><td class="sk-used">집중작업</td><td></td><td class="cmt">고품질이므로 집중작업으로 작업량 추가</td></tr>
-      <tr><td>5</td><td>안정</td><td class="sk-used">강행작업</td><td class="ok">성공</td><td class="cmt"></td></tr>
-      <tr><td>6</td><td>보통</td><td class="sk-used">최종 확인</td><td></td><td class="cmt">작업량 완성 방지용 (남은 공경 버프 소모)</td></tr>
-      <tr><td>7</td><td></td><td class="sk-used">강행작업</td><td class="ok">성공</td><td class="cmt">오프너 구간 종료</td></tr>
-      <tr class="phase-row"><td colspan="5">── 정신집중 10스택 구간 ──</td></tr>
-      <tr><td>8</td><td>안정</td><td class="sk-used">혁신 (1차)</td><td></td><td class="cmt">품질 버프 가동. 스택 쌓기 시작</td></tr>
-      <tr><td>9</td><td>고품질</td><td class="sk-used">집중가공</td><td></td><td class="cmt">고품질 — 집중가공으로 스택 +1</td></tr>
-      <tr><td>10</td><td>견고</td><td class="sk-used">가공</td><td></td><td class="cmt"></td></tr>
-      <tr><td>11</td><td>보통</td><td class="sk-used">중급가공</td><td></td><td class="cmt"></td></tr>
-      <tr><td>12</td><td>보통</td><td class="sk-used">교묘한손놀림</td><td></td><td class="cmt">내구 보충</td></tr>
-      <tr><td>13</td><td>보통</td><td class="sk-used">혁신 (2차)</td><td></td><td class="cmt"></td></tr>
-      <tr><td>14</td><td>보통</td><td class="sk-used">절약가공</td><td></td><td class="cmt"></td></tr>
-      <tr><td>15</td><td>견고</td><td class="sk-used">절약가공</td><td></td><td class="cmt">내구 가르기 의식!</td></tr>
-      <tr><td>16</td><td>견고</td><td class="sk-used">절약가공</td><td></td><td class="cmt"></td></tr>
-      <tr><td>17</td><td>보통</td><td class="sk-used">집중가공</td><td></td><td class="cmt">10스택 달성!</td></tr>
-      <tr><td colspan="5" class="stat-line">📊 품질 6,578 / 20,300 · 내구도 9/80 · 남은 CP 414</td></tr>
-      <tr class="phase-row"><td colspan="5">── 품질 상승 구간 ──</td></tr>
-      <tr><td>18</td><td>안정</td><td class="sk-used">혁신 (3차)</td><td></td><td class="cmt"></td></tr>
-      <tr><td>19</td><td>견고</td><td class="sk-used">경과 관찰</td><td></td><td class="cmt"></td></tr>
-      <tr><td>20</td><td>보통</td><td class="sk-used">상급가공</td><td></td><td class="cmt"></td></tr>
-      <tr><td>21</td><td>견고</td><td class="sk-used">완벽한 땜질</td><td></td><td class="cmt">내구 회복</td></tr>
-      <tr><td>22</td><td>고품질</td><td class="sk-used">집중가공</td><td></td><td class="cmt">고품질 — 집중가공!</td></tr>
-      <tr><td>23</td><td>고효율</td><td class="sk-used">혁신 (4차)</td><td></td><td class="cmt">고효율에 혁신 — CP 절약!</td></tr>
-      <tr><td>24</td><td>고효율</td><td class="sk-used">교묘한손놀림</td><td></td><td class="cmt">교묘 남아있으니 고효율에 리필</td></tr>
-      <tr><td>25</td><td>보통</td><td class="sk-used">경과 관찰</td><td></td><td class="cmt"></td></tr>
-      <tr><td>26</td><td>보통</td><td class="sk-used">상급가공</td><td></td><td class="cmt"></td></tr>
-      <tr><td>27</td><td>보통</td><td class="sk-used">성급한손길</td><td class="ok">성공</td><td class="cmt">CP 부족 구간, 운명에 맡기기 — 요시다!</td></tr>
-      <tr><td>28</td><td>보통</td><td class="sk-used">대담한손길</td><td class="fail">실패</td><td class="cmt">아아앗... 요시다...!</td></tr>
-      <tr><td>29</td><td>보통</td><td class="sk-used">성급한손길</td><td class="ok">성공</td><td class="cmt">다시 붙었다!</td></tr>
-      <tr><td>30</td><td>고품질</td><td class="sk-used">비결</td><td></td><td class="cmt">CP 확보 (고품질이므로 비결 사용)</td></tr>
-      <tr><td colspan="5" class="stat-line">📊 품질 17,332 / 20,300 · 내구도 45/80 · 남은 CP 77</td></tr>
-      <tr class="phase-row"><td colspan="5">── 마무리 로테이션 ──</td></tr>
-      <tr><td>31</td><td>견고</td><td class="sk-used">혁신 (7차)</td><td></td><td class="cmt">마무리 버프 가동</td></tr>
-      <tr><td>32</td><td>고효율</td><td class="sk-used">장인의 손길</td><td></td><td class="cmt"></td></tr>
-      <tr><td>33</td><td>고품질</td><td class="sk-used">비레고의 축복</td><td></td><td class="cmt">품질 20,300 달성!</td></tr>
-      <tr class="finish-row"><td colspan="5" class="stat-line">📊 작업량 9,899 / 9,900 · 품질 20,300 / 20,300 · 남은 CP 19</td></tr>
-      <tr class="phase-row"><td colspan="5">── 완성 ──</td></tr>
-      <tr class="finish-row"><td>34</td><td>안정</td><td class="sk-used">모범작업</td><td class="ok">✨ 완성!</td><td class="cmt">1딸깍으로 완성!</td></tr>
-    </table>
-    </div>
-    <div class="review-box">
-      <strong>후기:</strong> 제작상태가 잘 따라준 고난도였어요...(이렇게 나올 수 있으면서 평소에는 왜...? 요시다...?) 중급금단에 노 전문장인으로도 충분히 가능해요! 시간제한도 없어서 처음 도전하기에 딱 좋은 미션이에요. 같이 적어준 익명의 빛전 여러분 고마워요 💙
-    </div>
+    <div style="overflow-x:auto"><table class="tbl"><tr><th>#</th><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr><tr class="phase-row"><td colspan="5">── 오프너 구간 ──</td></tr><tr><td>1</td><td>보통</td><td class="sk-used">확신</td><td></td><td class="cmt">작업량이 많이 필요하므로 확신 오프너</td></tr><tr><td>2</td><td>안정</td><td class="sk-used">공경</td><td></td><td class="cmt">강행 전 버프 확보</td></tr><tr><td>3</td><td>보통</td><td class="sk-used">강행작업</td><td class="ok">성공</td><td class="cmt"></td></tr><tr><td>4</td><td>고품질</td><td class="sk-used">집중작업</td><td></td><td class="cmt">고품질이므로 집중작업으로 작업량 추가</td></tr><tr><td>5</td><td>안정</td><td class="sk-used">강행작업</td><td class="ok">성공</td><td class="cmt"></td></tr><tr><td>6</td><td>보통</td><td class="sk-used">최종 확인</td><td></td><td class="cmt">작업량 완성 방지용 (남은 공경 버프 소모)</td></tr><tr><td>7</td><td></td><td class="sk-used">강행작업</td><td class="ok">성공</td><td class="cmt">오프너 구간 종료</td></tr><tr class="phase-row"><td colspan="5">── 정신집중 10스택 구간 ──</td></tr><tr><td>8</td><td>안정</td><td class="sk-used">혁신 (1차)</td><td></td><td class="cmt">품질 버프 가동. 스택 쌓기 시작</td></tr><tr><td>9</td><td>고품질</td><td class="sk-used">집중가공</td><td></td><td class="cmt">고품질 — 집중가공으로 스택 +1</td></tr><tr><td>10</td><td>견고</td><td class="sk-used">가공</td><td></td><td class="cmt"></td></tr><tr><td>11</td><td>보통</td><td class="sk-used">중급가공</td><td></td><td class="cmt"></td></tr><tr><td>12</td><td>보통</td><td class="sk-used">교묘한손놀림</td><td></td><td class="cmt">내구 보충</td></tr><tr><td>13</td><td>보통</td><td class="sk-used">혁신 (2차)</td><td></td><td class="cmt"></td></tr><tr><td>14</td><td>보통</td><td class="sk-used">절약가공</td><td></td><td class="cmt"></td></tr><tr><td>15</td><td>견고</td><td class="sk-used">절약가공</td><td></td><td class="cmt">내구 가르기 의식!</td></tr><tr><td>16</td><td>견고</td><td class="sk-used">절약가공</td><td></td><td class="cmt"></td></tr><tr><td>17</td><td>보통</td><td class="sk-used">집중가공</td><td></td><td class="cmt">10스택 달성!</td></tr><tr><td colspan="5" class="stat-line">📊 품질 6,578 / 20,300 · 내구도 9/80 · 남은 CP 414</td></tr><tr class="phase-row"><td colspan="5">── 품질 상승 구간 ──</td></tr><tr><td>18</td><td>안정</td><td class="sk-used">혁신 (3차)</td><td></td><td class="cmt"></td></tr><tr><td>19</td><td>견고</td><td class="sk-used">경과 관찰</td><td></td><td class="cmt"></td></tr><tr><td>20</td><td>보통</td><td class="sk-used">상급가공</td><td></td><td class="cmt"></td></tr><tr><td>21</td><td>견고</td><td class="sk-used">완벽한 땜질</td><td></td><td class="cmt">내구 회복</td></tr><tr><td>22</td><td>고품질</td><td class="sk-used">집중가공</td><td></td><td class="cmt">고품질 — 집중가공!</td></tr><tr><td>23</td><td>고효율</td><td class="sk-used">혁신 (4차)</td><td></td><td class="cmt">고효율에 혁신 — CP 절약!</td></tr><tr><td>24</td><td>고효율</td><td class="sk-used">교묘한손놀림</td><td></td><td class="cmt">교묘 남아있으니 고효율에 리필</td></tr><tr><td>25</td><td>보통</td><td class="sk-used">경과 관찰</td><td></td><td class="cmt"></td></tr><tr><td>26</td><td>보통</td><td class="sk-used">상급가공</td><td></td><td class="cmt"></td></tr><tr><td>27</td><td>보통</td><td class="sk-used">성급한손길</td><td class="ok">성공</td><td class="cmt">CP 부족 구간, 운명에 맡기기 — 요시다!</td></tr><tr><td>28</td><td>보통</td><td class="sk-used">대담한손길</td><td class="fail">실패</td><td class="cmt">아아앗... 요시다...!</td></tr><tr><td>29</td><td>보통</td><td class="sk-used">성급한손길</td><td class="ok">성공</td><td class="cmt">다시 붙었다!</td></tr><tr><td>30</td><td>고품질</td><td class="sk-used">비결</td><td></td><td class="cmt">CP 확보 (고품질이므로 비결 사용)</td></tr><tr><td colspan="5" class="stat-line">📊 품질 17,332 / 20,300 · 내구도 45/80 · 남은 CP 77</td></tr><tr class="phase-row"><td colspan="5">── 마무리 로테이션 ──</td></tr><tr><td>31</td><td>견고</td><td class="sk-used">혁신 (7차)</td><td></td><td class="cmt">마무리 버프 가동</td></tr><tr><td>32</td><td>고효율</td><td class="sk-used">장인의 손길</td><td></td><td class="cmt"></td></tr><tr><td>33</td><td>고품질</td><td class="sk-used">비레고의 축복</td><td></td><td class="cmt">품질 20,300 달성!</td></tr><tr class="finish-row"><td colspan="5" class="stat-line">📊 작업량 9,899 / 9,900 · 품질 20,300 / 20,300 · 남은 CP 19</td></tr><tr class="phase-row"><td colspan="5">── 완성 ──</td></tr><tr class="finish-row"><td>34</td><td>안정</td><td class="sk-used">모범작업</td><td class="ok">✨ 완성!</td><td class="cmt">1딸깍으로 완성!</td></tr></table></div>
+    <div class="review-box"><strong>후기:</strong> 제작상태가 잘 따라준 고난도였어요...(이렇게 나올 수 있으면서 평소에는 왜...? 요시다...?) 중급금단에 노 전문장인으로도 충분히 가능해요! 시간제한도 없어서 처음 도전하기에 딱 좋은 미션이에요.</div>
   </div>
-
   <div class="example-card">
     <div class="example-header">
       <div class="example-title">★ 예시 2 — 동경의만 A-3 (7.21) · 풀금단+전문+세비체</div>
-      <div class="example-meta">
-        <span class="meta-pill">작업량 9,600</span>
-        <span class="meta-pill">품질 17,400</span>
-        <span class="meta-pill">시간제한 5분</span>
-        <span class="meta-pill">기적의물질 2회</span>
-      </div>
+      <div class="example-meta"><span class="meta-pill">작업량 9,600</span><span class="meta-pill">품질 17,400</span><span class="meta-pill">시간제한 5분</span><span class="meta-pill">기적의물질 2회</span></div>
     </div>
     <div style="padding:4px 0 12px;font-size:12px;color:var(--text-dim);line-height:1.8;">
       일반 레시피라서 상태 종류가 제한적 (보통, 고품질, 최고품질, 저품질). 품질 목표는 낮은 편 (약 13,000대). 기적의 물질은 초반이 아닌 <strong style="color:var(--text-bright)">중반</strong>에 사용하는 게 더 여유로워요.<br><br>
       <strong style="color:var(--text-bright)">오프너:</strong> 확신 → 공경 → 교묘 → 장기절약 → 강행 × N번<br>
       <strong style="color:var(--text-bright)">기적 이후:</strong> 고효율→장기절약, 고품질→집중가공, 견고→밑가공 순으로 10스택 빠르게 채우기<br>
       <strong style="color:var(--text-bright)">마무리:</strong> 혁신 → 성급한손길 → 장족 → 비레고 → 작업스킬
-      <div style="margin-top:10px;padding:8px 0;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);">
-        📝 상세 예시는 추가 업데이트 예정이에요.
-      </div>
+      <div style="margin-top:10px;padding:8px 0;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);">📝 상세 예시는 추가 업데이트 예정이에요.</div>
     </div>
   </div>
 </div>
@@ -835,7 +813,6 @@ body::before{
     <h1><em>작업량</em> 계산기</h1>
     <p>작숙 수치로 스킬별 작업량을 계산해요</p>
   </div>
-
   <div class="calc-card">
     <div class="calc-title">작업량 계산기</div>
     <div class="calc-sub">작숙 수치와 레시피 요구치를 입력하면 강행·모범작업 횟수를 알려줘요</div>
@@ -850,12 +827,10 @@ body::before{
       <div class="r-sub" id="r-cc"></div>
     </div>
   </div>
-  <div class="guide-note" style="margin-top:16px;font-size:12px;max-width:440px">
-    ⚠️ 계산 공식은 7.x 근사치 기반이에요. 정확한 수치는 Teamcraft 시뮬레이터에서 확인을 추천해요.
-  </div>
+  <div class="guide-note" style="margin-top:16px;font-size:12px;max-width:440px">⚠️ 계산 공식은 7.x 근사치 기반이에요. 정확한 수치는 Teamcraft 시뮬레이터에서 확인을 추천해요.</div>
 </div>
 
-<!-- TAB 7 · 품질 계산기 -->
+<!-- TAB · 품질계산기 -->
 <div id="tab-qualcalc" class="tab-panel">
   <div class="page-hero">
     <div class="eyebrow">Quality Calculator</div>
@@ -865,19 +840,58 @@ body::before{
   <div style="padding:32px 0;max-width:480px">
     <div style="font-size:28px;margin-bottom:14px"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
     <div style="font-size:15px;font-weight:700;color:var(--text-bright);margin-bottom:8px">준비 중이에요</div>
-    <div style="font-size:13px;color:var(--text-dim);line-height:1.8">
-      지역별 레시피 설정 + 마무리 로테이션 추천 기능을 작업 중이에요.<br><br>
-      <span style="color:var(--accent-dim);font-size:12px">파엔나 / 오이지스 / 동경의만 레시피별로<br>최적 마무리 로테이션을 추천해드릴 예정이에요.</span>
-    </div>
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.8;">지역별 레시피 설정 + 마무리 로테이션 추천 기능을 작업 중이에요.</div>
   </div>
 </div>
 
-</main>
-</div><!-- /layout -->
+<!-- TAB · 금단표 -->
+<div id="tab-gear" class="tab-panel">
+  <div class="page-hero">
+    <div class="eyebrow">Gear & Materia</div>
+    <h1><em>금단표</em></h1>
+    <p>공작깃 기준 금단 단계별 수치예요. 링크에서 직접 불러올 수 있어요.</p>
+  </div>
+  <div class="section">
+    <div class="section-title"><div class="num">장비</div>공작깃 제작 세트</div>
+    <div style="display:grid;gap:8px;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;background:rgba(100,120,180,.15);border:1px solid rgba(100,120,180,.3);color:#7a9acc;white-space:nowrap;">저금단</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;flex:1;"><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">작숙 <strong style="color:var(--text-bright)">5,635</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">가숙 <strong style="color:var(--text-bright)">4,969</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">CP <strong style="color:var(--text-bright)">583</strong></span></div>
+        <span style="font-size:11px;color:var(--text-dim);">행성기술자 등화템</span>
+        <a href="https://ffxivteamcraft.com/gearset/gMJQakkdFPz1NVRv89CR" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;border:1px solid var(--accent-dim);border-radius:3px;padding:2px 8px;white-space:nowrap;">링크 →</a>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;background:rgba(62,207,170,.1);border:1px solid rgba(62,207,170,.25);color:var(--accent);white-space:nowrap;">중금단</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;flex:1;"><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">작숙 <strong style="color:var(--text-bright)">5,812</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">가숙 <strong style="color:var(--text-bright)">5,083</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">CP <strong style="color:var(--text-bright)">649</strong></span></div>
+        <span style="font-size:11px;color:var(--text-dim);">공작깃</span>
+        <a href="https://ffxivteamcraft.com/gearset/348rb5jQEjZ7pv4Yyn0" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;border:1px solid var(--accent-dim);border-radius:3px;padding:2px 8px;white-space:nowrap;">링크 →</a>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(62,207,170,.2);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;background:rgba(62,207,170,.15);border:1px solid rgba(62,207,170,.4);color:var(--accent);white-space:nowrap;">고금단</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;flex:1;"><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">작숙 <strong style="color:var(--text-bright)">5,811</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">가숙 <strong style="color:var(--text-bright)">5,461</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">CP <strong style="color:var(--text-bright)">649</strong></span></div>
+        <span style="font-size:11px;color:var(--text-dim);">공작깃</span>
+        <a href="https://ffxivteamcraft.com/gearset/JfXpXbtRVenaZVUOgnUm" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;border:1px solid var(--accent-dim);border-radius:3px;padding:2px 8px;white-space:nowrap;">링크 →</a>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(62,207,170,.2);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;background:rgba(62,207,170,.15);border:1px solid rgba(62,207,170,.4);color:var(--accent);white-space:nowrap;">고금단 + 우주개척</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;flex:1;"><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">작숙 <strong style="color:var(--text-bright)">5,867</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">가숙 <strong style="color:var(--text-bright)">5,424</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">CP <strong style="color:var(--text-bright)">649</strong></span></div>
+        <span style="font-size:11px;color:var(--text-dim);">공작깃 + 초공간 도구 (오이지스 최종)</span>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(90,184,212,.2);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;background:rgba(90,184,212,.1);border:1px solid rgba(90,184,212,.35);color:#5ab8d4;white-space:nowrap;">우주개척 전용</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;flex:1;"><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">작숙 <strong style="color:var(--text-bright)">5,812</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">가숙 <strong style="color:var(--text-bright)">5,464</strong></span><span style="font-size:12px;background:var(--surface2);border-radius:3px;padding:2px 8px;color:var(--text);">CP <strong style="color:var(--text-bright)">649</strong></span></div>
+        <span style="font-size:11px;color:var(--text-dim);">공작깃 + 초공간 (우주개척 시트 기준)</span>
+        <a href="https://etro.gg/gearset/3e438841-8971-40ab-bc30-d4fafdc777f9" target="_blank" style="font-size:11px;color:#5ab8d4;text-decoration:none;border:1px solid rgba(90,184,212,.3);border-radius:3px;padding:2px 8px;white-space:nowrap;">링크 →</a>
+      </div>
+    </div>
+  </div>
+  <div class="guide-note" style="font-size:12px;">💡 링크는 ffxivteamcraft / etro.gg 로 연결돼요. 수치는 <strong style="color:var(--text-bright)">7.5 패치 기준</strong>이에요.</div>
+</div>
 
-<footer class="site-footer">
-  아뮬@카벙클 작성
-</footer>
+</main>
+</div>
+
+<footer class="site-footer">아뮬@카벙클 작성</footer>
 
 <script>
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -888,7 +902,6 @@ function switchTab(id) {
   tabPanels.forEach(p => p.classList.toggle('active', p.id === 'tab-' + id));
   window.scrollTo({top:0, behavior:'smooth'});
 }
-
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light');
   const label = document.getElementById('theme-label');
@@ -901,7 +914,6 @@ function toggleTheme() {
     svgEl.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
   }
 }
-
 function calcCraft() {
   const lv = parseFloat(document.getElementById('c-lv').value);
   const req = parseFloat(document.getElementById('c-req').value);
