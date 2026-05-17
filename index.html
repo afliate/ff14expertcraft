@@ -42,7 +42,7 @@ body.light {
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7;min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7;min-height:100vh;transition:background .3s, color .3s;}
 
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -66,9 +66,12 @@ body::before{
   width:52px;background:rgba(13,18,24,.96);
   border-right:1px solid var(--border);
   display:flex;flex-direction:column;
-  z-index:200;transition:width .25s cubic-bezier(.4,0,.2,1);overflow:hidden;
+  z-index:200;transition:width .25s cubic-bezier(.4,0,.2,1), background .3s, border-color .3s;overflow:hidden;
 }
 .sidebar:hover{width:196px;}
+body.light .sidebar{background:rgba(240,244,248,.97);}
+body.light .sidebar-top{border-color:var(--border);}
+body.light .sidebar-bottom{border-color:var(--border);}
 
 .sidebar-top{padding:14px 0 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .sidebar-logo{display:flex;align-items:center;gap:10px;padding:0 13px;height:34px;white-space:nowrap;overflow:hidden;}
@@ -355,7 +358,7 @@ body::before{
 .nav-desc{font-size:10px;color:var(--text-dim);margin-top:1px;}
 
 .skill-group{margin-bottom:16px;}
-.skill-group-title{font-size:9px;font-weight:700;color:var(--text-dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;padding-left:8px;border-left:2px solid var(--border);}
+.skill-group-title{font-size:10px;font-weight:700;color:var(--text-dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;padding-left:8px;border-left:2px solid var(--border);}
 .skill-cards{display:grid;gap:4px;}
 .skill-card{padding:8px 0;border-bottom:1px solid var(--border);display:grid;grid-template-columns:150px 1fr;gap:0 12px;align-items:start;}
 .skill-card.sp2 .sk-name{color:var(--accent);}
@@ -643,18 +646,6 @@ body::before{
       <div class="stat-card"><div class="stat-name">CP</div><div class="stat-desc">스킬 자원. 부족하면 선택지 없음</div><div class="stat-goal">최대한 아끼기</div></div>
       <div class="stat-card"><div class="stat-name">내구도</div><div class="stat-desc">0이 되면 즉시 미완성 종료</div><div class="stat-goal">항상 여유 확보</div></div>
     </div>
-    <div class="guide-reasoning" style="margin-top: 2rem; border-left: 4px solid var(--accent); padding-left: 1rem;">
-  <h3 style="color: var(--text-bright); margin-bottom: 0.5rem;">💡 왜 고난도에서는 확률 스킬을 쓰나요?</h3>
-  <p style="line-height: 1.6;">
-    현재 버전(우주개척) 고난도 제작은 최대 CP와 종결 장비를 갖추더라도, 100% 성공하는 스킬과 매크로만으로는 안정적인 완성이 불가능하도록 설계되어 있어요. 
-  </p>
-  <p style="line-height: 1.6; margin-top: 0.5rem;">
-    실전 제작에서 가장 중요한 것은 <strong>마무리 품질 작업에 쓸 CP를 끝까지 보존하는 것</strong>입니다. 따라서 <span style="color: var(--yellow);">성급한 손길</span>이나 <span style="color: var(--yellow);">강행작업</span> 같은 CP 0짜리 확률 스킬은 단순한 도박이 아니라, 한정된 자원 안에서 제작을 성공시키기 위한 <strong>필수적인 엔진이자 핵심 운영</strong>입니다.
-  </p>
-  <p style="line-height: 1.6; margin-top: 0.5rem; color: var(--text-dim);">
-    이 가이드는 단순한 정답 매크로 복사가 아닌, 매 공정마다 변하는 상태를 보고 직접 최선의 스킬을 판단하는 '감각'을 익히는 것을 목표로 합니다.
-  </p>
-</div>
   </div>
 
   <div class="section">
@@ -663,6 +654,12 @@ body::before{
       <div class="rule-item important"><div class="rule-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 0-14.14 0"/><path d="M4 12H2"/><path d="M22 12h-2"/><path d="M12 22v-2"/><path d="M12 4V2"/><path d="M17.66 17.66l-1.41-1.41"/><path d="M6.34 6.34L4.93 4.93"/><path d="M17.66 6.34l1.41-1.41"/><path d="M6.34 17.66l-1.41 1.41"/></svg></div><div><div class="rule-title">교묘한 손놀림 반드시 해금!</div><div class="rule-desc">65렙 각 직업 잡퀘 완료 후 사용 가능. 8회 공정마다 내구도 +5 회복 → 고난도 제작의 생명줄이에요.</div></div></div>
       <div class="rule-item"><div class="rule-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="12" height="12" x="2" y="10" rx="2" ry="2"/><path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"/><path d="M6 18h.01"/><path d="M10 14h.01"/><path d="M15 6h.01"/><path d="M18 9h.01"/></svg></div><div><div class="rule-title">성급한 손길 / 강행작업은 CP 0짜리 확률 스킬</div><div class="rule-desc">성공률 60% / 50%. CP 없을 때 운명에 맡기는 스킬이에요. 요시다를 외치며 도전합시다.</div></div></div>
       <div class="rule-item danger"><div class="rule-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div><div><div class="rule-title">내구도 10 이하에서 내구 10짜리 스킬 절대 금지!</div><div class="rule-desc"><strong>내구도 0 = 즉시 제작 종료.</strong> 교손 믿고 내구 10에서 10짜리 스킬 쓰면 바로 끝나요.</div></div></div>
+    </div>
+    <div class="guide-note key" style="margin-top:12px">
+      <strong>왜 고난도에서는 확률 스킬을 쓰나요?</strong><br><br>
+      현재 버전(우주개척) 고난도 제작은 최대 CP와 종결 장비를 갖추더라도, 100% 성공하는 스킬만으로는 안정적인 완성이 불가능하도록 설계되어 있어요.<br><br>
+      실전에서 가장 중요한 건 <strong>마무리 품질 작업에 쓸 CP를 끝까지 보존하는 것</strong>이에요. 따라서 <strong style="color:var(--yellow)">성급한 손길</strong>이나 <strong style="color:var(--yellow)">강행작업</strong> 같은 CP 0짜리 확률 스킬은 단순한 도박이 아니라, 한정된 자원 안에서 제작을 성공시키기 위한 <strong>필수 핵심 운영</strong>이에요.<br><br>
+      <span style="color:var(--text-dim)">이 가이드는 매 공정마다 변하는 상태를 보고 직접 최선의 스킬을 판단하는 감각을 익히는 것을 목표로 해요.</span>
     </div>
   </div>
 
@@ -686,7 +683,7 @@ body::before{
         <div class="opener-tag">작업량 먼저 빠르게 확보</div>
         <div class="opener-when">작업량 요구치가 높은 레시피에 추천. 버프를 확실히 써야 하는 구성.</div>
         <div class="opener-tip">확신 → 공경 → 강행 × N번 / 버프 1회 남을 시 밑작업 고려</div>
-        <div class="beg-rec">🌟 처음이라면 여기서 시작!</div>
+        <div class="beg-rec">처음이라면 여기서 시작!</div>
       </div>
       <div class="opener-card jinga">
         <div class="opener-name">진가 오프너</div>
@@ -720,65 +717,82 @@ body::before{
   <div class="section">
     <div class="section-title"><div class="num">1</div>절대조건 — 이것만 알면 시작 가능</div>
     <div class="skill-cards">
-      <div class="skill-card imp"><div><div class="sk-name">교묘한 손놀림 <span class="tag tr">65렙 잡퀘 필수!</span></div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">이후 8회 공정마다 내구도 +5 회복. 고난도의 생명줄. 반드시 해금하세요.</div><div class="sk-stats"><span class="sp-pill">내구 +5 / 8회</span><span class="sp-pill">고효율 때 우선!</span></div></div></div>
-      <div class="skill-card imp"><div><div class="sk-name">성급한 손길 <span class="tag tr">CP 0</span></div><div class="sk-sub">내구 10 소비</div></div><div><div class="sk-desc">품질 +100, 성공률 60%. 성공하면 대담한 손길로 연결 가능. 요시다를 외치며 시전!</div><div class="sk-stats"><span class="sp-pill">효율 100</span><span class="sp-pill">성공률 60%</span></div></div></div>
-      <div class="skill-card imp"><div><div class="sk-name">강행작업 <span class="tag tr">CP 0</span></div><div class="sk-sub">내구 10 소비</div></div><div><div class="sk-desc">작업량 +500, 성공률 50%. CP 아끼면서 작업량 채울 때 핵심. 오프너 폭발력!</div><div class="sk-stats"><span class="sp-pill">효율 500</span><span class="sp-pill">성공률 50%</span></div></div></div>
+      <div class="skill-card imp">
+        <div><div class="sk-name">교묘한 손놀림 <span class="tag tr">65렙 잡퀘 필수!</span></div><div class="sk-sub">CP 18</div></div>
+        <div><div class="sk-desc">고난도의 생명줄. 반드시 해금하세요.</div><div class="sk-stats"><span class="sp-pill">내구 +5 / 8회</span><span class="sp-pill">고효율 때 우선!</span></div></div>
+      </div>
+      <div class="skill-card imp">
+        <div><div class="sk-name">성급한 손길 <span class="tag tr">CP 0</span></div><div class="sk-sub">내구 10 소비</div></div>
+        <div><div class="sk-desc">성공하면 대담한 손길로 연결 가능. 요시다를 외치며 시전!</div><div class="sk-stats"><span class="sp-pill">효율 100</span><span class="sp-pill">성공률 60%</span><span class="sp-pill">대담한 손길 연계</span></div></div>
+      </div>
+      <div class="skill-card imp">
+        <div><div class="sk-name">강행작업 <span class="tag tr">CP 0</span></div><div class="sk-sub">내구 10 소비</div></div>
+        <div><div class="sk-desc">CP 아끼면서 작업량 채울 때 핵심. 오프너 폭발력!</div><div class="sk-stats"><span class="sp-pill">효율 500</span><span class="sp-pill">성공률 50%</span></div></div>
+      </div>
+      <div class="skill-card imp">
+        <div><div class="sk-name">대담한 손길 <span class="tag tr">CP 0</span></div><div class="sk-sub">내구 10 소비</div></div>
+        <div><div class="sk-desc">성급한 손길 성공 후에만 사용 가능. 연속 운이면 대박!</div><div class="sk-stats"><span class="sp-pill">효율 150</span><span class="sp-pill">성공률 60%</span><span class="sp-pill">성급한 손길 후 전용</span></div></div>
+      </div>
     </div>
   </div>
+
   <div class="section">
     <div class="section-title"><div class="num">2</div>자주 쓰는 스킬</div>
+
     <div class="skill-group">
       <div class="skill-group-title">[ 오프너 ] 시작이 반</div>
       <div class="skill-cards">
-        <div class="skill-card sp2"><div><div class="sk-name">확신 <span class="tag tg">오프너</span></div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">작업량 +300 (100%) + 다음 작업 스킬 성공률 100% 버프. 작업량 요구치 높은 레시피에 추천.</div></div></div>
-        <div class="skill-card sp2"><div><div class="sk-name">진가 <span class="tag tb">오프너</span></div><div class="sk-sub">CP 24</div></div><div><div class="sk-desc">품질 +300 (100%) + 정신집중 +1. 유동적으로 작업량·품질을 쌓고 싶을 때 사용.</div></div></div>
+        <div class="skill-card sp2"><div><div class="sk-name">확신 <span class="tag tg">오프너</span></div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">작업량 +300 + 다음 작업 스킬 성공률 100% 버프. 작업량 요구치 높은 레시피에 추천.</div></div></div>
+        <div class="skill-card sp2"><div><div class="sk-name">진가 <span class="tag tb">오프너</span></div><div class="sk-sub">CP 24</div></div><div><div class="sk-desc">품질 +300 + 정신집중 +1. 유동적으로 작업량·품질을 쌓고 싶을 때 사용.</div></div></div>
       </div>
     </div>
+
     <div class="skill-group">
       <div class="skill-group-title">[ 버프 ] 스킬 효율 상승</div>
       <div class="skill-cards">
-        <div class="skill-card"><div><div class="sk-name">공경</div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">이후 4회 작업량 50% 증가.</div></div></div>
-        <div class="skill-card"><div><div class="sk-name">혁신</div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">이후 4회 품질 50% 증가. 품질 올릴 때 항상 먼저 체크.</div></div></div>
+        <div class="skill-card sp2"><div><div class="sk-name">공경</div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">이후 4회 작업량 50% 증가.</div></div></div>
+        <div class="skill-card sp2"><div><div class="sk-name">혁신</div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">이후 4회 품질 50% 증가. 품질 올릴 때 항상 먼저 체크.</div></div></div>
         <div class="skill-card sp2"><div><div class="sk-name">장족의 발전</div><div class="sk-sub">CP 32</div></div><div><div class="sk-desc">이후 3회 중 1회 품질 100% 증가. 비레고 직전에 쓰는 게 핵심이에요.</div></div></div>
       </div>
     </div>
+
     <div class="skill-group">
       <div class="skill-group-title">[ 내구 관리 ]</div>
       <div class="skill-cards">
-        <div class="skill-card sp2"><div><div class="sk-name">교묘한 손놀림</div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">이후 8회 공정마다 내구도 +5 회복. 고효율 상태일 때 쓰면 CP 절약까지 가능.</div></div></div>
+        <div class="skill-card sp2"><div><div class="sk-name">교묘한 손놀림</div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">이후 8회 공정마다 내구도 +5 회복. 고효율 상태일 때 쓰면 CP 절약까지 가능.</div><div class="sk-stats"><span class="sp-pill">내구 +5 / 8회</span></div></div></div>
         <div class="skill-card"><div><div class="sk-name">근검절약</div><div class="sk-sub">CP 56</div></div><div><div class="sk-desc">이후 4회 내구 소모 절반 (10→5).</div></div></div>
         <div class="skill-card"><div><div class="sk-name">장기절약</div><div class="sk-sub">CP 98</div></div><div><div class="sk-desc">이후 8회 내구 소모 절반 (10→5). 단, 절약 중엔 절약가공/절약작업만 사용 가능.</div></div></div>
+        <div class="skill-card"><div><div class="sk-name">완벽한 땜질</div><div class="sk-sub">CP 32</div></div><div><div class="sk-desc">내구도 +30 즉시 회복. 내구 위급 상황에서 구원투수.</div></div></div>
       </div>
     </div>
+
     <div class="skill-group">
       <div class="skill-group-title">[ 마무리 ] 정신집중 스택 폭발</div>
       <div class="skill-cards">
         <div class="skill-card sp2"><div><div class="sk-name">비레고의 축복</div><div class="sk-sub">CP 24</div></div><div><div class="sk-desc">품질 + (스택 × 20), 최대 300. 장족의 발전과 함께 쓰면 마지막 한 방!</div><div class="sk-stats"><span class="sp-pill">10스택 기준 최대 효율</span></div></div></div>
       </div>
     </div>
-    <div class="skill-group">
-      <div class="skill-group-title">[ 연계 스킬 ]</div>
-      <div class="skill-cards">
-        <div class="skill-card"><div><div class="sk-name">대담한 손길</div><div class="sk-sub">내구 10 / CP 0</div></div><div><div class="sk-desc">성급한 손길 성공 후 사용 가능. 품질 +150, 성공률 60%. 연속 운이면 대박!</div></div></div>
-      </div>
-    </div>
   </div>
+
   <div class="section">
     <div class="section-title"><div class="num">3</div>숙련 후에 익히면 좋은 스킬</div>
+
     <div class="skill-group">
-      <div class="skill-group-title">[ 고품질 한정 ]</div>
+      <div class="skill-group-title" style="color:#e85a7a;border-color:#e85a7a55;">[ 고품질 한정 ] — 고품질 상태에서만 사용 가능</div>
       <div class="skill-cards">
-        <div class="skill-card sp2"><div><div class="sk-name">집중가공 <span class="tag tg">고품질 전용</span></div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">품질 +150 + 정신집중 +1. 고품질 상태일 때만 사용. 뜨면 거의 무조건 써요.</div></div></div>
-        <div class="skill-card"><div><div class="sk-name">비결 <span class="tag tg">고품질 전용</span></div><div class="sk-sub">CP 0</div></div><div><div class="sk-desc">CP +20 회복. CP가 정말 급할 때 한정 사용.</div></div></div>
+        <div class="skill-card"><div><div class="sk-name" style="color:#e85a7a">집중가공 <span class="tag" style="background:rgba(232,90,122,.1);color:#e85a7a;border:1px solid rgba(232,90,122,.3);">고품질 전용</span></div><div class="sk-sub">CP 18</div></div><div><div class="sk-desc">정신집중 +1. 고품질 상태일 때만 사용. 뜨면 거의 무조건 써요.</div><div class="sk-stats"><span class="sp-pill">효율 150</span><span class="sp-pill">스택 +1</span></div></div></div>
+        <div class="skill-card"><div><div class="sk-name" style="color:#e85a7a">비결 <span class="tag" style="background:rgba(232,90,122,.1);color:#e85a7a;border:1px solid rgba(232,90,122,.3);">고품질 전용</span></div><div class="sk-sub">CP 0</div></div><div><div class="sk-desc">CP +20 즉시 회복. CP가 정말 급할 때 한정 사용.</div></div></div>
       </div>
     </div>
+
     <div class="skill-group">
       <div class="skill-group-title">[ 내구 20 — 상태 좋을 때만 ]</div>
       <div class="skill-cards">
-        <div class="skill-card"><div><div class="sk-name">밑가공</div><div class="sk-sub">CP 18 / 내구 20</div></div><div><div class="sk-desc">품질 +200 + 정신집중 +1. 견고·혁신 버프 중에 쓰면 효율적.</div></div></div>
-        <div class="skill-card"><div><div class="sk-name">밑작업</div><div class="sk-sub">CP 18 / 내구 20</div></div><div><div class="sk-desc">작업량 +360. 상태 좋을 때만!</div></div></div>
+        <div class="skill-card"><div><div class="sk-name">밑가공</div><div class="sk-sub">CP 18 / 내구 20</div></div><div><div class="sk-desc">정신집중 +1. 견고·혁신 버프 중에 쓰면 효율적.</div><div class="sk-stats"><span class="sp-pill">효율 200</span><span class="sp-pill">스택 +1</span></div></div></div>
+        <div class="skill-card"><div><div class="sk-name">밑작업</div><div class="sk-sub">CP 18 / 내구 20</div></div><div><div class="sk-desc">상태 좋을 때만 사용. 하지만 실전에서 거의 쓰이지 못한다.</div><div class="sk-stats"><span class="sp-pill">효율 360</span></div></div></div>
       </div>
     </div>
+
     <div class="skill-group">
       <div class="skill-group-title">[ 전문장인 전용 ] 제도용지 필요</div>
       <div class="skill-cards">
@@ -787,11 +801,12 @@ body::before{
         <div class="skill-card"><div><div class="sk-name">신속한 혁신</div><div class="sk-sub">제도용지</div></div><div><div class="sk-desc">CP 없이 혁신 (1회). CP 고갈 상황에서 구원투수.</div></div></div>
       </div>
     </div>
+
     <div class="skill-group">
       <div class="skill-group-title">[ 우주개척 전용 ]</div>
       <div class="skill-cards">
-        <div class="skill-card sp2"><div><div class="sk-name">기적의 물질</div><div class="sk-sub">특수</div></div><div><div class="sk-desc">45초간 좋은 상태 6종 랜덤 보장. 동경의만 제작 핵심 스킬.</div></div></div>
-        <div class="skill-card"><div><div class="sk-name">우주 안정된 솜씨</div><div class="sk-sub">특수</div></div><div><div class="sk-desc">다음 3회 공정 성공률 100% 보장.</div></div></div>
+        <div class="skill-card"><div><div class="sk-name">기적의 물질</div><div class="sk-sub">특수</div></div><div><div class="sk-desc">45초간 좋은 상태 6종 랜덤 보장. 10스택 품질 쌓을 때 보통 이때 쓰인다!</div></div></div>
+        <div class="skill-card"><div><div class="sk-name">우주 안정된 솜씨</div><div class="sk-sub">특수</div></div><div><div class="sk-desc">다음 3회 공정 성공률 100% 보장. 강행작업을 3번이나 성공시킬 수 있다니!!</div></div></div>
       </div>
     </div>
   </div>
@@ -804,25 +819,114 @@ body::before{
   <div class="page-hero">
     <div class="eyebrow">Status Guide</div>
     <h1><em>상태</em> 가이드</h1>
-    <p>상태가 뜨면 어떻게 반응할지 — 초보자용 4개부터 익혀요</p>
+    <p>상태가 뜨면 어떻게 반응할지 — 필수 4개부터 익혀요</p>
   </div>
-  <div class="guide-note" style="margin-bottom:22px">모든 상태를 다 외울 필요 없어요.<br><strong>★ 별표 친 4개</strong>만 먼저 익히고, 나머지는 천천히 하나씩 익혀가면 돼요.</div>
+  <div class="guide-note" style="margin-bottom:22px">
+    모든 상태를 다 외울 필요 없어요.<br>
+    아래 <strong>필수 4개 상태</strong>를 먼저 익히고, 나머지는 제작을 해나가면서 자연스럽게 익혀가면 돼요.
+  </div>
+
   <div class="section">
-    <div class="section-title"><div class="num">1</div>초보자 필수 4개 상태 ★</div>
+    <div class="section-title"><div class="num">1</div>필수 4개 상태 — 먼저 익혀요</div>
     <div class="status-cards">
-      <div class="status-card pri"><div class="status-header"><div class="status-name">★ 고품질</div><div class="status-effect">품질 상승량 ×1.5배</div></div><div class="status-action">뜨면 거의 무조건 <strong>집중가공</strong> 우선. 정신집중 스택이 충분하고 CP가 부족하면 <strong>비결</strong>로 CP 회복도 가능.<div class="recommend">💡 품질 올리는 중 → 집중가공 / CP 급할 때 → 비결</div></div></div>
-      <div class="status-card pri"><div class="status-header"><div class="status-name">★ 고효율</div><div class="status-effect">스킬 소비 CP 50% 감소</div></div><div class="status-action">CP가 비싼 내구 관리 스킬부터 써요. <strong>교묘한 손놀림</strong>이 1~2회 남아 있다면 가차없이 바로 리필!<div class="recommend">💡 교묘 우선 → 완벽한 땜질 → 밑가공 고려</div></div></div>
-      <div class="status-card pri"><div class="status-header"><div class="status-name">안정</div><div class="status-effect">확률 스킬 성공률 +25%</div></div><div class="status-action">강행작업 75%, 성급한 손길 85%로 올라가요. 작업량 부족 → <strong>강행작업</strong>, 품질 부족 → <strong>성급한 손길/대담한 손길</strong>.<div class="recommend">💡 이미 페이즈가 거의 끝났다면 그냥 흘러가도 돼요</div></div></div>
-      <div class="status-card pri"><div class="status-header"><div class="status-name">견고 (내구 가르기)</div><div class="status-effect">내구도 감소량 50% 감소</div></div><div class="status-action">5내구 스킬을 쓸 때 내구가 0이나 5로 끝나지 않게 "잘라두는" 게 핵심이에요.<br><strong>❌ 나쁜 예:</strong> 내구 10 → 5 → 0 (제작 종료)<br><strong>✅ 좋은 예:</strong> 내구 12 → 7 → 2 (스킬 1회 더 가능!)<div class="recommend">💡 CP 아껴야 할 때 → 강행 / 품질 올릴 때 → 밑가공</div></div></div>
+
+      <div class="status-card pri">
+        <div class="status-header">
+          <div class="status-name" style="color:#e85a7a">고품질</div>
+          <div class="status-effect">품질 상승량 ×1.5배</div>
+        </div>
+        <div class="status-action">
+          뜨면 거의 무조건 <strong>집중가공</strong> 우선. 정신집중 스택이 충분하고 CP가 부족하면 <strong>비결</strong>로 CP 회복도 가능.
+          <div class="recommend">집중가공 우선 / CP 급할 때 → 비결</div>
+        </div>
+      </div>
+
+      <div class="status-card pri">
+        <div class="status-header">
+          <div class="status-name" style="color:#4dc890">고효율</div>
+          <div class="status-effect">스킬 소비 CP 50% 감소</div>
+        </div>
+        <div class="status-action">
+          CP가 비싼 내구 관리 스킬부터 써요. <strong>교묘한 손놀림</strong>이 1~2회 남아 있다면 가차없이 바로 리필!
+          <div class="recommend">교묘 우선 → 완벽한 땜질 → 밑가공 고려</div>
+        </div>
+      </div>
+
+      <div class="status-card pri">
+        <div class="status-header">
+          <div class="status-name" style="color:#d4b840">안정</div>
+          <div class="status-effect">확률 스킬 성공률 +25%</div>
+        </div>
+        <div class="status-action">
+          강행작업 75%, 성급한 손길 85%로 올라가요. 작업량 부족 → <strong>강행작업</strong>, 품질 부족 → <strong>성급한 손길/대담한 손길</strong>.
+          <div class="recommend">이미 페이즈가 거의 끝났다면 그냥 흘러가도 돼요</div>
+        </div>
+      </div>
+
+      <div class="status-card pri">
+        <div class="status-header">
+          <div class="status-name" style="color:#7aaed4">견고</div>
+          <div class="status-effect">내구도 감소량 50% 감소</div>
+        </div>
+        <div class="status-action">
+          5내구 스킬을 쓸 때 내구가 0이나 5로 끝나지 않게 "잘라두는" 게 핵심이에요.<br>
+          <strong style="color:var(--red)">❌ 나쁜 예:</strong> 내구 10 → 5 → 0 (제작 종료)<br>
+          <strong style="color:var(--green)">✅ 좋은 예:</strong> 내구 12 → 7 → 2 (스킬 1회 더 가능!)
+          <div class="recommend">CP 아껴야 할 때 → 강행 / 품질 올릴 때 → 밑가공</div>
+        </div>
+      </div>
+
     </div>
   </div>
+
   <div class="section">
     <div class="section-title"><div class="num">2</div>숙련 후 익히면 좋은 상태들</div>
     <div class="status-cards">
-      <div class="status-card"><div class="status-header"><div class="status-name">★★ 완강</div><div class="status-effect">내구 감소 50% + 다음 공정 확정 견고</div></div><div class="status-action">견고가 연속으로 온다고 생각하면 돼요. 내구도 여유가 생기니 밑가공 등 내구 많이 쓰는 스킬 사용 가능.<div class="recommend">💡 작업량 채우는 중 → 강행 / 품질 중 → 성손 / CP 여유 → 밑가공</div></div></div>
-      <div class="status-card"><div class="status-header"><div class="status-name">★★ 빠른 진행</div><div class="status-effect">작업 진행량 ×1.5배</div></div><div class="status-action">작업량 올리는 중이라면 강행작업이 더 효율적이에요.<div class="recommend">💡 작업량 부족 → 강행작업</div></div></div>
-      <div class="status-card"><div class="status-header"><div class="status-name">★★ 길조</div><div class="status-effect">다음 공정 확정 고품질 (기적의물질 제외)</div></div><div class="status-action">정신집중 5스택 이상이면 <strong>장족의 발전 + 집중가공</strong> 콤보가 매우 효율적.<div class="recommend">💡 스택 5↑ → 장족 + 집중가공 / 스택 낮음 → 혁신 or 절약가공</div></div></div>
-      <div class="status-card"><div class="status-header"><div class="status-name">★★ 장기 지속</div><div class="status-effect">스킬 효과 +2회 연장</div></div><div class="status-action">교묘한 손놀림, 근검절약 같은 내구 관리 스킬에 쓰는 게 제일 이득이에요.<div class="recommend">💡 교묘한손놀림 / 근검절약 우선</div></div></div>
+
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-name" style="color:#5ab8d4">완강</div>
+          <div class="status-effect">내구 감소 50% + 다음 공정 확정 견고</div>
+        </div>
+        <div class="status-action">
+          견고가 연속으로 온다고 생각하면 돼요. 내구도 여유가 생기니 밑가공 등 내구 많이 쓰는 스킬 사용 가능.
+          <div class="recommend">작업량 채우는 중 → 강행 / 품질 중 → 성손 / CP 여유 → 밑가공</div>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-name" style="color:#4a7fd4">빠른 진행</div>
+          <div class="status-effect">작업 진행량 ×1.5배</div>
+        </div>
+        <div class="status-action">
+          작업량 올리는 중이라면 강행작업이 더 효율적이에요.
+          <div class="recommend">작업량 부족 → 강행작업</div>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-name" style="color:#e89040">길조</div>
+          <div class="status-effect">다음 공정 확정 고품질 (기적의물질 제외)</div>
+        </div>
+        <div class="status-action">
+          정신집중 5스택 이상이면 <strong>장족의 발전 + 집중가공</strong> 콤보가 매우 효율적.
+          <div class="recommend">스택 5↑ → 장족 + 집중가공 / 스택 낮음 → 혁신 or 절약가공</div>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-name" style="color:#a060d8">장기 지속</div>
+          <div class="status-effect">스킬 효과 +2회 연장</div>
+        </div>
+        <div class="status-action">
+          교묘한 손놀림, 근검절약 같은 내구 관리 스킬에 쓰는 게 제일 이득이에요.
+          <div class="recommend">교묘한손놀림 / 근검절약 우선</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
