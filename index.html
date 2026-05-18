@@ -335,11 +335,13 @@ body.light .sidebar-bottom{border-color:var(--border);}
 .skill-group{margin-bottom:16px;}
 .skill-group-title{font-size:10px;font-weight:700;color:var(--text-dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;padding-left:8px;border-left:2px solid var(--border);}
 .skill-cards{display:grid;gap:4px;}
-.skill-card{padding:8px 0;border-bottom:1px solid var(--border);display:grid;grid-template-columns:minmax(120px,180px) 1fr;gap:0 12px;align-items:start;}
+.skill-card{padding:8px 0;border-bottom:1px solid var(--border);display:grid;grid-template-columns:minmax(140px,190px) 1fr;gap:0 12px;align-items:start;}
 .skill-card.sp2 .sk-name{color:var(--accent);}
 .skill-card.imp .sk-name{color:var(--red);}
+.sk-header{display:flex;align-items:center;gap:8px;}
+.sk-icon{width:28px;height:28px;border-radius:4px;flex-shrink:0;object-fit:cover;background:var(--surface2);}
 .sk-name{font-weight:700;color:var(--text-bright);font-size:13px;}
-.sk-sub{font-size:10px;color:var(--text-dim);margin-top:1px;}
+.sk-sub{font-size:10px;color:var(--text-dim);margin-top:2px;padding-left:36px;}
 .sk-desc{font-size:12px;color:var(--text-dim);line-height:1.6;}
 .sk-stats{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;}
 .sp-pill{font-size:10px;padding:1px 6px;border-radius:10px;border:1px solid var(--border);color:var(--text-dim);}
@@ -679,7 +681,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
 
       <div class="skill-card imp">
         <div>
-          <div class="sk-name">교묘한 손놀림 <span class="tag tr">65렙 잡퀘 필수!</span></div>
+          <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001985_hr1.png" alt="교묘한 손놀림"><div class="sk-name">교묘한 손놀림 <span class="tag tr">65렙 잡퀘 필수!</span></div></div>
           <div class="sk-sub">CP 96</div>
         </div>
         <div>
@@ -690,7 +692,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
 
       <div class="skill-card imp">
         <div>
-          <div class="sk-name">최종 확인</div>
+          <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001983_hr1.png" alt="최종 확인"><div class="sk-name">최종 확인</div></div>
           <div class="sk-sub">CP 1</div>
         </div>
         <div>
@@ -701,7 +703,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
 
       <div class="skill-card imp">
         <div>
-          <div class="sk-name">성급한 손길 <span class="tag tr">CP 0</span></div>
+          <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001989_hr1.png" alt="성급한 손길"><div class="sk-name">성급한 손길 <span class="tag tr">CP 0</span></div></div>
           <div class="sk-sub">내구 10 소모</div>
         </div>
         <div>
@@ -712,7 +714,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
 
       <div class="skill-card">
         <div>
-          <div class="sk-name">대담한 손길 <span class="tag tr">CP 0</span></div>
+          <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001998_hr1.png" alt="대담한 손길"><div class="sk-name">대담한 손길 <span class="tag tr">CP 0</span></div></div>
           <div class="sk-sub">내구 10 소모 · 96렙</div>
         </div>
         <div>
@@ -723,7 +725,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
 
       <div class="skill-card imp">
         <div>
-          <div class="sk-name">강행작업 <span class="tag tr">CP 0</span></div>
+          <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001988_hr1.png" alt="강행 작업"><div class="sk-name">강행작업 <span class="tag tr">CP 0</span></div></div>
           <div class="sk-sub">내구 10 소모</div>
         </div>
         <div>
@@ -738,7 +740,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="skill-cards">
         <div class="skill-card">
           <div>
-            <div class="sk-name">최종 확인</div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001983_hr1.png" alt="최종 확인"><div class="sk-name">최종 확인</div></div>
             <div class="sk-sub">CP 1</div>
           </div>
           <div>
@@ -758,14 +760,20 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="skill-group-title">[ 오프너 ] 시작이 반</div>
       <div class="skill-cards">
         <div class="skill-card sp2">
-          <div><div class="sk-name">확신 <span class="tag tg">오프너</span></div><div class="sk-sub">CP 18</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001994_hr1.png" alt="확신"><div class="sk-name">확신 <span class="tag tg">오프너</span></div></div>
+            <div class="sk-sub">CP 18</div>
+          </div>
           <div>
             <div class="sk-desc">첫 공정에만 사용 가능. 작업량 요구치 높은 레시피에 추천.</div>
             <div class="sk-stats"><span class="sp-pill">효율 300</span><span class="sp-pill">다음 작업 스킬 성공률 100%</span></div>
           </div>
         </div>
         <div class="skill-card sp2">
-          <div><div class="sk-name">진가 <span class="tag tb">오프너</span></div><div class="sk-sub">CP 24</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001982_hr1.png" alt="진가"><div class="sk-name">진가 <span class="tag tb">오프너</span></div></div>
+            <div class="sk-sub">CP 24</div>
+          </div>
           <div>
             <div class="sk-desc">첫 공정에만 사용 가능. 유동적으로 작업량·품질을 쌓고 싶을 때 사용.</div>
             <div class="sk-stats"><span class="sp-pill">효율 300</span><span class="sp-pill">정신집중 +1</span></div>
@@ -778,67 +786,66 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="skill-group-title">[ 버프 ] 스킬 효율 상승</div>
       <div class="skill-cards">
         <div class="skill-card">
-          <div><div class="sk-name">공경</div><div class="sk-sub">CP 18</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001995_hr1.png" alt="공경"><div class="sk-name">공경</div></div>
+            <div class="sk-sub">CP 18</div>
+          </div>
           <div>
             <div class="sk-desc">이후 4회 작업량 50% 증가.</div>
             <div class="sk-stats"><span class="sp-pill">4회</span><span class="sp-pill">작업량 +50%</span></div>
           </div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">혁신</div><div class="sk-sub">CP 18</div></div>
           <div>
-            <div class="sk-desc">품질 올릴 때 항상 먼저 체크.</div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001987_hr1.png" alt="혁신"><div class="sk-name">혁신</div></div>
+            <div class="sk-sub">CP 18</div>
+          </div>
+          <div>
+            <div class="sk-desc">이후 4회 품질 50% 증가. 품질 올릴 때 항상 먼저 체크.</div>
             <div class="sk-stats"><span class="sp-pill">4회</span><span class="sp-pill">품질 +50%</span></div>
           </div>
         </div>
         <div class="skill-card sp2">
-          <div><div class="sk-name">장족의 발전</div><div class="sk-sub">CP 32</div></div>
           <div>
-            <div class="sk-desc">비레고 직전에 쓰는 게 핵심이에요.</div>
-            <div class="sk-stats"><span class="sp-pill">3회 중 1회</span><span class="sp-pill">품질 +100%</span></div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001955_hr1.png" alt="장족의 발전"><div class="sk-name">장족의 발전</div></div>
+            <div class="sk-sub">CP 32</div>
+          </div>
+          <div>
+            <div class="sk-desc">이후 3회 중 1회 품질 100% 증가. 비레고 직전에 쓰는 게 핵심이에요.</div>
+            <div class="sk-stats"><span class="sp-pill">3회</span><span class="sp-pill">1회 품질 +100%</span></div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="skill-group">
-      <div class="skill-group-title">[ 작업 ] 작업량 채우기</div>
+      <div class="skill-group-title">[ 가공 ] 정신집중 스택 쌓기</div>
       <div class="skill-cards">
         <div class="skill-card">
-          <div><div class="sk-name">모범작업</div><div class="sk-sub">CP 7</div></div>
           <div>
-            <div class="sk-desc">성공률 100%의 안정적인 작업 스킬. 마지막 1딸깍용으로도 자주 써요.</div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001519_hr1.png" alt="상급 가공"><div class="sk-name">상급가공</div></div>
+            <div class="sk-sub">CP 46 / 내구 10</div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-group">
-      <div class="skill-group-title">[ 가공 ] 품질·정신집중 쌓기</div>
-      <div class="skill-cards">
-        <div class="skill-card">
-          <div><div class="sk-name">절약가공</div><div class="sk-sub">CP 18 / 내구 5</div></div>
-          <div>
-            <div class="sk-desc">내구 5만 소모해 CP 대비 효율이 좋아요. 정신집중 쌓는 구간 기본기.</div>
-            <div class="sk-stats"><span class="sp-pill">정신집중 +1</span><span class="sp-pill">내구 5</span></div>
-          </div>
-        </div>
-        <div class="skill-card sp2">
-          <div><div class="sk-name">상급가공</div><div class="sk-sub">CP 46 / 내구 10</div></div>
           <div>
             <div class="sk-desc">혁신 버프 중에 쓰는 게 좋아요. 가공 → 중급가공 → 상급가공 순서로 콤보 연계 시 CP 절약 가능.</div>
             <div class="sk-stats"><span class="sp-pill">정신집중 +1</span><span class="sp-pill">콤보 시 CP 절약</span></div>
           </div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">중급가공</div><div class="sk-sub">CP 32 / 내구 10</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001516_hr1.png" alt="중급 가공"><div class="sk-name">중급가공</div></div>
+            <div class="sk-sub">CP 32 / 내구 10</div>
+          </div>
           <div>
             <div class="sk-desc">가공 다음에 콤보로 연계 가능. 단독보다 콤보 연계로 쓸 때 CP가 줄어요.</div>
             <div class="sk-stats"><span class="sp-pill">정신집중 +1</span><span class="sp-pill">가공 콤보 연계</span></div>
           </div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">가공</div><div class="sk-sub">CP 18 / 내구 10</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001502_hr1.png" alt="가공"><div class="sk-name">가공</div></div>
+            <div class="sk-sub">CP 18 / 내구 10</div>
+          </div>
           <div>
             <div class="sk-desc">가장 기본적인 가공 스킬. 중급·상급가공 콤보의 시작점.</div>
             <div class="sk-stats"><span class="sp-pill">정신집중 +1</span><span class="sp-pill">콤보 시작</span></div>
@@ -851,24 +858,81 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="skill-group-title">[ 내구 관리 ]</div>
       <div class="skill-cards">
         <div class="skill-card sp2">
-          <div><div class="sk-name">교묘한 손놀림</div><div class="sk-sub">CP 96</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001985_hr1.png" alt="교묘한 손놀림"><div class="sk-name">교묘한 손놀림</div></div>
+            <div class="sk-sub">CP 96</div>
+          </div>
           <div>
             <div class="sk-desc">이후 8회 공정마다 내구도 +5 회복. 고효율 상태일 때 쓰면 CP 절약까지 가능.</div>
             <div class="sk-stats"><span class="sp-pill">내구 +5 / 8회</span><span class="sp-pill">고효율 때 우선!</span></div>
           </div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">능숙한 땜질</div><div class="sk-sub">CP 88</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001952_hr1.png" alt="능숙한 땜질"><div class="sk-name">능숙한 땜질</div></div>
+            <div class="sk-sub">CP 88</div>
+          </div>
           <div>
             <div class="sk-desc">내구도를 즉시 30 회복. 자매품 '완벽한 땜질'(CP 112)은 내구도를 전부 회복해요.</div>
             <div class="sk-stats"><span class="sp-pill">내구 +30</span></div>
           </div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">근검절약</div><div class="sk-sub">CP 56</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001992_hr1.png" alt="근검절약"><div class="sk-name">근검절약</div></div>
+            <div class="sk-sub">CP 56</div>
+          </div>
           <div>
             <div class="sk-desc">버프 중 어떤 스킬을 써도 내구 절약 효과는 그대로예요.</div>
             <div class="sk-stats"><span class="sp-pill">내구 소모 절반</span></div>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001993_hr1.png" alt="장기 절약"><div class="sk-name">장기절약</div></div>
+            <div class="sk-sub">CP 98</div>
+          </div>
+          <div>
+            <div class="sk-desc">근검절약의 횟수 두 배 버전. 오프너 직후 고효율에서 써두면 효율적이에요.</div>
+            <div class="sk-stats"><span class="sp-pill">내구 소모 절반</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-title">[ 마무리 ] 정신집중 스택 폭발</div>
+      <div class="skill-cards">
+        <div class="skill-card sp2">
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001975_hr1.png" alt="비레고의 축복"><div class="sk-name">비레고의 축복</div></div>
+            <div class="sk-sub">CP 24</div>
+          </div>
+          <div>
+            <div class="sk-desc">장족의 발전과 함께 쓰면 마지막 한 방!</div>
+            <div class="sk-stats"><span class="sp-pill">최대 효율 300</span><span class="sp-pill">10스택 기준</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-title">[ 기타 ]</div>
+      <div class="skill-cards">
+        <div class="skill-card">
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001954_hr1.png" alt="경과 관찰"><div class="sk-name">경과 관찰</div></div>
+            <div class="sk-sub">CP 7</div>
+          </div>
+          <div>
+            <div class="sk-desc">주로 상급가공 콤보와 함께 써요. 원하지 않는 상태를 흘려보낼 때는 2순위.</div>
+            <div class="sk-stats"><span class="sp-pill">작업량 변화 없음</span><span class="sp-pill">상태만 넘김</span></div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <!-- 섹션 3 : 숙련 후 -->
           </div>
         </div>
         <div class="skill-card">
@@ -917,11 +981,17 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="skill-group-title" style="color:#e85a7a;border-color:#e85a7a55;">[ 고품질 한정 ]</div>
       <div class="skill-cards">
         <div class="skill-card sp2">
-          <div><div class="sk-name" style="color:#e85a7a">집중가공 <span class="tag" style="background:rgba(232,90,122,.1);color:#e85a7a;border:1px solid rgba(232,90,122,.3);">고품질 전용</span></div><div class="sk-sub">CP 18</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001524_hr1.png" alt="집중 가공"><div class="sk-name" style="color:#e85a7a">집중가공 <span class="tag" style="background:rgba(232,90,122,.1);color:#e85a7a;border:1px solid rgba(232,90,122,.3);">고품질 전용</span></div></div>
+            <div class="sk-sub">CP 18</div>
+          </div>
           <div><div class="sk-desc">품질 +150 + 정신집중 스택 +1. 고품질 상태일 때만 사용 가능. 뜨면 거의 무조건 써요.</div></div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name" style="color:#e85a7a">비결 <span class="tag" style="background:rgba(232,90,122,.1);color:#e85a7a;border:1px solid rgba(232,90,122,.3);">고품질 전용</span></div><div class="sk-sub">CP 0</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001990_hr1.png" alt="비결"><div class="sk-name" style="color:#e85a7a">비결 <span class="tag" style="background:rgba(232,90,122,.1);color:#e85a7a;border:1px solid rgba(232,90,122,.3);">고품질 전용</span></div></div>
+            <div class="sk-sub">CP 0</div>
+          </div>
           <div><div class="sk-desc">CP +20 즉시 회복. 고품질 상태일 때만 사용 가능. CP가 정말 급할 때 한정 사용.</div></div>
         </div>
       </div>
@@ -931,15 +1001,24 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="skill-group-title">[ 내구 20 — 상태 좋을 때만 ]</div>
       <div class="skill-cards">
         <div class="skill-card">
-          <div><div class="sk-name">밑가공</div><div class="sk-sub">CP 40 / 내구 20</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001507_hr1.png" alt="밑가공"><div class="sk-name">밑가공</div></div>
+            <div class="sk-sub">CP 40 / 내구 20</div>
+          </div>
           <div><div class="sk-desc">품질 +200 + 정신집중 스택 +1. CP와 내구도 소모가 크지만 견고·혁신 버프 중에 쓰면 매우 효율적이에요.</div></div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">밑작업</div><div class="sk-sub">CP 18 / 내구 20</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001518_hr1.png" alt="밑작업"><div class="sk-name">밑작업</div></div>
+            <div class="sk-sub">CP 18 / 내구 20</div>
+          </div>
           <div><div class="sk-desc">작업량 +360. 내구도가 20 미만일 때는 효율이 반토막 나니 조심!</div></div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">절약작업</div><div class="sk-sub">CP 18 / 내구 5</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001520_hr1.png" alt="절약 작업"><div class="sk-name">절약작업</div></div>
+            <div class="sk-sub">CP 18 / 내구 5</div>
+          </div>
           <div><div class="sk-desc">내구 5만 소모하는 작업 스킬. 내구 여유가 없을 때 CP 절약하며 작업량 채우기 좋아요.</div></div>
         </div>
       </div>
@@ -949,15 +1028,24 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="skill-group-title">[ 전문장인 전용 ] 제도용지 필요</div>
       <div class="skill-cards">
         <div class="skill-card">
-          <div><div class="sk-name">설계 변경</div><div class="sk-sub">제도용지</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001984_hr1.png" alt="설계변경"><div class="sk-name">설계 변경</div></div>
+            <div class="sk-sub">제도용지</div>
+          </div>
           <div><div class="sk-desc">상태 강제 변경 (3회). 공정을 진행시키지 않고 원하지 않는 상태를 바꿀 수 있어요.</div></div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">일심분란</div><div class="sk-sub">제도용지</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001996_hr1.png" alt="일심분란"><div class="sk-name">일심분란</div></div>
+            <div class="sk-sub">제도용지</div>
+          </div>
           <div><div class="sk-desc">상태 무시 집중 스킬 (1회). 상태에 상관없이 집중가공, 집중작업, 비결을 강제로 쓰게 해줘요.</div></div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">신속한 혁신</div><div class="sk-sub">제도용지</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001999_hr1.png" alt="신속한 혁신"><div class="sk-name">신속한 혁신</div></div>
+            <div class="sk-sub">제도용지</div>
+          </div>
           <div><div class="sk-desc">CP 없이 혁신 버프 부여 (1회). 마무리 콤보 직전에 CP 아낄 때 신의 한 수예요.</div></div>
         </div>
       </div>
@@ -967,11 +1055,17 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="skill-group-title">[ 우주개척 전용 ]</div>
       <div class="skill-cards">
         <div class="skill-card sp2">
-          <div><div class="sk-name">기적의 물질</div><div class="sk-sub">특수</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/061000/061277_hr1.png" alt="기적의 물질"><div class="sk-name">기적의 물질</div></div>
+            <div class="sk-sub">특수</div>
+          </div>
           <div><div class="sk-desc">45초간 좋은 상태 6종 랜덤 보장. 동경의만 제작 핵심 스킬. 45초 실시간 시간제한이 있으니 빠르게 눌러야 해요!</div></div>
         </div>
         <div class="skill-card">
-          <div><div class="sk-name">우주 안정된 솜씨</div><div class="sk-sub">특수</div></div>
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001953_hr1.png" alt="우주 안정된 솜씨"><div class="sk-name">우주 안정된 솜씨</div></div>
+            <div class="sk-sub">특수</div>
+          </div>
           <div><div class="sk-desc">다음 3회 공정 성공률 100% 보장. 강행작업이나 성손을 3번 연속 확정 성공시킬 수 있어요.</div></div>
         </div>
       </div>
@@ -1283,7 +1377,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
 </main>
 </div>
 
-<footer class="site-footer">아뮬@카벙클 작성</footer>
+<footer class="site-footer">아뮬@카벙클 · Created with Claude</footer>
 
 <script>
 const tabBtns = document.querySelectorAll('.tab-btn');
