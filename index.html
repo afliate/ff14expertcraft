@@ -526,7 +526,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
       <div class="hl-title">금단표</div>
       <div class="hl-desc">단계별 수치 & 링크</div>
     </div>
-    <div class="home-link" onclick="switchTab('qualcalc')">
+    <div class="home-link" style="opacity:.45;cursor:not-allowed;pointer-events:none;">
       <div class="hl-num">QUALITY</div>
       <div class="hl-title">품질계산기</div>
       <div class="hl-desc">준비 중</div>
@@ -730,7 +730,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
             <div class="sk-sub">내구 10 소모</div>
           </div>
           <div>
-            <div class="sk-desc">CP를 한 방울도 안 쓰고 작업량을 채우는 핵심 스킬. 실패할 수 있지만 이게 전부예요. 50% 확률이만 잘터지는건.. 정상입니다.. </div>
+            <div class="sk-desc">CP를 한 방울도 안 쓰고 작업량을 채우는 핵심 스킬. 실패할 수 있지만 이게 전부예요. 50% 확률이지만 잘 터지는 건 정상이에요.</div>
             <div class="sk-stats"><span class="sp-pill">효율 500</span><span class="sp-pill">성공률 50%</span></div>
           </div>
         </div>
@@ -740,7 +740,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
             <div class="sk-sub">CP 18</div>
           </div>
           <div>
-            <div class="sk-desc">고품질 상태일 때만 사용 가능. 작업량을 확정으로 많이 올려줘요. 다만 이건 확신이 1회남을때의 고려일뿐이에요. </div>
+            <div class="sk-desc">고품질 상태일 때만 사용 가능. 작업량을 확정으로 많이 올려줘요. 확신 버프가 1회 남았을 때 활용을 고려해요.</div>
             <div class="sk-stats"><span class="sp-pill">고품질 전용</span><span class="sp-pill">성공률 100%</span></div>
           </div>
         </div>
@@ -760,7 +760,7 @@ body.light .sidebar-bottom{border-color:var(--border);}
             <div class="sk-sub">CP 1</div>
           </div>
           <div>
-            <div class="sk-desc">강행작업 대성공 뜨다가 생각지도 못하게 완성되어 판 터지는 걸 막아주는 안전장치. 처음 작업량을 채우는 과정에 쓰여요. 후에는 직접 계산이된다면 안쓸 스킬이에요. </div>
+            <div class="sk-desc">강행작업 대성공 뜨다가 생각지도 못하게 완성되어 판 터지는 걸 막아주는 안전장치. 처음 작업량을 채우는 과정에 쓰여요. 익숙해지면 직접 계산하면서 안 써도 되는 스킬이에요.</div>
             <div class="sk-stats"><span class="sp-pill">1회 한정</span><span class="sp-pill">작업량 완성 방지</span></div>
           </div>
         </div>
@@ -799,6 +799,16 @@ body.light .sidebar-bottom{border-color:var(--border);}
           <div>
             <div class="sk-desc">콤보의 시작점. 세련가공, 중급·상급가공으로 이어지는 문을 열어줘요.</div>
             <div class="sk-stats"><span class="sp-pill">정신집중 +1</span><span class="sp-pill">콤보 시작</span></div>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001522_hr1.png" alt="세련가공"><div class="sk-name">세련가공</div></div>
+            <div class="sk-sub">CP 24 / 내구 10</div>
+          </div>
+          <div>
+            <div class="sk-desc">가공 콤보 연계 시 정신집중 +1. CP가 상대적으로 비싼 편이라 쓸 일은 많지 않아요. 중급·상급가공으로 이어지는 콤보 중간에 들어가는 스킬이에요.</div>
+            <div class="sk-stats"><span class="sp-pill">정신집중 +1</span><span class="sp-pill">가공 콤보 연계</span></div>
           </div>
         </div>
         <div class="skill-card">
@@ -1222,19 +1232,170 @@ body.light .sidebar-bottom{border-color:var(--border);}
     <h1><em>요약</em> 치트시트</h1>
     <p>게임 옆에 켜두고 상태별 반응 빠르게 확인하세요</p>
   </div>
+
+<style>
+/* 상태 색상 */
+.st-normal   { color: var(--text-dim); }
+.st-hq       { color: #e85a7a; font-weight:700; }
+.st-he       { color: #4dc890; font-weight:700; }
+.st-stable   { color: #c8b840; font-weight:700; }
+.st-solid    { color: #7aaed4; font-weight:700; }
+.st-sturdy   { color: #6ab8cc; font-weight:700; }
+.st-fast     { color: #4a7fd4; font-weight:700; }
+.st-good     { color: #e89040; font-weight:700; }
+.st-long     { color: #a080c8; font-weight:700; }
+/* 스킬 인라인 */
+.si { display:inline-flex; align-items:center; gap:3px; white-space:nowrap; }
+.si img { width:18px; height:18px; border-radius:3px; vertical-align:middle; flex-shrink:0; }
+.si span { font-size:11px; color:var(--text); font-weight:500; }
+.sep { color:var(--text-dim); font-size:11px; margin:0 1px; }
+.tbl td.col-k { color:var(--text-dim); font-size:11px; line-height:1.9; }
+</style>
+
+<!-- 스킬 아이콘 단축 매크로: JS로 렌더링 -->
+<script>
+const ICONS = {
+  '확신':      '001994','진가':      '001982','공경':      '001995',
+  '강행작업':  '001988','집중작업':  '001514','모범작업':  '001986',
+  '최종확인':  '001983','혁신':      '001987','가공':      '001502',
+  '세련가공':  '001522','중급가공':  '001516','상급가공':  '001519',
+  '집중가공':  '001524','밑가공':    '001507','절약가공':  '001535',
+  '성급한손길':'001989','대담한손길':'001998','경과관찰':  '001954',
+  '교묘':      '001985','완벽땜질':  '001950','근검절약':  '001992',
+  '장기절약':  '001993','절약작업':  '001520','비결':      '001990',
+  '장족':      '001955','비레고':    '001975','신속한혁신':'001996',
+};
+function si(name) {
+  const id = ICONS[name];
+  const url = id ? `https://xivapi.com/i/001000/${id}_hr1.png` : '';
+  return `<span class="si">${url ? `<img src="${url}" alt="${name}">` : ''}<span>${name}</span></span>`;
+}
+function skillSeq(arr) {
+  return arr.map((s,i) => {
+    if (s === '→' || s === '/') return `<span class="sep">${s}</span>`;
+    return si(s);
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-skills]').forEach(el => {
+    const parts = el.dataset.skills.split('|');
+    el.innerHTML = parts.map(p => {
+      return p.trim().split(/\s*(→|\/)\s*/).map((s,i,arr) => {
+        s = s.trim();
+        if(s==='→'||s==='/') return `<span class="sep">${s}</span>`;
+        return si(s);
+      }).join('');
+    }).join('<br>');
+  });
+});
+</script>
+
   <div class="section">
     <div class="section-title"><div class="num">1</div>작업량 올리기 구간 — 상태별 추천</div>
-    <div style="overflow-x:auto"><table class="tbl"><tr><th>상태</th><th>확신 오프너</th><th>진가 오프너</th></tr><tr><td class="col-s">보통</td><td class="col-k">공경 → 강행작업</td><td class="col-k">절약가공</td></tr><tr><td class="col-s">★ 고품질</td><td class="col-k">집중가공 → 집중작업 → 비결 → 공경</td><td class="col-k">집중가공</td></tr><tr><td class="col-s">견고</td><td class="col-k">공경 → 절약작업/가공</td><td class="col-k">첫 견고: 절약 → 강행작업</td></tr><tr><td class="col-s">안정</td><td class="col-k">공경 → 강행작업</td><td class="col-k">강행작업</td></tr><tr><td class="col-s">★ 고효율</td><td class="col-k">교묘한손놀림 → 장기절약</td><td class="col-k">교묘한손놀림 → 장기절약</td></tr><tr><td class="col-s">장기 지속</td><td class="col-k">공경 → 강행작업</td><td class="col-k">근검/장기절약/교묘</td></tr><tr><td class="col-s">빠른 진행</td><td class="col-k">강행작업</td><td class="col-k">강행작업</td></tr><tr><td class="col-s">길조</td><td class="col-k">공경 → 집중작업</td><td class="col-k">강행작업 / 성급한손길</td></tr></table></div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <tr><th>상태</th><th>확신 오프너</th><th>진가 오프너</th></tr>
+      <tr>
+        <td class="col-s st-normal">보통</td>
+        <td class="col-k" data-skills="공경 → 강행작업"></td>
+        <td class="col-k" data-skills="절약가공"></td>
+      </tr>
+      <tr>
+        <td class="col-s st-hq">★ 고품질</td>
+        <td class="col-k" data-skills="집중가공 → 집중작업 → 비결 → 공경"></td>
+        <td class="col-k" data-skills="집중가공"></td>
+      </tr>
+      <tr>
+        <td class="col-s st-solid">견고</td>
+        <td class="col-k" data-skills="공경 → 절약작업"></td>
+        <td class="col-k" data-skills="절약가공 → 강행작업"></td>
+      </tr>
+      <tr>
+        <td class="col-s st-stable">안정</td>
+        <td class="col-k" data-skills="공경 → 강행작업"></td>
+        <td class="col-k" data-skills="강행작업"></td>
+      </tr>
+      <tr>
+        <td class="col-s st-he">★ 고효율</td>
+        <td class="col-k" data-skills="교묘 → 장기절약"></td>
+        <td class="col-k" data-skills="교묘 → 장기절약"></td>
+      </tr>
+      <tr>
+        <td class="col-s st-long">장기 지속</td>
+        <td class="col-k" data-skills="공경 → 강행작업"></td>
+        <td class="col-k" data-skills="근검절약 / 장기절약 / 교묘"></td>
+      </tr>
+      <tr>
+        <td class="col-s st-fast">빠른 진행</td>
+        <td class="col-k" data-skills="강행작업"></td>
+        <td class="col-k" data-skills="강행작업"></td>
+      </tr>
+      <tr>
+        <td class="col-s st-good">길조</td>
+        <td class="col-k" data-skills="공경 → 집중작업"></td>
+        <td class="col-k" data-skills="강행작업 / 성급한손길"></td>
+      </tr>
+    </table></div>
   </div>
+
   <div class="section">
     <div class="section-title"><div class="num">2</div>정신집중 쌓기 구간 — 상태별 추천</div>
-    <div style="overflow-x:auto"><table class="tbl"><tr><th>상태</th><th>추천 스킬</th></tr><tr><td class="col-s">보통</td><td class="col-k">절약가공 / 성급한손길</td></tr><tr><td class="col-s">★ 고품질</td><td class="col-k">집중가공</td></tr><tr><td class="col-s">견고</td><td class="col-k">가공 콤보 / 성급한손길 / 밑가공</td></tr><tr><td class="col-s">안정</td><td class="col-k">강행작업 / 성급한손길</td></tr><tr><td class="col-s">★ 고효율</td><td class="col-k">교묘한손놀림 우선 → 장기절약 / 밑가공</td></tr><tr><td class="col-s">장기 지속</td><td class="col-k">근검절약 / 교묘한손놀림 / 혁신</td></tr><tr><td class="col-s">길조</td><td class="col-k">절약가공 / 성급한손길</td></tr></table></div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <tr><th>상태</th><th>추천 스킬</th></tr>
+      <tr><td class="col-s st-normal">보통</td><td class="col-k" data-skills="절약가공 / 성급한손길"></td></tr>
+      <tr><td class="col-s st-hq">★ 고품질</td><td class="col-k" data-skills="집중가공"></td></tr>
+      <tr><td class="col-s st-solid">견고</td><td class="col-k" data-skills="가공 / 성급한손길 / 밑가공"></td></tr>
+      <tr><td class="col-s st-stable">안정</td><td class="col-k" data-skills="강행작업 / 성급한손길"></td></tr>
+      <tr><td class="col-s st-he">★ 고효율</td><td class="col-k" data-skills="교묘 → 장기절약 / 밑가공"></td></tr>
+      <tr><td class="col-s st-long">장기 지속</td><td class="col-k" data-skills="근검절약 / 교묘 / 혁신"></td></tr>
+      <tr><td class="col-s st-good">길조</td><td class="col-k" data-skills="절약가공 / 성급한손길"></td></tr>
+    </table></div>
   </div>
+
   <div class="section">
     <div class="section-title"><div class="num">3</div>마무리 로테이션 — CP별 조합</div>
-    <div style="overflow-x:auto"><table class="tbl"><tr><th>CP</th><th>내구</th><th>스킬 조합</th><th>비고</th></tr><tr><td><strong style="color:var(--text-bright)">54</strong></td><td>10</td><td class="col-k">[신속한혁신] → 장족 → 비레고</td><td style="font-size:11px;color:var(--accent)">전문장인 전용</td></tr><tr><td><strong style="color:var(--text-bright)">74</strong></td><td>10</td><td class="col-k">장족 → 혁신 → 비레고</td><td style="font-size:11px;color:var(--text-bright)">기본 ★</td></tr><tr><td><strong style="color:var(--text-bright)">124</strong></td><td>30</td><td class="col-k">혁신 → 절약가공 → 절약가공 → 장족 → 비레고</td><td></td></tr><tr><td><strong style="color:var(--text-bright)">156</strong></td><td>40</td><td class="col-k">주시경과+상급가공 → 장족 → 혁신 → 주시경과+상급가공 → 장족 → 비레고</td><td></td></tr><tr><td><strong style="color:var(--text-bright)">186</strong></td><td>60</td><td class="col-k">장족 → 혁신 → 밑가공 → 밑가공 → 장족 → 비레고</td><td style="font-size:11px;color:var(--text-bright)">최고효율 ★</td></tr><tr><td><strong style="color:var(--text-bright)">202</strong></td><td>15</td><td class="col-k">장족 → 혁신 → 근검절약 → 밑가공 → 장족 → 비레고</td><td style="font-size:11px;color:var(--text-dim)">내구 적을 때</td></tr></table></div>
-    <div class="guide-note" style="margin-top:10px;font-size:12px"> <strong>장족의 발전 = 장족 / 비레고의 축복 = 비레고</strong>로 줄여서 표기했어요.</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <tr><th>CP</th><th>내구</th><th>스킬 조합</th><th>비고</th></tr>
+      <tr>
+        <td><strong style="color:var(--text-bright)">54</strong></td><td>10</td>
+        <td class="col-k" data-skills="신속한혁신 → 장족 → 비레고"></td>
+        <td style="font-size:11px;color:var(--accent)">전문장인 전용</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright)">74</strong></td><td>10</td>
+        <td class="col-k" data-skills="장족 → 혁신 → 비레고"></td>
+        <td style="font-size:11px;color:var(--text-bright)">기본 ★</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright)">124</strong></td><td>30</td>
+        <td class="col-k" data-skills="혁신 → 절약가공 → 절약가공 → 장족 → 비레고"></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright)">156</strong></td><td>40</td>
+        <td class="col-k" style="font-size:11px;line-height:1.9;">
+          <span class="si"><img src="https://xivapi.com/i/001000/001954_hr1.png"><span>경과관찰</span></span><span class="sep">+</span><span class="si"><img src="https://xivapi.com/i/001000/001519_hr1.png"><span>상급가공</span></span>
+          <span class="sep">→</span><span class="si"><img src="https://xivapi.com/i/001000/001955_hr1.png"><span>장족</span></span>
+          <span class="sep">→</span><span class="si"><img src="https://xivapi.com/i/001000/001987_hr1.png"><span>혁신</span></span>
+          <span class="sep">→</span><span class="si"><img src="https://xivapi.com/i/001000/001954_hr1.png"><span>경과관찰</span></span><span class="sep">+</span><span class="si"><img src="https://xivapi.com/i/001000/001519_hr1.png"><span>상급가공</span></span>
+          <span class="sep">→</span><span class="si"><img src="https://xivapi.com/i/001000/001955_hr1.png"><span>장족</span></span>
+          <span class="sep">→</span><span class="si"><img src="https://xivapi.com/i/001000/001975_hr1.png"><span>비레고</span></span>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright)">186</strong></td><td>60</td>
+        <td class="col-k" data-skills="장족 → 혁신 → 밑가공 → 밑가공 → 장족 → 비레고"></td>
+        <td style="font-size:11px;color:var(--text-bright)">최고효율 ★</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright)">202</strong></td><td>15</td>
+        <td class="col-k" data-skills="장족 → 혁신 → 근검절약 → 밑가공 → 장족 → 비레고"></td>
+        <td style="font-size:11px;color:var(--text-dim)">내구 적을 때</td>
+      </tr>
+    </table></div>
+    <div class="guide-note" style="margin-top:10px;font-size:12px"><strong>장족의 발전 = 장족 / 비레고의 축복 = 비레고</strong>로 줄여서 표기했어요.</div>
   </div>
+
   <div class="section">
     <div class="section-title"><div class="num">4</div>내구 가르기 핵심 원리</div>
     <div class="guide-note"><strong>내구 가르기란?</strong> 내구도 뒷자리가 0이나 5로 끝나지 않게 자르는 것.<br><br><strong style="color:var(--red)">❌ 나쁜 예:</strong> 내구 10 → 5 → 0 → 제작 종료<br><strong style="color:var(--green)">✅ 좋은 예:</strong> 내구 12 → 7 → 2 → 스킬 1회 더 가능!<br><br>견고 상태에서 절약가공(내구 5의 절반 = 2.5 → 올림 → 3)을 쓰면 뒷자리가 2로 남아요.<br>교묘한 손놀림 +5 회복 후에도 7이 되어 0/5로 안 떨어지므로 추가 공정이 가능해져요.</div>
