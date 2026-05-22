@@ -477,6 +477,7 @@ body::before{
   .tbl th,.tbl td{padding:5px 7px;}
 }
 </style>
+<script src="recipes.js"></script>  
 </head>
 <body>
 <div class="layout">
@@ -1810,7 +1811,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </main>
 </div>
 
-<footer class="site-footer">아뮬@카벙클 · Created with Claude</footer>
+<footer class="site-footer"> 아뮬@카벙클 </footer>
 
 <script>
 /* ── 탭 전환 + 해시 라우팅 ── */
@@ -1873,22 +1874,35 @@ function filterRegion(region) {
   });
 }
 
-/* ── 작업량 계산기 ── */
+/* ── 작업량 계산기 (팀크래프트 공식) ── */
 function calcCraft() {
-  const lv = parseFloat(document.getElementById('c-lv').value);
+  const craftsmanship = parseFloat(document.getElementById('c-lv').value);
   const req = parseFloat(document.getElementById('c-req').value);
-  if (!lv) return;
-  const jk = Math.floor(lv * 0.0656 + 0.5);
-  const mb = Math.floor(lv * 0.0984 + 0.5);
-  const gh = Math.floor(lv * 0.2741 + 0.5);
-  const hw = Math.floor(lv * 0.1967 + 0.5);
-  document.getElementById('r-jk').textContent = jk.toLocaleString();
-  document.getElementById('r-mb').textContent = mb.toLocaleString();
-  document.getElementById('r-gh').textContent = gh.toLocaleString();
-  document.getElementById('r-hw').textContent = hw.toLocaleString();
+  if (!craftsmanship) return;
+
+  // 팀크래프트 공식: baseProgress = craftsmanship * 10/levelDiv + 2
+  // 7.x 고난도 기준 levelDiv = 180, progressModifier = 80
+  const levelDiv = 180;
+  const progressModifier = 80;
+
+  const baseProgress = Math.floor(craftsmanship * 10 / levelDiv + 2);
+  const modProgress = Math.floor(baseProgress * progressModifier / 100);
+
+  // 각 스킬 효율 적용
+  const jk  = Math.floor(modProgress * 1.0);   // 작업 효율 100
+  const mb  = Math.floor(modProgress * 1.5);   // 모범 작업 효율 150 (수정됨!)
+  const gh  = Math.floor(modProgress * 5.0);   // 강행 작업 효율 500
+  const hw  = Math.floor(modProgress * 3.0);   // 확신(300) 기준 (공경+강행은 별도)
+
+  document.getElementById('r-jk').textContent  = jk.toLocaleString();
+  document.getElementById('r-mb').textContent  = mb.toLocaleString();
+  document.getElementById('r-gh').textContent  = gh.toLocaleString();
+  document.getElementById('r-hw').textContent  = hw.toLocaleString();
+
   if (req) {
     const need = req - mb;
-    document.getElementById('r-cc').textContent = `모범 작업 1딸깍 남기려면 ${need.toLocaleString()} 이상 채우면 돼요.`;
+    document.getElementById('r-cc').textContent =
+      `모범 작업 1딸깍 남기려면 ${need > 0 ? need.toLocaleString() : '이미 충분해요!'} 이상 채우면 돼요.`;
   }
   document.getElementById('craft-res').classList.add('show');
 }
