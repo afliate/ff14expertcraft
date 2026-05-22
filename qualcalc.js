@@ -1,713 +1,593 @@
-// ============================================================
-//  qualcalc.js  ·  Part A : 상수 & 데이터 테이블
-// ============================================================
-
 'use strict';
 
-/* ── 기본 상수 ── */
-const BASE_PROGRESS_DIVIDER = 10;   // 작업진척 기본 제수
-const BASE_QUALITY_DIVIDER  = 10;   // 품질 기본 제수
+// ============================================================
+//  상수 & 데이터
+// ============================================================
 
-/* ── 로테이션 계수 테이블 ──
-   각 로테이션마다 c0q (품질 계수) 값이 다름
-   공식: 품질 = floor( 기본효율 × c0q × 내적제어/100 × 품질버프 )
-*/
-const ROTATION_TABLE = {
-  // key: 로테이션 이름
-  // c0p: 작업진척 계수, c0q: 품질 계수
-  'standard': { label: '표준 로테이션',    c0p: 1.00, c0q: 1.00 },
-  'expert':   { label: '고난도 로테이션',  c0p: 1.00, c0q: 0.80 },
+// 7.x 고난도 기준 levelDiv
+const LEVEL_DIV = 180;
+
+// 스킬 데이터
+// type: 'progress' | 'quality' | 'buff' | 'durability' | 'special'
+// cat:  팔레트 탭 카테고리
+const SKILL_DATA = {
+  /* ── 작업(progress) ── */
+  muscleMemory:     { label: '근육 기억',       cat: 'progress', type: 'progress', eff: 300,  cp: 6,   dur: 10 },
+  reflect:          { label: '진가',            cat: 'progress', type: 'progress', eff: 300,  cp: 6,   dur: 10, iqGain: 2 },
+  basicSynth:       { label: '기초 합성',        cat: 'progress', type: 'progress', eff: 120,  cp: 0,   dur: 10 },
+  carefulSynth:     { label: '모범 합성',        cat: 'progress', type: 'progress', eff: 180,  cp: 7,   dur: 10 },
+  prudentSynth:     { label: '절약 작업',        cat: 'progress', type: 'progress', eff: 180,  cp: 18,  dur: 5  },
+  groundwork:       { label: '집중 작업',        cat: 'progress', type: 'progress', eff: 360,  cp: 18,  dur: 20 },
+  delicateSynth:    { label: '정밀 작업',        cat: 'progress', type: 'both',     eff: 100,  cp: 32,  dur: 10 },
+  intensiveSynth:   { label: '집중 합성',        cat: 'progress', type: 'progress', eff: 400,  cp: 6,   dur: 10, condReq: 'good' },
+
+  /* ── 가공(quality) ── */
+  basicTouch:       { label: '기초 가공',        cat: 'quality',  type: 'quality',  eff: 100,  cp: 18,  dur: 10 },
+  standardTouch:    { label: '표준 가공',        cat: 'quality',  type: 'quality',  eff: 125,  cp: 32,  dur: 10 },
+  advancedTouch:    { label: '상급 가공',        cat: 'quality',  type: 'quality',  eff: 150,  cp: 46,  dur: 10 },
+  prudentTouch:     { label: '절약 가공',        cat: 'quality',  type: 'quality',  eff: 100,  cp: 25,  dur: 5  },
+  preparatoryTouch: { label: '밑가공',           cat: 'quality',  type: 'quality',  eff: 200,  cp: 40,  dur: 20, iqGain: 2 },
+  preciseTouch:     { label: '집중 가공',        cat: 'quality',  type: 'quality',  eff: 150,  cp: 18,  dur: 10, condReq: 'good', iqGain: 2 },
+  trainedFinesse:   { label: '장인의 기교',      cat: 'quality',  type: 'quality',  eff: 100,  cp: 32,  dur: 0  },
+  byregotsBlessing: { label: '비레고의 축복',    cat: 'quality',  type: 'byregots', eff: 100,  cp: 24,  dur: 10 },
+  trainedEye:       { label: '장인의 눈',        cat: 'quality',  type: 'trainedEye',eff:100,  cp: 250, dur: 10 },
+
+  /* ── 버프(buff) ── */
+  muscleMemoryBuff: null, // muscleMemory 는 progress 겸 버프 처리
+  innovation:       { label: '혁신',            cat: 'buff',     type: 'buff',     cp: 18,  buffKey: 'innovation',  duration: 4  },
+  veneration:       { label: '숭경',            cat: 'buff',     type: 'buff',     cp: 18,  buffKey: 'veneration',  duration: 4  },
+  greatStrides:     { label: '장족의 발전',      cat: 'buff',     type: 'buff',     cp: 32,  buffKey: 'greatStrides',duration: 3  },
+  finalAppraisal:   { label: '최종 확인',        cat: 'buff',     type: 'buff',     cp: 1,   buffKey: 'finalAppraisal',duration: 5 },
+  manipulation:     { label: '교묘한 손놀림',    cat: 'durability',type:'buff',     cp: 96,  buffKey: 'manipulation', duration: 8 },
+  wasteNot:         { label: '근검절약',         cat: 'durability',type:'buff',     cp: 56,  buffKey: 'wasteNot',    duration: 4  },
+  wasteNot2:        { label: '장기 절약',        cat: 'durability',type:'buff',     cp: 98,  buffKey: 'wasteNot2',   duration: 8  },
+
+  /* ── 내구 회복(durability) ── */
+  mastersMend:      { label: '능숙한 땜질',      cat: 'durability',type:'repair',   cp: 88,  repairAmt: 30 },
+  immaculateMend:   { label: '완벽한 땜질',      cat: 'durability',type:'repairFull',cp: 112 },
+
+  /* ── 특수(special) ── */
+  carefulObservation:{ label: '경과 관찰',       cat: 'special',  type: 'observe',  cp: 7  },
+  tricksOfTrade:    { label: '비결',             cat: 'special',  type: 'tricks',   cp: 0,  condReq: 'good' },
 };
 
-/* ── 작업 레벨별 기본 수치 테이블 ──
-   { rlv: 레시피 레벨, baseProgress, baseQuality, durability }
-*/
-const RECIPE_LEVEL_TABLE = [
-  // 7.x 고난도 레시피 기준
-  { rlv: 690, baseProgress: 360, baseQuality: 460, durability: 70 },
-  { rlv: 695, baseProgress: 370, baseQuality: 480, durability: 70 },
-  { rlv: 700, baseProgress: 380, baseQuality: 500, durability: 70 },
-  { rlv: 705, baseProgress: 390, baseQuality: 520, durability: 70 },
-  { rlv: 710, baseProgress: 400, baseQuality: 540, durability: 70 },
-  { rlv: 715, baseProgress: 410, baseQuality: 560, durability: 70 },
-  { rlv: 720, baseProgress: 420, baseQuality: 580, durability: 70 },
+// 팔레트 카테고리 레이블
+const CAT_LABELS = {
+  progress:   '작업',
+  quality:    '가공',
+  buff:       '버프',
+  durability: '내구',
+  special:    '특수',
+};
+
+// HQ 테이블 (품질% → HQ%)
+const HQ_TABLE = [
+  [0,1],[5,2],[9,3],[13,4],[17,5],[21,6],[25,7],[29,8],[33,9],[37,10],
+  [41,11],[45,12],[49,13],[52,14],[55,15],[58,16],[61,17],[64,18],[67,19],[70,20],
+  [73,21],[75,22],[77,23],[79,24],[81,25],[83,26],[85,27],[87,28],[89,29],[91,30],
+  [92,31],[93,32],[94,34],[95,36],[96,40],[97,45],[98,52],[99,62],[100,100],
 ];
 
-/* ── 스킬 데이터 테이블 ──
-   efficiency: 기본 효율(%)
-   type: 'progress' | 'quality' | 'both'
-   cpCost: CP 소모
-*/
-const SKILL_TABLE = {
-  // ── 작업진척 스킬 ──
-  'basicSynth':         { label: '기초 합성',       efficiency: 120, type: 'progress', cpCost: 0  },
-  'carefulSynth':       { label: '모범 합성',        efficiency: 180, type: 'progress', cpCost: 7  },
-  'prudentSynth':       { label: '검약 합성',        efficiency: 180, type: 'progress', cpCost: 18 },
-  'groundwork':         { label: '집중 작업',        efficiency: 360, type: 'progress', cpCost: 18 },
-  'groundworkHalf':     { label: '집중 작업(내구절반)', efficiency: 180, type: 'progress', cpCost: 18 },
-  'delicateSynth':      { label: '정밀 작업',        efficiency: 100, type: 'both',     cpCost: 32 },
-  'intensiveSynth':     { label: '집중 합성',        efficiency: 400, type: 'progress', cpCost: 6  },
-  'muscleMemory':       { label: '근육 기억',        efficiency: 300, type: 'progress', cpCost: 6  },
-
-  // ── 품질 스킬 ──
-  'basicTouch':         { label: '기초 가공',        efficiency: 100, type: 'quality',  cpCost: 18 },
-  'standardTouch':      { label: '표준 가공',        efficiency: 125, type: 'quality',  cpCost: 32 },
-  'advancedTouch':      { label: '상급 가공',        efficiency: 150, type: 'quality',  cpCost: 46 },
-  'prudentTouch':       { label: '검약 가공',        efficiency: 100, type: 'quality',  cpCost: 25 },
-  'preparatoryTouch':   { label: '준비 가공',        efficiency: 200, type: 'quality',  cpCost: 40 },
-  'trainedEye':         { label: '장인의 눈',        efficiency: 100, type: 'quality',  cpCost: 250},
-  'byregotsBlessing':   { label: '비레고의 축복',    efficiency: 100, type: 'quality',  cpCost: 24 },
-  'preciseTouch':       { label: '집중 가공',        efficiency: 150, type: 'quality',  cpCost: 18 },
-  'refinedTouch':       { label: '정제 가공',        efficiency: 100, type: 'quality',  cpCost: 24 },
-  'trainedFinesse':     { label: '장인의 기교',      efficiency: 100, type: 'quality',  cpCost: 32 },
-  'immaculateMend':     { label: '완벽한 수선',      efficiency:   0, type: 'quality',  cpCost: 112},
-};
-
-/* ── 버프 스킬 데이터 ──
-   duration: 지속 스텝
-   bonus: 효율 보너스 배율 or 특수 효과 설명
-*/
-const BUFF_TABLE = {
-  'innerQuiet':         { label: '내적 안정',   maxStack: 10, type: 'stack'   },
-  'greatStrides':       { label: '탁월한 진보', duration: 3,  bonus: 2.0,     type: 'multiplier' },
-  'innovation':         { label: '혁신',        duration: 4,  bonus: 0.5,     type: 'additive'   },
-  'veneration':         { label: '숭경',        duration: 4,  bonus: 0.5,     type: 'additive'   },
-  'manipulation':       { label: '마스터 메카',  duration: 8,  type: 'repair'  },
-  'wasteNot':           { label: '근검절약',     duration: 4,  type: 'dura'    },
-  'wasteNot2':          { label: '근검절약 II',  duration: 8,  type: 'dura'    },
-  'finalAppraisal':     { label: '최종 감정',    duration: 5,  type: 'special' },
-  'carefulObservation': { label: '세심한 관찰',  uses: 3,      type: 'special' },
-};
-
 // ============================================================
-//  qualcalc.js  ·  Part B : 핵심 계산 함수
+//  계산 함수
 // ============================================================
 
-/* ── 플레이어 스탯 읽기 ── */
-function getPlayerStats() {
+function getStats() {
   return {
     craftsmanship: parseInt(document.getElementById('qc-craftsmanship').value) || 0,
     control:       parseInt(document.getElementById('qc-control').value)       || 0,
     cp:            parseInt(document.getElementById('qc-cp').value)            || 0,
-    level:         parseInt(document.getElementById('qc-level').value)         || 90,
+    level:         parseInt(document.getElementById('qc-level').value)         || 100,
   };
 }
 
-/* ── 레시피 정보 읽기 ── */
-function getRecipeInfo() {
-  const rlv = parseInt(document.getElementById('qc-recipe-level').value) || 690;
-  return RECIPE_LEVEL_TABLE.find(r => r.rlv === rlv) || RECIPE_LEVEL_TABLE;
-}
-
-/* ── 레벨 보정 계수 계산 ──
-   플레이어 레벨과 레시피 레벨 차이에 따른 보정
-   FFXIV 공식 기준
-*/
-function getLevelCorrection(playerLevel, recipeRlv) {
-  const diff = playerLevel - Math.floor(recipeRlv / 5);
-  if (diff >= 0) {
-    return 1.0 + Math.min(diff, 5) * 0.05;   // 최대 +25%
-  } else {
-    return Math.max(0.1, 1.0 + diff * 0.02); // 레벨 낮으면 페널티
-  }
-}
-
-/* ── 작업진척 1회 계산 ──
-   공식: floor( 작업속도 / 제수 × 레벨보정 × 효율/100 × 버프배율 )
-*/
-function calcProgress(craftsmanship, recipe, efficiency, buffs) {
-  const levelCorr = getLevelCorrection(
-    parseInt(document.getElementById('qc-level').value) || 90,
-    recipe.rlv
-  );
-
-  // 숭경(Veneration) 버프: +50% 작업진척
-  const venerationBonus = buffs.veneration ? 1.5 : 1.0;
-  // 근육 기억(Muscle Memory) 버프: +100% 작업진척
-  const muscleBonus = buffs.muscleMemory ? 2.0 : 1.0;
-
-  const base = Math.floor(
-    (craftsmanship * 10) / recipe.baseProgress + 2
-  );
-
-  return Math.floor(
-    base * (efficiency / 100) * levelCorr * venerationBonus * muscleBonus
-  );
-}
-
-/* ── 품질 1회 계산 ──
-   공식: floor( 제어력 / 제수 × 레벨보정 × 효율/100 × IQ보정 × 버프배율 )
-*/
-function calcQuality(control, recipe, efficiency, buffs) {
-  const levelCorr = getLevelCorrection(
-    parseInt(document.getElementById('qc-level').value) || 90,
-    recipe.rlv
-  );
-
-  // 내적 안정(Inner Quiet) 스택: 스택당 +10% 제어력
-  const iqStack   = Math.min(buffs.innerQuiet || 0, 10);
-  const iqBonus   = 1.0 + iqStack * 0.1;
-
-  // 혁신(Innovation) 버프: +50% 품질
-  const innovBonus = buffs.innovation ? 1.5 : 1.0;
-  // 탁월한 진보(Great Strides) 버프: +100% 품질 (1회 소비)
-  const gsBonus    = buffs.greatStrides ? 2.0 : 1.0;
-
-  const base = Math.floor(
-    (control * 10) / recipe.baseQuality + 35
-  );
-
-  return Math.floor(
-    base * (efficiency / 100) * levelCorr * iqBonus * innovBonus * gsBonus
-  );
-}
-
-/* ── 비레고의 축복 품질 계산 ──
-   효율 = 100 + IQ스택 × 20  (최대 스택 10 → 효율 300%)
-*/
-function calcByregotsQuality(control, recipe, buffs) {
-  const iqStack  = Math.min(buffs.innerQuiet || 0, 10);
-  const efficiency = 100 + iqStack * 20;
-  return calcQuality(control, recipe, efficiency, buffs);
-}
-
-/* ── 집중 작업(Groundwork) 내구 절반 패널티 체크 ──
-   현재 내구 < 집중 작업 소모 내구(20)의 절반 → 효율 절반
-*/
-function getGroundworkEfficiency(currentDura) {
-  return currentDura >= 20 ? 360 : 180;
-}
-
-/* ── 내구 소모 계산 ──
-   근검절약 버프 시 소모 내구 절반(올림)
-*/
-function calcDuraCost(baseCost, buffs) {
-  if (buffs.wasteNot || buffs.wasteNot2) {
-    return Math.ceil(baseCost / 2);
-  }
-  return baseCost;
-}
-
-/* ── 전체 시뮬레이션 ──
-   스킬 배열을 순서대로 실행하며 최종 품질 / 작업진척 / 내구 / CP 반환
-*/
-function simulate(skillSequence) {
-  const stats  = getPlayerStats();
-  const recipe = getRecipeInfo();
-
-  let progress  = 0;
-  let quality   = 0;
-  let durability = recipe.durability;
-  let cp        = stats.cp;
-  let step      = 0;
-  let completed = false;
-
-  // 버프 상태
-  let buffs = {
-    innerQuiet:   0,      // 스택 수
-    greatStrides: 0,      // 남은 스텝
-    innovation:   0,
-    veneration:   0,
-    manipulation: 0,
-    wasteNot:     0,
-    wasteNot2:    0,
-    finalAppraisal: 0,
-    muscleMemory: 0,
-  };
-
-  const log = [];
-
-  for (const skillKey of skillSequence) {
-    if (completed) break;
-    if (durability <= 0) break;
-
-    step++;
-
-    // ── CP 소모 체크 ──
-    const skill = SKILL_TABLE[skillKey] || BUFF_TABLE[skillKey];
-    if (!skill) continue;
-
-    const cpCost = skill.cpCost || 0;
-    if (cp < cpCost) {
-      log.push({ step, skill: skillKey, error: 'CP 부족' });
-      break;
-    }
-    cp -= cpCost;
-
-    // ── 버프 스킬 처리 ──
-    if (skillKey === 'innerQuiet') {
-      buffs.innerQuiet = 1;
-      log.push({ step, skill: skillKey, type: 'buff', note: 'IQ 시작' });
-
-    } else if (skillKey === 'greatStrides') {
-      buffs.greatStrides = 3;
-      log.push({ step, skill: skillKey, type: 'buff' });
-
-    } else if (skillKey === 'innovation') {
-      buffs.innovation = 4;
-      log.push({ step, skill: skillKey, type: 'buff' });
-
-    } else if (skillKey === 'veneration') {
-      buffs.veneration = 4;
-      log.push({ step, skill: skillKey, type: 'buff' });
-
-    } else if (skillKey === 'manipulation') {
-      buffs.manipulation = 8;
-      log.push({ step, skill: skillKey, type: 'buff' });
-
-    } else if (skillKey === 'wasteNot') {
-      buffs.wasteNot = 4;
-      log.push({ step, skill: skillKey, type: 'buff' });
-
-    } else if (skillKey === 'wasteNot2') {
-      buffs.wasteNot2 = 8;
-      log.push({ step, skill: skillKey, type: 'buff' });
-
-    } else if (skillKey === 'finalAppraisal') {
-      buffs.finalAppraisal = 5;
-      log.push({ step, skill: skillKey, type: 'buff' });
-
-    // ── 작업진척 스킬 처리 ──
-    } else if (SKILL_TABLE[skillKey]?.type === 'progress') {
-      let eff = SKILL_TABLE[skillKey].efficiency;
-      if (skillKey === 'groundwork') {
-        eff = getGroundworkEfficiency(durability);
-      }
-      const gained = calcProgress(stats.craftsmanship, recipe, eff, buffs);
-      progress += gained;
-
-      // 내구 소모
-      const duraCost = calcDuraCost(10, buffs); // 기본 내구 소모 10
-      durability -= duraCost;
-
-      // 근육 기억 버프 소비
-      if (skillKey === 'muscleMemory') {
-        buffs.muscleMemory = 5;
-      }
-
-      log.push({ step, skill: skillKey, type: 'progress', gained, progress, durability });
-
-      // 완성 체크 (최종 감정 있으면 1 남김)
-      if (progress >= recipe.baseProgress * 10) {
-        if (buffs.finalAppraisal > 0) {
-          progress = recipe.baseProgress * 10 - 1;
-          buffs.finalAppraisal = 0;
-        } else {
-          completed = true;
-        }
-      }
-
-    // ── 품질 스킬 처리 ──
-    } else if (SKILL_TABLE[skillKey]?.type === 'quality') {
-      let gained = 0;
-      if (skillKey === 'byregotsBlessing') {
-        gained = calcByregotsQuality(stats.control, recipe, buffs);
-        buffs.innerQuiet = 0; // 비레고 사용 후 IQ 초기화
-      } else {
-        gained = calcQuality(stats.control, recipe, SKILL_TABLE[skillKey].efficiency, buffs);
-      }
-
-      // IQ 스택 증가 (비레고 제외)
-      if (skillKey !== 'byregotsBlessing' && buffs.innerQuiet > 0) {
-        buffs.innerQuiet = Math.min(buffs.innerQuiet + 1, 10);
-      }
-
-      // 탁월한 진보 소비
-      if (buffs.greatStrides > 0) buffs.greatStrides = 0;
-
-      quality += gained;
-
-      // 내구 소모
-      let duraCost = calcDuraCost(10, buffs);
-      if (skillKey === 'prudentTouch') duraCost = calcDuraCost(5, buffs);
-      durability -= duraCost;
-
-      log.push({ step, skill: skillKey, type: 'quality', gained, quality, durability });
-
-    // ── 정밀 작업(both) 처리 ──
-    } else if (SKILL_TABLE[skillKey]?.type === 'both') {
-      const pGained = calcProgress(stats.craftsmanship, recipe, SKILL_TABLE[skillKey].efficiency, buffs);
-      const qGained = calcQuality(stats.control, recipe, SKILL_TABLE[skillKey].efficiency, buffs);
-      progress  += pGained;
-      quality   += qGained;
-
-      if (buffs.innerQuiet > 0) {
-        buffs.innerQuiet = Math.min(buffs.innerQuiet + 1, 10);
-      }
-
-      const duraCost = calcDuraCost(10, buffs);
-      durability -= duraCost;
-
-      log.push({ step, skill: skillKey, type: 'both', pGained, qGained, progress, quality, durability });
-
-      if (progress >= recipe.baseProgress * 10) {
-        if (buffs.finalAppraisal > 0) {
-          progress = recipe.baseProgress * 10 - 1;
-          buffs.finalAppraisal = 0;
-        } else {
-          completed = true;
-        }
-      }
-    }
-
-    // ── 마스터 메카(Manipulation) 내구 회복 ──
-    if (buffs.manipulation > 0) {
-      durability = Math.min(durability + 5, recipe.durability);
-    }
-
-    // ── 버프 카운트다운 ──
-    if (buffs.greatStrides  > 0) buffs.greatStrides--;
-    if (buffs.innovation    > 0) buffs.innovation--;
-    if (buffs.veneration    > 0) buffs.veneration--;
-    if (buffs.manipulation  > 0) buffs.manipulation--;
-    if (buffs.wasteNot      > 0) buffs.wasteNot--;
-    if (buffs.wasteNot2     > 0) buffs.wasteNot2--;
-    if (buffs.finalAppraisal > 0) buffs.finalAppraisal--;
-    if (buffs.muscleMemory  > 0) buffs.muscleMemory--;
-  }
-
+function getRecipe() {
   return {
-    progress,
-    quality,
-    durability,
-    cp,
-    steps: step,
-    completed,
-    log,
-    recipe,
-    maxQuality: recipe.baseQuality * 10,
-    qualityPercent: Math.min(100, Math.floor((quality / (recipe.baseQuality * 10)) * 100)),
+    rlv:         parseInt(document.getElementById('qc-recipe-level').value)   || 690,
+    baseProgress:parseInt(document.getElementById('qc-base-progress').value)  || 3900,
+    baseQuality: parseInt(document.getElementById('qc-base-quality').value)   || 10920,
+    durability:  parseInt(document.getElementById('qc-durability').value)     || 60,
   };
 }
 
-// ============================================================
-//  qualcalc.js  ·  Part C : UI 렌더링 & 이벤트 핸들러
-// ============================================================
-
-/* ── 로테이션 빌더 UI 렌더링 ── */
-function renderRotationBuilder() {
-  const container = document.getElementById('qc-rotation-builder');
-  if (!container) return;
-
-  container.innerHTML = '';
-
-  Object.entries(SKILL_TABLE).forEach(([key, skill]) => {
-    const btn = document.createElement('button');
-    btn.className   = `qc-skill-btn qc-skill-${skill.type}`;
-    btn.dataset.key = key;
-    btn.textContent = skill.label;
-
-    // CP 표시
-    if (skill.cpCost > 0) {
-      const cp = document.createElement('span');
-      cp.className   = 'qc-skill-cp';
-      cp.textContent = `${skill.cpCost}CP`;
-      btn.appendChild(cp);
-    }
-
-    btn.addEventListener('click', () => addSkillToSequence(key));
-    container.appendChild(btn);
-  });
-
-  // 버프 스킬도 추가
-  Object.entries(BUFF_TABLE).forEach(([key, buff]) => {
-    const btn = document.createElement('button');
-    btn.className   = 'qc-skill-btn qc-skill-buff';
-    btn.dataset.key = key;
-    btn.textContent = buff.label;
-
-    if (buff.cpCost > 0) {
-      const cp = document.createElement('span');
-      cp.className   = 'qc-skill-cp';
-      cp.textContent = `${buff.cpCost}CP`;
-      btn.appendChild(cp);
-    }
-
-    btn.addEventListener('click', () => addSkillToSequence(key));
-    container.appendChild(btn);
-  });
+// 레벨 보정 계수 (팀크래프트 공식 기반)
+function levelCorrection(playerLv, rlv) {
+  const recipeClassLv = Math.floor(rlv / 5);   // rlv → 클래스 레벨 근사
+  const diff = playerLv - recipeClassLv;
+  if (diff >= 0) return 1.0 + Math.min(diff, 5) * 0.05;
+  return Math.max(0.1, 1.0 + diff * 0.02);
 }
 
-/* ── 현재 로테이션 시퀀스 배열 ── */
-let currentSequence = [];
-
-/* ── 스킬 시퀀스에 추가 ── */
-function addSkillToSequence(key) {
-  currentSequence.push(key);
-  renderSequence();
-  runSimulation();
+// 작업량 1회
+function calcProgress(craftsmanship, recipe, eff, buffs, playerLv) {
+  const lc   = levelCorrection(playerLv, recipe.rlv);
+  const vene = buffs.veneration > 0 ? 1.5 : 1.0;
+  const mm   = buffs.muscleMemory > 0 ? 2.0 : 1.0;
+  const base = Math.floor(craftsmanship * 10 / LEVEL_DIV + 2);
+  return Math.floor(base * (eff / 100) * lc * vene * mm);
 }
 
-/* ── 스킬 시퀀스에서 제거 ── */
-function removeSkillFromSequence(index) {
-  currentSequence.splice(index, 1);
-  renderSequence();
-  runSimulation();
+// 품질 1회
+function calcQuality(control, recipe, eff, buffs, playerLv) {
+  const lc     = levelCorrection(playerLv, recipe.rlv);
+  const iq     = Math.min(buffs.innerQuiet, 10);
+  const iqMod  = 1.0 + iq * 0.1;
+  const innov  = buffs.innovation > 0   ? 1.5 : 1.0;
+  const gs     = buffs.greatStrides > 0 ? 2.0 : 1.0;
+  const base   = Math.floor(control * 10 / LEVEL_DIV + 35);
+  return Math.floor(base * (eff / 100) * lc * iqMod * innov * gs);
 }
 
-/* ── 시퀀스 UI 렌더링 ── */
-function renderSequence() {
-  const container = document.getElementById('qc-sequence');
-  if (!container) return;
-
-  container.innerHTML = '';
-
-  if (currentSequence.length === 0) {
-    container.innerHTML = '<p class="qc-seq-empty">스킬을 추가해주세요.</p>';
-    return;
-  }
-
-  currentSequence.forEach((key, index) => {
-    const skill = SKILL_TABLE[key] || BUFF_TABLE[key];
-    if (!skill) return;
-
-    const chip = document.createElement('div');
-    chip.className = `qc-seq-chip qc-skill-${skill.type || 'buff'}`;
-
-    const label = document.createElement('span');
-    label.className   = 'qc-seq-label';
-    label.textContent = `${index + 1}. ${skill.label}`;
-
-    const del = document.createElement('button');
-    del.className   = 'qc-seq-del';
-    del.textContent = '✕';
-    del.addEventListener('click', () => removeSkillFromSequence(index));
-
-    chip.appendChild(label);
-    chip.appendChild(del);
-    container.appendChild(chip);
-  });
+// 비레고 품질 (IQ스택에 따라 효율 변동)
+function calcByregots(control, recipe, buffs, playerLv) {
+  const iq  = Math.min(buffs.innerQuiet, 10);
+  const eff = 100 + iq * 20;   // IQ 10 → 효율 300%
+  // greatStrides 는 calcQuality 안에서 처리
+  return calcQuality(control, recipe, eff, buffs, playerLv);
 }
 
-/* ── 시뮬레이션 실행 & 결과 렌더링 ── */
-function runSimulation() {
-  if (currentSequence.length === 0) {
-    clearResult();
-    return;
-  }
-
-  const result = simulate(currentSequence);
-  renderResult(result);
+// 내구 소모 (근검절약 버프 반영)
+function duraCost(base, buffs) {
+  if (buffs.wasteNot > 0 || buffs.wasteNot2 > 0) return Math.ceil(base / 2);
+  return base;
 }
 
-/* ── 결과 초기화 ── */
-function clearResult() {
-  const el = document.getElementById('qc-result');
-  if (el) el.innerHTML = '<p class="qc-result-empty">로테이션을 구성해주세요.</p>';
-}
-
-/* ── 결과 렌더링 ── */
-function renderResult(result) {
-  const el = document.getElementById('qc-result');
-  if (!el) return;
-
-  const qPct  = result.qualityPercent;
-  const hqPct = calcHQPercent(qPct);
-
-  // 품질 바 색상
-  const barColor = qPct >= 100 ? '#4caf50'
-                 : qPct >= 75  ? '#8bc34a'
-                 : qPct >= 50  ? '#ffc107'
-                 :                '#f44336';
-
-  el.innerHTML = `
-    <div class="qc-result-grid">
-
-      <div class="qc-result-card ${result.completed ? 'success' : 'fail'}">
-        <span class="qc-result-icon">${result.completed ? '✅' : '❌'}</span>
-        <span class="qc-result-title">완성 여부</span>
-        <span class="qc-result-value">${result.completed ? '완성' : '미완성'}</span>
-      </div>
-
-      <div class="qc-result-card">
-        <span class="qc-result-icon">✨</span>
-        <span class="qc-result-title">품질</span>
-        <span class="qc-result-value">${result.quality.toLocaleString()} / ${result.maxQuality.toLocaleString()}</span>
-        <div class="qc-bar-wrap">
-          <div class="qc-bar" style="width:${qPct}%; background:${barColor};"></div>
-        </div>
-        <span class="qc-result-sub">${qPct}%</span>
-      </div>
-
-      <div class="qc-result-card">
-        <span class="qc-result-icon">🌟</span>
-        <span class="qc-result-title">HQ 확률</span>
-        <span class="qc-result-value hq">${hqPct}%</span>
-      </div>
-
-      <div class="qc-result-card">
-        <span class="qc-result-icon">🔨</span>
-        <span class="qc-result-title">작업진척</span>
-        <span class="qc-result-value">${result.progress.toLocaleString()}</span>
-      </div>
-
-      <div class="qc-result-card">
-        <span class="qc-result-icon">🛡️</span>
-        <span class="qc-result-title">남은 내구</span>
-        <span class="qc-result-value ${result.durability <= 0 ? 'danger' : ''}">
-          ${result.durability} / ${result.recipe.durability}
-        </span>
-      </div>
-
-      <div class="qc-result-card">
-        <span class="qc-result-icon">💠</span>
-        <span class="qc-result-title">남은 CP</span>
-        <span class="qc-result-value">${result.cp}</span>
-      </div>
-
-      <div class="qc-result-card">
-        <span class="qc-result-icon">🔢</span>
-        <span class="qc-result-title">총 스텝</span>
-        <span class="qc-result-value">${result.steps} 스텝</span>
-      </div>
-
-    </div>
-
-    <details class="qc-log-detail">
-      <summary>📋 스텝별 로그 보기</summary>
-      <div class="qc-log-wrap">
-        ${renderLog(result.log)}
-      </div>
-    </details>
-  `;
-}
-
-/* ── HQ 확률 계산 ──
-   FFXIV 공식 HQ 테이블 기반 근사값
-*/
-function calcHQPercent(qualityPct) {
-  // 공식 HQ 테이블 (품질% → HQ%)
-  const hqTable = [
-    [0,  1], [5,  2], [9,  3], [13, 4], [17, 5],
-    [21, 6], [25, 7], [29, 8], [33,  9], [37, 10],
-    [41, 11],[45, 12],[49, 13],[52, 14],[55, 15],
-    [58, 16],[61, 17],[64, 18],[67, 19],[70, 20],
-    [73, 21],[75, 22],[77, 23],[79, 24],[81, 25],
-    [83, 26],[85, 27],[87, 28],[89, 29],[91, 30],
-    [92, 31],[93, 32],[94, 34],[95, 36],[96, 40],
-    [97, 45],[98, 52],[99, 62],[100,100],
-  ];
-
+// HQ% 계산
+function calcHQ(qualityPct) {
   const pct = Math.min(100, Math.max(0, qualityPct));
   let hq = 1;
-  for (const [q, h] of hqTable) {
+  for (const [q, h] of HQ_TABLE) {
     if (pct >= q) hq = h;
     else break;
   }
   return hq;
 }
 
-/* ── 스텝 로그 렌더링 ── */
-function renderLog(log) {
-  if (!log || log.length === 0) return '<p>로그 없음</p>';
+// ============================================================
+//  시뮬레이션
+// ============================================================
 
-  return log.map(entry => {
-    const skill = SKILL_TABLE[entry.skill] || BUFF_TABLE[entry.skill] || { label: entry.skill };
-    let detail  = '';
+function simulate(sequence) {
+  const stats  = getStats();
+  const recipe = getRecipe();
 
-    if (entry.type === 'progress') {
-      detail = `진척 +${entry.gained} → ${entry.progress} | 내구 ${entry.durability}`;
-    } else if (entry.type === 'quality') {
-      detail = `품질 +${entry.gained} → ${entry.quality} | 내구 ${entry.durability}`;
-    } else if (entry.type === 'both') {
-      detail = `진척 +${entry.pGained} / 품질 +${entry.qGained} | 내구 ${entry.durability}`;
-    } else if (entry.type === 'buff') {
-      detail = entry.note || '버프 적용';
-    } else if (entry.error) {
-      detail = `⚠️ ${entry.error}`;
+  let progress   = 0;
+  let quality    = 0;
+  let dura       = recipe.durability;
+  let cp         = stats.cp;
+  let steps      = 0;
+  let completed  = false;
+  const log      = [];
+
+  const buffs = {
+    innerQuiet:      0,
+    innovation:      0,
+    veneration:      0,
+    greatStrides:    0,
+    manipulation:    0,
+    wasteNot:        0,
+    wasteNot2:       0,
+    finalAppraisal:  0,
+    muscleMemory:    0,
+  };
+
+  for (const key of sequence) {
+    if (completed || dura <= 0) break;
+
+    const sk = SKILL_DATA[key];
+    if (!sk) continue;
+
+    // CP 체크
+    if (cp < (sk.cp || 0)) {
+      log.push({ step: steps + 1, key, note: 'CP 부족 — 스킵' });
+      continue;
+    }
+    cp -= (sk.cp || 0);
+    steps++;
+
+    // ── 버프 스킬 ──
+    if (sk.type === 'buff') {
+      buffs[sk.buffKey] = sk.duration;
+      log.push({ step: steps, key, type: 'buff', label: sk.label });
     }
 
-    return `
-      <div class="qc-log-row qc-log-${entry.type || 'buff'}">
-        <span class="qc-log-step">${entry.step}</span>
-        <span class="qc-log-name">${skill.label}</span>
-        <span class="qc-log-detail">${detail}</span>
-      </div>
-    `;
-  }).join('');
-}
+    // ── 내구 회복 ──
+    else if (sk.type === 'repair') {
+      dura = Math.min(dura + sk.repairAmt, recipe.durability);
+      log.push({ step: steps, key, type: 'repair', label: sk.label, dura });
+    }
+    else if (sk.type === 'repairFull') {
+      dura = recipe.durability;
+      log.push({ step: steps, key, type: 'repair', label: sk.label, dura });
+    }
 
-/* ── 시퀀스 초기화 버튼 ── */
-function clearSequence() {
-  currentSequence = [];
-  renderSequence();
-  clearResult();
-}
+    // ── 경과 관찰 ──
+    else if (sk.type === 'observe') {
+      log.push({ step: steps, key, type: 'observe', label: sk.label });
+    }
 
-/* ── 역산: 목표 HQ%를 위한 최소 제어력 계산 ── */
-function calcMinControl() {
-  const targetHQ  = parseInt(document.getElementById('qc-target-hq').value)  || 100;
-  const recipe    = getRecipeInfo();
-  const playerLv  = parseInt(document.getElementById('qc-level').value)       || 90;
+    // ── 비결 (CP 회복) ──
+    else if (sk.type === 'tricks') {
+      cp = Math.min(cp + 20, stats.cp);
+      log.push({ step: steps, key, type: 'tricks', label: sk.label, cp });
+    }
 
-  // 목표 HQ%에 필요한 최소 품질%
-  const hqTable = [
-    [0,1],[5,2],[9,3],[13,4],[17,5],[21,6],[25,7],[29,8],[33,9],[37,10],
-    [41,11],[45,12],[49,13],[52,14],[55,15],[58,16],[61,17],[64,18],[67,19],[70,20],
-    [73,21],[75,22],[77,23],[79,24],[81,25],[83,26],[85,27],[87,28],[89,29],[91,30],
-    [92,31],[93,32],[94,34],[95,36],[96,40],[97,45],[98,52],[99,62],[100,100],
-  ];
+    // ── 장인의 눈 (품질 100% 즉시) ──
+    else if (sk.type === 'trainedEye') {
+      quality = recipe.baseQuality;
+      const dc = duraCost(sk.dur || 10, buffs);
+      dura -= dc;
+      log.push({ step: steps, key, type: 'quality', label: sk.label, gained: quality, quality, dura });
+    }
 
-  // 목표 HQ%를 달성하는 최소 품질%
-  let minQPct = 100;
-  for (const [q, h] of hqTable) {
-    if (h >= targetHQ) { minQPct = q; break; }
+    // ── 비레고의 축복 ──
+    else if (sk.type === 'byregots') {
+      const gained = calcByregots(stats.control, recipe, buffs, stats.level);
+      quality += gained;
+      if (buffs.greatStrides > 0) buffs.greatStrides = 0;
+      buffs.innerQuiet = 0;
+      const dc = duraCost(sk.dur || 10, buffs);
+      dura -= dc;
+      log.push({ step: steps, key, type: 'quality', label: sk.label, gained, quality, dura });
+    }
+
+    // ── 작업진척 ──
+    else if (sk.type === 'progress') {
+      let eff = sk.eff;
+      // 집중 작업: 내구 < dur/2 이면 효율 절반
+      if (key === 'groundwork' && dura < sk.dur) eff = Math.floor(eff / 2);
+
+      const gained = calcProgress(stats.craftsmanship, recipe, eff, buffs, stats.level);
+      progress += gained;
+
+      // 근육 기억 버프 부여
+      if (key === 'muscleMemory') buffs.muscleMemory = 5;
+
+      const dc = duraCost(sk.dur || 10, buffs);
+      dura -= dc;
+
+      // IQ 부여 (reflect 등)
+      if (sk.iqGain) buffs.innerQuiet = Math.min(buffs.innerQuiet + sk.iqGain, 10);
+
+      log.push({ step: steps, key, type: 'progress', label: sk.label, gained, progress, dura });
+
+      // 완성 체크
+      if (progress >= recipe.baseProgress) {
+        if (buffs.finalAppraisal > 0) {
+          progress = recipe.baseProgress - 1;
+          buffs.finalAppraisal = 0;
+        } else {
+          completed = true;
+        }
+      }
+    }
+
+    // ── 품질 ──
+    else if (sk.type === 'quality') {
+      const gained = calcQuality(stats.control, recipe, sk.eff, buffs, stats.level);
+      quality += gained;
+
+      if (buffs.greatStrides > 0) buffs.greatStrides = 0;
+      if (buffs.innerQuiet > 0) {
+        buffs.innerQuiet = Math.min(buffs.innerQuiet + (sk.iqGain || 1), 10);
+      }
+
+      const dc = duraCost(sk.dur || 10, buffs);
+      dura -= dc;
+      log.push({ step: steps, key, type: 'quality', label: sk.label, gained, quality, dura });
+    }
+
+    // ── both (정밀 작업) ──
+    else if (sk.type === 'both') {
+      const pGained = calcProgress(stats.craftsmanship, recipe, sk.eff, buffs, stats.level);
+      const qGained = calcQuality(stats.control, recipe, sk.eff, buffs, stats.level);
+      progress += pGained;
+      quality  += qGained;
+      if (buffs.innerQuiet > 0) buffs.innerQuiet = Math.min(buffs.innerQuiet + 1, 10);
+      if (buffs.greatStrides > 0) buffs.greatStrides = 0;
+      const dc = duraCost(sk.dur || 10, buffs);
+      dura -= dc;
+      log.push({ step: steps, key, type: 'both', label: sk.label, pGained, qGained, progress, quality, dura });
+
+      if (progress >= recipe.baseProgress) {
+        if (buffs.finalAppraisal > 0) { progress = recipe.baseProgress - 1; buffs.finalAppraisal = 0; }
+        else completed = true;
+      }
+    }
+
+    // ── 교묘한 손놀림 내구 회복 (매 스텝 후) ──
+    if (buffs.manipulation > 0) {
+      dura = Math.min(dura + 5, recipe.durability);
+    }
+
+    // ── 버프 카운트다운 ──
+    ['innovation','veneration','greatStrides','manipulation',
+     'wasteNot','wasteNot2','finalAppraisal','muscleMemory'].forEach(b => {
+      if (buffs[b] > 0) buffs[b]--;
+    });
   }
 
-  const minQuality    = Math.ceil(recipe.baseQuality * 10 * minQPct / 100);
-  const levelCorr     = getLevelCorrection(playerLv, recipe.rlv);
+  const maxQuality   = recipe.baseQuality;
+  const qualityPct   = Math.min(100, Math.floor(quality / maxQuality * 100));
+  const hqPct        = calcHQ(qualityPct);
 
-  // 비레고 IQ10 기준 역산 (가장 효율적인 단일 스킬)
-  // 비레고 효율 = 300%, IQ10 보너스 = 2.0, 혁신 = 1.5
-  const byregoEff     = 3.0;   // 300%
-  const iqBonus       = 2.0;   // IQ 10스택
-  const innovBonus    = 1.5;   // 혁신 버프
-
-  // base = floor(control * 10 / baseQuality + 35)
-  // quality = base × byregoEff × levelCorr × iqBonus × innovBonus
-  // → base = minQuality / (byregoEff × levelCorr × iqBonus × innovBonus)
-  // → control = (base - 35) × baseQuality / 10
-
-  const baseNeeded  = minQuality / (byregoEff * levelCorr * iqBonus * innovBonus);
-  const minControl  = Math.ceil((baseNeeded - 35) * recipe.baseQuality / 10);
-
-  const resultEl = document.getElementById('qc-reverse-result');
-  if (resultEl) {
-    resultEl.innerHTML = `
-      <div class="qc-reverse-card">
-        <p>🎯 목표 HQ: <strong>${targetHQ}%</strong></p>
-        <p>📊 필요 품질%: <strong>${minQPct}%</strong>
-           (${minQuality.toLocaleString()} / ${(recipe.baseQuality * 10).toLocaleString()})</p>
-        <p>🎮 최소 제어력: <strong>${minControl.toLocaleString()}</strong>
-           <span class="qc-note">(비레고+IQ10+혁신 기준)</span></p>
-      </div>
-    `;
-  }
+  return { progress, quality, dura, cp, steps, completed, log, recipe, maxQuality, qualityPct, hqPct };
 }
 
-/* ── 스탯 입력 변경 시 자동 재계산 ── */
-function bindStatInputs() {
-  const ids = ['qc-craftsmanship', 'qc-control', 'qc-cp', 'qc-level', 'qc-recipe-level'];
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', runSimulation);
+// ============================================================
+//  UI — 팔레트 렌더링
+// ============================================================
+
+let currentCat = 'progress';
+
+function renderPalette() {
+  const grid = document.getElementById('qc-palette');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  Object.entries(SKILL_DATA).forEach(([key, sk]) => {
+    if (!sk || sk.cat !== currentCat) return;
+
+    const btn = document.createElement('button');
+    btn.className = 'qc-skill-btn';
+    btn.type = 'button';
+
+    // 아이콘 (ICONS 맵 활용 — index.html 에 이미 정의됨)
+    const iconId = typeof ICONS !== 'undefined' ? ICONS[sk.label] : null;
+    const folder = iconId && iconId.startsWith('06') ? '061000' : '001000';
+    const imgHtml = iconId
+      ? `<img src="https://xivapi.com/i/${folder}/${iconId}_hr1.png" alt="${sk.label}" onerror="this.style.display='none'">`
+      : '';
+
+    btn.innerHTML = `${imgHtml}<span class="qc-skill-label">${sk.label}</span>${sk.cp ? `<span class="qc-skill-cp">${sk.cp}CP</span>` : ''}`;
+    btn.addEventListener('click', () => addSkill(key));
+    grid.appendChild(btn);
   });
 }
 
-/* ── 초기화 (DOMContentLoaded) ── */
-function initQualCalc() {
-  renderRotationBuilder();
-  renderSequence();
-  clearResult();
-  bindStatInputs();
+// 팔레트 탭 버튼 초기화
+function initPaletteTabs() {
+  document.querySelectorAll('.qc-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentCat = btn.dataset.cat;
+      document.querySelectorAll('.qc-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderPalette();
+    });
+  });
+}
 
-  // 시퀀스 초기화 버튼
+// ============================================================
+//  UI — 시퀀스
+// ============================================================
+
+let sequence = [];
+
+function addSkill(key) {
+  sequence.push(key);
+  renderSequence();
+  updateCpDisplay();
+}
+
+function removeSkill(idx) {
+  sequence.splice(idx, 1);
+  renderSequence();
+  updateCpDisplay();
+}
+
+function undoSkill() {
+  if (sequence.length === 0) return;
+  sequence.pop();
+  renderSequence();
+  updateCpDisplay();
+}
+
+function clearSequence() {
+  sequence = [];
+  renderSequence();
+  updateCpDisplay();
+  hideResult();
+}
+
+function renderSequence() {
+  const container = document.getElementById('qc-sequence');
+  if (!container) return;
+
+  if (sequence.length === 0) {
+    container.innerHTML = '<p class="qc-empty-msg">아직 추가된 스킬이 없습니다 🙂</p>';
+    document.getElementById('qc-step-count').textContent = '스텝 : 0';
+    document.getElementById('qc-total-cp').textContent   = '총 CP 소비 : 0';
+    return;
+  }
+
+  container.innerHTML = '';
+  let totalCp = 0;
+
+  sequence.forEach((key, idx) => {
+    const sk = SKILL_DATA[key];
+    if (!sk) return;
+    totalCp += (sk.cp || 0);
+
+    const chip = document.createElement('div');
+    chip.className = 'qc-sequence-item';
+
+    const iconId = typeof ICONS !== 'undefined' ? ICONS[sk.label] : null;
+    const folder = iconId && iconId.startsWith('06') ? '061000' : '001000';
+    const imgHtml = iconId
+      ? `<img src="https://xivapi.com/i/${folder}/${iconId}_hr1.png" alt="${sk.label}" onerror="this.style.display='none'">`
+      : '';
+
+    chip.innerHTML = `
+      <span class="qc-seq-num">${idx + 1}</span>
+      ${imgHtml}
+      <span class="qc-seq-label">${sk.label}</span>
+      ${sk.cp ? `<span class="qc-seq-cp">${sk.cp}CP</span>` : ''}
+      <button class="qc-seq-del" type="button" onclick="removeSkill(${idx})">✕</button>
+    `;
+    container.appendChild(chip);
+  });
+
+  document.getElementById('qc-step-count').textContent = `스텝 : ${sequence.length}`;
+  document.getElementById('qc-total-cp').textContent   = `총 CP 소비 : ${totalCp}`;
+}
+
+function updateCpDisplay() {
+  const stats  = getStats();
+  const totalCp = sequence.reduce((sum, key) => sum + (SKILL_DATA[key]?.cp || 0), 0);
+  const remain  = stats.cp - totalCp;
+  const badge   = document.getElementById('qc-cp-display');
+  if (badge) {
+    badge.textContent = `CP : ${remain} / ${stats.cp}`;
+    badge.style.color = remain < 0 ? 'var(--red)' : '';
+  }
+}
+
+// ============================================================
+//  UI — 결과 렌더링 (B안: 각 id에 값 주입)
+// ============================================================
+
+function hideResult() {
+  const sec = document.getElementById('qc-result-section');
+  if (sec) sec.classList.add('qc-hidden');
+}
+
+function showResult(result) {
+  const sec = document.getElementById('qc-result-section');
+  if (!sec) return;
+  sec.classList.remove('qc-hidden');
+
+  // 작업량
+  const progressPct = Math.min(100, Math.floor(result.progress / result.recipe.baseProgress * 100));
+  document.getElementById('qc-res-progress').textContent  = `${result.progress.toLocaleString()} / ${result.recipe.baseProgress.toLocaleString()}`;
+  document.getElementById('qc-bar-progress').style.width  = `${progressPct}%`;
+  document.getElementById('qc-pct-progress').textContent  = `${progressPct}%`;
+
+  // 품질
+  document.getElementById('qc-res-quality').textContent   = `${result.quality.toLocaleString()} / ${result.maxQuality.toLocaleString()}`;
+  document.getElementById('qc-bar-quality').style.width   = `${result.qualityPct}%`;
+  document.getElementById('qc-pct-quality').textContent   = `${result.qualityPct}%`;
+
+  // 내구도
+  const duraPct = Math.max(0, Math.floor(result.dura / result.recipe.durability * 100));
+  document.getElementById('qc-res-durability').textContent = `${result.dura} / ${result.recipe.durability}`;
+  document.getElementById('qc-bar-durability').style.width = `${duraPct}%`;
+  document.getElementById('qc-pct-durability').textContent = `${duraPct}%`;
+
+  // HQ
+  document.getElementById('qc-res-hq').textContent        = `${result.hqPct}%`;
+  document.getElementById('qc-bar-hq').style.width        = `${result.hqPct}%`;
+  document.getElementById('qc-res-hq-sub').textContent    = `품질 ${result.qualityPct}% 달성 시`;
+
+  // 제작 성공 여부
+  const statusEl   = document.getElementById('qc-craft-status');
+  const statusText = document.getElementById('qc-craft-status-text');
+  if (statusEl && statusText) {
+    statusEl.classList.remove('qc-hidden');
+    if (result.completed) {
+      statusText.textContent = '제작 성공 ✅';
+      statusEl.style.color   = 'var(--green)';
+    } else {
+      statusText.textContent = '작업량 미달 ❌';
+      statusEl.style.color   = 'var(--red)';
+    }
+  }
+
+  // 단계별 로그
+  renderLog(result.log);
+}
+
+function renderLog(log) {
+  const el = document.getElementById('qc-step-log');
+  if (!el) return;
+
+  el.innerHTML = log.map(entry => {
+    let detail = '';
+    if (entry.type === 'progress') detail = `진척 +${entry.gained.toLocaleString()} → ${entry.progress.toLocaleString()} | 내구 ${entry.dura}`;
+    else if (entry.type === 'quality') detail = `품질 +${entry.gained.toLocaleString()} → ${entry.quality.toLocaleString()} | 내구 ${entry.dura}`;
+    else if (entry.type === 'both')   detail = `진척 +${entry.pGained} / 품질 +${entry.qGained} | 내구 ${entry.dura}`;
+    else if (entry.type === 'buff')   detail = '버프 적용';
+    else if (entry.type === 'repair') detail = `내구 → ${entry.dura}`;
+    else if (entry.type === 'tricks') detail = `CP → ${entry.cp}`;
+    else if (entry.note)              detail = entry.note;
+
+    return `<div class="qc-log-row">
+      <span class="qc-log-step">${entry.step}</span>
+      <span class="qc-log-name">${entry.label || entry.key}</span>
+      <span class="qc-log-detail">${detail}</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+//  역산
+// ============================================================
+
+function runReverse() {
+  const targetHQ = parseInt(document.getElementById('qc-target-hq').value) || 90;
+  const recipe   = getRecipe();
+  const stats    = getStats();
+
+  // 목표 HQ% 달성에 필요한 최소 품질%
+  let minQPct = 100;
+  for (const [q, h] of HQ_TABLE) {
+    if (h >= targetHQ) { minQPct = q; break; }
+  }
+
+  const minQuality = Math.ceil(recipe.baseQuality * minQPct / 100);
+  const lc         = levelCorrection(stats.level, recipe.rlv);
+
+  // 비레고 IQ10 + 혁신 기준 역산
+  // base = floor(control * 10 / LEVEL_DIV + 35)
+  // quality = base * 3.0(효율300%) * lc * 2.0(IQ10) * 1.5(혁신)
+  const totalMult  = 3.0 * lc * 2.0 * 1.5;
+  const baseNeeded = minQuality / totalMult;
+  const minControl = Math.ceil((baseNeeded - 35) * LEVEL_DIV / 10);
+
+  const resEl = document.getElementById('qc-reverse-result');
+  if (!resEl) return;
+  resEl.classList.remove('qc-hidden');
+  document.getElementById('qc-reverse-control').textContent = minControl.toLocaleString();
+  document.getElementById('qc-reverse-quality').textContent = minQuality.toLocaleString();
+  document.getElementById('qc-reverse-hq').textContent      = `${targetHQ}%`;
+}
+
+// ============================================================
+//  초기화
+// ============================================================
+
+function initQualCalc() {
+  initPaletteTabs();
+  renderPalette();
+  renderSequence();
+  hideResult();
+
+  // 시뮬레이션 버튼
+  const simBtn = document.getElementById('qc-simulate-btn');
+  if (simBtn) {
+    simBtn.addEventListener('click', () => {
+      if (sequence.length === 0) return;
+      const result = simulate(sequence);
+      showResult(result);
+    });
+  }
+
+  // 초기화 버튼
   const clearBtn = document.getElementById('qc-clear-btn');
   if (clearBtn) clearBtn.addEventListener('click', clearSequence);
 
+  // 되돌리기 버튼
+  const undoBtn = document.getElementById('qc-undo-btn');
+  if (undoBtn) undoBtn.addEventListener('click', undoSkill);
+
   // 역산 버튼
-  const reverseBtn = document.getElementById('qc-reverse-btn');
-  if (reverseBtn) reverseBtn.addEventListener('click', calcMinControl);
+  const revBtn = document.getElementById('qc-reverse-btn');
+  if (revBtn) revBtn.addEventListener('click', runReverse);
+
+  // 스탯 입력 변경 시 CP 뱃지 업데이트
+  ['qc-craftsmanship','qc-control','qc-cp','qc-level'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateCpDisplay);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', initQualCalc);
