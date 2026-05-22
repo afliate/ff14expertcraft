@@ -1,0 +1,149 @@
+/* =============================================
+   품질 계산기 전용 스타일
+   ============================================= */
+
+/* 3열 / 2열 입력 그리드 */
+.input-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.input-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  .input-grid-3,
+  .input-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* c₀q 뱃지 행 */
+.c0q-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-subtle, #1e2433);
+  border-radius: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.c0q-label {
+  font-size: 0.85rem;
+  color: var(--text-muted, #8899aa);
+}
+.c0q-badge {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent, #7ec8e3);
+  min-width: 60px;
+}
+.c0q-formula {
+  font-size: 0.78rem;
+  color: var(--text-muted, #8899aa);
+  font-family: monospace;
+}
+
+/* 테이블 스크롤 래퍼 */
+.table-scroll {
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+/* 품질 결과 테이블 */
+.qc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.qc-table th,
+.qc-table td {
+  padding: 9px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--border, #2a3045);
+  white-space: nowrap;
+}
+.qc-table th {
+  background: var(--bg-header, #1a2035);
+  color: var(--text-muted, #8899aa);
+  font-weight: 600;
+  font-size: 0.80rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.qc-table td.col-rot {
+  text-align: left;
+  white-space: normal;
+  min-width: 200px;
+}
+.qc-table tbody tr:hover {
+  background: var(--row-hover, #222840);
+}
+.qc-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 품질 수치 강조 */
+.qc-quality-val {
+  font-weight: 700;
+  font-size: 1.0rem;
+  color: var(--quality-color, #f0c060);
+}
+.qc-quality-val.high  { color: #5de87a; }
+.qc-quality-val.mid   { color: #f0c060; }
+.qc-quality-val.low   { color: #e87070; }
+
+/* 계수 뱃지 */
+.coeff-badge {
+  display: inline-block;
+  background: var(--bg-subtle, #1e2433);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--accent-soft, #a0c8e0);
+}
+
+/* 위진 포함 행 강조 */
+.qc-table tbody tr.has-gs {
+  background: var(--gs-row-bg, #1a2530);
+}
+
+/* 역산 결과 박스 */
+.reverse-result-box {
+  margin-top: 12px;
+  padding: 16px 20px;
+  background: var(--bg-subtle, #1e2433);
+  border-radius: 10px;
+  min-height: 60px;
+}
+.reverse-placeholder {
+  color: var(--text-muted, #8899aa);
+  font-size: 0.85rem;
+}
+.reverse-result-main {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main, #ddeeff);
+  margin-bottom: 6px;
+}
+.reverse-result-main span.val {
+  font-size: 1.5rem;
+  color: var(--accent, #7ec8e3);
+  margin: 0 4px;
+}
+.reverse-result-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted, #8899aa);
+}
+
+/* section-desc 공통 */
+.section-desc {
+  font-size: 0.84rem;
+  color: var(--text-muted, #8899aa);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
