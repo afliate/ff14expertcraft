@@ -1214,262 +1214,162 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div id="tab-calc" class="tab-panel">
+  <div id="tab-calc" class="tab-panel">
   <div class="page-hero">
     <div class="eyebrow">Progress Calculator</div>
     <h1><em>작업량</em> 계산기</h1>
-    <p>작숙 수치로 스킬별 작업량을 계산해요</p>
+    <p>작숙 입력 후 레시피를 선택하면 스킬 조합별 작업량을 계산해요</p>
   </div>
-  <div class="calc-card">
-    <div class="calc-title">작업량 계산기</div>
-    <div class="calc-sub">작숙 수치와 레시피 요구치를 입력하면 강행·모범 작업 횟수를 알려줘요</div>
-    <div class="f-row"><label class="f-label">작업 숙련도 (작숙)</label><input class="f-input" id="c-lv" type="number" placeholder="예: 5430"></div>
-    <div class="f-row"><label class="f-label">레시피 작업량 요구치</label><input class="f-input" id="c-req" type="number" placeholder="예: 9900"></div>
-    <button class="calc-btn" onclick="calcCraft()">계산하기</button>
-    <div class="calc-result" id="craft-res">
-      <div class="r-row"><span class="r-label">강행 작업 1회</span><span class="r-value" id="r-gh">—</span></div>
-      <div class="r-row"><span class="r-label">모범 작업 1회</span><span class="r-value" id="r-mb">—</span></div>
-      <div class="r-row"><span class="r-label">작업 1회</span><span class="r-value" id="r-jk">—</span></div>
-      <div class="r-row"><span class="r-label">확신+강행 1회</span><span class="r-value" id="r-hw">—</span></div>
-      <div class="r-sub" id="r-cc"></div>
+ 
+  <div class="calc-body">
+ 
+    <!-- 입력 패널 -->
+    <div class="input-panel">
+ 
+      <div>
+        <div class="input-section-label">모드</div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" onclick="switchCalcMode('preset',this)">우주개척</button>
+          <button class="mode-btn" onclick="switchCalcMode('custom',this)">커스텀</button>
+        </div>
+      </div>
+ 
+      <!-- 우주개척 모드 -->
+      <div id="work-preset-mode">
+        <div class="input-section-label">레시피 선택</div>
+        <div class="recipe-chain">
+          <div class="c-field">
+            <label>지역</label>
+            <select id="sel-region" onchange="onRegionChange()">
+              <option value="">── 지역 선택 ──</option>
+              <option value="oizys">오이지스</option>
+              <option value="paenna">파엔나</option>
+              <option value="dongyeong">동경의 만</option>
+            </select>
+          </div>
+          <div class="chain-arrow">▼</div>
+          <div class="c-field">
+            <label>레시피</label>
+            <select id="sel-group" onchange="onGroupChange()" disabled>
+              <option value="">── 지역을 먼저 선택 ──</option>
+            </select>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- 커스텀 모드 -->
+      <div id="work-custom-mode" style="display:none;">
+        <div class="input-section-label">수치 직접 입력</div>
+        <div class="custom-box">
+          <div class="c-field">
+            <label>작업량 요구치</label>
+            <input type="number" id="custom-work" value="9700" oninput="calcCustomWork()" placeholder="작업량">
+          </div>
+          <div class="c-field">
+            <label>progressDivider</label>
+            <input type="number" id="custom-pd" value="170" oninput="calcCustomWork()" placeholder="170">
+          </div>
+          <div class="c-field">
+            <label>progressModifier</label>
+            <input type="number" id="custom-pm" value="90" oninput="calcCustomWork()" placeholder="90">
+          </div>
+        </div>
+      </div>
+ 
+      <div class="c-divider"></div>
+ 
+      <div>
+        <div class="input-section-label">캐릭터 스탯</div>
+        <div class="c-field">
+          <label>작업 숙련도</label>
+          <input type="number" id="crafts-input" value="5811" class="filled" oninput="onCraftsChange()">
+          <div class="c-hint">음식·약액 포함 최종 수치</div>
+        </div>
+      </div>
+ 
+    </div><!-- /input-panel -->
+ 
+    <!-- 결과 패널 -->
+    <div class="c-result-panel" id="work-result">
+      <div class="c-empty-state">
+        <div class="c-empty-icon">⚒</div>
+        <p>지역과 레시피를 선택하면<br>작업량 계산 결과가 표시됩니다</p>
+      </div>
     </div>
-  </div>
-  <div class="guide-note" style="margin-top:16px;font-size:12px;max-width:440px">⚠️ 계산 공식은 7.x 근사치 기반이에요. 정확한 수치는 Teamcraft 시뮬레이터에서 확인을 추천해요.</div>
-</div>
+ 
+  </div><!-- /calc-body -->
+</div><!-- /tab-calc -->
 
 <div id="tab-qualcalc" class="tab-panel">
-
-  <!-- ── 페이지 타이틀 ── -->
-  <div class="qc-header">
-    <h2>✨ 품질 계산기</h2>
-    <p class="qc-subtitle">로테이션을 구성하고 HQ 확률을 확인하세요</p>
+  <div class="page-hero">
+    <div class="eyebrow">Quality Calculator</div>
+    <h1><em>품질</em> 계산기</h1>
+    <p>가공숙련도와 레시피를 선택하면 마무리 로테이션별 품질을 계산해요</p>
   </div>
-
-  <!-- ── 스탯 입력 폼 ── -->
-  <section class="qc-section">
-    <h3 class="qc-section-title">📊 캐릭터 스탯 입력</h3>
-
-    <div class="qc-stat-grid">
-
-      <div class="qc-stat-item">
-        <label for="qc-craftsmanship">작업숙련도</label>
-        <input type="number" id="qc-craftsmanship"
-               placeholder="예: 3500" min="0" max="9999" value="3500">
-      </div>
-
-      <div class="qc-stat-item">
-        <label for="qc-control">가공숙련도</label>
-        <input type="number" id="qc-control"
-               placeholder="예: 3400" min="0" max="9999" value="3400">
-      </div>
-
-      <div class="qc-stat-item">
-        <label for="qc-cp">CP</label>
-        <input type="number" id="qc-cp"
-               placeholder="예: 600" min="0" max="9999" value="600">
-      </div>
-
-      <div class="qc-stat-item">
-        <label for="qc-level">제작 레벨</label>
-        <input type="number" id="qc-level"
-               placeholder="예: 100" min="1" max="100" value="100">
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── 레시피 선택 ── -->
-  <section class="qc-section">
-    <h3 class="qc-section-title">📋 레시피 정보</h3>
-
-    <div class="qc-stat-grid">
-
-      <div class="qc-stat-item">
-        <label for="qc-recipe-level">레시피 레벨 (rlv)</label>
-        <input type="number" id="qc-recipe-level"
-               placeholder="예: 690" min="1" max="999" value="690">
-      </div>
-
-      <div class="qc-stat-item">
-        <label for="qc-base-progress">기본 작업량</label>
-        <input type="number" id="qc-base-progress"
-               placeholder="예: 3900" min="1" max="99999" value="3900">
-      </div>
-
-      <div class="qc-stat-item">
-        <label for="qc-base-quality">기본 품질</label>
-        <input type="number" id="qc-base-quality"
-               placeholder="예: 10920" min="1" max="99999" value="10920">
-      </div>
-
-      <div class="qc-stat-item">
-        <label for="qc-durability">내구도</label>
-        <select id="qc-durability">
-          <option value="80">80</option>
-          <option value="70">70</option>
-          <option value="60" selected>60</option>
-          <option value="55">55</option>
-          <option value="40">40</option>
-          <option value="35">35</option>
-        </select>
-      </div>
-
-    </div>
-  </section>
-  <!-- ── 스킬 팔레트 (로테이션 빌더) ── -->
-  <section class="qc-section">
-    <h3 class="qc-section-title">🛠️ 스킬 팔레트</h3>
-    <p class="qc-hint">스킬을 클릭하면 시퀀스에 추가됩니다</p>
-
-    <!-- 카테고리 탭 -->
-    <div class="qc-palette-tabs">
-      <button class="qc-tab-btn active" data-cat="progress">작업</button>
-      <button class="qc-tab-btn" data-cat="quality">가공</button>
-      <button class="qc-tab-btn" data-cat="buff">버프</button>
-      <button class="qc-tab-btn" data-cat="durability">내구</button>
-      <button class="qc-tab-btn" data-cat="special">특수</button>
-    </div>
-
-    <!-- 스킬 버튼 렌더링 영역 (qualcalc.js 가 채워줌) -->
-    <div id="qc-palette" class="qc-palette-grid"></div>
-
-  </section>
-
-  <!-- ── 시퀀스 영역 ── -->
-  <section class="qc-section">
-    <h3 class="qc-section-title">📝 시퀀스</h3>
-
-    <!-- 시퀀스 컨트롤 버튼 -->
-    <div class="qc-sequence-controls">
-      <button id="qc-clear-btn" class="qc-btn qc-btn-danger">
-        🗑️ 초기화
-      </button>
-      <button id="qc-undo-btn" class="qc-btn qc-btn-secondary">
-        ↩️ 되돌리기
-      </button>
-      <span id="qc-cp-display" class="qc-cp-badge">
-        CP : 0 / 0
-      </span>
-    </div>
-
-    <!-- 시퀀스 스킬 목록 (qualcalc.js 가 채워줌) -->
-    <div id="qc-sequence" class="qc-sequence-list">
-      <p class="qc-empty-msg">아직 추가된 스킬이 없습니다 🙂</p>
-    </div>
-
-    <!-- 시퀀스 요약 (스텝 수 / 총 CP) -->
-    <div class="qc-sequence-summary">
-      <span id="qc-step-count">스텝 : 0</span>
-      <span id="qc-total-cp">총 CP 소비 : 0</span>
-    </div>
-
-  </section>
- <!-- ── 시뮬레이션 실행 버튼 ── -->
-  <div class="qc-run-wrap">
-    <button id="qc-simulate-btn" class="qc-btn qc-btn-primary qc-btn-large">
-      ⚙️ 시뮬레이션 실행
-    </button>
-  </div>
-
-  <!-- ── 결과 카드 영역 (초기에는 숨김) ── -->
-  <section id="qc-result-section" class="qc-section qc-hidden">
-    <h3 class="qc-section-title">📈 시뮬레이션 결과</h3>
-
-    <div class="qc-result-grid">
-
-      <!-- 작업량 카드 -->
-      <div class="qc-result-card" id="qc-card-progress">
-        <div class="qc-result-label">작업량</div>
-        <div class="qc-result-value" id="qc-res-progress">0 / 0</div>
-        <div class="qc-result-bar-wrap">
-          <div class="qc-result-bar" id="qc-bar-progress" style="width:0%"></div>
+ 
+  <div class="calc-body">
+ 
+    <!-- 입력 패널 -->
+    <div class="input-panel">
+ 
+      <div>
+        <div class="input-section-label">능력치</div>
+        <div class="c-field">
+          <label>가공 숙련도</label>
+          <input type="number" id="q-cons" placeholder="예: 5580" oninput="onQualityChange()">
         </div>
-        <div class="qc-result-pct" id="qc-pct-progress">0%</div>
-      </div>
-
-      <!-- 품질 카드 -->
-      <div class="qc-result-card" id="qc-card-quality">
-        <div class="qc-result-label">품질</div>
-        <div class="qc-result-value" id="qc-res-quality">0 / 0</div>
-        <div class="qc-result-bar-wrap">
-          <div class="qc-result-bar qc-bar-quality" id="qc-bar-quality" style="width:0%"></div>
+        <div class="c-field" style="margin-top:10px;">
+          <label>보유 CP</label>
+          <input type="number" id="q-cp" placeholder="예: 649" oninput="onQualityChange()">
         </div>
-        <div class="qc-result-pct" id="qc-pct-quality">0%</div>
       </div>
-
-      <!-- 내구도 카드 -->
-      <div class="qc-result-card" id="qc-card-durability">
-        <div class="qc-result-label">내구도</div>
-        <div class="qc-result-value" id="qc-res-durability">0 / 0</div>
-        <div class="qc-result-bar-wrap">
-          <div class="qc-result-bar qc-bar-durability" id="qc-bar-durability" style="width:0%"></div>
+ 
+      <div>
+        <div class="input-section-label">레시피</div>
+        <div class="recipe-chain">
+          <div class="c-field">
+            <label>지역</label>
+            <select id="q-region" onchange="onQRegionChange()">
+              <option value="">── 지역 선택 ──</option>
+              <option value="dongyeong">동경의 만</option>
+              <option value="paenna">파엔나</option>
+              <option value="oizys">오이지스</option>
+            </select>
+          </div>
+          <div class="c-field">
+            <label>레시피 그룹</label>
+            <select id="q-group" onchange="onQGroupChange()" disabled>
+              <option value="">── 지역을 먼저 선택 ──</option>
+            </select>
+          </div>
+          <div class="c-field" id="q-variant-field" style="display:none;">
+            <label>세부 변형</label>
+            <select id="q-variant" onchange="onQVariantChange()"></select>
+          </div>
         </div>
-        <div class="qc-result-pct" id="qc-pct-durability">0%</div>
       </div>
-
-      <!-- HQ 확률 카드 -->
-      <div class="qc-result-card qc-card-hq" id="qc-card-hq">
-        <div class="qc-result-label">✨ HQ 확률</div>
-        <div class="qc-result-value qc-hq-value" id="qc-res-hq">0%</div>
-        <div class="qc-result-bar-wrap">
-          <div class="qc-result-bar qc-bar-hq" id="qc-bar-hq" style="width:0%"></div>
+ 
+      <div>
+        <div class="input-section-label">제한 조건</div>
+        <div class="c-field">
+          <label>내구도 소모 한도</label>
+          <input type="number" id="q-dur" placeholder="레시피 자동 입력" oninput="onQualityChange()">
+          <span class="c-hint">교묘한 손놀림 등 추가 내구 포함 총량</span>
         </div>
-        <div class="qc-result-sub" id="qc-res-hq-sub">품질 0 달성 시</div>
       </div>
-
-    </div>
-
-    <!-- 제작 성공 여부 배지 -->
-    <div id="qc-craft-status" class="qc-craft-status qc-hidden">
-      <span id="qc-craft-status-text">제작 성공 ✅</span>
-    </div>
-
-    <!-- 단계별 로그 (펼치기/접기) -->
-    <details class="qc-log-details">
-      <summary>🔍 단계별 로그 보기</summary>
-      <div id="qc-step-log" class="qc-step-log"></div>
-    </details>
-
-  </section>
-
-  <!-- ── 역산 섹션 : 목표 품질 → 필요 가공숙련도 ── -->
-  <section class="qc-section">
-    <h3 class="qc-section-title">🔄 역산 계산기</h3>
-    <p class="qc-hint">목표 HQ% 달성에 필요한 최소 가공숙련도를 계산합니다</p>
-
-    <div class="qc-stat-grid">
-
-      <div class="qc-stat-item">
-        <label for="qc-target-hq">목표 HQ (%)</label>
-        <input type="number" id="qc-target-hq"
-               placeholder="예: 90" min="1" max="100" value="90">
+ 
+    </div><!-- /input-panel -->
+ 
+    <!-- 결과 패널 -->
+    <div id="quality-result">
+      <div class="c-empty-state">
+        <div class="c-empty-icon">✨</div>
+        <p>레시피와 가공 숙련도를 입력하면<br>품질 로테이션 결과가 표시됩니다</p>
       </div>
-
-      <div class="qc-stat-item">
-        <label for="qc-target-steps">허용 스텝 수</label>
-        <input type="number" id="qc-target-steps"
-               placeholder="예: 20" min="1" max="50" value="20">
-      </div>
-
     </div>
-
-    <div class="qc-run-wrap">
-      <button id="qc-reverse-btn" class="qc-btn qc-btn-secondary qc-btn-large">
-        🔄 역산 실행
-      </button>
-    </div>
-
-    <!-- 역산 결과 -->
-    <div id="qc-reverse-result" class="qc-reverse-result qc-hidden">
-      <p>필요 최소 가공숙련도 :
-        <strong id="qc-reverse-control">—</strong>
-      </p>
-      <p>예상 달성 품질 :
-        <strong id="qc-reverse-quality">—</strong>
-      </p>
-      <p>예상 HQ 확률 :
-        <strong id="qc-reverse-hq">—</strong>
-      </p>
-    </div>
+ 
+  </div><!-- /calc-body -->
+</div><!-- /tab-qualcalc -->
 
   </section>
 
