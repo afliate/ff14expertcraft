@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>파판14 고난도 제작 가이드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="qualcalc.css">
 <script src="recipes.js"></script>  
 </head>
+  
 <body>
 <div class="layout">
 
@@ -799,33 +801,6 @@
     <p>게임 옆에 켜두고 상태별 반응 빠르게 확인하세요</p>
   </div>
 
-<style>
-/* 상태 색상 — 텍스트 */
-.st-normal   { color: var(--text-dim); }
-.st-hq       { color: #e85a7a; font-weight:700; }
-.st-he       { color: #4dc890; font-weight:700; }
-.st-stable   { color: #c8b840; font-weight:700; }
-.st-solid    { color: #7aaed4; font-weight:700; }
-.st-sturdy   { color: #6ab8cc; font-weight:700; }
-.st-fast     { color: #4a7fd4; font-weight:700; }
-.st-good     { color: #e89040; font-weight:700; }
-.st-long     { color: #a080c8; font-weight:700; }
-/* 상태 셀 배경 — 첫번째 td만 */
-.tbl tr td:first-child.st-normal { background: rgba(122,150,168,.10); }
-.tbl tr td:first-child.st-hq     { background: rgba(232,90,122,.18); }
-.tbl tr td:first-child.st-he     { background: rgba(77,200,144,.18); }
-.tbl tr td:first-child.st-stable { background: rgba(200,184,64,.16); }
-.tbl tr td:first-child.st-solid  { background: rgba(122,174,212,.18); }
-.tbl tr td:first-child.st-fast   { background: rgba(74,127,212,.16); }
-.tbl tr td:first-child.st-good   { background: rgba(232,144,64,.18); }
-.tbl tr td:first-child.st-long   { background: rgba(160,128,200,.18); }
-/* 스킬 인라인 */
-.si { display:inline-flex; align-items:center; gap:3px; white-space:nowrap; }
-.si img { width:19px; height:19px; border-radius:3px; vertical-align:middle; flex-shrink:0; }
-.si span { font-size:12px; color:var(--text); font-weight:500; }
-.sep { color:var(--text-dim); font-size:12px; margin:0 1px; }
-.tbl td.col-k { color:var(--text-dim); font-size:12px; line-height:2.0; }
-</style>
 
 <!-- 스킬 아이콘 단축 매크로: JS로 렌더링 -->
 <script>
