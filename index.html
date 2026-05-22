@@ -7,7 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="qualcalc.css">
-<script src="recipes.js"></script>  
+<script src="recipes.js"></script>
+<script src="qualcalc.js"></script>
 </head>
   
 <body>
@@ -1214,7 +1215,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div id="tab-calc" class="tab-panel">
-  <div id="tab-calc" class="tab-panel">
   <div class="page-hero">
     <div class="eyebrow">Progress Calculator</div>
     <h1><em>작업량</em> 계산기</h1>
@@ -1298,7 +1298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
  
   </div><!-- /calc-body -->
-</div><!-- /tab-calc -->
+</div><!-- /tab-calc (end) -->
 
 <div id="tab-qualcalc" class="tab-panel">
   <div class="page-hero">
@@ -1370,10 +1370,6 @@ document.addEventListener('DOMContentLoaded', () => {
  
   </div><!-- /calc-body -->
 </div><!-- /tab-qualcalc -->
-
-  </section>
-
-</div><!-- /#tab-qualcalc  (Part 1 에서 열린 div 닫기) -->
 
 <div id="tab-gear" class="tab-panel">
   <div class="page-hero">
@@ -1502,39 +1498,6 @@ function filterRegion(region) {
       sec.classList.toggle('hidden', sec.dataset.region !== region);
     }
   });
-}
-
-/* ── 작업량 계산기 (팀크래프트 공식) ── */
-function calcCraft() {
-  const craftsmanship = parseFloat(document.getElementById('c-lv').value);
-  const req = parseFloat(document.getElementById('c-req').value);
-  if (!craftsmanship) return;
-
-  // 팀크래프트 공식: baseProgress = craftsmanship * 10/levelDiv + 2
-  // 7.x 고난도 기준 levelDiv = 180, progressModifier = 80
-  const levelDiv = 180;
-  const progressModifier = 80;
-
-  const baseProgress = Math.floor(craftsmanship * 10 / levelDiv + 2);
-  const modProgress = Math.floor(baseProgress * progressModifier / 100);
-
-  // 각 스킬 효율 적용
-  const jk  = Math.floor(modProgress * 1.0);   // 작업 효율 100
-  const mb  = Math.floor(modProgress * 1.5);   // 모범 작업 효율 150 (수정됨!)
-  const gh  = Math.floor(modProgress * 5.0);   // 강행 작업 효율 500
-  const hw  = Math.floor(modProgress * 3.0);   // 확신(300) 기준 (공경+강행은 별도)
-
-  document.getElementById('r-jk').textContent  = jk.toLocaleString();
-  document.getElementById('r-mb').textContent  = mb.toLocaleString();
-  document.getElementById('r-gh').textContent  = gh.toLocaleString();
-  document.getElementById('r-hw').textContent  = hw.toLocaleString();
-
-  if (req) {
-    const need = req - mb;
-    document.getElementById('r-cc').textContent =
-      `모범 작업 1딸깍 남기려면 ${need > 0 ? need.toLocaleString() : '이미 충분해요!'} 이상 채우면 돼요.`;
-  }
-  document.getElementById('craft-res').classList.add('show');
 }
 
 
