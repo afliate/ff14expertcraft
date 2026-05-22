@@ -1,593 +1,655 @@
-'use strict';
-
 // ============================================================
-//  상수 & 데이터
+//  calc.js  ·  작업/품질 계산기 (index.html 이식용)
+//  HARD_RECIPES 는 recipes.js 에서 로드됨
 // ============================================================
 
-// 7.x 고난도 기준 levelDiv
-const LEVEL_DIV = 180;
+// ── rlvl별 progressDivider / progressModifier ──
+function getRlvlParams(rlvl) {
+  if (rlvl >= 750) return { pD: 180, pM: 90 };
+  if (rlvl >= 740) return { pD: 178, pM: 90 };
+  if (rlvl >= 730) return { pD: 175, pM: 90 };
+  if (rlvl >= 720) return { pD: 170, pM: 90 };
+  if (rlvl >= 710) return { pD: 168, pM: 90 };
+  if (rlvl >= 700) return { pD: 165, pM: 85 };
+  return { pD: 160, pM: 80 };
+}
 
-// 스킬 데이터
-// type: 'progress' | 'quality' | 'buff' | 'durability' | 'special'
-// cat:  팔레트 탭 카테고리
-const SKILL_DATA = {
-  /* ── 작업(progress) ── */
-  muscleMemory:     { label: '근육 기억',       cat: 'progress', type: 'progress', eff: 300,  cp: 6,   dur: 10 },
-  reflect:          { label: '진가',            cat: 'progress', type: 'progress', eff: 300,  cp: 6,   dur: 10, iqGain: 2 },
-  basicSynth:       { label: '기초 합성',        cat: 'progress', type: 'progress', eff: 120,  cp: 0,   dur: 10 },
-  carefulSynth:     { label: '모범 합성',        cat: 'progress', type: 'progress', eff: 180,  cp: 7,   dur: 10 },
-  prudentSynth:     { label: '절약 작업',        cat: 'progress', type: 'progress', eff: 180,  cp: 18,  dur: 5  },
-  groundwork:       { label: '집중 작업',        cat: 'progress', type: 'progress', eff: 360,  cp: 18,  dur: 20 },
-  delicateSynth:    { label: '정밀 작업',        cat: 'progress', type: 'both',     eff: 100,  cp: 32,  dur: 10 },
-  intensiveSynth:   { label: '집중 합성',        cat: 'progress', type: 'progress', eff: 400,  cp: 6,   dur: 10, condReq: 'good' },
+// s0 = floor((crafts * 21/pD + 2) * pM/100)
+function calcS0(crafts, rlvl) {
+  const { pD, pM } = getRlvlParams(rlvl);
+  return Math.floor((crafts * 21 / pD + 2) * pM / 100);
+}
 
-  /* ── 가공(quality) ── */
-  basicTouch:       { label: '기초 가공',        cat: 'quality',  type: 'quality',  eff: 100,  cp: 18,  dur: 10 },
-  standardTouch:    { label: '표준 가공',        cat: 'quality',  type: 'quality',  eff: 125,  cp: 32,  dur: 10 },
-  advancedTouch:    { label: '상급 가공',        cat: 'quality',  type: 'quality',  eff: 150,  cp: 46,  dur: 10 },
-  prudentTouch:     { label: '절약 가공',        cat: 'quality',  type: 'quality',  eff: 100,  cp: 25,  dur: 5  },
-  preparatoryTouch: { label: '밑가공',           cat: 'quality',  type: 'quality',  eff: 200,  cp: 40,  dur: 20, iqGain: 2 },
-  preciseTouch:     { label: '집중 가공',        cat: 'quality',  type: 'quality',  eff: 150,  cp: 18,  dur: 10, condReq: 'good', iqGain: 2 },
-  trainedFinesse:   { label: '장인의 기교',      cat: 'quality',  type: 'quality',  eff: 100,  cp: 32,  dur: 0  },
-  byregotsBlessing: { label: '비레고의 축복',    cat: 'quality',  type: 'byregots', eff: 100,  cp: 24,  dur: 10 },
-  trainedEye:       { label: '장인의 눈',        cat: 'quality',  type: 'trainedEye',eff:100,  cp: 250, dur: 10 },
+// 작업량 = floor(s0 × 효율/100 × 버프배율)
+function calcWork(s0, efficiency, buffMult) {
+  return Math.floor(s0 * efficiency / 100 * buffMult);
+}
 
-  /* ── 버프(buff) ── */
-  muscleMemoryBuff: null, // muscleMemory 는 progress 겸 버프 처리
-  innovation:       { label: '혁신',            cat: 'buff',     type: 'buff',     cp: 18,  buffKey: 'innovation',  duration: 4  },
-  veneration:       { label: '숭경',            cat: 'buff',     type: 'buff',     cp: 18,  buffKey: 'veneration',  duration: 4  },
-  greatStrides:     { label: '장족의 발전',      cat: 'buff',     type: 'buff',     cp: 32,  buffKey: 'greatStrides',duration: 3  },
-  finalAppraisal:   { label: '최종 확인',        cat: 'buff',     type: 'buff',     cp: 1,   buffKey: 'finalAppraisal',duration: 5 },
-  manipulation:     { label: '교묘한 손놀림',    cat: 'durability',type:'buff',     cp: 96,  buffKey: 'manipulation', duration: 8 },
-  wasteNot:         { label: '근검절약',         cat: 'durability',type:'buff',     cp: 56,  buffKey: 'wasteNot',    duration: 4  },
-  wasteNot2:        { label: '장기 절약',        cat: 'durability',type:'buff',     cp: 98,  buffKey: 'wasteNot2',   duration: 8  },
+// c0 = floor((cons*10/150 + 35) * 75/100)
+function calcC0(cons) {
+  return Math.floor((cons * 10 / 150 + 35) * 75 / 100);
+}
 
-  /* ── 내구 회복(durability) ── */
-  mastersMend:      { label: '능숙한 땜질',      cat: 'durability',type:'repair',   cp: 88,  repairAmt: 30 },
-  immaculateMend:   { label: '완벽한 땜질',      cat: 'durability',type:'repairFull',cp: 112 },
+// ── 스킬 조합 데이터 ──
+const SKILL_COMBOS = [
+  {
+    id: 'shin-ko-kang',
+    label: '확신 + 공경 + 강행 작업',
+    chips: [
+      {type:'buff',text:'확신'},{type:'sep',text:'+'},
+      {type:'buff',text:'공경'},{type:'sep',text:'+'},
+      {type:'work',text:'강행 작업'},
+    ],
+    efficiency: 500, workBuff: 1.5, hasShin: true, shinMult: 2.5, stateBuff: false, highlight: true,
+  },
+  {
+    id: 'shin-ko-fast-kang',
+    label: '확신 + 공경 + 빠른 작업 + 강행',
+    chips: [
+      {type:'buff',text:'확신'},{type:'sep',text:'+'},
+      {type:'buff',text:'공경'},{type:'sep',text:'+'},
+      {type:'state',text:'빠른 작업'},{type:'sep',text:'+'},
+      {type:'work',text:'강행 작업'},
+    ],
+    efficiency: 500, workBuff: 1.5, hasShin: true, shinMult: 2.5, stateBuff: 0.5, highlight: false,
+  },
+  {
+    id: 'shin-ko-jip',
+    label: '확신 + 공경 + 집중 작업',
+    chips: [
+      {type:'buff',text:'확신'},{type:'sep',text:'+'},
+      {type:'buff',text:'공경'},{type:'sep',text:'+'},
+      {type:'work',text:'집중 작업'},
+    ],
+    efficiency: 400, workBuff: 1.5, hasShin: true, shinMult: 2.5, stateBuff: false, highlight: false,
+  },
+  {
+    id: 'shin-ko-mit',
+    label: '확신 + 공경 + 밑작업',
+    chips: [
+      {type:'buff',text:'확신'},{type:'sep',text:'+'},
+      {type:'buff',text:'공경'},{type:'sep',text:'+'},
+      {type:'work',text:'밑작업'},
+    ],
+    efficiency: 360, workBuff: 1.5, hasShin: true, shinMult: 2.5, stateBuff: false, highlight: false,
+  },
+  {
+    id: 'ko-kang',
+    label: '공경 + 강행 작업',
+    chips: [
+      {type:'buff',text:'공경'},{type:'sep',text:'+'},
+      {type:'work',text:'강행 작업'},{type:'sep',text:'(확신 없음)'},
+    ],
+    efficiency: 500, workBuff: 1.5, hasShin: false, shinMult: 1.5, stateBuff: false, highlight: false,
+  },
+  {
+    id: 'ko-fast-kang',
+    label: '공경 + 빠른 작업 + 강행',
+    chips: [
+      {type:'buff',text:'공경'},{type:'sep',text:'+'},
+      {type:'state',text:'빠른 작업'},{type:'sep',text:'+'},
+      {type:'work',text:'강행 작업'},
+    ],
+    efficiency: 500, workBuff: 1.5, hasShin: false, shinMult: 1.5, stateBuff: 0.5, highlight: false,
+  },
+  {
+    id: 'kang-solo',
+    label: '강행 작업 (단독)',
+    chips: [
+      {type:'work',text:'강행 작업'},{type:'sep',text:'(단독)'},
+    ],
+    efficiency: 500, workBuff: 1, hasShin: false, shinMult: 1, stateBuff: false, highlight: false,
+  },
+];
 
-  /* ── 특수(special) ── */
-  carefulObservation:{ label: '경과 관찰',       cat: 'special',  type: 'observe',  cp: 7  },
-  tricksOfTrade:    { label: '비결',             cat: 'special',  type: 'tricks',   cp: 0,  condReq: 'good' },
-};
+const SKILL_REF = [
+  {name:'강행 작업', eff:500},
+  {name:'집중 작업', eff:400},
+  {name:'밑작업',    eff:360},
+  {name:'절약 작업', eff:180},
+  {name:'모범 작업', eff:180},
+  {name:'정밀 작업', eff:150},
+  {name:'작업',      eff:120},
+];
 
-// 팔레트 카테고리 레이블
-const CAT_LABELS = {
-  progress:   '작업',
-  quality:    '가공',
-  buff:       '버프',
-  durability: '내구',
-  special:    '특수',
-};
+const FINISH_EFF = 120;
 
-// HQ 테이블 (품질% → HQ%)
-const HQ_TABLE = [
-  [0,1],[5,2],[9,3],[13,4],[17,5],[21,6],[25,7],[29,8],[33,9],[37,10],
-  [41,11],[45,12],[49,13],[52,14],[55,15],[58,16],[61,17],[64,18],[67,19],[70,20],
-  [73,21],[75,22],[77,23],[79,24],[81,25],[83,26],[85,27],[87,28],[89,29],[91,30],
-  [92,31],[93,32],[94,34],[95,36],[96,40],[97,45],[98,52],[99,62],[100,100],
+// ── 품질 로테이션 데이터 ──
+const QUALITY_ROTATIONS = [
+  // 비레고 계열
+  {
+    id: 'jang-hyeok-bire',
+    label: '장족 + 혁신 + 비레고 (10스택)',
+    category: '비레고',
+    chips: [
+      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'비레고 ×10스택'},
+    ],
+    qualityFn: c0 => c0 * 15,
+    cpCost: 74, durCost: 50,
+    note: '실측값 기준', highlight: true,
+  },
+  {
+    id: 'jang-hyeok-mit2-bire',
+    label: '장족 + 혁신 + 밑가공×2 + 비레고',
+    category: '비레고',
+    chips: [
+      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'밑가공×2'},{type:'sep',text:'+'},
+      {type:'quality',text:'비레고 ×10스택'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 31.5),
+    cpCost: 206, durCost: 90,
+    note: '시트 기준 근사', highlight: false,
+  },
+  {
+    id: 'hyeok-bire',
+    label: '혁신 + 비레고 (10스택, 장족 없음)',
+    category: '비레고',
+    chips: [
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'비레고 ×10스택'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 7.5),
+    cpCost: 42, durCost: 50,
+    note: '장족 없이 혁신만', highlight: false,
+  },
+  // 밑가공 계열
+  {
+    id: 'jang-hyeok-mit1',
+    label: '장족 + 혁신 + 밑가공',
+    category: '밑가공',
+    chips: [
+      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'밑가공'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 5),
+    cpCost: 142, durCost: 20,
+    note: '장족+혁신 버프 포함', highlight: false,
+  },
+  {
+    id: 'hyeok-mit1',
+    label: '혁신 + 밑가공',
+    category: '밑가공',
+    chips: [
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'밑가공'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 3),
+    cpCost: 58, durCost: 20,
+    note: '', highlight: false,
+  },
+  {
+    id: 'hyeok-mit2',
+    label: '혁신 + 밑가공 2회',
+    category: '밑가공',
+    chips: [
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'밑가공×2'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 3) * 2,
+    cpCost: 98, durCost: 40,
+    note: '', highlight: false,
+  },
+  {
+    id: 'hyeok-mit3',
+    label: '혁신 + 밑가공 3회',
+    category: '밑가공',
+    chips: [
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'밑가공×3'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 3) * 3,
+    cpCost: 138, durCost: 60,
+    note: '혁신 4턴 내', highlight: false,
+  },
+  // 절약 가공 계열
+  {
+    id: 'jang-hyeok-jeol',
+    label: '장족 + 혁신 + 절약 가공',
+    category: '절약 가공',
+    chips: [
+      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'절약 가공'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 2.5),
+    cpCost: 120, durCost: 5,
+    note: '내구 5 소모', highlight: false,
+  },
+  {
+    id: 'hyeok-jeol2',
+    label: '혁신 + 절약 가공 2회',
+    category: '절약 가공',
+    chips: [
+      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
+      {type:'quality',text:'절약 가공×2'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 1) * 2,
+    cpCost: 68, durCost: 10,
+    note: '', highlight: false,
+  },
+  // 마무리
+  {
+    id: 'sanggup',
+    label: '상급 가공',
+    category: '마무리',
+    chips: [{type:'quality',text:'상급 가공'}],
+    qualityFn: c0 => Math.floor(c0 * 1.5),
+    cpCost: 46, durCost: 10,
+    note: '', highlight: false,
+  },
+  {
+    id: 'jang-sanggup',
+    label: '장족 + 상급 가공',
+    category: '마무리',
+    chips: [
+      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
+      {type:'quality',text:'상급 가공'},
+    ],
+    qualityFn: c0 => Math.floor(c0 * 1.5 * 2),
+    cpCost: 78, durCost: 10,
+    note: '', highlight: false,
+  },
 ];
 
 // ============================================================
-//  계산 함수
+//  작업 계산기 UI
 // ============================================================
 
-function getStats() {
-  return {
-    craftsmanship: parseInt(document.getElementById('qc-craftsmanship').value) || 0,
-    control:       parseInt(document.getElementById('qc-control').value)       || 0,
-    cp:            parseInt(document.getElementById('qc-cp').value)            || 0,
-    level:         parseInt(document.getElementById('qc-level').value)         || 100,
-  };
+let calcRegion = '';
+let calcGroup = '';
+let calcVariantIdx = 0;
+let calcMode = 'preset';
+
+function switchCalcMode(mode, btn) {
+  calcMode = mode;
+  btn.closest('.mode-toggle').querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('work-preset-mode').style.display = mode === 'preset' ? '' : 'none';
+  document.getElementById('work-custom-mode').style.display = mode === 'custom' ? '' : 'none';
+  if (mode === 'custom') calcCustomWork();
+  else renderWorkResult_main();
 }
 
-function getRecipe() {
-  return {
-    rlv:         parseInt(document.getElementById('qc-recipe-level').value)   || 690,
-    baseProgress:parseInt(document.getElementById('qc-base-progress').value)  || 3900,
-    baseQuality: parseInt(document.getElementById('qc-base-quality').value)   || 10920,
-    durability:  parseInt(document.getElementById('qc-durability').value)     || 60,
-  };
+function onRegionChange() {
+  calcRegion = document.getElementById('sel-region').value;
+  calcGroup = '';
+  calcVariantIdx = 0;
+  buildGroupSelector();
+  renderWorkResult_main();
 }
 
-// 레벨 보정 계수 (팀크래프트 공식 기반)
-function levelCorrection(playerLv, rlv) {
-  const recipeClassLv = Math.floor(rlv / 5);   // rlv → 클래스 레벨 근사
-  const diff = playerLv - recipeClassLv;
-  if (diff >= 0) return 1.0 + Math.min(diff, 5) * 0.05;
-  return Math.max(0.1, 1.0 + diff * 0.02);
+function onGroupChange() {
+  calcGroup = document.getElementById('sel-group').value;
+  calcVariantIdx = 0;
+  renderWorkResult_main();
 }
 
-// 작업량 1회
-function calcProgress(craftsmanship, recipe, eff, buffs, playerLv) {
-  const lc   = levelCorrection(playerLv, recipe.rlv);
-  const vene = buffs.veneration > 0 ? 1.5 : 1.0;
-  const mm   = buffs.muscleMemory > 0 ? 2.0 : 1.0;
-  const base = Math.floor(craftsmanship * 10 / LEVEL_DIV + 2);
-  return Math.floor(base * (eff / 100) * lc * vene * mm);
+function onCraftsChange() {
+  const el = document.getElementById('crafts-input');
+  el.classList.toggle('filled', el.value !== '');
+  if (calcMode === 'preset') renderWorkResult_main();
+  else calcCustomWork();
 }
 
-// 품질 1회
-function calcQuality(control, recipe, eff, buffs, playerLv) {
-  const lc     = levelCorrection(playerLv, recipe.rlv);
-  const iq     = Math.min(buffs.innerQuiet, 10);
-  const iqMod  = 1.0 + iq * 0.1;
-  const innov  = buffs.innovation > 0   ? 1.5 : 1.0;
-  const gs     = buffs.greatStrides > 0 ? 2.0 : 1.0;
-  const base   = Math.floor(control * 10 / LEVEL_DIV + 35);
-  return Math.floor(base * (eff / 100) * lc * iqMod * innov * gs);
+function selectVariant(idx) {
+  calcVariantIdx = idx;
+  renderWorkResult_main();
 }
 
-// 비레고 품질 (IQ스택에 따라 효율 변동)
-function calcByregots(control, recipe, buffs, playerLv) {
-  const iq  = Math.min(buffs.innerQuiet, 10);
-  const eff = 100 + iq * 20;   // IQ 10 → 효율 300%
-  // greatStrides 는 calcQuality 안에서 처리
-  return calcQuality(control, recipe, eff, buffs, playerLv);
-}
-
-// 내구 소모 (근검절약 버프 반영)
-function duraCost(base, buffs) {
-  if (buffs.wasteNot > 0 || buffs.wasteNot2 > 0) return Math.ceil(base / 2);
-  return base;
-}
-
-// HQ% 계산
-function calcHQ(qualityPct) {
-  const pct = Math.min(100, Math.max(0, qualityPct));
-  let hq = 1;
-  for (const [q, h] of HQ_TABLE) {
-    if (pct >= q) hq = h;
-    else break;
+function buildGroupSelector() {
+  const sel = document.getElementById('sel-group');
+  if (!calcRegion) {
+    sel.innerHTML = '<option value="">── 지역을 먼저 선택 ──</option>';
+    sel.disabled = true;
+    return;
   }
-  return hq;
-}
-
-// ============================================================
-//  시뮬레이션
-// ============================================================
-
-function simulate(sequence) {
-  const stats  = getStats();
-  const recipe = getRecipe();
-
-  let progress   = 0;
-  let quality    = 0;
-  let dura       = recipe.durability;
-  let cp         = stats.cp;
-  let steps      = 0;
-  let completed  = false;
-  const log      = [];
-
-  const buffs = {
-    innerQuiet:      0,
-    innovation:      0,
-    veneration:      0,
-    greatStrides:    0,
-    manipulation:    0,
-    wasteNot:        0,
-    wasteNot2:       0,
-    finalAppraisal:  0,
-    muscleMemory:    0,
-  };
-
-  for (const key of sequence) {
-    if (completed || dura <= 0) break;
-
-    const sk = SKILL_DATA[key];
-    if (!sk) continue;
-
-    // CP 체크
-    if (cp < (sk.cp || 0)) {
-      log.push({ step: steps + 1, key, note: 'CP 부족 — 스킵' });
-      continue;
-    }
-    cp -= (sk.cp || 0);
-    steps++;
-
-    // ── 버프 스킬 ──
-    if (sk.type === 'buff') {
-      buffs[sk.buffKey] = sk.duration;
-      log.push({ step: steps, key, type: 'buff', label: sk.label });
-    }
-
-    // ── 내구 회복 ──
-    else if (sk.type === 'repair') {
-      dura = Math.min(dura + sk.repairAmt, recipe.durability);
-      log.push({ step: steps, key, type: 'repair', label: sk.label, dura });
-    }
-    else if (sk.type === 'repairFull') {
-      dura = recipe.durability;
-      log.push({ step: steps, key, type: 'repair', label: sk.label, dura });
-    }
-
-    // ── 경과 관찰 ──
-    else if (sk.type === 'observe') {
-      log.push({ step: steps, key, type: 'observe', label: sk.label });
-    }
-
-    // ── 비결 (CP 회복) ──
-    else if (sk.type === 'tricks') {
-      cp = Math.min(cp + 20, stats.cp);
-      log.push({ step: steps, key, type: 'tricks', label: sk.label, cp });
-    }
-
-    // ── 장인의 눈 (품질 100% 즉시) ──
-    else if (sk.type === 'trainedEye') {
-      quality = recipe.baseQuality;
-      const dc = duraCost(sk.dur || 10, buffs);
-      dura -= dc;
-      log.push({ step: steps, key, type: 'quality', label: sk.label, gained: quality, quality, dura });
-    }
-
-    // ── 비레고의 축복 ──
-    else if (sk.type === 'byregots') {
-      const gained = calcByregots(stats.control, recipe, buffs, stats.level);
-      quality += gained;
-      if (buffs.greatStrides > 0) buffs.greatStrides = 0;
-      buffs.innerQuiet = 0;
-      const dc = duraCost(sk.dur || 10, buffs);
-      dura -= dc;
-      log.push({ step: steps, key, type: 'quality', label: sk.label, gained, quality, dura });
-    }
-
-    // ── 작업진척 ──
-    else if (sk.type === 'progress') {
-      let eff = sk.eff;
-      // 집중 작업: 내구 < dur/2 이면 효율 절반
-      if (key === 'groundwork' && dura < sk.dur) eff = Math.floor(eff / 2);
-
-      const gained = calcProgress(stats.craftsmanship, recipe, eff, buffs, stats.level);
-      progress += gained;
-
-      // 근육 기억 버프 부여
-      if (key === 'muscleMemory') buffs.muscleMemory = 5;
-
-      const dc = duraCost(sk.dur || 10, buffs);
-      dura -= dc;
-
-      // IQ 부여 (reflect 등)
-      if (sk.iqGain) buffs.innerQuiet = Math.min(buffs.innerQuiet + sk.iqGain, 10);
-
-      log.push({ step: steps, key, type: 'progress', label: sk.label, gained, progress, dura });
-
-      // 완성 체크
-      if (progress >= recipe.baseProgress) {
-        if (buffs.finalAppraisal > 0) {
-          progress = recipe.baseProgress - 1;
-          buffs.finalAppraisal = 0;
-        } else {
-          completed = true;
-        }
-      }
-    }
-
-    // ── 품질 ──
-    else if (sk.type === 'quality') {
-      const gained = calcQuality(stats.control, recipe, sk.eff, buffs, stats.level);
-      quality += gained;
-
-      if (buffs.greatStrides > 0) buffs.greatStrides = 0;
-      if (buffs.innerQuiet > 0) {
-        buffs.innerQuiet = Math.min(buffs.innerQuiet + (sk.iqGain || 1), 10);
-      }
-
-      const dc = duraCost(sk.dur || 10, buffs);
-      dura -= dc;
-      log.push({ step: steps, key, type: 'quality', label: sk.label, gained, quality, dura });
-    }
-
-    // ── both (정밀 작업) ──
-    else if (sk.type === 'both') {
-      const pGained = calcProgress(stats.craftsmanship, recipe, sk.eff, buffs, stats.level);
-      const qGained = calcQuality(stats.control, recipe, sk.eff, buffs, stats.level);
-      progress += pGained;
-      quality  += qGained;
-      if (buffs.innerQuiet > 0) buffs.innerQuiet = Math.min(buffs.innerQuiet + 1, 10);
-      if (buffs.greatStrides > 0) buffs.greatStrides = 0;
-      const dc = duraCost(sk.dur || 10, buffs);
-      dura -= dc;
-      log.push({ step: steps, key, type: 'both', label: sk.label, pGained, qGained, progress, quality, dura });
-
-      if (progress >= recipe.baseProgress) {
-        if (buffs.finalAppraisal > 0) { progress = recipe.baseProgress - 1; buffs.finalAppraisal = 0; }
-        else completed = true;
-      }
-    }
-
-    // ── 교묘한 손놀림 내구 회복 (매 스텝 후) ──
-    if (buffs.manipulation > 0) {
-      dura = Math.min(dura + 5, recipe.durability);
-    }
-
-    // ── 버프 카운트다운 ──
-    ['innovation','veneration','greatStrides','manipulation',
-     'wasteNot','wasteNot2','finalAppraisal','muscleMemory'].forEach(b => {
-      if (buffs[b] > 0) buffs[b]--;
-    });
-  }
-
-  const maxQuality   = recipe.baseQuality;
-  const qualityPct   = Math.min(100, Math.floor(quality / maxQuality * 100));
-  const hqPct        = calcHQ(qualityPct);
-
-  return { progress, quality, dura, cp, steps, completed, log, recipe, maxQuality, qualityPct, hqPct };
-}
-
-// ============================================================
-//  UI — 팔레트 렌더링
-// ============================================================
-
-let currentCat = 'progress';
-
-function renderPalette() {
-  const grid = document.getElementById('qc-palette');
-  if (!grid) return;
-  grid.innerHTML = '';
-
-  Object.entries(SKILL_DATA).forEach(([key, sk]) => {
-    if (!sk || sk.cat !== currentCat) return;
-
-    const btn = document.createElement('button');
-    btn.className = 'qc-skill-btn';
-    btn.type = 'button';
-
-    // 아이콘 (ICONS 맵 활용 — index.html 에 이미 정의됨)
-    const iconId = typeof ICONS !== 'undefined' ? ICONS[sk.label] : null;
-    const folder = iconId && iconId.startsWith('06') ? '061000' : '001000';
-    const imgHtml = iconId
-      ? `<img src="https://xivapi.com/i/${folder}/${iconId}_hr1.png" alt="${sk.label}" onerror="this.style.display='none'">`
-      : '';
-
-    btn.innerHTML = `${imgHtml}<span class="qc-skill-label">${sk.label}</span>${sk.cp ? `<span class="qc-skill-cp">${sk.cp}CP</span>` : ''}`;
-    btn.addEventListener('click', () => addSkill(key));
-    grid.appendChild(btn);
+  sel.disabled = false;
+  sel.innerHTML = '<option value="">── 레시피 선택 ──</option>';
+  const groups = [...new Set(
+    HARD_RECIPES.filter(r => r.region === calcRegion).map(r => r.group)
+  )];
+  groups.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    sel.appendChild(opt);
   });
 }
 
-// 팔레트 탭 버튼 초기화
-function initPaletteTabs() {
-  document.querySelectorAll('.qc-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentCat = btn.dataset.cat;
-      document.querySelectorAll('.qc-tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderPalette();
+function calcCustomWork() {
+  const crafts = parseInt(document.getElementById('crafts-input').value) || 0;
+  const workReq = parseInt(document.getElementById('custom-work').value) || 0;
+  const pD = parseInt(document.getElementById('custom-pd').value) || 170;
+  const pM = parseInt(document.getElementById('custom-pm').value) || 90;
+  const s0 = Math.floor((crafts * 21 / pD + 2) * pM / 100);
+  const fakeRecipe = { work: workReq, quality: 0, durability: '-', rlvl: '-', group: '커스텀', region: '', tag: '', missionName: '' };
+  renderWorkHTML(s0, fakeRecipe, '', 'custom');
+}
+
+function renderWorkResult_main() {
+  const resultEl = document.getElementById('work-result');
+  if (!calcRegion || !calcGroup) {
+    resultEl.innerHTML = `<div class="c-empty-state"><div class="c-empty-icon">⚒</div><p>지역과 레시피를 선택하면<br>작업량 계산 결과가 표시됩니다</p></div>`;
+    return;
+  }
+  const variants = HARD_RECIPES.filter(r => r.region === calcRegion && r.group === calcGroup);
+  if (!variants.length) return;
+
+  const crafts = parseInt(document.getElementById('crafts-input').value) || 0;
+
+  let variantUI = '';
+  if (variants.length > 1) {
+    variantUI = `<div class="c-result-card"><div class="c-result-card-title">레시피 변형 선택</div><div class="variant-selector">`;
+    variants.forEach((v, i) => {
+      variantUI += `<button class="variant-btn ${i === calcVariantIdx ? 'active' : ''}" onclick="selectVariant(${i})">
+        <span><b style="color:var(--text-bright)">${v.tag}</b>
+        ${v.missionName ? `<span style="font-size:10px;color:var(--text-dim);margin-left:6px;">${v.missionName}</span>` : ''}</span>
+        <span class="variant-meta">
+          <span>작업량 <b>${v.work.toLocaleString()}</b></span>
+          <span>내구 <b>${v.durability}</b></span>
+          <span>rlvl <b>${v.rlvl}</b></span>
+        </span>
+      </button>`;
     });
+    variantUI += `</div></div>`;
+  }
+
+  const recipe = variants[Math.min(calcVariantIdx, variants.length - 1)];
+  const s0 = calcS0(crafts, recipe.rlvl);
+  renderWorkHTML(s0, recipe, variantUI, 'preset');
+}
+
+function renderWorkHTML(s0, recipe, variantUI, mode) {
+  const resultEl = document.getElementById('work-result');
+  const workReq = recipe.work;
+  const finishWork = calcWork(s0, FINISH_EFF, 1);
+
+  const skillRows = SKILL_REF.map(sk => ({ ...sk, workAmt: calcWork(s0, sk.eff, 1) }));
+
+  const comboRows = SKILL_COMBOS.map(combo => {
+    const totalBuff = combo.workBuff + (combo.stateBuff ? combo.stateBuff : 0);
+    const oneTime = calcWork(s0, combo.efficiency, totalBuff);
+    const shinOpener = Math.floor(s0 * 2.5);
+    const total = combo.hasShin ? shinOpener : Math.floor(s0 * combo.shinMult);
+    return { ...combo, oneTime, total, shinOpener };
+  });
+
+  const mainOpener = comboRows[0];
+  const remaining = workReq - mainOpener.shinOpener;
+  const durability = typeof recipe.durability === 'number' ? recipe.durability : 0;
+  const kangWork = skillRows[0].workAmt;
+  const maxKang = durability > 0 ? Math.floor((durability - 10) / 10) : 0;
+  const neededKang = kangWork > 0 ? Math.ceil(remaining / kangWork) : 0;
+
+  const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만', '': '' };
+
+  function getBadge(n) {
+    if (!n) return '';
+    if (n.includes('EX+')) return `<span class="recipe-badge badge-explus">EX+</span>`;
+    if (n.includes('EX'))  return `<span class="recipe-badge badge-ex">EX</span>`;
+    return `<span class="recipe-badge badge-normal">일반</span>`;
+  }
+
+  let actionHtml = '';
+  if (remaining <= 0) {
+    actionHtml = `<div class="action-box ok"><div class="action-icon">✅</div><div class="action-text">확신 오프너만으로 <b>작업량 충족</b>! 마무리 스킬만 사용하면 됩니다.</div></div>`;
+  } else if (neededKang <= maxKang) {
+    actionHtml = `<div class="action-box ok"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회</b> 필요 (${kangWork.toLocaleString()} × ${neededKang}) — 가능한 강행 <b>${maxKang}회</b> 이상 ✔</div></div>`;
+  } else {
+    actionHtml = `<div class="action-box warn"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회 필요</b> / 가능 <b>${maxKang}회</b> — 다른 작업 스킬 혼용 검토 필요</div></div>`;
+  }
+
+  const remClass = remaining <= 0 ? 'ok' : remaining > workReq * 0.6 ? 'bad' : 'warn';
+
+  resultEl.innerHTML = `
+    ${variantUI}
+    <div class="recipe-info-card">
+      <div class="recipe-info-header">
+        ${getBadge(recipe.missionName)}
+        <span class="recipe-name">${recipe.group || '커스텀'}</span>
+        ${recipe.region ? `<span style="font-size:11px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>` : ''}
+      </div>
+      <div class="recipe-stats">
+        <div class="recipe-stat"><div class="stat-lbl">작업량</div><div class="stat-val warn">${workReq.toLocaleString()}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">최고품질</div><div class="stat-val">${recipe.quality ? recipe.quality.toLocaleString() : '-'}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">내구도</div><div class="stat-val">${recipe.durability}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">s0 (효율100)</div><div class="stat-val ok">${s0}</div></div>
+      </div>
+    </div>
+
+    <div class="c-result-card">
+      <div class="c-result-card-title">작업 로테이션 조합</div>
+      <table class="rotation-table">
+        <thead><tr><th>스킬 조합</th><th class="num">효율</th><th class="num">1회 작업량</th><th class="num">총 작업량</th></tr></thead>
+        <tbody>
+          ${comboRows.map(row => `
+          <tr class="${row.highlight ? 'highlight' : ''}">
+            <td><div class="skill-chips">${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}</div></td>
+            <td class="num">${row.efficiency}</td>
+            <td class="num">${row.oneTime.toLocaleString()}</td>
+            <td class="num"><b>${row.total.toLocaleString()}</b></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="work-total-box">
+        <div>
+          <div class="work-total-label">오프너 후 남은 진행도</div>
+          <div class="work-remain-info">
+            <span>작업량 <b>${workReq.toLocaleString()}</b></span>
+            <span>−</span>
+            <span>확신+공경+강행 <b>${mainOpener.shinOpener.toLocaleString()}</b></span>
+            <span>=</span>
+          </div>
+        </div>
+        <div class="work-total-val ${remClass}">${remaining.toLocaleString()}</div>
+      </div>
+      ${actionHtml}
+    </div>
+
+    <div class="c-result-card">
+      <div class="c-result-card-title">스킬별 1회 작업량</div>
+      <table class="rotation-table">
+        <thead><tr><th>스킬</th><th class="num">효율</th><th class="num">작업량</th><th class="num">오프너+1회 합산</th></tr></thead>
+        <tbody>
+          ${skillRows.map(row => {
+            const total = mainOpener.shinOpener + row.workAmt;
+            return `<tr>
+              <td><span class="chip work">${row.name}</span></td>
+              <td class="num">${row.eff}</td>
+              <td class="num">${row.workAmt.toLocaleString()}</td>
+              <td class="num">${total.toLocaleString()}</td>
+            </tr>`;
+          }).join('')}
+          <tr style="opacity:.6">
+            <td><span class="chip">마무리 '작업'</span></td>
+            <td class="num">120</td>
+            <td class="num">${finishWork.toLocaleString()}</td>
+            <td class="num" style="color:var(--text-dim)">참고용</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ============================================================
+//  품질 계산기 UI
+// ============================================================
+
+let qRegion = '', qGroup = '', qVariantIdx = 0;
+
+function onQRegionChange() {
+  qRegion = document.getElementById('q-region').value;
+  qGroup = ''; qVariantIdx = 0;
+  buildQGroupSelector();
+  renderQuality();
+}
+
+function onQGroupChange() {
+  qGroup = document.getElementById('q-group').value;
+  qVariantIdx = 0;
+  buildQVariantSelector();
+  renderQuality();
+}
+
+function onQVariantChange() {
+  qVariantIdx = parseInt(document.getElementById('q-variant').value) || 0;
+  renderQuality();
+}
+
+function onQualityChange() {
+  ['q-cons','q-cp'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('filled', el.value !== '');
+  });
+  renderQuality();
+}
+
+function buildQGroupSelector() {
+  const sel = document.getElementById('q-group');
+  if (!qRegion) {
+    sel.innerHTML = '<option value="">── 지역을 먼저 선택 ──</option>';
+    sel.disabled = true; return;
+  }
+  sel.disabled = false;
+  sel.innerHTML = '<option value="">── 레시피 선택 ──</option>';
+  [...new Set(HARD_RECIPES.filter(r => r.region === qRegion).map(r => r.group))].forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    sel.appendChild(opt);
   });
 }
 
-// ============================================================
-//  UI — 시퀀스
-// ============================================================
-
-let sequence = [];
-
-function addSkill(key) {
-  sequence.push(key);
-  renderSequence();
-  updateCpDisplay();
+function buildQVariantSelector() {
+  const field = document.getElementById('q-variant-field');
+  const sel = document.getElementById('q-variant');
+  const variants = HARD_RECIPES.filter(r => r.region === qRegion && r.group === qGroup);
+  if (variants.length <= 1) { field.style.display = 'none'; return; }
+  field.style.display = '';
+  sel.innerHTML = '';
+  variants.forEach((v, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `${v.tag} — 품질 ${v.quality.toLocaleString()} / 내구 ${v.durability}`;
+    sel.appendChild(opt);
+  });
 }
 
-function removeSkill(idx) {
-  sequence.splice(idx, 1);
-  renderSequence();
-  updateCpDisplay();
-}
+function renderQuality() {
+  const resultEl = document.getElementById('quality-result');
+  const cons = parseInt(document.getElementById('q-cons').value) || 0;
+  const cp   = parseInt(document.getElementById('q-cp').value)   || 0;
+  const durInput = parseInt(document.getElementById('q-dur').value) || 0;
 
-function undoSkill() {
-  if (sequence.length === 0) return;
-  sequence.pop();
-  renderSequence();
-  updateCpDisplay();
-}
-
-function clearSequence() {
-  sequence = [];
-  renderSequence();
-  updateCpDisplay();
-  hideResult();
-}
-
-function renderSequence() {
-  const container = document.getElementById('qc-sequence');
-  if (!container) return;
-
-  if (sequence.length === 0) {
-    container.innerHTML = '<p class="qc-empty-msg">아직 추가된 스킬이 없습니다 🙂</p>';
-    document.getElementById('qc-step-count').textContent = '스텝 : 0';
-    document.getElementById('qc-total-cp').textContent   = '총 CP 소비 : 0';
+  if (!qRegion || !qGroup || !cons) {
+    resultEl.innerHTML = `<div class="c-empty-state"><div class="c-empty-icon">✨</div><p>레시피와 가공 숙련도를 입력하면<br>품질 로테이션 결과가 표시됩니다</p></div>`;
     return;
   }
 
-  container.innerHTML = '';
-  let totalCp = 0;
+  const variants = HARD_RECIPES.filter(r => r.region === qRegion && r.group === qGroup);
+  if (!variants.length) return;
+  const recipe = variants[Math.min(qVariantIdx, variants.length - 1)];
 
-  sequence.forEach((key, idx) => {
-    const sk = SKILL_DATA[key];
-    if (!sk) return;
-    totalCp += (sk.cp || 0);
+  const durLimit = durInput || recipe.durability;
+  if (!durInput && recipe.durability) {
+    document.getElementById('q-dur').placeholder = `레시피 기본: ${recipe.durability}`;
+  }
 
-    const chip = document.createElement('div');
-    chip.className = 'qc-sequence-item';
+  const c0 = calcC0(cons);
+  const qualityGoal = recipe.quality;
+  const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만' };
 
-    const iconId = typeof ICONS !== 'undefined' ? ICONS[sk.label] : null;
-    const folder = iconId && iconId.startsWith('06') ? '061000' : '001000';
-    const imgHtml = iconId
-      ? `<img src="https://xivapi.com/i/${folder}/${iconId}_hr1.png" alt="${sk.label}" onerror="this.style.display='none'">`
-      : '';
+  function getBadge(n) {
+    if (!n) return '';
+    if (n.includes('EX+')) return `<span class="recipe-badge badge-explus">EX+</span>`;
+    if (n.includes('EX'))  return `<span class="recipe-badge badge-ex">EX</span>`;
+    return `<span class="recipe-badge badge-normal">일반</span>`;
+  }
 
-    chip.innerHTML = `
-      <span class="qc-seq-num">${idx + 1}</span>
-      ${imgHtml}
-      <span class="qc-seq-label">${sk.label}</span>
-      ${sk.cp ? `<span class="qc-seq-cp">${sk.cp}CP</span>` : ''}
-      <button class="qc-seq-del" type="button" onclick="removeSkill(${idx})">✕</button>
-    `;
-    container.appendChild(chip);
+  const categories = [...new Set(QUALITY_ROTATIONS.map(r => r.category))];
+  const rows = QUALITY_ROTATIONS.map(rot => {
+    const q = rot.qualityFn(c0);
+    const remaining = qualityGoal - q;
+    const pct = Math.min(100, Math.round(q / qualityGoal * 100));
+    const ok = q >= qualityGoal;
+    const cpOk = cp === 0 || rot.cpCost <= cp;
+    const durOk = durLimit === 0 || rot.durCost <= durLimit;
+    return { ...rot, q, remaining, pct, ok, cpOk, durOk };
   });
 
-  document.getElementById('qc-step-count').textContent = `스텝 : ${sequence.length}`;
-  document.getElementById('qc-total-cp').textContent   = `총 CP 소비 : ${totalCp}`;
-}
-
-function updateCpDisplay() {
-  const stats  = getStats();
-  const totalCp = sequence.reduce((sum, key) => sum + (SKILL_DATA[key]?.cp || 0), 0);
-  const remain  = stats.cp - totalCp;
-  const badge   = document.getElementById('qc-cp-display');
-  if (badge) {
-    badge.textContent = `CP : ${remain} / ${stats.cp}`;
-    badge.style.color = remain < 0 ? 'var(--red)' : '';
-  }
-}
-
-// ============================================================
-//  UI — 결과 렌더링 (B안: 각 id에 값 주입)
-// ============================================================
-
-function hideResult() {
-  const sec = document.getElementById('qc-result-section');
-  if (sec) sec.classList.add('qc-hidden');
-}
-
-function showResult(result) {
-  const sec = document.getElementById('qc-result-section');
-  if (!sec) return;
-  sec.classList.remove('qc-hidden');
-
-  // 작업량
-  const progressPct = Math.min(100, Math.floor(result.progress / result.recipe.baseProgress * 100));
-  document.getElementById('qc-res-progress').textContent  = `${result.progress.toLocaleString()} / ${result.recipe.baseProgress.toLocaleString()}`;
-  document.getElementById('qc-bar-progress').style.width  = `${progressPct}%`;
-  document.getElementById('qc-pct-progress').textContent  = `${progressPct}%`;
-
-  // 품질
-  document.getElementById('qc-res-quality').textContent   = `${result.quality.toLocaleString()} / ${result.maxQuality.toLocaleString()}`;
-  document.getElementById('qc-bar-quality').style.width   = `${result.qualityPct}%`;
-  document.getElementById('qc-pct-quality').textContent   = `${result.qualityPct}%`;
-
-  // 내구도
-  const duraPct = Math.max(0, Math.floor(result.dura / result.recipe.durability * 100));
-  document.getElementById('qc-res-durability').textContent = `${result.dura} / ${result.recipe.durability}`;
-  document.getElementById('qc-bar-durability').style.width = `${duraPct}%`;
-  document.getElementById('qc-pct-durability').textContent = `${duraPct}%`;
-
-  // HQ
-  document.getElementById('qc-res-hq').textContent        = `${result.hqPct}%`;
-  document.getElementById('qc-bar-hq').style.width        = `${result.hqPct}%`;
-  document.getElementById('qc-res-hq-sub').textContent    = `품질 ${result.qualityPct}% 달성 시`;
-
-  // 제작 성공 여부
-  const statusEl   = document.getElementById('qc-craft-status');
-  const statusText = document.getElementById('qc-craft-status-text');
-  if (statusEl && statusText) {
-    statusEl.classList.remove('qc-hidden');
-    if (result.completed) {
-      statusText.textContent = '제작 성공 ✅';
-      statusEl.style.color   = 'var(--green)';
-    } else {
-      statusText.textContent = '작업량 미달 ❌';
-      statusEl.style.color   = 'var(--red)';
-    }
-  }
-
-  // 단계별 로그
-  renderLog(result.log);
-}
-
-function renderLog(log) {
-  const el = document.getElementById('qc-step-log');
-  if (!el) return;
-
-  el.innerHTML = log.map(entry => {
-    let detail = '';
-    if (entry.type === 'progress') detail = `진척 +${entry.gained.toLocaleString()} → ${entry.progress.toLocaleString()} | 내구 ${entry.dura}`;
-    else if (entry.type === 'quality') detail = `품질 +${entry.gained.toLocaleString()} → ${entry.quality.toLocaleString()} | 내구 ${entry.dura}`;
-    else if (entry.type === 'both')   detail = `진척 +${entry.pGained} / 품질 +${entry.qGained} | 내구 ${entry.dura}`;
-    else if (entry.type === 'buff')   detail = '버프 적용';
-    else if (entry.type === 'repair') detail = `내구 → ${entry.dura}`;
-    else if (entry.type === 'tricks') detail = `CP → ${entry.cp}`;
-    else if (entry.note)              detail = entry.note;
-
-    return `<div class="qc-log-row">
-      <span class="qc-log-step">${entry.step}</span>
-      <span class="qc-log-name">${entry.label || entry.key}</span>
-      <span class="qc-log-detail">${detail}</span>
-    </div>`;
-  }).join('');
-}
-
-// ============================================================
-//  역산
-// ============================================================
-
-function runReverse() {
-  const targetHQ = parseInt(document.getElementById('qc-target-hq').value) || 90;
-  const recipe   = getRecipe();
-  const stats    = getStats();
-
-  // 목표 HQ% 달성에 필요한 최소 품질%
-  let minQPct = 100;
-  for (const [q, h] of HQ_TABLE) {
-    if (h >= targetHQ) { minQPct = q; break; }
-  }
-
-  const minQuality = Math.ceil(recipe.baseQuality * minQPct / 100);
-  const lc         = levelCorrection(stats.level, recipe.rlv);
-
-  // 비레고 IQ10 + 혁신 기준 역산
-  // base = floor(control * 10 / LEVEL_DIV + 35)
-  // quality = base * 3.0(효율300%) * lc * 2.0(IQ10) * 1.5(혁신)
-  const totalMult  = 3.0 * lc * 2.0 * 1.5;
-  const baseNeeded = minQuality / totalMult;
-  const minControl = Math.ceil((baseNeeded - 35) * LEVEL_DIV / 10);
-
-  const resEl = document.getElementById('qc-reverse-result');
-  if (!resEl) return;
-  resEl.classList.remove('qc-hidden');
-  document.getElementById('qc-reverse-control').textContent = minControl.toLocaleString();
-  document.getElementById('qc-reverse-quality').textContent = minQuality.toLocaleString();
-  document.getElementById('qc-reverse-hq').textContent      = `${targetHQ}%`;
-}
-
-// ============================================================
-//  초기화
-// ============================================================
-
-function initQualCalc() {
-  initPaletteTabs();
-  renderPalette();
-  renderSequence();
-  hideResult();
-
-  // 시뮬레이션 버튼
-  const simBtn = document.getElementById('qc-simulate-btn');
-  if (simBtn) {
-    simBtn.addEventListener('click', () => {
-      if (sequence.length === 0) return;
-      const result = simulate(sequence);
-      showResult(result);
+  // 변형 선택 UI
+  let variantUI = '';
+  if (variants.length > 1) {
+    variantUI = `<div class="c-result-card"><div class="c-result-card-title">레시피 변형 선택</div><div class="variant-selector">`;
+    variants.forEach((v, i) => {
+      variantUI += `<button class="variant-btn ${i === qVariantIdx ? 'active' : ''}" onclick="qVariantIdx=${i};document.getElementById('q-variant').value=${i};renderQuality()">
+        <span><b style="color:var(--text-bright)">${v.tag}</b>
+        <span style="font-size:10px;color:var(--text-dim);margin-left:6px;">${v.missionName}</span></span>
+        <span class="variant-meta">
+          <span>품질 <b>${v.quality.toLocaleString()}</b></span>
+          <span>내구 <b>${v.durability}</b></span>
+          <span>rlvl <b>${v.rlvl}</b></span>
+        </span>
+      </button>`;
     });
+    variantUI += `</div></div>`;
   }
 
-  // 초기화 버튼
-  const clearBtn = document.getElementById('qc-clear-btn');
-  if (clearBtn) clearBtn.addEventListener('click', clearSequence);
-
-  // 되돌리기 버튼
-  const undoBtn = document.getElementById('qc-undo-btn');
-  if (undoBtn) undoBtn.addEventListener('click', undoSkill);
-
-  // 역산 버튼
-  const revBtn = document.getElementById('qc-reverse-btn');
-  if (revBtn) revBtn.addEventListener('click', runReverse);
-
-  // 스탯 입력 변경 시 CP 뱃지 업데이트
-  ['qc-craftsmanship','qc-control','qc-cp','qc-level'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', updateCpDisplay);
+  // 카테고리별 테이블
+  let tableHtml = '';
+  categories.forEach(cat => {
+    const catRows = rows.filter(r => r.category === cat);
+    tableHtml += `
+    <div class="c-result-card">
+      <div class="c-result-card-title">${cat} 로테이션</div>
+      <table class="rotation-table">
+        <thead><tr><th>스킬 조합</th><th class="num">품질</th><th class="num">달성률</th><th class="num">남은 품질</th><th class="num">CP</th><th class="num">내구</th></tr></thead>
+        <tbody>
+          ${catRows.map(row => {
+            const sc = row.ok ? 'ok' : row.pct >= 80 ? 'warn' : '';
+            return `<tr class="${row.highlight ? 'highlight' : ''}">
+              <td>
+                <div class="skill-chips">${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}</div>
+                ${row.note ? `<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">${row.note}</div>` : ''}
+              </td>
+              <td class="num"><b class="${sc}">${row.q.toLocaleString()}</b>${row.ok ? ' ✔' : ''}</td>
+              <td class="num">
+                <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;">
+                  <div style="width:60px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;">
+                    <div style="width:${row.pct}%;height:100%;background:${row.ok ? 'var(--green)' : row.pct>=80 ? 'var(--yellow)' : 'var(--accent-dim)'};"></div>
+                  </div>
+                  <span class="${sc}">${row.pct}%</span>
+                </div>
+              </td>
+              <td class="num ${sc}">${row.ok ? '달성 ✔' : '+' + row.remaining.toLocaleString()}</td>
+              <td class="num ${row.cpOk ? '' : 'bad'}">${row.cpCost}<span style="color:var(--text-dim);font-size:10px;">CP</span></td>
+              <td class="num ${row.durOk ? '' : 'bad'}">${row.durCost > 0 ? '-' + row.durCost : '−'}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
   });
-}
 
-document.addEventListener('DOMContentLoaded', initQualCalc);
+  resultEl.innerHTML = `
+    ${variantUI}
+    <div class="recipe-info-card">
+      <div class="recipe-info-header">
+        ${getBadge(recipe.missionName)}
+        <span class="recipe-name">${recipe.group}</span>
+        <span style="font-size:11px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>
+      </div>
+      <div class="recipe-stats">
+        <div class="recipe-stat"><div class="stat-lbl">최고 품질</div><div class="stat-val warn">${qualityGoal.toLocaleString()}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">내구도</div><div class="stat-val">${durLimit}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">rlvl</div><div class="stat-val">${recipe.rlvl}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">c0</div><div class="stat-val ok">${c0}</div></div>
+      </div>
+    </div>
+    ${tableHtml}
+  `;
+}
