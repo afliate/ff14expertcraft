@@ -881,3 +881,24 @@ body::before{
 .variant-btn:hover:not(.active) { border-color: var(--border); color: var(--text); }
 .variant-meta { font-size: 10px; color: var(--text-dim); display: flex; gap: 10px; }
 .variant-meta span b { color: var(--text); }
+
+/* ── 요약 탭 스킬 아이콘 인라인 표시 ── */
+.si {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.si img {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  object-fit: cover;
+  vertical-align: middle;
+}
+.si span {
+  font-size: 11px;
+  color: var(--text);
+}
