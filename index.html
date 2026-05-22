@@ -8,7 +8,111 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="qualcalc.css">
 <script src="recipes.js"></script>
+<script>
+/* =============================================
+   스탯 프리셋 데이터 & 로직
+   ============================================= */
+
+const GEAR_PRESETS = {
+  '저금단':     { crafts: 5635, cons: 4969, cp: 583 },
+  '중금단':     { crafts: 5812, cons: 5083, cp: 649 },
+  '고금단':     { crafts: 5811, cons: 5461, cp: 649 },
+  '고금단+우주': { crafts: 5867, cons: 5424, cp: 649 },
+  '우주전용':   { crafts: 5812, cons: 5464, cp: 649 },
+};
+
+const FOOD_BUFFS = {
+  '없음':      { crafts: 0,   cons: 0,   cp: 0  },
+  '알이페브레': { crafts: 0,   cons: 115, cp: 100 },
+  '세비체':    { crafts: 150, cons: 0,   cp: 96  },
+  '로네크':    { crafts: 0,   cons: 97,  cp: 92  },
+};
+
+const POT_BUFFS = {
+  '없음': { cp: 0  },
+  '약액': { cp: 27 },
+  '약주': { cp: 21 },
+};
+
+let workGear = '고금단', workFood = '알이페브레', workPot = '약액';
+let qualGear = '고금단', qualFood = '알이페브레', qualPot = '약액';
+
+function calcFinalStats(gear, food, pot) {
+  const g = GEAR_PRESETS[gear];
+  const f = FOOD_BUFFS[food];
+  const p = POT_BUFFS[pot];
+  return {
+    crafts: g.crafts + f.crafts,
+    cons:   g.cons   + f.cons,
+    cp:     g.cp     + f.cp + p.cp,
+  };
+}
+
+function setActiveBtnGroup(groupId, activeBtn) {
+  document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
+  activeBtn.classList.add('active');
+}
+
+function selectWorkGear(name, btn) { workGear = name; setActiveBtnGroup('work-gear-btns', btn); applyWorkPreset(); }
+function selectWorkFood(name, btn) { workFood = name; setActiveBtnGroup('work-food-btns', btn); applyWorkPreset(); }
+function selectWorkPot(name, btn)  { workPot  = name; setActiveBtnGroup('work-pot-btns',  btn); applyWorkPreset(); }
+
+function applyWorkPreset() {
+  const s  = calcFinalStats(workGear, workFood, workPot);
+  const el = document.getElementById('crafts-input');
+  if (el) { el.value = s.crafts; el.classList.add('filled'); onCraftsChange(); }
+}
+
+function selectQualGear(name, btn) { qualGear = name; setActiveBtnGroup('qual-gear-btns', btn); applyQualPreset(); }
+function selectQualFood(name, btn) { qualFood = name; setActiveBtnGroup('qual-food-btns', btn); applyQualPreset(); }
+function selectQualPot(name, btn)  { qualPot  = name; setActiveBtnGroup('qual-pot-btns',  btn); applyQualPreset(); }
+
+function applyQualPreset() {
+  const s    = calcFinalStats(qualGear, qualFood, qualPot);
+  const cons = document.getElementById('q-cons');
+  const cp   = document.getElementById('q-cp');
+  if (cons) { cons.value = s.cons; cons.classList.add('filled'); }
+  if (cp)   { cp.value   = s.cp;   cp.classList.add('filled');   }
+  onQualityChange();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyWorkPreset();
+  applyQualPreset();
+});
+</script>
 <script src="qualcalc.js"></script>
+<style>
+/* 프리셋 버튼 그룹 */
+.preset-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.preset-btn {
+  padding: 4px 9px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+  white-space: nowrap;
+}
+.preset-btn:hover:not(.active) {
+  color: var(--text);
+  border-color: var(--accent-dim);
+}
+.preset-btn.active {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+  background: rgba(62,207,170,.08);
+  font-weight: 600;
+}
+</style>
 </head>
   
 <body>
@@ -1215,6 +1319,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div id="tab-calc" class="tab-panel">
+  <div id="tab-calc" class="tab-panel">
   <div class="page-hero">
     <div class="eyebrow">Progress Calculator</div>
     <h1><em>작업량</em> 계산기</h1>
@@ -1280,10 +1385,44 @@ document.addEventListener('DOMContentLoaded', () => {
  
       <div>
         <div class="input-section-label">캐릭터 스탯</div>
+
+        <!-- 세트 프리셋 -->
+        <div class="c-field" style="margin-bottom:8px;">
+          <label>장비 세트</label>
+          <div class="preset-btn-group" id="work-gear-btns">
+            <button class="preset-btn" onclick="selectWorkGear('저금단',this)">저금단</button>
+            <button class="preset-btn" onclick="selectWorkGear('중금단',this)">중금단</button>
+            <button class="preset-btn active" onclick="selectWorkGear('고금단',this)">고금단</button>
+            <button class="preset-btn" onclick="selectWorkGear('고금단+우주',this)">+우주</button>
+            <button class="preset-btn" onclick="selectWorkGear('우주전용',this)">우주전용</button>
+          </div>
+        </div>
+
+        <!-- 음식 프리셋 -->
+        <div class="c-field" style="margin-bottom:8px;">
+          <label>음식</label>
+          <div class="preset-btn-group" id="work-food-btns">
+            <button class="preset-btn" onclick="selectWorkFood('없음',this)">없음</button>
+            <button class="preset-btn active" onclick="selectWorkFood('알이페브레',this)">알이페브레</button>
+            <button class="preset-btn" onclick="selectWorkFood('세비체',this)">세비체</button>
+            <button class="preset-btn" onclick="selectWorkFood('로네크',this)">로네크</button>
+          </div>
+        </div>
+
+        <!-- 약액 프리셋 -->
+        <div class="c-field" style="margin-bottom:12px;">
+          <label>명인 소모품</label>
+          <div class="preset-btn-group" id="work-pot-btns">
+            <button class="preset-btn" onclick="selectWorkPot('없음',this)">없음</button>
+            <button class="preset-btn active" onclick="selectWorkPot('약액',this)">약액 +27</button>
+            <button class="preset-btn" onclick="selectWorkPot('약주',this)">약주 +21</button>
+          </div>
+        </div>
+
         <div class="c-field">
-          <label>작업 숙련도</label>
+          <label>작업 숙련도 <span style="color:var(--accent);font-size:10px;">최종</span></label>
           <input type="number" id="crafts-input" value="5811" class="filled" oninput="onCraftsChange()">
-          <div class="c-hint">음식·약액 포함 최종 수치</div>
+          <div class="c-hint">음식·약액 포함 최종 수치 (프리셋 선택 시 자동 입력)</div>
         </div>
       </div>
  
@@ -1298,7 +1437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
  
   </div><!-- /calc-body -->
-</div><!-- /tab-calc (end) -->
+</div><!-- /tab-calc -->
 
 <div id="tab-qualcalc" class="tab-panel">
   <div class="page-hero">
@@ -1314,13 +1453,48 @@ document.addEventListener('DOMContentLoaded', () => {
  
       <div>
         <div class="input-section-label">능력치</div>
+
+        <!-- 세트 프리셋 -->
+        <div class="c-field" style="margin-bottom:8px;">
+          <label>장비 세트</label>
+          <div class="preset-btn-group" id="qual-gear-btns">
+            <button class="preset-btn" onclick="selectQualGear('저금단',this)">저금단</button>
+            <button class="preset-btn" onclick="selectQualGear('중금단',this)">중금단</button>
+            <button class="preset-btn active" onclick="selectQualGear('고금단',this)">고금단</button>
+            <button class="preset-btn" onclick="selectQualGear('고금단+우주',this)">+우주</button>
+            <button class="preset-btn" onclick="selectQualGear('우주전용',this)">우주전용</button>
+          </div>
+        </div>
+
+        <!-- 음식 프리셋 -->
+        <div class="c-field" style="margin-bottom:8px;">
+          <label>음식</label>
+          <div class="preset-btn-group" id="qual-food-btns">
+            <button class="preset-btn" onclick="selectQualFood('없음',this)">없음</button>
+            <button class="preset-btn active" onclick="selectQualFood('알이페브레',this)">알이페브레</button>
+            <button class="preset-btn" onclick="selectQualFood('세비체',this)">세비체</button>
+            <button class="preset-btn" onclick="selectQualFood('로네크',this)">로네크</button>
+          </div>
+        </div>
+
+        <!-- 약액 프리셋 -->
+        <div class="c-field" style="margin-bottom:12px;">
+          <label>명인 소모품</label>
+          <div class="preset-btn-group" id="qual-pot-btns">
+            <button class="preset-btn" onclick="selectQualPot('없음',this)">없음</button>
+            <button class="preset-btn active" onclick="selectQualPot('약액',this)">약액 +27</button>
+            <button class="preset-btn" onclick="selectQualPot('약주',this)">약주 +21</button>
+          </div>
+        </div>
+
         <div class="c-field">
-          <label>가공 숙련도</label>
+          <label>가공 숙련도 <span style="color:var(--accent);font-size:10px;">최종</span></label>
           <input type="number" id="q-cons" placeholder="예: 5580" oninput="onQualityChange()">
         </div>
         <div class="c-field" style="margin-top:10px;">
-          <label>보유 CP</label>
+          <label>보유 CP <span style="color:var(--accent);font-size:10px;">최종</span></label>
           <input type="number" id="q-cp" placeholder="예: 649" oninput="onQualityChange()">
+          <div class="c-hint">프리셋 선택 시 자동 입력</div>
         </div>
       </div>
  
@@ -1498,6 +1672,39 @@ function filterRegion(region) {
       sec.classList.toggle('hidden', sec.dataset.region !== region);
     }
   });
+}
+
+/* ── 작업량 계산기 (팀크래프트 공식) ── */
+function calcCraft() {
+  const craftsmanship = parseFloat(document.getElementById('c-lv').value);
+  const req = parseFloat(document.getElementById('c-req').value);
+  if (!craftsmanship) return;
+
+  // 팀크래프트 공식: baseProgress = craftsmanship * 10/levelDiv + 2
+  // 7.x 고난도 기준 levelDiv = 180, progressModifier = 80
+  const levelDiv = 180;
+  const progressModifier = 80;
+
+  const baseProgress = Math.floor(craftsmanship * 10 / levelDiv + 2);
+  const modProgress = Math.floor(baseProgress * progressModifier / 100);
+
+  // 각 스킬 효율 적용
+  const jk  = Math.floor(modProgress * 1.0);   // 작업 효율 100
+  const mb  = Math.floor(modProgress * 1.5);   // 모범 작업 효율 150 (수정됨!)
+  const gh  = Math.floor(modProgress * 5.0);   // 강행 작업 효율 500
+  const hw  = Math.floor(modProgress * 3.0);   // 확신(300) 기준 (공경+강행은 별도)
+
+  document.getElementById('r-jk').textContent  = jk.toLocaleString();
+  document.getElementById('r-mb').textContent  = mb.toLocaleString();
+  document.getElementById('r-gh').textContent  = gh.toLocaleString();
+  document.getElementById('r-hw').textContent  = hw.toLocaleString();
+
+  if (req) {
+    const need = req - mb;
+    document.getElementById('r-cc').textContent =
+      `모범 작업 1딸깍 남기려면 ${need > 0 ? need.toLocaleString() : '이미 충분해요!'} 이상 채우면 돼요.`;
+  }
+  document.getElementById('craft-res').classList.add('show');
 }
 
 
