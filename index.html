@@ -1271,7 +1271,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div id="tab-calc" class="tab-panel">
-  <div id="tab-calc" class="tab-panel">
   <div class="page-hero">
     <div class="eyebrow">Progress Calculator</div>
     <h1><em>작업량</em> 계산기</h1>
@@ -1373,6 +1372,39 @@ document.addEventListener('DOMContentLoaded', () => {
  
     <!-- 입력 패널 -->
     <div class="input-panel">
+
+      <div>
+        <div class="input-section-label">장비 프리셋</div>
+        <div id="qual-gear-btns" class="preset-row">
+          <button class="preset-btn" onclick="selectQualGear('저금단',this)">저금단</button>
+          <button class="preset-btn" onclick="selectQualGear('중금단',this)">중금단</button>
+          <button class="preset-btn active" onclick="selectQualGear('고금단',this)">고금단</button>
+          <button class="preset-btn" onclick="selectQualGear('고금단+우주',this)">고금단+우주</button>
+          <button class="preset-btn" onclick="selectQualGear('우주전용',this)">우주전용</button>
+        </div>
+        <div class="c-divider" style="margin:10px 0 6px;"></div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">음식</div>
+            <div id="qual-food-btns" class="preset-row">
+              <button class="preset-btn" onclick="selectQualFood('없음',this)">없음</button>
+              <button class="preset-btn active" onclick="selectQualFood('알이페브레',this)">알이페브레</button>
+              <button class="preset-btn" onclick="selectQualFood('세비체',this)">세비체</button>
+              <button class="preset-btn" onclick="selectQualFood('로네크',this)">로네크</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">약액</div>
+            <div id="qual-pot-btns" class="preset-row">
+              <button class="preset-btn" onclick="selectQualPot('없음',this)">없음</button>
+              <button class="preset-btn active" onclick="selectQualPot('약액',this)">약액 HQ</button>
+              <button class="preset-btn" onclick="selectQualPot('약주',this)">약주 HQ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="c-divider"></div>
  
       <div>
         <div class="input-section-label">능력치</div>
@@ -1432,10 +1464,6 @@ document.addEventListener('DOMContentLoaded', () => {
  
   </div><!-- /calc-body -->
 </div><!-- /tab-qualcalc -->
-
-  </section>
-
-</div><!-- /#tab-qualcalc  (Part 1 에서 열린 div 닫기) -->
 
 <div id="tab-gear" class="tab-panel">
   <div class="page-hero">
