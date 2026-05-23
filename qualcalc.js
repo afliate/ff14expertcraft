@@ -160,169 +160,489 @@ const FINISH_EFF = 120;
 //   상급 가공(Advanced)      : 효율 150 (내구 10)
 //
 // multiStep: true 인 경우 steps 배열로 다단 계산
+// ── 스킬 아이콘 맵 (qualcalc 내부용) ──
+const SKILL_ICONS = {
+  '혁신':         { id: '001987', folder: '001000' },
+  '장족의 발전':   { id: '001955', folder: '001000' },
+  '비레고의 축복': { id: '001975', folder: '001000' },
+  '밑가공':       { id: '001507', folder: '001000' },
+  '절약 가공':    { id: '001535', folder: '001000' },
+  '상급 가공':    { id: '001519', folder: '001000' },
+  '중급 가공':    { id: '001516', folder: '001000' },
+  '가공':         { id: '001502', folder: '001000' },
+  '경과 관찰':    { id: '001954', folder: '001000' },
+  '교묘한 손놀림': { id: '001985', folder: '001000' },
+  '근검절약':     { id: '001992', folder: '001000' },
+  '신속한 혁신':  { id: '001999', folder: '001000' },
+  '성급한 손길':  { id: '001989', folder: '001000' },
+  '대담한 손길':  { id: '001998', folder: '001000' },
+  '장인의 황금손':{ id: '001997', folder: '001000' },
+};
+
+function skillIcon(name) {
+  const sk = SKILL_ICONS[name];
+  if (!sk) return `<span class="rota-skill-text">${name}</span>`;
+  return `<img class="rota-skill-icon" src="https://xivapi.com/i/${sk.folder}/${sk.id}_hr1.png" alt="${name}" title="${name}" onerror="this.style.display='none'">`;
+}
+
+function skillSeq(names) {
+  return names.map(n => skillIcon(n)).join('');
+}
+
+// tag: '' = 일반, '전문' = 전문장인 전용, '저내구도' = 저내구도
+// cpCost: CP 소모 합계 (시트 기준)
+// durCost: 소모 내구 (마무리 작업 10 포함)
+// 품질 계산은 multiStep steps[]로 자동 계산
+// ─────────────────────────────────────────────
 const QUALITY_ROTATIONS = [
-  // ── 비레고 계열 ──
-  {
-    id: 'jang-hyeok-bire',
-    label: '장족 + 혁신 + 비레고 (10스택)',
-    category: '비레고',
-    chips: [
-      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'비레고 ×10스택'},
-    ],
-    // 비레고 효율=300 (IQ10), 혁신+장족 = +1.5
-    efficiency: 300, buffSum: 1.5, iqStacks: 10,
-    cpCost: 74, durCost: 50,
-    note: 'IQ10스택 기준', highlight: true,
-  },
-  {
-    id: 'jang-hyeok-mit2-bire',
-    label: '장족 + 혁신 + 밑가공×2 + 비레고',
-    category: '비레고',
-    chips: [
-      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'밑가공×2'},{type:'sep',text:'+'},
-      {type:'quality',text:'비레고 ×10스택'},
-    ],
-    // 다단 계산: 밑가공1(장족+혁신), 밑가공2(혁신만), 비레고(혁신만)
-    multiStep: true,
-    steps: [
-      { efficiency: 200, buffSum: 1.5, iqStacks: 10 }, // 밑가공 (장족+혁신)
-      { efficiency: 200, buffSum: 0.5, iqStacks: 10 }, // 밑가공 (혁신만, 장족 소멸)
-      { efficiency: 300, buffSum: 0.5, iqStacks: 10 }, // 비레고 (혁신만)
-    ],
-    cpCost: 206, durCost: 90,
-    note: 'IQ10스택 기준', highlight: false,
-  },
-  {
-    id: 'hyeok-bire',
-    label: '혁신 + 비레고 (10스택, 장족 없음)',
-    category: '비레고',
-    chips: [
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'비레고 ×10스택'},
-    ],
-    efficiency: 300, buffSum: 0.5, iqStacks: 10,
-    cpCost: 42, durCost: 50,
-    note: '장족 없이 혁신만', highlight: false,
-  },
 
-  // ── 밑가공 계열 ──
-  {
-    id: 'jang-hyeok-mit1',
-    label: '장족 + 혁신 + 밑가공',
-    category: '밑가공',
-    chips: [
-      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'밑가공'},
-    ],
-    efficiency: 200, buffSum: 1.5, iqStacks: 10,
-    cpCost: 90, durCost: 20,
-    note: 'IQ10스택 기준', highlight: false,
-  },
-  {
-    id: 'hyeok-mit1',
-    label: '혁신 + 밑가공',
-    category: '밑가공',
-    chips: [
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'밑가공'},
-    ],
-    efficiency: 200, buffSum: 0.5, iqStacks: 10,
-    cpCost: 58, durCost: 20,
-    note: '', highlight: false,
-  },
-  {
-    id: 'hyeok-mit2',
-    label: '혁신 + 밑가공 2회',
-    category: '밑가공',
-    chips: [
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'밑가공×2'},
-    ],
-    multiStep: true,
-    steps: [
-      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
-      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
-    ],
-    cpCost: 98, durCost: 40,
-    note: '', highlight: false,
-  },
-  {
-    id: 'hyeok-mit3',
-    label: '혁신 + 밑가공 3회',
-    category: '밑가공',
-    chips: [
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'밑가공×3'},
-    ],
-    multiStep: true,
-    steps: [
-      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
-      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
-      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
-    ],
-    cpCost: 138, durCost: 60,
-    note: '혁신 4턴 내', highlight: false,
-  },
+  // ══ 일반 마무리 로테이션 ══
 
-  // ── 절약 가공 계열 ──
-  {
-    id: 'jang-hyeok-jeol',
-    label: '장족 + 혁신 + 절약 가공',
-    category: '절약 가공',
-    chips: [
-      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'절약 가공'},
-    ],
-    efficiency: 100, buffSum: 1.5, iqStacks: 10,
-    cpCost: 120, durCost: 5,
-    note: '내구 5 소모', highlight: false,
-  },
-  {
-    id: 'hyeok-jeol2',
-    label: '혁신 + 절약 가공 2회',
-    category: '절약 가공',
-    chips: [
-      {type:'buff',text:'혁신'},{type:'sep',text:'+'},
-      {type:'quality',text:'절약 가공×2'},
-    ],
-    multiStep: true,
-    steps: [
-      { efficiency: 100, buffSum: 0.5, iqStacks: 10 },
-      { efficiency: 100, buffSum: 0.5, iqStacks: 10 },
-    ],
-    cpCost: 68, durCost: 10,
-    note: '', highlight: false,
-  },
+  { id:'r01', tag:'',
+    label:'장족+혁신+밑가공+밑가공+장족+비레고',
+    skills:['장족의 발전','혁신','밑가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 }, // 밑가공 (장족+혁신)
+      { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
+      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:186, durCost:50 },
 
-  // ── 마무리 ──
-  {
-    id: 'sanggup',
-    label: '상급 가공 (혁신 없음)',
-    category: '마무리',
-    chips: [{type:'quality',text:'상급 가공'}],
-    efficiency: 150, buffSum: 0, iqStacks: 10,
-    cpCost: 46, durCost: 10,
-    note: '', highlight: false,
-  },
-  {
-    id: 'jang-sanggup',
-    label: '장족 + 상급 가공',
-    category: '마무리',
-    chips: [
-      {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
-      {type:'quality',text:'상급 가공'},
-    ],
-    efficiency: 150, buffSum: 1.0, iqStacks: 10,
-    cpCost: 78, durCost: 10,
-    note: '', highlight: false,
-  },
+  { id:'r02', tag:'',
+    label:'장족+혁신+밑가공+상급+장족+비레고',
+    skills:['장족의 발전','혁신','밑가공','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:192, durCost:50 },
+
+  { id:'r03', tag:'',
+    label:'장족+혁신+밑가공+중급+장족+비레고',
+    skills:['장족의 발전','혁신','밑가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:178, durCost:50 },
+
+  { id:'r04', tag:'',
+    label:'장족+혁신+밑가공+가공+장족+비레고',
+    skills:['장족의 발전','혁신','밑가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:164, durCost:50 },
+
+  { id:'r05', tag:'',
+    label:'장족+혁신+밑가공+절약가공+장족+비레고',
+    skills:['장족의 발전','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:171, durCost:45 },
+
+  { id:'r06', tag:'',
+    label:'혁신+밑가공+밑가공+장족+비레고',
+    skills:['혁신','밑가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:154, durCost:50 },
+
+  { id:'r07', tag:'',
+    label:'혁신+절약가공×4+혁신+장족+비레고',
+    skills:['혁신','절약 가공','절약 가공','절약 가공','절약 가공','혁신','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:192, durCost:50 },
+
+  { id:'r08', tag:'',
+    label:'경관+상급+장족+혁신+경관+상급+장족+비레고',
+    skills:['경과 관찰','상급 가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0,   iqStacks:10 }, // 경관+상급 (버프 없음)
+      { efficiency:150, buffSum:1.5, iqStacks:10 }, // 경관+상급 (장족+혁신)
+      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:156, durCost:40 },
+
+  { id:'r09', tag:'',
+    label:'장족+혁신+밑가공+장족+비레고',
+    skills:['장족의 발전','혁신','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:146, durCost:40 },
+
+  { id:'r10', tag:'',
+    label:'장족+혁신+근검+밑가공+장족+비레고',
+    skills:['장족의 발전','혁신','근검절약','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:202, durCost:20 },
+
+  { id:'r11', tag:'',
+    label:'혁신+절약가공×3+혁신+장족+비레고',
+    skills:['혁신','절약 가공','절약 가공','절약 가공','혁신','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:167, durCost:35 },
+
+  { id:'r12', tag:'',
+    label:'장족+혁신+경관+상급+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:131, durCost:30 },
+
+  { id:'r13', tag:'',
+    label:'혁신+가공+중급+장족+비레고',
+    skills:['혁신','가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:110, durCost:40 },
+
+  { id:'r14', tag:'',
+    label:'혁신+절약가공×2+장족+비레고',
+    skills:['혁신','절약 가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:124, durCost:30 },
+
+  { id:'r15', tag:'',
+    label:'혁신+가공+성손+장족+비레고',
+    skills:['혁신','가공','성급한 손길','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0,   iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:92, durCost:40 },
+
+  { id:'r16', tag:'',
+    label:'혁신+중급+장족+비레고',
+    skills:['혁신','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:106, durCost:30 },
+
+  { id:'r17', tag:'',
+    label:'혁신+가공+장족+비레고',
+    skills:['혁신','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:92, durCost:30 },
+
+  { id:'r18', tag:'',
+    label:'혁신+절약가공+장족+비레고',
+    skills:['혁신','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:99, durCost:25 },
+
+  { id:'r19', tag:'',
+    label:'장족+혁신+비레고',
+    skills:['장족의 발전','혁신','비레고의 축복'],
+    efficiency:300, buffSum:1.5, iqStacks:10,
+    cpCost:74, durCost:20 },
+
+  { id:'r20', tag:'',
+    label:'신속한혁신+장족+비레고',
+    skills:['신속한 혁신','장족의 발전','비레고의 축복'],
+    efficiency:300, buffSum:1.0, iqStacks:10,
+    cpCost:56, durCost:20 },
+
+  // ══ 전문장인 전용 ══
+
+  { id:'p01', tag:'전문',
+    label:'[전문] 교손+경관+장족+혁신+밑가공+절약×3+혁신+절약+장족+비레고',
+    skills:['교묘한 손놀림','경과 관찰','장족의 발전','혁신','밑가공','절약 가공','절약 가공','절약 가공','혁신','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:404, durCost:40 },
+
+  { id:'p02', tag:'전문',
+    label:'[전문] 교손+경관+장족+혁신+밑가공+절약×3+혁신+장족+비레고',
+    skills:['교묘한 손놀림','경과 관찰','장족의 발전','혁신','밑가공','절약 가공','절약 가공','절약 가공','혁신','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:382, durCost:40 },
+
+  { id:'p03', tag:'전문',
+    label:'[전문] 교손+장족+혁신+중급+밑가공+장족+비레고',
+    skills:['교묘한 손놀림','장족의 발전','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:125, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:263, durCost:40 },
+
+  { id:'p04', tag:'전문',
+    label:'[전문] 교손+경관+혁신+중급+밑가공+장족+비레고',
+    skills:['교묘한 손놀림','경과 관찰','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:248, durCost:40 },
+
+  { id:'p05', tag:'전문',
+    label:'[전문] 교손+장족+혁신+밑가공+장족+밑가공+장족+혁신+밑가공+장족+비레고',
+    skills:['교묘한 손놀림','장족의 발전','혁신','밑가공','장족의 발전','밑가공','장족의 발전','혁신','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.0, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:349, durCost:50 },
+
+  { id:'p06', tag:'전문',
+    label:'[전문] 교손+장족+혁신+밑가공+장족+밑가공+절약+혁신+경관+상급+장족+비레고',
+    skills:['교묘한 손놀림','장족의 발전','혁신','밑가공','장족의 발전','밑가공','절약 가공','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.0, iqStacks:10 },
+      { efficiency:100, buffSum:0,   iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:382, durCost:40 },
+
+  { id:'p07', tag:'전문',
+    label:'[전문] 교손+혁신+경관+상급×2+경관+상급×2+장족+혁신+경관+상급+장족+비레고',
+    skills:['교묘한 손놀림','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:343, durCost:50 },
+
+  { id:'p08', tag:'전문',
+    label:'[전문] 교손+혁신+경관+상급×2+장족+혁신+밑가공+절약+장족+비레고',
+    skills:['교묘한 손놀림','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:335, durCost:25 },
+
+  { id:'p09', tag:'전문',
+    label:'[전문] 교손+혁신+경관+상급×4+혁신+경관+상급×3+장족+비레고',
+    skills:['교묘한 손놀림','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:317, durCost:30 },
+
+  { id:'p10', tag:'전문',
+    label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+경관+상급+장족+비레고',
+    skills:['장족의 발전','혁신','근검절약','밑가공','장족의 발전','밑가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.0, iqStacks:10 },
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:349, durCost:40 },
+
+  { id:'p11', tag:'전문',
+    label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+가공+장족+비레고',
+    skills:['장족의 발전','혁신','근검절약','밑가공','장족의 발전','밑가공','장족의 발전','혁신','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.0, iqStacks:10 },
+      { efficiency:100, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:343, durCost:40 },
+
+  { id:'p12', tag:'전문',
+    label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+혁신+경관+상급+장족+비레고',
+    skills:['장족의 발전','혁신','근검절약','밑가공','장족의 발전','밑가공','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.0, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:278, durCost:60 },
+
+  { id:'p13', tag:'전문',
+    label:'[전문] 장족+혁신+경관+상급+장족+밑가공+장족+혁신+경관+상급+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','밑가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.0, iqStacks:10 },
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:404, durCost:40 },
+
+  { id:'p14', tag:'전문',
+    label:'[전문] 장족+혁신+경관+상급+경관+상급+장족+혁신+밑가공+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:382, durCost:30 },
+
+  { id:'p15', tag:'전문',
+    label:'[전문] 장족+혁신+경관+상급+경관+상급+장족+혁신+경관+상급+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:382, durCost:30 },
+
+  { id:'p16', tag:'전문',
+    label:'[전문] 혁신+경관+상급+경관+상급+장족+혁신+경관+상급+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:1.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:231, durCost:50 },
+
+  // ══ 저내구도 ══
+
+  { id:'d01', tag:'저내구도',
+    label:'[저내구] 교손+경관+장족+혁신+밑가공+절약×3+혁신+절약+장족+비레고',
+    skills:['교묘한 손놀림','경과 관찰','장족의 발전','혁신','밑가공','절약 가공','절약 가공','절약 가공','혁신','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:404, durCost:40 },
+
+  { id:'d02', tag:'저내구도',
+    label:'[저내구] 교손+경관+장족+혁신+밑가공+절약×3+혁신+장족+비레고',
+    skills:['교묘한 손놀림','경과 관찰','장족의 발전','혁신','밑가공','절약 가공','절약 가공','절약 가공','혁신','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:382, durCost:40 },
+
+  { id:'d03', tag:'저내구도',
+    label:'[저내구] 교손+장족+혁신+중급+밑가공+장족+비레고',
+    skills:['교묘한 손놀림','장족의 발전','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:125, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:274, durCost:35 },
+
+  { id:'d04', tag:'저내구도',
+    label:'[저내구] 교손+경관+혁신+중급+밑가공+장족+비레고',
+    skills:['교묘한 손놀림','경과 관찰','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:248, durCost:35 },
+
+  // ══ 비레고 단독 ══
+
+  { id:'b01', tag:'',
+    label:'비레고의 축복',
+    skills:['비레고의 축복'],
+    efficiency:300, buffSum:0, iqStacks:10,
+    cpCost:24, durCost:10 },
+
+  { id:'b02', tag:'',
+    label:'혁신+비레고',
+    skills:['혁신','비레고의 축복'],
+    efficiency:300, buffSum:0.5, iqStacks:10,
+    cpCost:42, durCost:10 },
+
+  { id:'b03', tag:'',
+    label:'장족+비레고',
+    skills:['장족의 발전','비레고의 축복'],
+    efficiency:300, buffSum:1.0, iqStacks:10,
+    cpCost:56, durCost:10 },
+
+  { id:'b04', tag:'',
+    label:'장족+혁신+비레고',
+    skills:['장족의 발전','혁신','비레고의 축복'],
+    efficiency:300, buffSum:1.5, iqStacks:10,
+    cpCost:74, durCost:10 },
+
+  // ══ CP X (성손/대손 포함) ══
+
+  { id:'cx01', tag:'',
+    label:'혁신+성손+대손×3+혁신+성손+대손+장족+비레고',
+    skills:['혁신','성급한 손길','대담한 손길','성급한 손길','대담한 손길','혁신','성급한 손길','대담한 손길','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:92, durCost:80 },
+
+  { id:'cx02', tag:'',
+    label:'혁신+성손+대손×2+혁신+장족+비레고',
+    skills:['혁신','성급한 손길','대담한 손길','성급한 손길','대담한 손길','혁신','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:92, durCost:60 },
+
+  { id:'cx03', tag:'',
+    label:'혁신+성손+대손+장족+비레고',
+    skills:['혁신','성급한 손길','대담한 손길','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.0, iqStacks:10 },
+    ], cpCost:74, durCost:40 },
 ];
+
 
 // ============================================================
 //  작업 계산기 UI
@@ -812,36 +1132,38 @@ function renderQuality() {
 
 
   // ── 로테이션 카드 HTML ──
-  const rotaCardsHtml = sorted.map(row => {
-    const isBest = best && row.id === best.id;
-    const cls    = isBest ? 'recommended' : row.canDo ? 'possible' : 'impossible';
-    const qClass = row.ok ? 'ok' : row.pct >= 80 ? 'warn' : '';
-    const badgeHtml = isBest
-      ? `<span class="rota-badge badge-recommend">★ 추천</span>`
-      : row.canDo
-        ? `<span class="rota-badge badge-possible">${row.ok ? '가능' : '품질 부족'}</span>`
-        : `<span class="rota-badge badge-impossible">${!row.cpOk ? 'CP 부족' : '내구 부족'}</span>`;
-    const cpClass  = row.cpOk  ? '' : 'bad';
-    const durClass = row.durOk ? '' : 'bad';
-    return `
-    <div class="rota-card ${cls}">
-      <div class="rota-card-header">
-        ${badgeHtml}
-        <span class="rota-quality-val ${qClass}">${row.q.toLocaleString()}</span>
-        <span class="rota-pct">달성 <b>${row.pct}%</b></span>
-      </div>
-      <div class="rota-chips">
-        ${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}
-      </div>
-      <div class="rota-meta">
-        <span class="${cpClass}">CP <b>${row.cpCost}</b></span>
-        <span>·</span>
-        <span class="${durClass}">내구 <b>-${row.durCost}</b></span>
-        ${row.note ? `<span>·</span><span>${row.note}</span>` : ''}
-        ${row.ok ? `<span style="margin-left:auto;color:var(--green)">달성 ✔</span>` : `<span style="margin-left:auto;color:var(--text-dim)">+${row.remaining.toLocaleString()} 부족</span>`}
-      </div>
-    </div>`;
-  }).join('');
+  // ── 태그별 그룹핑 후 테이블 렌더 ──
+  function renderRotaTable(rows) {
+    if (!rows.length) return '';
+    return rows.map(row => {
+      const isBest  = best && row.id === best.id;
+      const dimmed  = !row.canDo ? ' rota-row-dim' : '';
+      const hilite  = isBest ? ' rota-row-best' : '';
+      const qClass  = row.ok ? 'ok' : '';
+      const cpClass = row.cpOk  ? '' : 'bad';
+      const durClass= row.durOk ? '' : 'bad';
+      const tagHtml = row.tag === '전문'
+        ? `<span class="rota-tag tag-expert">전문</span>`
+        : row.tag === '저내구도'
+        ? `<span class="rota-tag tag-lowdur">저내구</span>`
+        : '';
+      const starHtml = isBest ? `<span class="rota-star">★</span>` : '';
+      const remaining = row.ok
+        ? `<span class="ok">달성</span>`
+        : `<span class="${row.canDo ? 'warn' : 'bad'}">+${row.remaining.toLocaleString()}</span>`;
+      return `
+      <tr class="rota-row${hilite}${dimmed}">
+        <td class="rota-icons">${starHtml}${tagHtml}${skillSeq(row.skills)}</td>
+        <td class="rota-num">${row.skills.length}</td>
+        <td class="rota-num ${durClass}">${row.durCost}</td>
+        <td class="rota-num ${qClass}">${row.q.toLocaleString()}</td>
+        <td class="rota-num ${cpClass}">${row.cpCost}</td>
+        <td class="rota-num">${remaining}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  const rotaTableRows = renderRotaTable(sorted);
 
   resultEl.innerHTML = `
     ${variantUI}
