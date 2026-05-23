@@ -357,6 +357,32 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.0, iqStacks:10 },
     ], cpCost:99, durCost:25 },
 
+  { id:'n01', tag:'',
+    label:'혁신+장인황금손+장인황금손+장족+비레고',
+    skills:['혁신','장인의 황금손','장인의 황금손','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 }, // 황금손1 (혁신)
+      { efficiency:100, buffSum:0.5, iqStacks:10 }, // 황금손2 (혁신)
+      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:138, durCost:30 },
+
+  { id:'n02', tag:'',
+    label:'혁신+경관+상급+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 }, // 경관→상급 (혁신)
+      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:99, durCost:30 },
+
+  { id:'n04', tag:'',
+    label:'혁신+절약+가공+장족+비레고',
+    skills:['혁신','절약 가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:100, buffSum:0.5, iqStacks:10 }, // 절약 (혁신)
+      { efficiency:100, buffSum:0.5, iqStacks:10 }, // 가공 (혁신)
+      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:117, durCost:30 },
+
   { id:'r19', tag:'',
     label:'장족+혁신+비레고',
     skills:['장족의 발전','혁신','비레고의 축복'],
@@ -1181,8 +1207,20 @@ function renderQuality() {
 
     <div class="c-result-card">
       <div class="c-result-card-title">마무리 로테이션 목록</div>
-      <div class="rota-cards">${rotaCardsHtml}</div>
-      <div style="font-size:10px;color:var(--text-dim);margin-top:10px;">흐린 카드 = CP 또는 내구 조건 미충족</div>
+      <table class="rotation-table rota-table">
+        <thead>
+          <tr>
+            <th>스킬 순서</th>
+            <th class="rota-num">수</th>
+            <th class="rota-num">내구</th>
+            <th class="rota-num">품질</th>
+            <th class="rota-num">CP</th>
+            <th class="rota-num">남은 품질</th>
+          </tr>
+        </thead>
+        <tbody>${rotaTableRows}</tbody>
+      </table>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:10px;">흐린 행 = CP 또는 내구 조건 미충족</div>
     </div>
   `;
 }
