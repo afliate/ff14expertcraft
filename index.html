@@ -7,112 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="qualcalc.css">
-<script src="recipes.js"></script>
-<script>
-/* =============================================
-   스탯 프리셋 데이터 & 로직
-   ============================================= */
-
-const GEAR_PRESETS = {
-  '저금단':     { crafts: 5635, cons: 4969, cp: 583 },
-  '중금단':     { crafts: 5812, cons: 5083, cp: 649 },
-  '고금단':     { crafts: 5811, cons: 5461, cp: 649 },
-  '고금단+우주': { crafts: 5867, cons: 5424, cp: 649 },
-  '우주전용':   { crafts: 5812, cons: 5464, cp: 649 },
-};
-
-const FOOD_BUFFS = {
-  '없음':      { crafts: 0,   cons: 0,   cp: 0  },
-  '알이페브레': { crafts: 0,   cons: 115, cp: 100 },
-  '세비체':    { crafts: 150, cons: 0,   cp: 96  },
-  '로네크':    { crafts: 0,   cons: 97,  cp: 92  },
-};
-
-const POT_BUFFS = {
-  '없음': { cp: 0  },
-  '약액': { cp: 27 },
-  '약주': { cp: 21 },
-};
-
-let workGear = '고금단', workFood = '알이페브레', workPot = '약액';
-let qualGear = '고금단', qualFood = '알이페브레', qualPot = '약액';
-
-function calcFinalStats(gear, food, pot) {
-  const g = GEAR_PRESETS[gear];
-  const f = FOOD_BUFFS[food];
-  const p = POT_BUFFS[pot];
-  return {
-    crafts: g.crafts + f.crafts,
-    cons:   g.cons   + f.cons,
-    cp:     g.cp     + f.cp + p.cp,
-  };
-}
-
-function setActiveBtnGroup(groupId, activeBtn) {
-  document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
-  activeBtn.classList.add('active');
-}
-
-function selectWorkGear(name, btn) { workGear = name; setActiveBtnGroup('work-gear-btns', btn); applyWorkPreset(); }
-function selectWorkFood(name, btn) { workFood = name; setActiveBtnGroup('work-food-btns', btn); applyWorkPreset(); }
-function selectWorkPot(name, btn)  { workPot  = name; setActiveBtnGroup('work-pot-btns',  btn); applyWorkPreset(); }
-
-function applyWorkPreset() {
-  const s  = calcFinalStats(workGear, workFood, workPot);
-  const el = document.getElementById('crafts-input');
-  if (el) { el.value = s.crafts; el.classList.add('filled'); onCraftsChange(); }
-}
-
-function selectQualGear(name, btn) { qualGear = name; setActiveBtnGroup('qual-gear-btns', btn); applyQualPreset(); }
-function selectQualFood(name, btn) { qualFood = name; setActiveBtnGroup('qual-food-btns', btn); applyQualPreset(); }
-function selectQualPot(name, btn)  { qualPot  = name; setActiveBtnGroup('qual-pot-btns',  btn); applyQualPreset(); }
-
-function applyQualPreset() {
-  const s    = calcFinalStats(qualGear, qualFood, qualPot);
-  const cons = document.getElementById('q-cons');
-  const cp   = document.getElementById('q-cp');
-  if (cons) { cons.value = s.cons; cons.classList.add('filled'); }
-  if (cp)   { cp.value   = s.cp;   cp.classList.add('filled');   }
-  onQualityChange();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  applyWorkPreset();
-  applyQualPreset();
-});
-</script>
-<script src="qualcalc.js"></script>
-<style>
-/* 프리셋 버튼 그룹 */
-.preset-btn-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 4px;
-}
-.preset-btn {
-  padding: 4px 9px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 11px;
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: border-color .15s, color .15s, background .15s;
-  white-space: nowrap;
-}
-.preset-btn:hover:not(.active) {
-  color: var(--text);
-  border-color: var(--accent-dim);
-}
-.preset-btn.active {
-  color: var(--accent);
-  border-color: var(--accent-dim);
-  background: rgba(62,207,170,.08);
-  font-weight: 600;
-}
-</style>
+<script src="recipes.js"></script>  
 </head>
   
 <body>
@@ -809,7 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="status-cards">
       <div class="status-card pri">
         <div class="status-header">
-          <div class="status-name" style="color:#e85a7a"> 고품질</div>
+          <div class="status-name st-hq">고품질</div>
           <div class="status-effect">품질 상승량 ×1.5배</div>
         </div>
         <div class="status-action">
@@ -819,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="status-card pri">
         <div class="status-header">
-          <div class="status-name" style="color:#4dc890"> 고효율</div>
+          <div class="status-name st-he">고효율</div>
           <div class="status-effect">스킬 소비 CP 50% 감소</div>
         </div>
         <div class="status-action">
@@ -829,7 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="status-card pri">
         <div class="status-header">
-          <div class="status-name" style="color:#d4b840">안정</div>
+          <div class="status-name st-stable">안정</div>
           <div class="status-effect">확률 스킬 성공률 +25%</div>
         </div>
         <div class="status-action">
@@ -839,7 +734,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="status-card pri">
         <div class="status-header">
-          <div class="status-name" style="color:#7aaed4">견고 (내구 가르기)</div>
+          <div class="status-name st-solid">견고 (내구 가르기)</div>
           <div class="status-effect">내구도 감소량 50% 감소</div>
         </div>
         <div class="status-action">
@@ -857,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="status-cards">
       <div class="status-card">
         <div class="status-header">
-          <div class="status-name" style="color:#5ab8d4">완강</div>
+          <div class="status-name st-good">완강</div>
           <div class="status-effect">내구 감소 50% + 다음 공정 확정 견고</div>
         </div>
         <div class="status-action">
@@ -867,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="status-card">
         <div class="status-header">
-          <div class="status-name" style="color:#4a7fd4">빠른 진행</div>
+          <div class="status-name st-fast">빠른 진행</div>
           <div class="status-effect">작업 진행량 ×1.5배</div>
         </div>
         <div class="status-action">
@@ -877,7 +772,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="status-card">
         <div class="status-header">
-          <div class="status-name" style="color:#e89040">길조</div>
+          <div class="status-name st-centered">길조</div>
           <div class="status-effect">다음 공정 확정 고품질 (기적의물질 제외)</div>
         </div>
         <div class="status-action">
@@ -887,7 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="status-card">
         <div class="status-header">
-          <div class="status-name" style="color:#a060d8">장기 지속</div>
+          <div class="status-name st-long">장기 지속</div>
           <div class="status-effect">스킬 효과 +2회 연장</div>
         </div>
         <div class="status-action">
@@ -921,7 +816,7 @@ const ICONS = {
   '장족':        '001955','비레고':      '001975','신속한 혁신': '001999',
   /* 예시 탭 추가 */
   '작업':            '001501','능숙한 땜질':      '001952',
-  '장인의 황금손':   '001521','교묘한 손놀림':    '001985',
+  '장인의 황금손':   '001997','교묘한 손놀림':    '001985',
   '장족의 발전':     '001955','비레고의 축복':    '001975',
 };
 function renderSkillCell(el, text) {
@@ -1385,44 +1280,10 @@ document.addEventListener('DOMContentLoaded', () => {
  
       <div>
         <div class="input-section-label">캐릭터 스탯</div>
-
-        <!-- 세트 프리셋 -->
-        <div class="c-field" style="margin-bottom:8px;">
-          <label>장비 세트</label>
-          <div class="preset-btn-group" id="work-gear-btns">
-            <button class="preset-btn" onclick="selectWorkGear('저금단',this)">저금단</button>
-            <button class="preset-btn" onclick="selectWorkGear('중금단',this)">중금단</button>
-            <button class="preset-btn active" onclick="selectWorkGear('고금단',this)">고금단</button>
-            <button class="preset-btn" onclick="selectWorkGear('고금단+우주',this)">+우주</button>
-            <button class="preset-btn" onclick="selectWorkGear('우주전용',this)">우주전용</button>
-          </div>
-        </div>
-
-        <!-- 음식 프리셋 -->
-        <div class="c-field" style="margin-bottom:8px;">
-          <label>음식</label>
-          <div class="preset-btn-group" id="work-food-btns">
-            <button class="preset-btn" onclick="selectWorkFood('없음',this)">없음</button>
-            <button class="preset-btn active" onclick="selectWorkFood('알이페브레',this)">알이페브레</button>
-            <button class="preset-btn" onclick="selectWorkFood('세비체',this)">세비체</button>
-            <button class="preset-btn" onclick="selectWorkFood('로네크',this)">로네크</button>
-          </div>
-        </div>
-
-        <!-- 약액 프리셋 -->
-        <div class="c-field" style="margin-bottom:12px;">
-          <label>명인 소모품</label>
-          <div class="preset-btn-group" id="work-pot-btns">
-            <button class="preset-btn" onclick="selectWorkPot('없음',this)">없음</button>
-            <button class="preset-btn active" onclick="selectWorkPot('약액',this)">약액 +27</button>
-            <button class="preset-btn" onclick="selectWorkPot('약주',this)">약주 +21</button>
-          </div>
-        </div>
-
         <div class="c-field">
-          <label>작업 숙련도 <span style="color:var(--accent);font-size:10px;">최종</span></label>
+          <label>작업 숙련도</label>
           <input type="number" id="crafts-input" value="5811" class="filled" oninput="onCraftsChange()">
-          <div class="c-hint">음식·약액 포함 최종 수치 (프리셋 선택 시 자동 입력)</div>
+          <div class="c-hint">음식·약액 포함 최종 수치</div>
         </div>
       </div>
  
@@ -1453,48 +1314,13 @@ document.addEventListener('DOMContentLoaded', () => {
  
       <div>
         <div class="input-section-label">능력치</div>
-
-        <!-- 세트 프리셋 -->
-        <div class="c-field" style="margin-bottom:8px;">
-          <label>장비 세트</label>
-          <div class="preset-btn-group" id="qual-gear-btns">
-            <button class="preset-btn" onclick="selectQualGear('저금단',this)">저금단</button>
-            <button class="preset-btn" onclick="selectQualGear('중금단',this)">중금단</button>
-            <button class="preset-btn active" onclick="selectQualGear('고금단',this)">고금단</button>
-            <button class="preset-btn" onclick="selectQualGear('고금단+우주',this)">+우주</button>
-            <button class="preset-btn" onclick="selectQualGear('우주전용',this)">우주전용</button>
-          </div>
-        </div>
-
-        <!-- 음식 프리셋 -->
-        <div class="c-field" style="margin-bottom:8px;">
-          <label>음식</label>
-          <div class="preset-btn-group" id="qual-food-btns">
-            <button class="preset-btn" onclick="selectQualFood('없음',this)">없음</button>
-            <button class="preset-btn active" onclick="selectQualFood('알이페브레',this)">알이페브레</button>
-            <button class="preset-btn" onclick="selectQualFood('세비체',this)">세비체</button>
-            <button class="preset-btn" onclick="selectQualFood('로네크',this)">로네크</button>
-          </div>
-        </div>
-
-        <!-- 약액 프리셋 -->
-        <div class="c-field" style="margin-bottom:12px;">
-          <label>명인 소모품</label>
-          <div class="preset-btn-group" id="qual-pot-btns">
-            <button class="preset-btn" onclick="selectQualPot('없음',this)">없음</button>
-            <button class="preset-btn active" onclick="selectQualPot('약액',this)">약액 +27</button>
-            <button class="preset-btn" onclick="selectQualPot('약주',this)">약주 +21</button>
-          </div>
-        </div>
-
         <div class="c-field">
-          <label>가공 숙련도 <span style="color:var(--accent);font-size:10px;">최종</span></label>
+          <label>가공 숙련도</label>
           <input type="number" id="q-cons" placeholder="예: 5580" oninput="onQualityChange()">
         </div>
         <div class="c-field" style="margin-top:10px;">
-          <label>보유 CP <span style="color:var(--accent);font-size:10px;">최종</span></label>
+          <label>보유 CP</label>
           <input type="number" id="q-cp" placeholder="예: 649" oninput="onQualityChange()">
-          <div class="c-hint">프리셋 선택 시 자동 입력</div>
         </div>
       </div>
  
@@ -1544,6 +1370,10 @@ document.addEventListener('DOMContentLoaded', () => {
  
   </div><!-- /calc-body -->
 </div><!-- /tab-qualcalc -->
+
+  </section>
+
+</div><!-- /#tab-qualcalc  (Part 1 에서 열린 div 닫기) -->
 
 <div id="tab-gear" class="tab-panel">
   <div class="page-hero">
