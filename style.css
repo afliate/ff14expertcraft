@@ -102,6 +102,10 @@ body::before{
 .st-efficient{color:#4dc890;font-weight:700;}
 .st-stable{color:#d4b840;font-weight:700;}
 .st-solid{color:#7aaed4;font-weight:700;}
+.st-hq{color:#e85a7a;font-weight:700;}
+.st-he{color:#4dc890;font-weight:700;}
+.st-long{color:#b87ae0;font-weight:700;}
+.st-fast{color:#4a7fd4;font-weight:700;}
 .st-centered{color:#e8a030;font-weight:700;}
 .st-good{color:#60c0e8;font-weight:700;}
 .st-low{color:#888;font-weight:700;}
@@ -586,7 +590,6 @@ body::before{
    계산기 공통 레이아웃 (calculator.html 기반)
    ============================================= */
 
-/* 2단 레이아웃 */
 .calc-body {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -597,7 +600,6 @@ body::before{
   .calc-body { grid-template-columns: 1fr; }
 }
 
-/* 입력 패널 */
 .input-panel {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -626,7 +628,6 @@ body::before{
   background: var(--border);
 }
 
-/* 모드 토글 */
 .mode-toggle {
   display: flex;
   gap: 0;
@@ -651,7 +652,6 @@ body::before{
 .mode-btn.active { color: var(--accent); background: var(--accent-glow); }
 .mode-btn:hover:not(.active) { color: var(--text); background: rgba(255,255,255,.03); }
 
-/* 레시피 체인 셀렉터 */
 .recipe-chain { display: flex; flex-direction: column; gap: 8px; }
 .chain-arrow {
   font-size: 10px;
@@ -669,7 +669,6 @@ body::before{
   background: var(--border);
 }
 
-/* 필드 공통 */
 .c-field { display: flex; flex-direction: column; gap: 5px; }
 .c-field label { font-size: 11px; color: var(--text-dim); font-weight: 500; }
 .c-field input[type="number"],
@@ -691,7 +690,6 @@ body::before{
 .c-field select option { background: #1a2535; }
 .c-hint { font-size: 10px; color: var(--text-dim); }
 
-/* 커스텀 모드 박스 */
 .custom-box {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -702,13 +700,10 @@ body::before{
   gap: 10px;
 }
 
-/* 구분선 */
 .c-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-/* 결과 패널 */
 .c-result-panel { display: flex; flex-direction: column; gap: 14px; }
 
-/* 빈 상태 */
 .c-empty-state {
   padding: 40px 20px;
   text-align: center;
@@ -719,7 +714,6 @@ body::before{
 .c-empty-icon { font-size: 28px; margin-bottom: 10px; opacity: .4; }
 .c-empty-state p { font-size: 12px; color: var(--text-dim); }
 
-/* 레시피 정보 카드 */
 .recipe-info-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -759,7 +753,6 @@ body::before{
 .stat-val.warn { color: var(--yellow); }
 .stat-val.ok   { color: var(--green); }
 
-/* 결과 카드 */
 .c-result-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -779,7 +772,6 @@ body::before{
 }
 .c-result-card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* 로테이션 테이블 */
 .rotation-table { width: 100%; border-collapse: collapse; }
 .rotation-table th {
   font-size: 9px;
@@ -806,7 +798,6 @@ body::before{
 .rotation-table .warn { color: var(--yellow); }
 .rotation-table .bad  { color: var(--red); }
 
-/* 스킬 칩 */
 .skill-chips { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
 .chip.work    { color: #5ab8d4; border-color: rgba(90,184,212,.3); background: rgba(90,184,212,.06); }
 .chip.buff    { color: #c8b840; border-color: rgba(200,184,64,.3);  background: rgba(200,184,64,.06); }
@@ -814,7 +805,6 @@ body::before{
 .chip.sep     { color: var(--border); background: none; border: none; padding: 2px; font-size: 12px; }
 .chip.quality { color: #3ecfaa; border-color: rgba(62,207,170,.3);  background: rgba(62,207,170,.06); }
 
-/* 작업량 합계 박스 */
 .work-total-box {
   display: flex;
   align-items: center;
@@ -839,7 +829,6 @@ body::before{
 }
 .work-remain-info b { color: var(--text); }
 
-/* 액션 박스 */
 .action-box {
   display: flex;
   align-items: center;
@@ -860,7 +849,6 @@ body::before{
 .action-box.bad  { border-color: rgba(224,80,96,.3);   background: rgba(224,80,96,.04); }
 .action-box.bad  .action-icon { color: var(--red); }
 
-/* variant 선택 버튼 */
 .variant-selector { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
 .variant-btn {
   padding: 8px 12px;
@@ -901,4 +889,34 @@ body::before{
 .si span {
   font-size: 11px;
   color: var(--text);
+}
+
+/* 프리셋 버튼 그룹 */
+.preset-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.preset-btn {
+  padding: 4px 9px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+  white-space: nowrap;
+}
+.preset-btn:hover:not(.active) {
+  color: var(--text);
+  border-color: var(--accent-dim);
+}
+.preset-btn.active {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+  background: rgba(62,207,170,.08);
+  font-weight: 600;
 }
