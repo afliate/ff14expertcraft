@@ -1259,19 +1259,24 @@ document.addEventListener('DOMContentLoaded', () => {
  
       <!-- 커스텀 모드 -->
       <div id="work-custom-mode" style="display:none;">
-        <div class="input-section-label">수치 직접 입력</div>
+        <div class="input-section-label">레시피 수치 직접 입력</div>
         <div class="custom-box">
           <div class="c-field">
             <label>작업량 요구치</label>
-            <input type="number" id="custom-work" value="9700" oninput="calcCustomWork()" placeholder="작업량">
+            <input type="number" id="custom-work" value="9700" oninput="calcCustomWork()" placeholder="예: 9700">
           </div>
           <div class="c-field">
-            <label>progressDivider</label>
-            <input type="number" id="custom-pd" value="170" oninput="calcCustomWork()" placeholder="170">
+            <label>최고 품질</label>
+            <input type="number" id="custom-quality" value="17300" oninput="calcCustomWork()" placeholder="예: 17300">
           </div>
           <div class="c-field">
-            <label>progressModifier</label>
-            <input type="number" id="custom-pm" value="90" oninput="calcCustomWork()" placeholder="90">
+            <label>내구도</label>
+            <input type="number" id="custom-dur" value="65" oninput="calcCustomWork()" placeholder="예: 65">
+          </div>
+          <div class="c-field">
+            <label>레시피 레벨 (rlvl)</label>
+            <input type="number" id="custom-rlvl" value="720" oninput="calcCustomWork()" placeholder="예: 720">
+            <span class="c-hint">rlvl에 따라 계산 공식이 달라져요 (700~750+)</span>
           </div>
         </div>
       </div>
