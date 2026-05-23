@@ -78,7 +78,7 @@ const OPENER_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'집중 작업'},
     ],
-    skillEff: 500, skillBuff: 1.5, stateBuff: 0, highlight: false,
+    skillEff: 400, skillBuff: 1.5, stateBuff: 0, highlight: false,
   },
   {
     id: 'shin-ko-mit',
@@ -105,7 +105,7 @@ const OPENER_COMBOS = [
 // ── 스킬별 단독 참고 (하단 표) ──
 const SKILL_REF = [
   {name:'강행 작업', eff:500},
-  {name:'집중 작업', eff:500},
+  {name:'집중 작업', eff:400},
   {name:'밑작업',    eff:360},
   {name:'절약 작업', eff:180},
   {name:'모범 작업', eff:180},
