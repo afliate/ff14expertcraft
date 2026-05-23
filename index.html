@@ -1509,19 +1509,24 @@ document.addEventListener('DOMContentLoaded', () => {
  
       <div class="c-divider"></div>
 
-      <!-- 내구 분리 입력 -->
+           <!-- 내구 분리 입력 -->
       <div>
         <div class="input-section-label">내구도 상황</div>
         <div class="c-field-row" style="margin-bottom:6px;">
-         <div class="c-field">
-  <label for="q-gyomyo">교묘한 손놀림 남은 턴 (0~8)</label>
-  <input type="number" id="q-gyomyo" placeholder="예: 5" min="0" max="8" oninput="calcQualDur()">
-</div>
+          <div class="c-field">
+            <label>현재 남은 내구</label>
+            <input type="number" id="q-dur-current" placeholder="예: 55" oninput="calcQualDur()">
+          </div>
+          <div class="c-field">
+            <label for="q-gyomyo">교묘한 손놀림 남은 턴 (0~8)</label>
+            <input type="number" id="q-gyomyo" placeholder="예: 5" min="0" max="8" oninput="calcQualDur()">
+          </div>
+        </div>
         <div id="q-dur-calc" style="font-size:11px;color:var(--text-dim);padding:5px 8px;background:var(--surface2);border-radius:3px;display:none;"></div>
         <input type="hidden" id="q-dur">
         <span class="c-hint" style="margin-top:4px;display:block;">교묘 1턴 = 다음 공정 끝에 내구 +5 회복 (최대 8턴, +40). 마무리용 내구 10은 자동 차감돼요.</span>
       </div>
- 
+
     </div><!-- /input-panel -->
  
     <!-- 결과 패널 -->
@@ -1665,7 +1670,5 @@ function filterRegion(region) {
 }
 </script>
 
-
-</script>
 </body>
 </html>
