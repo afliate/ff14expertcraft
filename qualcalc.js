@@ -45,6 +45,24 @@ function calcC0WithIQ(cons, iqStacks) {
   return Math.floor(base * 75 / 100);
 }
 
+// ============================================================
+//  통합 품질 계산 함수
+//  품질 = floor(c0_raw × IQ보너스 × 효율/100 × (1 + 버프합))
+//
+//  - c0_raw : (cons × 10/150 + 35) × 75/100  (floor 없이 raw)
+//  - IQ보너스: 1 + 0.1 × IQ스택  (10스택 = ×2.0)
+//  - 효율   : 액션 효율 (밑가공 200, 상급 150, 비레고 100+20×IQ ...)
+//  - 버프합 : 혁신(+0.5), 장족(+1.0) 등 덧셈 누적
+//
+//  ※ floor를 마지막에 한 번만 적용해야 팀크/라파엘과 일치
+// ============================================================
+function calcQuality(cons, iqStacks, efficiency, buffSum) {
+  const base = cons * 10 / 150 + 35;
+  const c0   = base * 75 / 100;             // floor 없이 raw 값 유지
+  const iqMult = 1 + iqStacks * 0.1;
+  return Math.floor(c0 * iqMult * efficiency / 100 * (1 + buffSum));
+}
+
 // ── 확신 오프너 조합 데이터 (상단 표) ──
 // shinWork  = floor(s0 × 3.0)          확신 자체 작업량 (효율300)
 // skillWork = floor(s0 × eff/100 × (skillBuff + stateBuff))
@@ -129,8 +147,21 @@ const FINISH_EFF = 120;
 //   상급 가공(Advanced) : 효율 150
 //
 // 단일 스킬 품질 = floor(c0iq × eff/100 × 혁신배율 × 장족배율)
+// ── 품질 로테이션 데이터 ──
+// ※ 새 구조: efficiency + buffSum + iqStacks 로 정의
+//   품질 계산은 calcQuality(cons, iqStacks, efficiency, buffSum) 사용
+//
+// 버프 배율 정리 (게임 공식):
+//   혁신(Innovation)         : +0.5  (덧셈 누적)
+//   장족의 발전(Great Strides): +1.0  (덧셈 누적, 한 번만)
+//   비레고(Byregot's)        : 효율 = 100 + 20 × IQ스택  (10스택 = 300)
+//   밑가공(Prep Touch)       : 효율 200 (내구 20)
+//   절약 가공(Prudent)       : 효율 100 (내구 5)
+//   상급 가공(Advanced)      : 효율 150 (내구 10)
+//
+// multiStep: true 인 경우 steps 배열로 다단 계산
 const QUALITY_ROTATIONS = [
-  // 비레고 계열
+  // ── 비레고 계열 ──
   {
     id: 'jang-hyeok-bire',
     label: '장족 + 혁신 + 비레고 (10스택)',
@@ -140,9 +171,8 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'비레고 ×10스택'},
     ],
-    // 비레고 10스택 효율=300, 혁신×1.5, 장족×2
-    // = floor(c0iq × 3.0 × 1.5 × 2.0) = floor(c0iq × 9)
-    qualityFn: c0iq => Math.floor(c0iq * 9),
+    // 비레고 효율=300 (IQ10), 혁신+장족 = +1.5
+    efficiency: 300, buffSum: 1.5, iqStacks: 10,
     cpCost: 74, durCost: 50,
     note: 'IQ10스택 기준', highlight: true,
   },
@@ -156,11 +186,13 @@ const QUALITY_ROTATIONS = [
       {type:'quality',text:'밑가공×2'},{type:'sep',text:'+'},
       {type:'quality',text:'비레고 ×10스택'},
     ],
-    // 밑가공1(장족+혁신): floor(c0iq×2×1.5×2)=floor(c0iq×6)
-    // 밑가공2(혁신만):    floor(c0iq×2×1.5)  =floor(c0iq×3)
-    // 비레고(혁신1턴):    floor(c0iq×3×1.5)  =floor(c0iq×4.5)
-    // 합계: c0iq × 13.5
-    qualityFn: c0iq => Math.floor(c0iq * 6) + Math.floor(c0iq * 3) + Math.floor(c0iq * 4.5),
+    // 다단 계산: 밑가공1(장족+혁신), 밑가공2(혁신만), 비레고(혁신만)
+    multiStep: true,
+    steps: [
+      { efficiency: 200, buffSum: 1.5, iqStacks: 10 }, // 밑가공 (장족+혁신)
+      { efficiency: 200, buffSum: 0.5, iqStacks: 10 }, // 밑가공 (혁신만, 장족 소멸)
+      { efficiency: 300, buffSum: 0.5, iqStacks: 10 }, // 비레고 (혁신만)
+    ],
     cpCost: 206, durCost: 90,
     note: 'IQ10스택 기준', highlight: false,
   },
@@ -172,13 +204,12 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'비레고 ×10스택'},
     ],
-    // 비레고 10스택 효율=300, 혁신×1.5, 장족없음
-    // = floor(c0iq × 3.0 × 1.5) = floor(c0iq × 4.5)
-    qualityFn: c0iq => Math.floor(c0iq * 4.5),
+    efficiency: 300, buffSum: 0.5, iqStacks: 10,
     cpCost: 42, durCost: 50,
     note: '장족 없이 혁신만', highlight: false,
   },
-  // 밑가공 계열
+
+  // ── 밑가공 계열 ──
   {
     id: 'jang-hyeok-mit1',
     label: '장족 + 혁신 + 밑가공',
@@ -188,9 +219,7 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'밑가공'},
     ],
-    // 밑가공 효율=200, 혁신×1.5, 장족×2
-    // = floor(c0iq × 2 × 1.5 × 2) = floor(c0iq × 6)
-    qualityFn: c0iq => Math.floor(c0iq * 6),
+    efficiency: 200, buffSum: 1.5, iqStacks: 10,
     cpCost: 90, durCost: 20,
     note: 'IQ10스택 기준', highlight: false,
   },
@@ -202,9 +231,7 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'밑가공'},
     ],
-    // 밑가공 효율=200, 혁신×1.5
-    // = floor(c0iq × 2 × 1.5) = floor(c0iq × 3)
-    qualityFn: c0iq => Math.floor(c0iq * 3),
+    efficiency: 200, buffSum: 0.5, iqStacks: 10,
     cpCost: 58, durCost: 20,
     note: '', highlight: false,
   },
@@ -216,8 +243,11 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'밑가공×2'},
     ],
-    // 밑가공 2회 (혁신 4턴 내) = floor(c0iq×3) × 2
-    qualityFn: c0iq => Math.floor(c0iq * 3) + Math.floor(c0iq * 3),
+    multiStep: true,
+    steps: [
+      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
+      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
+    ],
     cpCost: 98, durCost: 40,
     note: '', highlight: false,
   },
@@ -229,11 +259,17 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'밑가공×3'},
     ],
-    qualityFn: c0iq => Math.floor(c0iq * 3) + Math.floor(c0iq * 3) + Math.floor(c0iq * 3),
+    multiStep: true,
+    steps: [
+      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
+      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
+      { efficiency: 200, buffSum: 0.5, iqStacks: 10 },
+    ],
     cpCost: 138, durCost: 60,
     note: '혁신 4턴 내', highlight: false,
   },
-  // 절약 가공 계열
+
+  // ── 절약 가공 계열 ──
   {
     id: 'jang-hyeok-jeol',
     label: '장족 + 혁신 + 절약 가공',
@@ -243,9 +279,7 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'절약 가공'},
     ],
-    // 절약가공 효율=100, 혁신×1.5, 장족×2
-    // = floor(c0iq × 1 × 1.5 × 2) = floor(c0iq × 3)
-    qualityFn: c0iq => Math.floor(c0iq * 3),
+    efficiency: 100, buffSum: 1.5, iqStacks: 10,
     cpCost: 120, durCost: 5,
     note: '내구 5 소모', highlight: false,
   },
@@ -257,21 +291,22 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'절약 가공×2'},
     ],
-    // 절약가공 효율=100, 혁신×1.5
-    // 1회 = floor(c0iq × 1 × 1.5) = floor(c0iq × 1.5)
-    qualityFn: c0iq => Math.floor(c0iq * 1.5) + Math.floor(c0iq * 1.5),
+    multiStep: true,
+    steps: [
+      { efficiency: 100, buffSum: 0.5, iqStacks: 10 },
+      { efficiency: 100, buffSum: 0.5, iqStacks: 10 },
+    ],
     cpCost: 68, durCost: 10,
     note: '', highlight: false,
   },
-  // 마무리
+
+  // ── 마무리 ──
   {
     id: 'sanggup',
     label: '상급 가공 (혁신 없음)',
     category: '마무리',
     chips: [{type:'quality',text:'상급 가공'}],
-    // 상급가공 효율=150, 버프없음
-    // = floor(c0iq × 1.5)
-    qualityFn: c0iq => Math.floor(c0iq * 1.5),
+    efficiency: 150, buffSum: 0, iqStacks: 10,
     cpCost: 46, durCost: 10,
     note: '', highlight: false,
   },
@@ -283,9 +318,7 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
       {type:'quality',text:'상급 가공'},
     ],
-    // 상급가공 효율=150, 장족×2
-    // = floor(c0iq × 1.5 × 2) = floor(c0iq × 3)
-    qualityFn: c0iq => Math.floor(c0iq * 3),
+    efficiency: 150, buffSum: 1.0, iqStacks: 10,
     cpCost: 78, durCost: 10,
     note: '', highlight: false,
   },
