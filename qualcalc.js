@@ -1130,7 +1130,7 @@ function renderQuality() {
         <span class="rec-achieved">달성 ✔</span>
       </div>
       <div class="rec-chips">
-        ${best.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}
+        ${skillSeq(best.skills)}
       </div>
       <div class="rec-meta">
         <span class="rec-meta-item">CP <b>${best.cpCost}</b></span>
