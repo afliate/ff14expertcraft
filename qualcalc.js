@@ -603,19 +603,21 @@ function calcQualDur() {
     return;
   }
 
-  // 교묘한 손놀림 1스택 = 8회 공정 × +5 = 최대 +40
-  const gyomyoBonus = stacks * 40;
-  const totalDur = current + gyomyoBonus;
+  // 교묘한 손놀림: 남은 스택 수 × 5 내구 회복 (스택당 1턴 = +5)
+  // 마무리 작업용 내구 10 차감 → 가공에 실제 사용 가능한 내구
+  const FINISH_DUR = 10;                       // 마무리 '작업' 내구 소모
+  const gyomyoBonus = stacks * 5;              // 남은 턴 × 5 회복
+  const totalDur = Math.max(0, current + gyomyoBonus - FINISH_DUR);
 
   hiddenDur.value = totalDur;
   calcBox.style.display = 'block';
 
   if (current && stacks) {
-    calcBox.innerHTML = `현재 내구 <b style="color:var(--text-bright)">${current}</b> + 교묘 ${stacks}스택 <span style="color:var(--text-dim)">(+${gyomyoBonus})</span> = 사용 가능 내구 <b style="color:var(--accent)">${totalDur}</b>`;
+    calcBox.innerHTML = `현재 내구 <b style="color:var(--text-bright)">${current}</b> + 교묘 ${stacks}스택 <span style="color:var(--text-dim)">(+${gyomyoBonus})</span> − 마무리 <span style="color:var(--text-dim)">(-${FINISH_DUR})</span> = 가공 가능 내구 <b style="color:var(--accent)">${totalDur}</b>`;
   } else if (current) {
-    calcBox.innerHTML = `현재 내구 <b style="color:var(--text-bright)">${current}</b> (교묘 스택 없음)`;
+    calcBox.innerHTML = `현재 내구 <b style="color:var(--text-bright)">${current}</b> − 마무리 <span style="color:var(--text-dim)">(-${FINISH_DUR})</span> = 가공 가능 내구 <b style="color:var(--accent)">${totalDur}</b> (교묘 스택 없음)`;
   } else {
-    calcBox.innerHTML = `교묘 ${stacks}스택 → 최대 +${gyomyoBonus} 내구 회복 예정`;
+    calcBox.innerHTML = `교묘 ${stacks}스택 → 최대 +${gyomyoBonus} 내구 회복 예정 (마무리 -${FINISH_DUR})`;
   }
 
   renderQuality();
