@@ -510,6 +510,37 @@ function onQVariantChange() {
   renderQuality();
 }
 
+function calcQualDur() {
+  const current = parseInt(document.getElementById('q-dur-current').value) || 0;
+  const stacks  = parseInt(document.getElementById('q-gyomyo').value) || 0;
+  const hiddenDur = document.getElementById('q-dur');
+  const calcBox   = document.getElementById('q-dur-calc');
+
+  if (!current && !stacks) {
+    hiddenDur.value = '';
+    calcBox.style.display = 'none';
+    renderQuality();
+    return;
+  }
+
+  // 교묘한 손놀림 1스택 = 8회 공정 × +5 = 최대 +40
+  const gyomyoBonus = stacks * 40;
+  const totalDur = current + gyomyoBonus;
+
+  hiddenDur.value = totalDur;
+  calcBox.style.display = 'block';
+
+  if (current && stacks) {
+    calcBox.innerHTML = `현재 내구 <b style="color:var(--text-bright)">${current}</b> + 교묘 ${stacks}스택 <span style="color:var(--text-dim)">(+${gyomyoBonus})</span> = 사용 가능 내구 <b style="color:var(--accent)">${totalDur}</b>`;
+  } else if (current) {
+    calcBox.innerHTML = `현재 내구 <b style="color:var(--text-bright)">${current}</b> (교묘 스택 없음)`;
+  } else {
+    calcBox.innerHTML = `교묘 ${stacks}스택 → 최대 +${gyomyoBonus} 내구 회복 예정`;
+  }
+
+  renderQuality();
+}
+
 function onQualityChange() {
   ['q-cons','q-cp'].forEach(id => {
     const el = document.getElementById(id);
