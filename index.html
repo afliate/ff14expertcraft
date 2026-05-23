@@ -1498,6 +1498,17 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="c-divider"></div>
 
       <div>
+        <div class="input-section-label">캐릭터 설정</div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);cursor:pointer;padding:4px 0;">
+          <input type="checkbox" id="q-expert" onchange="onQualityChange()" style="accent-color:var(--accent);width:13px;height:13px;">
+          전문장인 보유
+          <span style="font-size:10px;color:var(--text-dim)">(전문 로테이션 표시)</span>
+        </label>
+      </div>
+
+      <div class="c-divider"></div>
+
+      <div>
         <div class="input-section-label">능력치</div>
         <div class="c-field-row">
           <div class="c-field">
