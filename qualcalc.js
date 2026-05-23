@@ -677,12 +677,8 @@ function renderQuality() {
   const recipe = variants[Math.min(qVariantIdx, variants.length - 1)];
 
   const durLimit = durInput || recipe.durability;
-  if (!durInput && recipe.durability) {
-    document.getElementById('q-dur').placeholder = `레시피 기본: ${recipe.durability}`;
-  }
-
-  const c0    = calcC0(cons);               // 기본 c0 (IQ 없음, 표시용)
-  const c0iq  = calcC0WithIQ(cons, 10);     // IQ 10스택 반영 c0 (계산에 사용)
+  const c0    = calcC0(cons);
+  const c0iq  = calcC0WithIQ(cons, 10);
   const qualityGoal = recipe.quality;
   const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만' };
 
@@ -693,27 +689,38 @@ function renderQuality() {
     return `<span class="recipe-badge badge-normal">일반</span>`;
   }
 
-  const categories = [...new Set(QUALITY_ROTATIONS.map(r => r.category))];
+  // ── 로테이션 계산 ──
   const rows = QUALITY_ROTATIONS.map(rot => {
-    // multiStep: steps 배열을 순회하며 합산 / 단일: efficiency+buffSum 한 번 계산
     let q;
     if (rot.multiStep) {
       q = rot.steps.reduce(
-        (sum, s) => sum + calcQuality(cons, s.iqStacks, s.efficiency, s.buffSum),
-        0
+        (sum, s) => sum + calcQuality(cons, s.iqStacks, s.efficiency, s.buffSum), 0
       );
     } else {
       q = calcQuality(cons, rot.iqStacks, rot.efficiency, rot.buffSum);
     }
     const remaining = qualityGoal - q;
     const pct = Math.min(100, Math.round(q / qualityGoal * 100));
-    const ok = q >= qualityGoal;
-    const cpOk = cp === 0 || rot.cpCost <= cp;
+    const ok    = q >= qualityGoal;
+    const cpOk  = cp === 0 || rot.cpCost <= cp;
     const durOk = durLimit === 0 || rot.durCost <= durLimit;
-    return { ...rot, q, remaining, pct, ok, cpOk, durOk };
+    const canDo = cpOk && durOk;  // CP·내구 조건 모두 만족
+    return { ...rot, q, remaining, pct, ok, cpOk, durOk, canDo };
   });
 
-  // 변형 선택 UI
+  // ── 추천 로테이션 선정 ──
+  // 조건 만족(canDo) + 품질 달성(ok) 중 품질 가장 높은 것
+  const reachable = rows.filter(r => r.canDo && r.ok);
+  const best = reachable.sort((a, b) => b.q - a.q)[0] || null;
+
+  // ── 정렬: 조건OK+달성 → 조건OK+미달성(달성률 높은순) → 조건불가 ──
+  const sorted = [
+    ...rows.filter(r => r.canDo && r.ok).sort((a, b) => b.q - a.q),
+    ...rows.filter(r => r.canDo && !r.ok).sort((a, b) => b.pct - a.pct),
+    ...rows.filter(r => !r.canDo).sort((a, b) => b.pct - a.pct),
+  ];
+
+  // ── 변형 선택 UI ──
   let variantUI = '';
   if (variants.length > 1) {
     variantUI = `<div class="c-result-card"><div class="c-result-card-title">레시피 변형 선택</div><div class="variant-selector">`;
@@ -731,41 +738,68 @@ function renderQuality() {
     variantUI += `</div></div>`;
   }
 
-  // 카테고리별 테이블
-  let tableHtml = '';
-  categories.forEach(cat => {
-    const catRows = rows.filter(r => r.category === cat);
-    tableHtml += `
-    <div class="c-result-card">
-      <div class="c-result-card-title">${cat} 로테이션</div>
-      <table class="rotation-table">
-        <thead><tr><th>스킬 조합</th><th class="num">품질</th><th class="num">달성률</th><th class="num">남은 품질</th><th class="num">CP</th><th class="num">내구</th></tr></thead>
-        <tbody>
-          ${catRows.map(row => {
-            const sc = row.ok ? 'ok' : row.pct >= 80 ? 'warn' : '';
-            return `<tr class="${row.highlight ? 'highlight' : ''}">
-              <td>
-                <div class="skill-chips">${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}</div>
-                ${row.note ? `<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">${row.note}</div>` : ''}
-              </td>
-              <td class="num"><b class="${sc}">${row.q.toLocaleString()}</b>${row.ok ? ' ✔' : ''}</td>
-              <td class="num">
-                <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;">
-                  <div style="width:60px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;">
-                    <div style="width:${row.pct}%;height:100%;background:${row.ok ? 'var(--green)' : row.pct>=80 ? 'var(--yellow)' : 'var(--accent-dim)'};"></div>
-                  </div>
-                  <span class="${sc}">${row.pct}%</span>
-                </div>
-              </td>
-              <td class="num ${sc}">${row.ok ? '달성 ✔' : '+' + row.remaining.toLocaleString()}</td>
-              <td class="num ${row.cpOk ? '' : 'bad'}">${row.cpCost}<span style="color:var(--text-dim);font-size:10px;">CP</span></td>
-              <td class="num ${row.durOk ? '' : 'bad'}">${row.durCost > 0 ? '-' + row.durCost : '−'}</td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>
+  // ── 추천 카드 ──
+  let recommendHtml = '';
+  if (best) {
+    recommendHtml = `
+    <div class="rec-card">
+      <div class="rec-card-header">
+        <span class="rec-badge">★ 추천</span>
+        <span class="rec-quality">${best.q.toLocaleString()}</span>
+        <span class="rec-quality-label">/ ${qualityGoal.toLocaleString()}</span>
+        <span class="rec-achieved">달성 ✔</span>
+      </div>
+      <div class="rec-chips">
+        ${best.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}
+      </div>
+      <div class="rec-meta">
+        <span class="rec-meta-item">CP <b>${best.cpCost}</b></span>
+        <span class="rec-meta-sep">·</span>
+        <span class="rec-meta-item">내구 <b>-${best.durCost}</b></span>
+        ${best.note ? `<span class="rec-meta-sep">·</span><span class="rec-meta-item" style="color:var(--text-dim)">${best.note}</span>` : ''}
+      </div>
     </div>`;
-  });
+  } else {
+    // 달성 가능한 로테이션이 없을 때
+    const bestCanDo = rows.filter(r => r.canDo).sort((a, b) => b.q - a.q)[0];
+    recommendHtml = `
+    <div class="rec-card rec-card-fail">
+      <div class="rec-card-header">
+        <span class="rec-badge rec-badge-fail">⚠ 달성 불가</span>
+        <span class="rec-quality" style="color:var(--text-dim)">${bestCanDo ? bestCanDo.q.toLocaleString() : '−'}</span>
+        <span class="rec-quality-label">/ ${qualityGoal.toLocaleString()}</span>
+      </div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">
+        현재 수치로는 CP·내구 조건을 만족하면서 품질을 달성할 수 있는 로테이션이 없어요.<br>
+        ${bestCanDo ? `조건 내 최대 품질: <b style="color:var(--text-bright)">${bestCanDo.q.toLocaleString()}</b> (목표까지 <b style="color:var(--yellow)">+${(qualityGoal - bestCanDo.q).toLocaleString()}</b> 부족)` : ''}
+      </div>
+    </div>`;
+  }
+
+  // ── 전체 로테이션 테이블 ──
+  const tableRows = sorted.map(row => {
+    const isBest = best && row.id === best.id;
+    const sc = row.ok ? 'ok' : row.pct >= 80 ? 'warn' : '';
+    const dimmed = !row.canDo ? 'style="opacity:0.45"' : '';
+    return `<tr class="${isBest ? 'highlight' : ''}" ${dimmed}>
+      <td>
+        <div class="skill-chips">${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}</div>
+        ${row.note ? `<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">${row.note}</div>` : ''}
+      </td>
+      <td class="num"><b class="${sc}">${row.q.toLocaleString()}</b>${row.ok ? ' ✔' : ''}</td>
+      <td class="num">
+        <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;">
+          <div style="width:50px;height:4px;background:var(--surface2);border-radius:3px;overflow:hidden;">
+            <div style="width:${row.pct}%;height:100%;background:${row.ok ? 'var(--green)' : row.pct>=80 ? 'var(--yellow)' : 'var(--accent-dim)'};"></div>
+          </div>
+          <span class="${sc}">${row.pct}%</span>
+        </div>
+      </td>
+      <td class="num ${sc}">${row.ok ? '달성 ✔' : '+' + row.remaining.toLocaleString()}</td>
+      <td class="num ${row.cpOk ? '' : 'bad'}">${row.cpCost}<span style="color:var(--text-dim);font-size:10px;">CP</span></td>
+      <td class="num ${row.durOk ? '' : 'bad'}">${row.durCost > 0 ? '-' + row.durCost : '−'}</td>
+    </tr>`;
+  }).join('');
 
   resultEl.innerHTML = `
     ${variantUI}
@@ -783,6 +817,25 @@ function renderQuality() {
         <div class="recipe-stat"><div class="stat-lbl">c0 (IQ10스택)</div><div class="stat-val ok">${c0iq}</div></div>
       </div>
     </div>
-    ${tableHtml}
+
+    ${recommendHtml}
+
+    <div class="c-result-card">
+      <div class="c-result-card-title">전체 마무리 로테이션</div>
+      <table class="rotation-table">
+        <thead>
+          <tr>
+            <th>스킬 조합</th>
+            <th class="num">품질</th>
+            <th class="num">달성률</th>
+            <th class="num">남은 품질</th>
+            <th class="num">CP</th>
+            <th class="num">내구</th>
+          </tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:8px;">흐린 행 = CP 또는 내구 조건 미충족</div>
+    </div>
   `;
 }
