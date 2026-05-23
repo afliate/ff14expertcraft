@@ -1035,8 +1035,14 @@ function renderQuality() {
     return `<span class="recipe-badge badge-normal">일반</span>`;
   }
 
-  // ── 로테이션 계산 ──
-  const rows = QUALITY_ROTATIONS.map(rot => {
+  // ── 전문장인 여부 ──
+  const isExpert = document.getElementById('q-expert')?.checked || false;
+
+  // ── 로테이션 계산 (전문 필터링 포함) ──
+  const rows = QUALITY_ROTATIONS.filter(rot => {
+    if (rot.tag === '전문') return isExpert;
+    return true;
+  }).map(rot => {
     let q;
     if (rot.multiStep) {
       q = rot.steps.reduce(
@@ -1184,7 +1190,6 @@ function renderQuality() {
         <td class="rota-num ${durClass}">${row.durCost}</td>
         <td class="rota-num ${qClass}">${row.q.toLocaleString()}</td>
         <td class="rota-num ${cpClass}">${row.cpCost}</td>
-        <td class="rota-num">${remaining}</td>
       </tr>`;
     }).join('');
   }
@@ -1215,7 +1220,6 @@ function renderQuality() {
             <th class="rota-num">내구</th>
             <th class="rota-num">품질</th>
             <th class="rota-num">CP</th>
-            <th class="rota-num">남은 품질</th>
           </tr>
         </thead>
         <tbody>${rotaTableRows}</tbody>
