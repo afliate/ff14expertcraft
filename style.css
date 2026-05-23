@@ -96,19 +96,19 @@ body::before{
 .region-section[data-region="auksesia"] .section-title .num{border-color:rgba(90,180,100,.4);color:#5ab464;background:rgba(90,180,100,.08);}
 
 /* 예시 테이블 상태 색상 */
-.st-normal{color:var(--text-dim);}
-.st-high{color:#e85a7a;font-weight:700;}
-.st-best{color:#c060e0;font-weight:700;}
-.st-efficient{color:#4dc890;font-weight:700;}
-.st-stable{color:#d4b840;font-weight:700;}
-.st-solid{color:#7aaed4;font-weight:700;}
-.st-hq{color:#e85a7a;font-weight:700;}
-.st-he{color:#4dc890;font-weight:700;}
-.st-long{color:#b87ae0;font-weight:700;}
-.st-fast{color:#4a7fd4;font-weight:700;}
-.st-centered{color:#e8a030;font-weight:700;}
-.st-good{color:#60c0e8;font-weight:700;}
-.st-low{color:#888;font-weight:700;}
+.st-normal{color:var(--text-dim) !important;}
+.st-high{color:#e85a7a !important;font-weight:700;}
+.st-best{color:#c060e0 !important;font-weight:700;}
+.st-efficient{color:#4dc890 !important;font-weight:700;}
+.st-stable{color:#d4b840 !important;font-weight:700;}
+.st-solid{color:#7aaed4 !important;font-weight:700;}
+.st-hq{color:#e85a7a !important;font-weight:700;}
+.st-he{color:#4dc890 !important;font-weight:700;}
+.st-long{color:#b87ae0 !important;font-weight:700;}
+.st-fast{color:#4a7fd4 !important;font-weight:700;}
+.st-centered{color:#e8a030 !important;font-weight:700;}
+.st-good{color:#60c0e8 !important;font-weight:700;}
+.st-low{color:#888 !important;font-weight:700;}
 
 /* 햄버거 버튼 (모바일 전용) */
 .menu-btn{
