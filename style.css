@@ -922,3 +922,159 @@ body::before{
   background: rgba(62,207,170,.08);
   font-weight: 600;
 }
+
+/* ── 품질계산기 레시피 선택 바 ── */
+.qual-recipe-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.qual-recipe-bar .c-field {
+  flex: 1;
+  min-width: 140px;
+  max-width: 260px;
+}
+.qual-recipe-arrow {
+  font-size: 11px;
+  color: var(--text-dim);
+  padding-bottom: 10px;
+  flex-shrink: 0;
+}
+
+/* ── 품질 진행 바 ── */
+.quality-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.qp-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+.qp-label {
+  width: 52px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 10px;
+  letter-spacing: .04em;
+}
+.qp-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.qp-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+}
+.qp-bar.current  { background: var(--sky); }
+.qp-bar.needed   { background: var(--yellow); }
+.qp-bar.max      { background: var(--accent); }
+.qp-num {
+  width: 56px;
+  text-align: right;
+  color: var(--text-bright);
+  font-weight: 700;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.qp-footer {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--text-dim);
+  padding: 8px 0 0;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+.qp-footer b { color: var(--text-bright); }
+.qp-footer .highlight { color: var(--yellow); }
+
+/* ── 로테이션 카드 (샘플 스타일) ── */
+.rota-cards { display: flex; flex-direction: column; gap: 8px; }
+.rota-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px 14px;
+  transition: border-color .15s;
+}
+.rota-card.recommended {
+  border-color: var(--accent-dim);
+  background: rgba(62,207,170,.04);
+}
+.rota-card.possible   { opacity: .88; }
+.rota-card.impossible { opacity: .4;  }
+.rota-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.rota-badge {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  padding: 3px 7px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.badge-recommend {
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-dim);
+}
+.badge-possible {
+  color: var(--sky);
+  background: rgba(90,184,212,.10);
+  border: 1px solid rgba(90,184,212,.3);
+}
+.badge-impossible {
+  color: var(--text-dim);
+  background: none;
+  border: 1px solid var(--border);
+}
+.rota-quality-val {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-bright);
+  font-variant-numeric: tabular-nums;
+}
+.rota-quality-val.ok   { color: var(--green); }
+.rota-quality-val.warn { color: var(--yellow); }
+.rota-pct {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+.rota-pct b { color: var(--text); }
+.rota-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.rota-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 10px;
+  color: var(--text-dim);
+  padding-top: 6px;
+  border-top: 1px solid rgba(28,45,62,.5);
+}
+.rota-meta b  { color: var(--text); }
+.rota-meta .bad { color: var(--red); }
