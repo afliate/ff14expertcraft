@@ -1281,6 +1281,47 @@ document.addEventListener('DOMContentLoaded', () => {
  
     <!-- 입력 패널 -->
     <div class="input-panel">
+
+      <div>
+        <div class="input-section-label">장비 프리셋</div>
+        <div id="work-gear-btns" class="preset-btn-group">
+          <button class="preset-btn" onclick="selectWorkGear('저금단',this)">저금단</button>
+          <button class="preset-btn" onclick="selectWorkGear('중금단',this)">중금단</button>
+          <button class="preset-btn active" onclick="selectWorkGear('고금단',this)">고금단</button>
+          <button class="preset-btn" onclick="selectWorkGear('고금단+우주',this)">고금단+우주</button>
+          <button class="preset-btn" onclick="selectWorkGear('우주전용',this)">우주전용</button>
+        </div>
+        <div class="c-divider" style="margin:8px 0 6px;"></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">음식</div>
+            <div id="work-food-btns" class="preset-btn-group">
+              <button class="preset-btn" onclick="selectWorkFood('없음',this)">없음</button>
+              <button class="preset-btn active" onclick="selectWorkFood('알이페브레',this)">알이페브레</button>
+              <button class="preset-btn" onclick="selectWorkFood('세비체',this)">세비체</button>
+              <button class="preset-btn" onclick="selectWorkFood('로네크',this)">로네크</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">약액</div>
+            <div id="work-pot-btns" class="preset-btn-group">
+              <button class="preset-btn" onclick="selectWorkPot('없음',this)">없음</button>
+              <button class="preset-btn active" onclick="selectWorkPot('약액',this)">약액 HQ</button>
+              <button class="preset-btn" onclick="selectWorkPot('약주',this)">약주 HQ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-section-label">캐릭터 스탯</div>
+        <div class="c-field">
+          <label>작업 숙련도 (음식·약액 포함)</label>
+          <input type="number" id="crafts-input" value="5811" class="filled" oninput="onCraftsChange()">
+        </div>
+      </div>
+
+      <div class="c-divider"></div>
  
       <div>
         <div class="input-section-label">모드</div>
@@ -1317,34 +1358,26 @@ document.addEventListener('DOMContentLoaded', () => {
       <div id="work-custom-mode" style="display:none;">
         <div class="input-section-label">레시피 수치 직접 입력</div>
         <div class="custom-box">
-          <div class="c-field">
-            <label>작업량 요구치</label>
-            <input type="number" id="custom-work" value="9700" oninput="calcCustomWork()" placeholder="예: 9700">
+          <div class="c-field-row">
+            <div class="c-field">
+              <label>작업량 요구치</label>
+              <input type="number" id="custom-work" value="9700" oninput="calcCustomWork()" placeholder="예: 9700">
+            </div>
+            <div class="c-field">
+              <label>최고 품질</label>
+              <input type="number" id="custom-quality" value="17300" oninput="calcCustomWork()" placeholder="예: 17300">
+            </div>
           </div>
-          <div class="c-field">
-            <label>최고 품질</label>
-            <input type="number" id="custom-quality" value="17300" oninput="calcCustomWork()" placeholder="예: 17300">
+          <div class="c-field-row">
+            <div class="c-field">
+              <label>내구도</label>
+              <input type="number" id="custom-dur" value="65" oninput="calcCustomWork()" placeholder="예: 65">
+            </div>
+            <div class="c-field">
+              <label>rlvl</label>
+              <input type="number" id="custom-rlvl" value="720" oninput="calcCustomWork()" placeholder="예: 720">
+            </div>
           </div>
-          <div class="c-field">
-            <label>내구도</label>
-            <input type="number" id="custom-dur" value="65" oninput="calcCustomWork()" placeholder="예: 65">
-          </div>
-          <div class="c-field">
-            <label>레시피 레벨 (rlvl)</label>
-            <input type="number" id="custom-rlvl" value="720" oninput="calcCustomWork()" placeholder="예: 720">
-            <span class="c-hint">rlvl에 따라 계산 공식이 달라져요 (700~750+)</span>
-          </div>
-        </div>
-      </div>
- 
-      <div class="c-divider"></div>
- 
-      <div>
-        <div class="input-section-label">캐릭터 스탯</div>
-        <div class="c-field">
-          <label>작업 숙련도</label>
-          <input type="number" id="crafts-input" value="5811" class="filled" oninput="onCraftsChange()">
-          <div class="c-hint">음식·약액 포함 최종 수치</div>
         </div>
       </div>
  
@@ -1375,7 +1408,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div>
         <div class="input-section-label">장비 프리셋</div>
-        <div id="qual-gear-btns" class="preset-row">
+        <div id="qual-gear-btns" class="preset-btn-group">
           <button class="preset-btn" onclick="selectQualGear('저금단',this)">저금단</button>
           <button class="preset-btn" onclick="selectQualGear('중금단',this)">중금단</button>
           <button class="preset-btn active" onclick="selectQualGear('고금단',this)">고금단</button>
@@ -1386,7 +1419,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="display:flex;gap:16px;flex-wrap:wrap;">
           <div>
             <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">음식</div>
-            <div id="qual-food-btns" class="preset-row">
+            <div id="qual-food-btns" class="preset-btn-group">
               <button class="preset-btn" onclick="selectQualFood('없음',this)">없음</button>
               <button class="preset-btn active" onclick="selectQualFood('알이페브레',this)">알이페브레</button>
               <button class="preset-btn" onclick="selectQualFood('세비체',this)">세비체</button>
@@ -1395,7 +1428,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div>
             <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">약액</div>
-            <div id="qual-pot-btns" class="preset-row">
+            <div id="qual-pot-btns" class="preset-btn-group">
               <button class="preset-btn" onclick="selectQualPot('없음',this)">없음</button>
               <button class="preset-btn active" onclick="selectQualPot('약액',this)">약액 HQ</button>
               <button class="preset-btn" onclick="selectQualPot('약주',this)">약주 HQ</button>
@@ -1408,13 +1441,15 @@ document.addEventListener('DOMContentLoaded', () => {
  
       <div>
         <div class="input-section-label">능력치</div>
-        <div class="c-field">
-          <label>가공 숙련도</label>
-          <input type="number" id="q-cons" placeholder="예: 5580" oninput="onQualityChange()">
-        </div>
-        <div class="c-field" style="margin-top:10px;">
-          <label>보유 CP</label>
-          <input type="number" id="q-cp" placeholder="예: 649" oninput="onQualityChange()">
+        <div class="c-field-row">
+          <div class="c-field">
+            <label>가공 숙련도</label>
+            <input type="number" id="q-cons" placeholder="예: 5580" oninput="onQualityChange()">
+          </div>
+          <div class="c-field">
+            <label>보유 CP</label>
+            <input type="number" id="q-cp" placeholder="예: 649" oninput="onQualityChange()">
+          </div>
         </div>
       </div>
  
@@ -1443,13 +1478,24 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
  
+      <div class="c-divider"></div>
+
+      <!-- 내구 분리 입력 -->
       <div>
-        <div class="input-section-label">제한 조건</div>
-        <div class="c-field">
-          <label>내구도 소모 한도</label>
-          <input type="number" id="q-dur" placeholder="레시피 자동 입력" oninput="onQualityChange()">
-          <span class="c-hint">교묘한 손놀림 등 추가 내구 포함 총량</span>
+        <div class="input-section-label">내구도 상황</div>
+        <div class="c-field-row" style="margin-bottom:6px;">
+          <div class="c-field">
+            <label>현재 남은 내구</label>
+            <input type="number" id="q-dur-current" placeholder="예: 55" oninput="calcQualDur()">
+          </div>
+          <div class="c-field">
+            <label>교묘한 손놀림 남은 스택</label>
+            <input type="number" id="q-gyomyo" placeholder="예: 2" min="0" oninput="calcQualDur()">
+          </div>
         </div>
+        <div id="q-dur-calc" style="font-size:11px;color:var(--text-dim);padding:5px 8px;background:var(--surface2);border-radius:3px;display:none;"></div>
+        <input type="hidden" id="q-dur">
+        <span class="c-hint" style="margin-top:4px;display:block;">교묘 1스택 = 이후 8회 공정 동안 내구 +5씩 회복 (최대 +40)</span>
       </div>
  
     </div><!-- /input-panel -->
