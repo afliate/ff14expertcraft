@@ -44,6 +44,11 @@ function setActiveBtnGroup(groupId, activeBtn) {
 function selectWorkGear(name, btn) { workGear = name; setActiveBtnGroup('work-gear-btns', btn); applyWorkPreset(); }
 function selectWorkFood(name, btn) { workFood = name; setActiveBtnGroup('work-food-btns', btn); applyWorkPreset(); }
 function selectWorkPot(name, btn)  { workPot  = name; setActiveBtnGroup('work-pot-btns',  btn); applyWorkPreset(); }
+   /* ── 프리셋 해제 (사용자가 직접 입력 시) ── */
+function clearWorkPresetUI() {
+  document.querySelectorAll('#work-gear-btns .preset-btn, #work-food-btns .preset-btn, #work-pot-btns .preset-btn')
+    .forEach(b => b.classList.remove('active'));
+}
 function applyWorkPreset() {
   const s = calcFinalStats(workGear, workFood, workPot);
   const el = document.getElementById('crafts-input');
@@ -52,6 +57,10 @@ function applyWorkPreset() {
 function selectQualGear(name, btn) { qualGear = name; setActiveBtnGroup('qual-gear-btns', btn); applyQualPreset(); }
 function selectQualFood(name, btn) { qualFood = name; setActiveBtnGroup('qual-food-btns', btn); applyQualPreset(); }
 function selectQualPot(name, btn)  { qualPot  = name; setActiveBtnGroup('qual-pot-btns',  btn); applyQualPreset(); }
+   function clearQualPresetUI() {
+  document.querySelectorAll('#qual-gear-btns .preset-btn, #qual-food-btns .preset-btn, #qual-pot-btns .preset-btn')
+    .forEach(b => b.classList.remove('active'));
+}
 function applyQualPreset() {
   const s = calcFinalStats(qualGear, qualFood, qualPot);
   const cons = document.getElementById('q-cons');
@@ -63,6 +72,26 @@ function applyQualPreset() {
 document.addEventListener('DOMContentLoaded', () => {
   applyWorkPreset();
   applyQualPreset();
+
+  /* ── 사용자가 입력 필드를 직접 수정하면 프리셋 active 해제 ── */
+  // 작업 계산기: 작숙 직접 입력 → 작업 프리셋 해제
+  const craftsEl = document.getElementById('crafts-input');
+  if (craftsEl) {
+    craftsEl.addEventListener('input', (e) => {
+      // 프리셋 함수가 호출한 게 아니라 사용자가 직접 키보드로 입력한 경우만
+      if (e.isTrusted) clearWorkPresetUI();
+    });
+  }
+
+  // 품질 계산기: 가공숙 또는 CP 직접 입력 → 품질 프리셋 해제
+  ['q-cons', 'q-cp'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', (e) => {
+        if (e.isTrusted) clearQualPresetUI();
+      });
+    }
+  });
 });
 </script>
 </head>
