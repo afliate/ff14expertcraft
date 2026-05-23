@@ -6,8 +6,65 @@
 <title>파판14 고난도 제작 가이드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="qualcalc.css">
-<script src="recipes.js"></script>  
+<script src="recipes.js"></script>
+<script src="qualcalc.js"></script>
+<script>
+/* =============================================
+   스탯 프리셋 데이터 & 로직
+   ============================================= */
+const GEAR_PRESETS = {
+  '저금단':     { crafts: 5635, cons: 4969, cp: 583 },
+  '중금단':     { crafts: 5812, cons: 5083, cp: 649 },
+  '고금단':     { crafts: 5811, cons: 5461, cp: 649 },
+  '고금단+우주': { crafts: 5867, cons: 5424, cp: 649 },
+  '우주전용':   { crafts: 5812, cons: 5464, cp: 649 },
+};
+const FOOD_BUFFS = {
+  '없음':      { crafts: 0,   cons: 0,   cp: 0   },
+  '알이페브레': { crafts: 0,   cons: 115, cp: 100 },
+  '세비체':    { crafts: 150, cons: 0,   cp: 96  },
+  '로네크':    { crafts: 0,   cons: 97,  cp: 92  },
+};
+const POT_BUFFS = {
+  '없음': { cp: 0  },
+  '약액': { cp: 27 },
+  '약주': { cp: 21 },
+};
+let workGear = '고금단', workFood = '알이페브레', workPot = '약액';
+let qualGear = '고금단', qualFood = '알이페브레', qualPot = '약액';
+
+function calcFinalStats(gear, food, pot) {
+  const g = GEAR_PRESETS[gear], f = FOOD_BUFFS[food], p = POT_BUFFS[pot];
+  return { crafts: g.crafts + f.crafts, cons: g.cons + f.cons, cp: g.cp + f.cp + p.cp };
+}
+function setActiveBtnGroup(groupId, activeBtn) {
+  document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
+  activeBtn.classList.add('active');
+}
+function selectWorkGear(name, btn) { workGear = name; setActiveBtnGroup('work-gear-btns', btn); applyWorkPreset(); }
+function selectWorkFood(name, btn) { workFood = name; setActiveBtnGroup('work-food-btns', btn); applyWorkPreset(); }
+function selectWorkPot(name, btn)  { workPot  = name; setActiveBtnGroup('work-pot-btns',  btn); applyWorkPreset(); }
+function applyWorkPreset() {
+  const s = calcFinalStats(workGear, workFood, workPot);
+  const el = document.getElementById('crafts-input');
+  if (el) { el.value = s.crafts; el.classList.add('filled'); onCraftsChange(); }
+}
+function selectQualGear(name, btn) { qualGear = name; setActiveBtnGroup('qual-gear-btns', btn); applyQualPreset(); }
+function selectQualFood(name, btn) { qualFood = name; setActiveBtnGroup('qual-food-btns', btn); applyQualPreset(); }
+function selectQualPot(name, btn)  { qualPot  = name; setActiveBtnGroup('qual-pot-btns',  btn); applyQualPreset(); }
+function applyQualPreset() {
+  const s = calcFinalStats(qualGear, qualFood, qualPot);
+  const cons = document.getElementById('q-cons');
+  const cp   = document.getElementById('q-cp');
+  if (cons) { cons.value = s.cons; cons.classList.add('filled'); }
+  if (cp)   { cp.value   = s.cp;   cp.classList.add('filled');   }
+  onQualityChange();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  applyWorkPreset();
+  applyQualPreset();
+});
+</script>
 </head>
   
 <body>
@@ -1154,7 +1211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <tr><td class="st-fast">빠른 진행</td><td class="sk-used">공경</td><td></td><td class="cmt">강행 바로 x — 확신+공경 버프 가치가 크므로</td></tr>
 <tr><td class="st-stable">안정</td><td class="sk-used">강행 작업</td><td class="ok">성공</td><td class="cmt">작업량 5,037 / 8,500</td></tr>
 <tr><td class="st-high">고품질</td><td class="sk-used">집중 가공</td><td></td><td class="cmt">정신집중 +2 — 스택 작업 겸 품질</td></tr>
-<tr><td class="st-centered">장기 지속</td><td class="sk-used">강행 작업</td><td class="fail">실패</td><td class="cmt">공경 스택 남아있어 강행 계속 진행</td></tr>
+<tr><td class="st-long">장기 지속</td><td class="sk-used">강행 작업</td><td class="fail">실패</td><td class="cmt">공경 스택 남아있어 강행 계속 진행</td></tr>
 <tr><td class="st-high">고품질</td><td class="sk-used">집중 가공</td><td></td><td class="cmt">정신집중 4스택</td></tr>
 <tr><td colspan="4" class="stat-line">📊 작업량 5,037 / 8,500 · 품질 1,702 · 내구 35 · 교묘 3스택</td></tr>
 <tr class="phase-row"><td colspan="4">── 작업량 확보</td></tr>
@@ -1178,11 +1235,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <div id="oj1-p3" class="phase-panel"><div style="overflow-x:auto"><table class="tbl">
 <tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
 <tr><td class="st-stable">안정</td><td class="sk-used">성급한 손길</td><td></td><td class="cmt">내구 충분 + 절약 미사용 → 성손으로 내구 소모 & 품질업</td></tr>
-<tr><td class="st-centered">장기 지속</td><td class="sk-used">혁신</td><td></td><td class="cmt">장인의 운때 패스. 품질업 버프 혁신 가동 (+6혁신)</td></tr>
+<tr><td class="st-long">장기 지속</td><td class="sk-used">혁신</td><td></td><td class="cmt">장인의 운때 패스. 품질업 버프 혁신 가동 (+6혁신)</td></tr>
 <tr><td class="st-good">완강</td><td class="sk-used">밑가공</td><td></td><td class="cmt">내구 반갈. CP -40. 품질 7,875</td></tr>
 <tr><td class="st-solid">견고</td><td class="sk-used">밑가공</td><td></td><td class="cmt">CP -40. 품질 9,939</td></tr>
 <tr><td class="st-normal">보통</td><td class="sk-used">장족의 발전</td><td></td><td class="cmt">내구 20. 추가 품질 버프. CP -32</td></tr>
-<tr><td class="st-centered">장기 지속</td><td class="sk-used">장인의 황금손</td><td></td><td class="cmt">내구 25. 내구 소모 없이 품질업. 품질 11,659</td></tr>
+<tr><td class="st-long">장기 지속</td><td class="sk-used">장인의 황금손</td><td></td><td class="cmt">내구 25. 내구 소모 없이 품질업. 품질 11,659</td></tr>
 <tr><td class="st-efficient">고효율</td><td class="sk-used">장족의 발전</td><td></td><td class="cmt">CP -16 절약. 내구 30</td></tr>
 <tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">CP -40. 품질 15,099 — 마무리 합산 시 풀품질 가능</td></tr>
 <tr><td class="st-good">완강</td><td class="sk-used">절약 가공</td><td></td><td class="cmt">내구 10. 완강이라 내구 남아 품질 소폭 추가. 품질 16,787</td></tr>
