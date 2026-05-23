@@ -14,10 +14,10 @@ function getRlvlParams(rlvl) {
   return { pD: 160, pM: 80 };
 }
 
-// s0 = floor((crafts * 21/pD + 2) * pM/100)
+// s0 = floor((crafts * 10/pD + 2) * pM/100)
 function calcS0(crafts, rlvl) {
   const { pD, pM } = getRlvlParams(rlvl);
-  return Math.floor((crafts * 21 / pD + 2) * pM / 100);
+  return Math.floor((crafts * 10 / pD + 2) * pM / 100);
 }
 
 // 작업량 = floor(s0 × 효율/100 × 버프배율)
@@ -366,7 +366,7 @@ function renderWorkHTML(s0, recipe, variantUI, mode) {
 
   // ── 오프너 조합 행 계산 ──
   const openerRows = OPENER_COMBOS.map(combo => {
-    const totalBuff = combo.skillBuff + combo.stateBuff;
+    const totalBuff = combo.skillBuff * (1 + combo.stateBuff); // 버프는 곱셈
     const skillWork = calcWork(s0, combo.skillEff, totalBuff);
     const total     = shinWork + skillWork;
     return { ...combo, shinWork, skillWork, total };
