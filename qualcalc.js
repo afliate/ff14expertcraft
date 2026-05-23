@@ -738,6 +738,38 @@ function renderQuality() {
     variantUI += `</div></div>`;
   }
 
+  // ── 현재 품질 입력 ──
+  const currentQuality = parseInt(document.getElementById('q-current-quality').value) || 0;
+
+  // ── 품질 진행 바 ──
+  const neededQuality  = Math.max(0, qualityGoal - currentQuality);
+  const pctCurrent = Math.min(100, Math.round(currentQuality / qualityGoal * 100));
+  const pctNeeded  = Math.min(100, Math.round(neededQuality  / qualityGoal * 100));
+
+  const progressHtml = `
+    <div class="quality-progress">
+      <div class="qp-row">
+        <span class="qp-label">현재</span>
+        <div class="qp-bar-wrap"><div class="qp-bar current" style="width:${pctCurrent}%"></div></div>
+        <span class="qp-num">${currentQuality.toLocaleString()}</span>
+      </div>
+      <div class="qp-row">
+        <span class="qp-label">필요</span>
+        <div class="qp-bar-wrap"><div class="qp-bar needed" style="width:${Math.min(100, pctCurrent + pctNeeded)}%"></div></div>
+        <span class="qp-num">${neededQuality > 0 ? '+' + neededQuality.toLocaleString() : '−'}</span>
+      </div>
+      <div class="qp-row">
+        <span class="qp-label">최고</span>
+        <div class="qp-bar-wrap"><div class="qp-bar max" style="width:100%"></div></div>
+        <span class="qp-num">${qualityGoal.toLocaleString()}</span>
+      </div>
+    </div>
+    <div class="qp-footer">
+      <span>추가 필요 <b class="highlight">${neededQuality > 0 ? '+' + neededQuality.toLocaleString() : '완료 ✔'}</b></span>
+      <span>내구 <b>${durLimit}</b></span>
+      <span>c0 (IQ10) <b>${c0iq}</b></span>
+    </div>`;
+
   // ── 추천 카드 ──
   let recommendHtml = '';
   if (best) {
@@ -776,29 +808,37 @@ function renderQuality() {
     </div>`;
   }
 
-  // ── 전체 로테이션 테이블 ──
-  const tableRows = sorted.map(row => {
+
+  // ── 로테이션 카드 HTML ──
+  const rotaCardsHtml = sorted.map(row => {
     const isBest = best && row.id === best.id;
-    const sc = row.ok ? 'ok' : row.pct >= 80 ? 'warn' : '';
-    const dimmed = !row.canDo ? 'style="opacity:0.45"' : '';
-    return `<tr class="${isBest ? 'highlight' : ''}" ${dimmed}>
-      <td>
-        <div class="skill-chips">${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}</div>
-        ${row.note ? `<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">${row.note}</div>` : ''}
-      </td>
-      <td class="num"><b class="${sc}">${row.q.toLocaleString()}</b>${row.ok ? ' ✔' : ''}</td>
-      <td class="num">
-        <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;">
-          <div style="width:50px;height:4px;background:var(--surface2);border-radius:3px;overflow:hidden;">
-            <div style="width:${row.pct}%;height:100%;background:${row.ok ? 'var(--green)' : row.pct>=80 ? 'var(--yellow)' : 'var(--accent-dim)'};"></div>
-          </div>
-          <span class="${sc}">${row.pct}%</span>
-        </div>
-      </td>
-      <td class="num ${sc}">${row.ok ? '달성 ✔' : '+' + row.remaining.toLocaleString()}</td>
-      <td class="num ${row.cpOk ? '' : 'bad'}">${row.cpCost}<span style="color:var(--text-dim);font-size:10px;">CP</span></td>
-      <td class="num ${row.durOk ? '' : 'bad'}">${row.durCost > 0 ? '-' + row.durCost : '−'}</td>
-    </tr>`;
+    const cls    = isBest ? 'recommended' : row.canDo ? 'possible' : 'impossible';
+    const qClass = row.ok ? 'ok' : row.pct >= 80 ? 'warn' : '';
+    const badgeHtml = isBest
+      ? `<span class="rota-badge badge-recommend">★ 추천</span>`
+      : row.canDo
+        ? `<span class="rota-badge badge-possible">${row.ok ? '가능' : '품질 부족'}</span>`
+        : `<span class="rota-badge badge-impossible">${!row.cpOk ? 'CP 부족' : '내구 부족'}</span>`;
+    const cpClass  = row.cpOk  ? '' : 'bad';
+    const durClass = row.durOk ? '' : 'bad';
+    return `
+    <div class="rota-card ${cls}">
+      <div class="rota-card-header">
+        ${badgeHtml}
+        <span class="rota-quality-val ${qClass}">${row.q.toLocaleString()}</span>
+        <span class="rota-pct">달성 <b>${row.pct}%</b></span>
+      </div>
+      <div class="rota-chips">
+        ${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}
+      </div>
+      <div class="rota-meta">
+        <span class="${cpClass}">CP <b>${row.cpCost}</b></span>
+        <span>·</span>
+        <span class="${durClass}">내구 <b>-${row.durCost}</b></span>
+        ${row.note ? `<span>·</span><span>${row.note}</span>` : ''}
+        ${row.ok ? `<span style="margin-left:auto;color:var(--green)">달성 ✔</span>` : `<span style="margin-left:auto;color:var(--text-dim)">+${row.remaining.toLocaleString()} 부족</span>`}
+      </div>
+    </div>`;
   }).join('');
 
   resultEl.innerHTML = `
@@ -809,33 +849,15 @@ function renderQuality() {
         <span class="recipe-name">${recipe.group}</span>
         <span style="font-size:11px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>
       </div>
-      <div class="recipe-stats">
-        <div class="recipe-stat"><div class="stat-lbl">최고 품질</div><div class="stat-val warn">${qualityGoal.toLocaleString()}</div></div>
-        <div class="recipe-stat"><div class="stat-lbl">내구도</div><div class="stat-val">${durLimit}</div></div>
-        <div class="recipe-stat"><div class="stat-lbl">rlvl</div><div class="stat-val">${recipe.rlvl}</div></div>
-        <div class="recipe-stat"><div class="stat-lbl">c0 (IQ없음)</div><div class="stat-val">${c0}</div></div>
-        <div class="recipe-stat"><div class="stat-lbl">c0 (IQ10스택)</div><div class="stat-val ok">${c0iq}</div></div>
-      </div>
+      ${progressHtml}
     </div>
 
     ${recommendHtml}
 
     <div class="c-result-card">
-      <div class="c-result-card-title">전체 마무리 로테이션</div>
-      <table class="rotation-table">
-        <thead>
-          <tr>
-            <th>스킬 조합</th>
-            <th class="num">품질</th>
-            <th class="num">달성률</th>
-            <th class="num">남은 품질</th>
-            <th class="num">CP</th>
-            <th class="num">내구</th>
-          </tr>
-        </thead>
-        <tbody>${tableRows}</tbody>
-      </table>
-      <div style="font-size:10px;color:var(--text-dim);margin-top:8px;">흐린 행 = CP 또는 내구 조건 미충족</div>
+      <div class="c-result-card-title">마무리 로테이션 목록</div>
+      <div class="rota-cards">${rotaCardsHtml}</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:10px;">흐린 카드 = CP 또는 내구 조건 미충족</div>
     </div>
   `;
 }
