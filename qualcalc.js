@@ -18,7 +18,7 @@ function getRlvlParams(rlvl) {
 // ※ 팀크래프트/라파엘 공식: baseProgress를 먼저 floor한 뒤 modifier 적용
 function calcS0(crafts, rlvl) {
   const { pD, pM } = getRlvlParams(rlvl);
-  const base = Math.floor(crafts * 10 / pD + 2);
+  const base = crafts * 10 / pD + 2;          // floor 제거
   return Math.floor(base * pM / 100);
 }
 
@@ -30,17 +30,18 @@ function calcWork(s0, efficiency, buffMult) {
 // c0 (기본 품질, IQ 스택 미포함)
 // = floor(floor(cons * 10/150 + 35) * 75/100)
 function calcC0(cons) {
-  const base = Math.floor(cons * 10 / 150 + 35);
+  const base = cons * 10 / 150 + 35;          // floor 제거
   return Math.floor(base * 75 / 100);
 }
 
+
 // c0_iq: 정신집중(Inner Quiet) 스택 반영 품질 기반값
-// IQ 10스택 = control × 35% 증가 (팀크래프트/라파엘 기준)
+// IQ 10스택 = 가공 효율 스택당 +10%, 10스택 = +100%"
 // IQ 스택별 보너스: 스택 × 3.5%
 function calcC0WithIQ(cons, iqStacks) {
-  const iqBonus = 1 + (iqStacks * 0.035); // 10스택 = 1.35
-  const effectiveCons = Math.floor(cons * iqBonus);
-  const base = Math.floor(effectiveCons * 10 / 150 + 35);
+  const iqBonus = 1 + (iqStacks * 0.1);       // 0.035 → 0.1 (스택당 +10%)
+  const effectiveCons = cons * iqBonus;       // floor 제거
+  const base = effectiveCons * 10 / 150 + 35; // floor 제거
   return Math.floor(base * 75 / 100);
 }
 
