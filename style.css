@@ -96,19 +96,19 @@ body::before{
 .region-section[data-region="auksesia"] .section-title .num{border-color:rgba(90,180,100,.4);color:#5ab464;background:rgba(90,180,100,.08);}
 
 /* 예시 테이블 상태 색상 */
-.st-normal{color:var(--text-dim) !important;}
-.st-high{color:#e85a7a !important;font-weight:700;}
-.st-best{color:#c060e0 !important;font-weight:700;}
-.st-efficient{color:#4dc890 !important;font-weight:700;}
-.st-stable{color:#d4b840 !important;font-weight:700;}
-.st-solid{color:#7aaed4 !important;font-weight:700;}
-.st-hq{color:#e85a7a !important;font-weight:700;}
-.st-he{color:#4dc890 !important;font-weight:700;}
-.st-long{color:#b87ae0 !important;font-weight:700;}
-.st-fast{color:#4a7fd4 !important;font-weight:700;}
-.st-centered{color:#e8a030 !important;font-weight:700;}
-.st-good{color:#60c0e8 !important;font-weight:700;}
-.st-low{color:#888 !important;font-weight:700;}
+.st-normal{color:var(--text-dim);}
+.st-high{color:#e85a7a;font-weight:700;}
+.st-best{color:#c060e0;font-weight:700;}
+.st-efficient{color:#4dc890;font-weight:700;}
+.st-stable{color:#d4b840;font-weight:700;}
+.st-solid{color:#7aaed4;font-weight:700;}
+.st-hq{color:#e85a7a;font-weight:700;}
+.st-he{color:#4dc890;font-weight:700;}
+.st-long{color:#b87ae0;font-weight:700;}
+.st-fast{color:#4a7fd4;font-weight:700;}
+.st-centered{color:#e8a030;font-weight:700;}
+.st-good{color:#60c0e8;font-weight:700;}
+.st-low{color:#888;font-weight:700;}
 
 /* 햄버거 버튼 (모바일 전용) */
 .menu-btn{
@@ -360,8 +360,7 @@ body::before{
 .status-card{padding:10px 0;border-bottom:1px solid var(--border);}
 .status-card:last-child{border-bottom:none;}
 .status-header{display:flex;align-items:baseline;gap:10px;margin-bottom:4px;}
-.status-name{font-weight:700;color:var(--text-bright);font-size:13px;}
-.status-card.pri .status-name{color:var(--accent);}
+.status-name{font-weight:700;font-size:13px;}
 .status-effect{font-size:11px;color:var(--text-dim);}
 .status-action{font-size:12px;color:var(--text-dim);line-height:1.7;}
 .status-action strong{color:var(--text);font-weight:700;}
@@ -370,7 +369,7 @@ body::before{
 .tbl th{padding:7px 10px;text-align:left;color:var(--accent);font-weight:700;font-size:10px;border-bottom:1px solid var(--border);letter-spacing:.06em;text-transform:uppercase;}
 .tbl td{padding:7px 10px;border-bottom:1px solid rgba(24,36,54,.8);}
 .tbl tr:last-child td{border-bottom:none;}
-.tbl .col-s{font-weight:700;color:var(--text-bright);}
+.tbl .col-s{font-weight:700;}
 .tbl .col-k{color:var(--text-dim);}
 .phase-row td{color:var(--accent-dim);font-weight:700;font-size:11px;letter-spacing:.04em;}
 .ok{color:var(--green);font-size:11px;}
@@ -604,10 +603,10 @@ body::before{
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 18px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .input-section-label {
@@ -669,18 +668,21 @@ body::before{
   background: var(--border);
 }
 
-.c-field { display: flex; flex-direction: column; gap: 5px; }
-.c-field label { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+.c-field { display: flex; flex-direction: column; gap: 4px; }
+.c-field label { font-size: 10px; color: var(--text-dim); font-weight: 500; }
+/* 가로 배치용 - 두 필드를 한 줄에 */
+.c-field-row { display: flex; gap: 8px; }
+.c-field-row .c-field { flex: 1; }
 .c-field input[type="number"],
 .c-field select {
   width: 100%;
-  padding: 7px 10px;
+  padding: 6px 9px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 3px;
   color: var(--text-bright);
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   transition: border-color .15s;
   outline: none;
 }
