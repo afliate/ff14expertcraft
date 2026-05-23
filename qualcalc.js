@@ -742,32 +742,34 @@ function renderQuality() {
   const currentQuality = parseInt(document.getElementById('q-current-quality').value) || 0;
 
   // ── 품질 진행 바 ──
-  const neededQuality  = Math.max(0, qualityGoal - currentQuality);
-  const pctCurrent = Math.min(100, Math.round(currentQuality / qualityGoal * 100));
-  const pctNeeded  = Math.min(100, Math.round(neededQuality  / qualityGoal * 100));
+  const neededQuality = Math.max(0, qualityGoal - currentQuality);
+  const pctCurrent    = Math.min(100, Math.round(currentQuality / qualityGoal * 100));
+  const achieved      = neededQuality === 0;
 
   const progressHtml = `
-    <div class="quality-progress">
-      <div class="qp-row">
-        <span class="qp-label">현재</span>
-        <div class="qp-bar-wrap"><div class="qp-bar current" style="width:${pctCurrent}%"></div></div>
-        <span class="qp-num">${currentQuality.toLocaleString()}</span>
+    <div class="qp-layout">
+      <!-- 왼쪽: 내구만 -->
+      <div class="qp-left">
+        <div class="qp-stat-label">내구</div>
+        <div class="qp-stat-val">${durLimit || '−'}</div>
       </div>
-      <div class="qp-row">
-        <span class="qp-label">필요</span>
-        <div class="qp-bar-wrap"><div class="qp-bar needed" style="width:${Math.min(100, pctCurrent + pctNeeded)}%"></div></div>
-        <span class="qp-num">${neededQuality > 0 ? '+' + neededQuality.toLocaleString() : '−'}</span>
+      <!-- 오른쪽: 바 + 수치 -->
+      <div class="qp-right">
+        <div class="qp-row">
+          <span class="qp-label">현재</span>
+          <div class="qp-bar-wrap"><div class="qp-bar current" style="width:${pctCurrent}%"></div></div>
+          <span class="qp-num">${currentQuality.toLocaleString()}</span>
+        </div>
+        <div class="qp-row">
+          <span class="qp-label">최대</span>
+          <div class="qp-bar-wrap"><div class="qp-bar max" style="width:100%"></div></div>
+          <span class="qp-num">${qualityGoal.toLocaleString()}</span>
+        </div>
+        <div class="qp-footer">
+          <span>남은 품질 <b class="${achieved ? 'ok' : 'highlight'}">${achieved ? '달성 ✔' : '+' + neededQuality.toLocaleString()}</b></span>
+          <span>달성률 <b>${pctCurrent}%</b></span>
+        </div>
       </div>
-      <div class="qp-row">
-        <span class="qp-label">최고</span>
-        <div class="qp-bar-wrap"><div class="qp-bar max" style="width:100%"></div></div>
-        <span class="qp-num">${qualityGoal.toLocaleString()}</span>
-      </div>
-    </div>
-    <div class="qp-footer">
-      <span>추가 필요 <b class="highlight">${neededQuality > 0 ? '+' + neededQuality.toLocaleString() : '완료 ✔'}</b></span>
-      <span>내구 <b>${durLimit}</b></span>
-      <span>c0 (IQ10) <b>${c0iq}</b></span>
     </div>`;
 
   // ── 추천 카드 ──
@@ -848,6 +850,7 @@ function renderQuality() {
         ${getBadge(recipe.missionName)}
         <span class="recipe-name">${recipe.group}</span>
         <span style="font-size:11px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text-dim)">rlvl <b style="color:var(--text-bright)">${recipe.rlvl}</b></span>
       </div>
       ${progressHtml}
     </div>
