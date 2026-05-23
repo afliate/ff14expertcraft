@@ -693,7 +693,16 @@ function renderQuality() {
 
   const categories = [...new Set(QUALITY_ROTATIONS.map(r => r.category))];
   const rows = QUALITY_ROTATIONS.map(rot => {
-    const q = rot.qualityFn(c0iq);
+    // multiStep: steps 배열을 순회하며 합산 / 단일: efficiency+buffSum 한 번 계산
+    let q;
+    if (rot.multiStep) {
+      q = rot.steps.reduce(
+        (sum, s) => sum + calcQuality(cons, s.iqStacks, s.efficiency, s.buffSum),
+        0
+      );
+    } else {
+      q = calcQuality(cons, rot.iqStacks, rot.efficiency, rot.buffSum);
+    }
     const remaining = qualityGoal - q;
     const pct = Math.min(100, Math.round(q / qualityGoal * 100));
     const ok = q >= qualityGoal;
