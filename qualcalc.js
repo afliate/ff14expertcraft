@@ -624,7 +624,7 @@ function calcQualDur() {
 }
 
 function onQualityChange() {
-  ['q-cons','q-cp'].forEach(id => {
+  ['q-cons','q-cp','q-current-quality'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('filled', el.value !== '');
   });
