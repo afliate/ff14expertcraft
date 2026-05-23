@@ -1078,3 +1078,18 @@ body::before{
 }
 .rota-meta b  { color: var(--text); }
 .rota-meta .bad { color: var(--red); }
+
+/* ── 품질 로테이션 테이블 아이콘 ── */
+.rota-skill-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  object-fit: cover;
+  vertical-align: middle;
+}
+.rota-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
