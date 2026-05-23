@@ -14,10 +14,12 @@ function getRlvlParams(rlvl) {
   return { pD: 160, pM: 80 };
 }
 
-// s0 = floor((crafts * 10/pD + 2) * pM/100)
+// s0 = floor(floor(crafts * 10/pD + 2) * pM/100)
+// ※ 팀크래프트/라파엘 공식: baseProgress를 먼저 floor한 뒤 modifier 적용
 function calcS0(crafts, rlvl) {
   const { pD, pM } = getRlvlParams(rlvl);
-  return Math.floor((crafts * 10 / pD + 2) * pM / 100);
+  const base = Math.floor(crafts * 10 / pD + 2);
+  return Math.floor(base * pM / 100);
 }
 
 // 작업량 = floor(s0 × 효율/100 × 버프배율)
@@ -25,9 +27,21 @@ function calcWork(s0, efficiency, buffMult) {
   return Math.floor(s0 * efficiency / 100 * buffMult);
 }
 
-// c0 = floor((cons*10/150 + 35) * 75/100)
+// c0 (기본 품질, IQ 스택 미포함)
+// = floor(floor(cons * 10/150 + 35) * 75/100)
 function calcC0(cons) {
-  return Math.floor((cons * 10 / 150 + 35) * 75 / 100);
+  const base = Math.floor(cons * 10 / 150 + 35);
+  return Math.floor(base * 75 / 100);
+}
+
+// c0_iq: 정신집중(Inner Quiet) 스택 반영 품질 기반값
+// IQ 10스택 = control × 35% 증가 (팀크래프트/라파엘 기준)
+// IQ 스택별 보너스: 스택 × 3.5%
+function calcC0WithIQ(cons, iqStacks) {
+  const iqBonus = 1 + (iqStacks * 0.035); // 10스택 = 1.35
+  const effectiveCons = Math.floor(cons * iqBonus);
+  const base = Math.floor(effectiveCons * 10 / 150 + 35);
+  return Math.floor(base * 75 / 100);
 }
 
 // ── 확신 오프너 조합 데이터 (상단 표) ──
@@ -64,7 +78,7 @@ const OPENER_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'집중 작업'},
     ],
-    skillEff: 400, skillBuff: 1.5, stateBuff: 0, highlight: false,
+    skillEff: 500, skillBuff: 1.5, stateBuff: 0, highlight: false,
   },
   {
     id: 'shin-ko-mit',
@@ -91,7 +105,7 @@ const OPENER_COMBOS = [
 // ── 스킬별 단독 참고 (하단 표) ──
 const SKILL_REF = [
   {name:'강행 작업', eff:500},
-  {name:'집중 작업', eff:400},
+  {name:'집중 작업', eff:500},
   {name:'밑작업',    eff:360},
   {name:'절약 작업', eff:180},
   {name:'모범 작업', eff:180},
@@ -103,6 +117,17 @@ const FINISH_EFF = 120;
 
 
 // ── 품질 로테이션 데이터 ──
+// ※ qualityFn(c0iq) 를 받음 — c0iq는 IQ 10스택이 반영된 품질 기반값
+//
+// 버프 배율 정리 (게임 공식):
+//   혁신(Innovation)    : 해당 action 효율 × 1.5
+//   장족의 발전(Great Strides): 해당 action 효율 × 2 (한 번만)
+//   비레고(Byregot's)   : 효율 = 100 + 20 × IQ스택  (10스택 = 300)
+//   밑가공(Prep Touch)  : 효율 200 (내구 20 소모)
+//   절약 가공(Prudent)  : 효율 100 (내구 5 소모)
+//   상급 가공(Advanced) : 효율 150
+//
+// 단일 스킬 품질 = floor(c0iq × eff/100 × 혁신배율 × 장족배율)
 const QUALITY_ROTATIONS = [
   // 비레고 계열
   {
@@ -114,9 +139,11 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'비레고 ×10스택'},
     ],
-    qualityFn: c0 => c0 * 15,
+    // 비레고 10스택 효율=300, 혁신×1.5, 장족×2
+    // = floor(c0iq × 3.0 × 1.5 × 2.0) = floor(c0iq × 9)
+    qualityFn: c0iq => Math.floor(c0iq * 9),
     cpCost: 74, durCost: 50,
-    note: '실측값 기준', highlight: true,
+    note: 'IQ10스택 기준', highlight: true,
   },
   {
     id: 'jang-hyeok-mit2-bire',
@@ -128,9 +155,13 @@ const QUALITY_ROTATIONS = [
       {type:'quality',text:'밑가공×2'},{type:'sep',text:'+'},
       {type:'quality',text:'비레고 ×10스택'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 31.5),
+    // 밑가공1(장족+혁신): floor(c0iq×2×1.5×2)=floor(c0iq×6)
+    // 밑가공2(혁신만):    floor(c0iq×2×1.5)  =floor(c0iq×3)
+    // 비레고(혁신1턴):    floor(c0iq×3×1.5)  =floor(c0iq×4.5)
+    // 합계: c0iq × 13.5
+    qualityFn: c0iq => Math.floor(c0iq * 6) + Math.floor(c0iq * 3) + Math.floor(c0iq * 4.5),
     cpCost: 206, durCost: 90,
-    note: '시트 기준 근사', highlight: false,
+    note: 'IQ10스택 기준', highlight: false,
   },
   {
     id: 'hyeok-bire',
@@ -140,7 +171,9 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'비레고 ×10스택'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 7.5),
+    // 비레고 10스택 효율=300, 혁신×1.5, 장족없음
+    // = floor(c0iq × 3.0 × 1.5) = floor(c0iq × 4.5)
+    qualityFn: c0iq => Math.floor(c0iq * 4.5),
     cpCost: 42, durCost: 50,
     note: '장족 없이 혁신만', highlight: false,
   },
@@ -154,9 +187,11 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'밑가공'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 5),
-    cpCost: 142, durCost: 20,
-    note: '장족+혁신 버프 포함', highlight: false,
+    // 밑가공 효율=200, 혁신×1.5, 장족×2
+    // = floor(c0iq × 2 × 1.5 × 2) = floor(c0iq × 6)
+    qualityFn: c0iq => Math.floor(c0iq * 6),
+    cpCost: 90, durCost: 20,
+    note: 'IQ10스택 기준', highlight: false,
   },
   {
     id: 'hyeok-mit1',
@@ -166,7 +201,9 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'밑가공'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 3),
+    // 밑가공 효율=200, 혁신×1.5
+    // = floor(c0iq × 2 × 1.5) = floor(c0iq × 3)
+    qualityFn: c0iq => Math.floor(c0iq * 3),
     cpCost: 58, durCost: 20,
     note: '', highlight: false,
   },
@@ -178,7 +215,8 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'밑가공×2'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 3) * 2,
+    // 밑가공 2회 (혁신 4턴 내) = floor(c0iq×3) × 2
+    qualityFn: c0iq => Math.floor(c0iq * 3) + Math.floor(c0iq * 3),
     cpCost: 98, durCost: 40,
     note: '', highlight: false,
   },
@@ -190,7 +228,7 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'밑가공×3'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 3) * 3,
+    qualityFn: c0iq => Math.floor(c0iq * 3) + Math.floor(c0iq * 3) + Math.floor(c0iq * 3),
     cpCost: 138, durCost: 60,
     note: '혁신 4턴 내', highlight: false,
   },
@@ -204,7 +242,9 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'절약 가공'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 2.5),
+    // 절약가공 효율=100, 혁신×1.5, 장족×2
+    // = floor(c0iq × 1 × 1.5 × 2) = floor(c0iq × 3)
+    qualityFn: c0iq => Math.floor(c0iq * 3),
     cpCost: 120, durCost: 5,
     note: '내구 5 소모', highlight: false,
   },
@@ -216,17 +256,21 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'혁신'},{type:'sep',text:'+'},
       {type:'quality',text:'절약 가공×2'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 1) * 2,
+    // 절약가공 효율=100, 혁신×1.5
+    // 1회 = floor(c0iq × 1 × 1.5) = floor(c0iq × 1.5)
+    qualityFn: c0iq => Math.floor(c0iq * 1.5) + Math.floor(c0iq * 1.5),
     cpCost: 68, durCost: 10,
     note: '', highlight: false,
   },
   // 마무리
   {
     id: 'sanggup',
-    label: '상급 가공',
+    label: '상급 가공 (혁신 없음)',
     category: '마무리',
     chips: [{type:'quality',text:'상급 가공'}],
-    qualityFn: c0 => Math.floor(c0 * 1.5),
+    // 상급가공 효율=150, 버프없음
+    // = floor(c0iq × 1.5)
+    qualityFn: c0iq => Math.floor(c0iq * 1.5),
     cpCost: 46, durCost: 10,
     note: '', highlight: false,
   },
@@ -238,7 +282,9 @@ const QUALITY_ROTATIONS = [
       {type:'buff',text:'장족의 발전'},{type:'sep',text:'+'},
       {type:'quality',text:'상급 가공'},
     ],
-    qualityFn: c0 => Math.floor(c0 * 1.5 * 2),
+    // 상급가공 효율=150, 장족×2
+    // = floor(c0iq × 1.5 × 2) = floor(c0iq × 3)
+    qualityFn: c0iq => Math.floor(c0iq * 3),
     cpCost: 78, durCost: 10,
     note: '', highlight: false,
   },
@@ -599,7 +645,8 @@ function renderQuality() {
     document.getElementById('q-dur').placeholder = `레시피 기본: ${recipe.durability}`;
   }
 
-  const c0 = calcC0(cons);
+  const c0    = calcC0(cons);               // 기본 c0 (IQ 없음, 표시용)
+  const c0iq  = calcC0WithIQ(cons, 10);     // IQ 10스택 반영 c0 (계산에 사용)
   const qualityGoal = recipe.quality;
   const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만' };
 
@@ -612,7 +659,7 @@ function renderQuality() {
 
   const categories = [...new Set(QUALITY_ROTATIONS.map(r => r.category))];
   const rows = QUALITY_ROTATIONS.map(rot => {
-    const q = rot.qualityFn(c0);
+    const q = rot.qualityFn(c0iq);
     const remaining = qualityGoal - q;
     const pct = Math.min(100, Math.round(q / qualityGoal * 100));
     const ok = q >= qualityGoal;
@@ -687,7 +734,8 @@ function renderQuality() {
         <div class="recipe-stat"><div class="stat-lbl">최고 품질</div><div class="stat-val warn">${qualityGoal.toLocaleString()}</div></div>
         <div class="recipe-stat"><div class="stat-lbl">내구도</div><div class="stat-val">${durLimit}</div></div>
         <div class="recipe-stat"><div class="stat-lbl">rlvl</div><div class="stat-val">${recipe.rlvl}</div></div>
-        <div class="recipe-stat"><div class="stat-lbl">c0</div><div class="stat-val ok">${c0}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">c0 (IQ없음)</div><div class="stat-val">${c0}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">c0 (IQ10스택)</div><div class="stat-val ok">${c0iq}</div></div>
       </div>
     </div>
     ${tableHtml}
