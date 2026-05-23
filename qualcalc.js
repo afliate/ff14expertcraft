@@ -1,5 +1,5 @@
 // ============================================================
-//  calc.js  ·  작업/품질 계산기 (index.html 이식용)
+//  qualcalc.js  ·  작업/품질 계산기
 //  HARD_RECIPES 는 recipes.js 에서 로드됨
 // ============================================================
 
@@ -30,8 +30,11 @@ function calcC0(cons) {
   return Math.floor((cons * 10 / 150 + 35) * 75 / 100);
 }
 
-// ── 스킬 조합 데이터 ──
-const SKILL_COMBOS = [
+// ── 확신 오프너 조합 데이터 (상단 표) ──
+// shinWork  = floor(s0 × 3.0)          확신 자체 작업량 (효율300)
+// skillWork = floor(s0 × eff/100 × (skillBuff + stateBuff))
+// total     = shinWork + skillWork
+const OPENER_COMBOS = [
   {
     id: 'shin-ko-kang',
     label: '확신 + 공경 + 강행 작업',
@@ -40,18 +43,18 @@ const SKILL_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'강행 작업'},
     ],
-    efficiency: 500, workBuff: 1.5, hasShin: true, shinMult: 2.5, stateBuff: false, highlight: true,
+    skillEff: 500, skillBuff: 1.5, stateBuff: 0, highlight: true,
   },
   {
     id: 'shin-ko-fast-kang',
-    label: '확신 + 공경 + 빠른 작업 + 강행',
+    label: '확신 + 공경 + 빠른진행 + 강행',
     chips: [
       {type:'buff',text:'확신'},{type:'sep',text:'+'},
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
-      {type:'state',text:'빠른 작업'},{type:'sep',text:'+'},
+      {type:'state',text:'빠른 진행'},{type:'sep',text:'+'},
       {type:'work',text:'강행 작업'},
     ],
-    efficiency: 500, workBuff: 1.5, hasShin: true, shinMult: 2.5, stateBuff: 0.5, highlight: false,
+    skillEff: 500, skillBuff: 1.5, stateBuff: 0.5, highlight: false,
   },
   {
     id: 'shin-ko-jip',
@@ -61,7 +64,7 @@ const SKILL_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'집중 작업'},
     ],
-    efficiency: 400, workBuff: 1.5, hasShin: true, shinMult: 2.5, stateBuff: false, highlight: false,
+    skillEff: 400, skillBuff: 1.5, stateBuff: 0, highlight: false,
   },
   {
     id: 'shin-ko-mit',
@@ -71,37 +74,21 @@ const SKILL_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'밑작업'},
     ],
-    efficiency: 360, workBuff: 1.5, hasShin: true, shinMult: 2.5, stateBuff: false, highlight: false,
+    skillEff: 360, skillBuff: 1.5, stateBuff: 0, highlight: false,
   },
   {
-    id: 'ko-kang',
-    label: '공경 + 강행 작업',
+    id: 'shin-ko-work',
+    label: '확신 + 공경 + 작업',
     chips: [
+      {type:'buff',text:'확신'},{type:'sep',text:'+'},
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
-      {type:'work',text:'강행 작업'},{type:'sep',text:'(확신 없음)'},
+      {type:'work',text:'작업'},
     ],
-    efficiency: 500, workBuff: 1.5, hasShin: false, shinMult: 1.5, stateBuff: false, highlight: false,
-  },
-  {
-    id: 'ko-fast-kang',
-    label: '공경 + 빠른 작업 + 강행',
-    chips: [
-      {type:'buff',text:'공경'},{type:'sep',text:'+'},
-      {type:'state',text:'빠른 작업'},{type:'sep',text:'+'},
-      {type:'work',text:'강행 작업'},
-    ],
-    efficiency: 500, workBuff: 1.5, hasShin: false, shinMult: 1.5, stateBuff: 0.5, highlight: false,
-  },
-  {
-    id: 'kang-solo',
-    label: '강행 작업 (단독)',
-    chips: [
-      {type:'work',text:'강행 작업'},{type:'sep',text:'(단독)'},
-    ],
-    efficiency: 500, workBuff: 1, hasShin: false, shinMult: 1, stateBuff: false, highlight: false,
+    skillEff: 120, skillBuff: 1.5, stateBuff: 0, highlight: false,
   },
 ];
 
+// ── 스킬별 단독 참고 (하단 표) ──
 const SKILL_REF = [
   {name:'강행 작업', eff:500},
   {name:'집중 작업', eff:400},
@@ -113,6 +100,7 @@ const SKILL_REF = [
 ];
 
 const FINISH_EFF = 120;
+
 
 // ── 품질 로테이션 데이터 ──
 const QUALITY_ROTATIONS = [
@@ -321,12 +309,16 @@ function buildGroupSelector() {
 }
 
 function calcCustomWork() {
-  const crafts = parseInt(document.getElementById('crafts-input').value) || 0;
-  const workReq = parseInt(document.getElementById('custom-work').value) || 0;
-  const pD = parseInt(document.getElementById('custom-pd').value) || 170;
-  const pM = parseInt(document.getElementById('custom-pm').value) || 90;
-  const s0 = Math.floor((crafts * 21 / pD + 2) * pM / 100);
-  const fakeRecipe = { work: workReq, quality: 0, durability: '-', rlvl: '-', group: '커스텀', region: '', tag: '', missionName: '' };
+  const crafts     = parseInt(document.getElementById('crafts-input').value)    || 0;
+  const workReq    = parseInt(document.getElementById('custom-work').value)     || 0;
+  const quality    = parseInt(document.getElementById('custom-quality').value)  || 0;
+  const durability = parseInt(document.getElementById('custom-dur').value)      || 0;
+  const rlvl       = parseInt(document.getElementById('custom-rlvl').value)     || 720;
+  const s0 = calcS0(crafts, rlvl);
+  const fakeRecipe = {
+    work: workReq, quality, durability,
+    rlvl, group: '커스텀', region: '', tag: '', missionName: ''
+  };
   renderWorkHTML(s0, fakeRecipe, '', 'custom');
 }
 
@@ -364,28 +356,35 @@ function renderWorkResult_main() {
 }
 
 function renderWorkHTML(s0, recipe, variantUI, mode) {
-  const resultEl = document.getElementById('work-result');
-  const workReq = recipe.work;
+  const resultEl  = document.getElementById('work-result');
+  const workReq   = recipe.work;
   const finishWork = calcWork(s0, FINISH_EFF, 1);
+  const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만', '': '' };
 
-  const skillRows = SKILL_REF.map(sk => ({ ...sk, workAmt: calcWork(s0, sk.eff, 1) }));
+  // ── 확신 작업량 (효율 300) ──
+  const shinWork = calcWork(s0, 300, 1);
 
-  const comboRows = SKILL_COMBOS.map(combo => {
-    const totalBuff = combo.workBuff + (combo.stateBuff ? combo.stateBuff : 0);
-    const oneTime = calcWork(s0, combo.efficiency, totalBuff);
-    const shinOpener = Math.floor(s0 * 2.5);
-    const total = combo.hasShin ? shinOpener : Math.floor(s0 * combo.shinMult);
-    return { ...combo, oneTime, total, shinOpener };
+  // ── 오프너 조합 행 계산 ──
+  const openerRows = OPENER_COMBOS.map(combo => {
+    const totalBuff = combo.skillBuff + combo.stateBuff;
+    const skillWork = calcWork(s0, combo.skillEff, totalBuff);
+    const total     = shinWork + skillWork;
+    return { ...combo, shinWork, skillWork, total };
   });
 
-  const mainOpener = comboRows[0];
-  const remaining = workReq - mainOpener.shinOpener;
-  const durability = typeof recipe.durability === 'number' ? recipe.durability : 0;
-  const kangWork = skillRows[0].workAmt;
-  const maxKang = durability > 0 ? Math.floor((durability - 10) / 10) : 0;
-  const neededKang = kangWork > 0 ? Math.ceil(remaining / kangWork) : 0;
+  // 기준: 확신+공경+강행 (첫 번째 조합)
+  const mainOpener  = openerRows[0];
+  const remaining   = workReq > 0 ? workReq - mainOpener.total : null;
 
-  const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만', '': '' };
+  // ── 스킬별 단독 작업량 ──
+  const skillRows = SKILL_REF.map(sk => ({ ...sk, workAmt: calcWork(s0, sk.eff, 1) }));
+  const kangWork  = skillRows[0].workAmt; // 강행 단독
+
+  // 강행 횟수 계산 (내구 기준)
+  const durability = typeof recipe.durability === 'number' ? recipe.durability : 0;
+  const maxKang    = durability > 0 ? Math.floor((durability - 10) / 10) : 0;
+  const neededKang = (remaining !== null && remaining > 0 && kangWork > 0)
+    ? Math.ceil(remaining / kangWork) : 0;
 
   function getBadge(n) {
     if (!n) return '';
@@ -394,16 +393,21 @@ function renderWorkHTML(s0, recipe, variantUI, mode) {
     return `<span class="recipe-badge badge-normal">일반</span>`;
   }
 
+  // ── 강행 횟수 안내 박스 ──
   let actionHtml = '';
-  if (remaining <= 0) {
-    actionHtml = `<div class="action-box ok"><div class="action-icon">✅</div><div class="action-text">확신 오프너만으로 <b>작업량 충족</b>! 마무리 스킬만 사용하면 됩니다.</div></div>`;
-  } else if (neededKang <= maxKang) {
-    actionHtml = `<div class="action-box ok"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회</b> 필요 (${kangWork.toLocaleString()} × ${neededKang}) — 가능한 강행 <b>${maxKang}회</b> 이상 ✔</div></div>`;
-  } else {
-    actionHtml = `<div class="action-box warn"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회 필요</b> / 가능 <b>${maxKang}회</b> — 다른 작업 스킬 혼용 검토 필요</div></div>`;
+  if (remaining !== null) {
+    if (remaining <= 0) {
+      actionHtml = `<div class="action-box ok"><div class="action-icon">✅</div><div class="action-text">확신 오프너만으로 <b>작업량 충족</b>! 마무리 스킬만 사용하면 됩니다.</div></div>`;
+    } else if (durability > 0 && neededKang <= maxKang) {
+      actionHtml = `<div class="action-box ok"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회</b> 필요 (${kangWork.toLocaleString()} × ${neededKang}) — 가능 횟수 <b>${maxKang}회</b> ✔</div></div>`;
+    } else if (durability > 0) {
+      actionHtml = `<div class="action-box warn"><div class="action-icon">⚠️</div><div class="action-text">강행 작업 <b>${neededKang}회 필요</b> / 가능 <b>${maxKang}회</b> — 다른 작업 스킬 혼용 검토 필요</div></div>`;
+    } else {
+      actionHtml = `<div class="action-box warn"><div class="action-icon">⚡</div><div class="action-text">오프너 후 남은 진행도 <b>${remaining.toLocaleString()}</b> — 강행 작업 약 <b>${neededKang}회</b> 필요 (내구도 미입력)</div></div>`;
+    }
   }
 
-  const remClass = remaining <= 0 ? 'ok' : remaining > workReq * 0.6 ? 'bad' : 'warn';
+  const remClass = remaining === null ? '' : remaining <= 0 ? 'ok' : remaining > workReq * 0.5 ? 'bad' : 'warn';
 
   resultEl.innerHTML = `
     ${variantUI}
@@ -414,67 +418,72 @@ function renderWorkHTML(s0, recipe, variantUI, mode) {
         ${recipe.region ? `<span style="font-size:11px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>` : ''}
       </div>
       <div class="recipe-stats">
-        <div class="recipe-stat"><div class="stat-lbl">작업량</div><div class="stat-val warn">${workReq.toLocaleString()}</div></div>
-        <div class="recipe-stat"><div class="stat-lbl">최고품질</div><div class="stat-val">${recipe.quality ? recipe.quality.toLocaleString() : '-'}</div></div>
-        <div class="recipe-stat"><div class="stat-lbl">내구도</div><div class="stat-val">${recipe.durability}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">작업량</div><div class="stat-val warn">${workReq ? workReq.toLocaleString() : '−'}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">최고품질</div><div class="stat-val">${recipe.quality ? recipe.quality.toLocaleString() : '−'}</div></div>
+        <div class="recipe-stat"><div class="stat-lbl">내구도</div><div class="stat-val">${recipe.durability || '−'}</div></div>
         <div class="recipe-stat"><div class="stat-lbl">s0 (효율100)</div><div class="stat-val ok">${s0}</div></div>
       </div>
     </div>
 
     <div class="c-result-card">
-      <div class="c-result-card-title">작업 로테이션 조합</div>
+      <div class="c-result-card-title">확신 오프너 로테이션</div>
       <table class="rotation-table">
-        <thead><tr><th>스킬 조합</th><th class="num">효율</th><th class="num">1회 작업량</th><th class="num">총 작업량</th></tr></thead>
+        <thead>
+          <tr>
+            <th>스킬 조합</th>
+            <th class="num">효율</th>
+            <th class="num">스킬 작업량</th>
+            <th class="num">확신 + 스킬 합산</th>
+          </tr>
+        </thead>
         <tbody>
-          ${comboRows.map(row => `
+          ${openerRows.map(row => `
           <tr class="${row.highlight ? 'highlight' : ''}">
             <td><div class="skill-chips">${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}</div></td>
-            <td class="num">${row.efficiency}</td>
-            <td class="num">${row.oneTime.toLocaleString()}</td>
+            <td class="num">${row.skillEff}</td>
+            <td class="num">${row.skillWork.toLocaleString()}</td>
             <td class="num"><b>${row.total.toLocaleString()}</b></td>
           </tr>`).join('')}
         </tbody>
       </table>
+      ${remaining !== null ? `
       <div class="work-total-box">
         <div>
           <div class="work-total-label">오프너 후 남은 진행도</div>
           <div class="work-remain-info">
             <span>작업량 <b>${workReq.toLocaleString()}</b></span>
             <span>−</span>
-            <span>확신+공경+강행 <b>${mainOpener.shinOpener.toLocaleString()}</b></span>
+            <span>확신+공경+강행 <b>${mainOpener.total.toLocaleString()}</b></span>
             <span>=</span>
           </div>
         </div>
         <div class="work-total-val ${remClass}">${remaining.toLocaleString()}</div>
-      </div>
+      </div>` : ''}
       ${actionHtml}
     </div>
 
     <div class="c-result-card">
-      <div class="c-result-card-title">스킬별 1회 작업량</div>
+      <div class="c-result-card-title">스킬별 1회 작업량 참고</div>
       <table class="rotation-table">
-        <thead><tr><th>스킬</th><th class="num">효율</th><th class="num">작업량</th><th class="num">오프너+1회 합산</th></tr></thead>
+        <thead><tr><th>스킬</th><th class="num">효율</th><th class="num">작업량</th></tr></thead>
         <tbody>
-          ${skillRows.map(row => {
-            const total = mainOpener.shinOpener + row.workAmt;
-            return `<tr>
-              <td><span class="chip work">${row.name}</span></td>
-              <td class="num">${row.eff}</td>
-              <td class="num">${row.workAmt.toLocaleString()}</td>
-              <td class="num">${total.toLocaleString()}</td>
-            </tr>`;
-          }).join('')}
-          <tr style="opacity:.6">
+          ${skillRows.map(row => `<tr>
+            <td><span class="chip work">${row.name}</span></td>
+            <td class="num">${row.eff}</td>
+            <td class="num">${row.workAmt.toLocaleString()}</td>
+          </tr>`).join('')}
+          <tr style="opacity:.5">
             <td><span class="chip">마무리 '작업'</span></td>
             <td class="num">120</td>
             <td class="num">${finishWork.toLocaleString()}</td>
-            <td class="num" style="color:var(--text-dim)">참고용</td>
           </tr>
         </tbody>
       </table>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:8px;">※ 마무리 '작업' 수치는 참고용이며 총 작업량에 포함되지 않습니다.</div>
     </div>
   `;
 }
+
 
 // ============================================================
 //  품질 계산기 UI
