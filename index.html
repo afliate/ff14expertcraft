@@ -1317,6 +1317,76 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="input-panel">
 
       <div>
+        <div class="input-section-label">모드</div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" onclick="switchCalcMode('preset',this)">우주개척</button>
+          <button class="mode-btn" onclick="switchCalcMode('custom',this)">커스텀</button>
+        </div>
+      </div>
+
+      <!-- 우주개척 모드 -->
+      <div id="work-preset-mode">
+        <div class="input-section-label">레시피 선택</div>
+        <div class="recipe-chain">
+          <div class="c-field">
+            <label>지역</label>
+            <select id="sel-region" onchange="onRegionChange()">
+              <option value="">── 지역 선택 ──</option>
+              <option value="oizys">오이지스</option>
+              <option value="paenna">파엔나</option>
+              <option value="dongyeong">동경의 만</option>
+            </select>
+          </div>
+          <div class="chain-arrow">▼</div>
+          <div class="c-field">
+            <label>레시피</label>
+            <select id="sel-group" onchange="onGroupChange()" disabled>
+              <option value="">── 지역을 먼저 선택 ──</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 커스텀 모드 -->
+      <div id="work-custom-mode" style="display:none;">
+        <div class="input-section-label">레시피 수치 직접 입력</div>
+        <div class="custom-box">
+          <div class="c-field-row">
+            <div class="c-field">
+              <label>작업량 요구치</label>
+              <input type="number" id="custom-work" value="9700" oninput="calcCustomWork()" placeholder="예: 9700">
+            </div>
+            <div class="c-field">
+              <label>최고 품질</label>
+              <input type="number" id="custom-quality" value="17300" oninput="calcCustomWork()" placeholder="예: 17300">
+            </div>
+          </div>
+          <div class="c-field-row">
+            <div class="c-field">
+              <label>내구도</label>
+              <input type="number" id="custom-dur" value="65" oninput="calcCustomWork()" placeholder="예: 65">
+            </div>
+            <div class="c-field">
+              <label>rlvl</label>
+              <input type="number" id="custom-rlvl" value="720" oninput="calcCustomWork()" placeholder="예: 720">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="c-divider"></div>
+
+      <div>
+        <div class="input-section-label">작업 숙련도</div>
+        <div class="c-field">
+          <label>작업 숙련도 (음식·약액 포함)</label>
+          <input type="number" id="crafts-input" value="5811" class="filled" oninput="onCraftsChange()">
+        </div>
+      </div>
+
+      <div class="c-divider"></div>
+
+      <div>
         <div class="input-section-label">장비 프리셋</div>
         <div id="work-gear-btns" class="preset-btn-group">
           <button class="preset-btn" onclick="selectWorkGear('저금단',this)">저금단</button>
@@ -1347,74 +1417,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <div>
-        <div class="input-section-label">캐릭터 스탯</div>
-        <div class="c-field">
-          <label>작업 숙련도 (음식·약액 포함)</label>
-          <input type="number" id="crafts-input" value="5811" class="filled" oninput="onCraftsChange()">
-        </div>
-      </div>
-
-      <div class="c-divider"></div>
- 
-      <div>
-        <div class="input-section-label">모드</div>
-        <div class="mode-toggle">
-          <button class="mode-btn active" onclick="switchCalcMode('preset',this)">우주개척</button>
-          <button class="mode-btn" onclick="switchCalcMode('custom',this)">커스텀</button>
-        </div>
-      </div>
- 
-      <!-- 우주개척 모드 -->
-      <div id="work-preset-mode">
-        <div class="input-section-label">레시피 선택</div>
-        <div class="recipe-chain">
-          <div class="c-field">
-            <label>지역</label>
-            <select id="sel-region" onchange="onRegionChange()">
-              <option value="">── 지역 선택 ──</option>
-              <option value="oizys">오이지스</option>
-              <option value="paenna">파엔나</option>
-              <option value="dongyeong">동경의 만</option>
-            </select>
-          </div>
-          <div class="chain-arrow">▼</div>
-          <div class="c-field">
-            <label>레시피</label>
-            <select id="sel-group" onchange="onGroupChange()" disabled>
-              <option value="">── 지역을 먼저 선택 ──</option>
-            </select>
-          </div>
-        </div>
-      </div>
- 
-      <!-- 커스텀 모드 -->
-      <div id="work-custom-mode" style="display:none;">
-        <div class="input-section-label">레시피 수치 직접 입력</div>
-        <div class="custom-box">
-          <div class="c-field-row">
-            <div class="c-field">
-              <label>작업량 요구치</label>
-              <input type="number" id="custom-work" value="9700" oninput="calcCustomWork()" placeholder="예: 9700">
-            </div>
-            <div class="c-field">
-              <label>최고 품질</label>
-              <input type="number" id="custom-quality" value="17300" oninput="calcCustomWork()" placeholder="예: 17300">
-            </div>
-          </div>
-          <div class="c-field-row">
-            <div class="c-field">
-              <label>내구도</label>
-              <input type="number" id="custom-dur" value="65" oninput="calcCustomWork()" placeholder="예: 65">
-            </div>
-            <div class="c-field">
-              <label>rlvl</label>
-              <input type="number" id="custom-rlvl" value="720" oninput="calcCustomWork()" placeholder="예: 720">
-            </div>
-          </div>
-        </div>
-      </div>
- 
     </div><!-- /input-panel -->
  
     <!-- 결과 패널 -->
