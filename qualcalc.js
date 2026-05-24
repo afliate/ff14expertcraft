@@ -823,13 +823,14 @@ function renderWorkHTML(s0, recipe, variantUI, mode) {
   let actionHtml = '';
   if (remaining !== null) {
     if (remaining <= 0) {
-      actionHtml = `<div class="action-box ok"><div class="action-icon">✅</div><div class="action-text">확신 오프너만으로 <b>작업량 충족</b>! 마무리 스킬만 사용하면 됩니다.</div></div>`;
+      // 오프너만으로 작업량 초과 → 진가 오프너 권장
+      actionHtml = `<div class="action-box ok"><div class="action-icon">💡</div><div class="action-text">확신 오프너로 작업량이 바로 완성돼요. <b>진가 오프너</b>로 시작하는 게 더 좋아요 — 작업량 걱정 없이 품질에 집중할 수 있어요.</div></div>`;
     } else if (durability > 0 && neededKang <= maxKang) {
-      actionHtml = `<div class="action-box ok"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회</b> 필요 (${kangWork.toLocaleString()} × ${neededKang}) — 가능 횟수 <b>${maxKang}회</b> ✔</div></div>`;
+      actionHtml = `<div class="action-box ok"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회</b> 필요 (${kangWork.toLocaleString()} × ${neededKang}) — 가능 횟수 <b>${maxKang}회</b> ✔ <span style="font-size:10px;color:var(--text-dim)">공경 없는 기준</span></div></div>`;
     } else if (durability > 0) {
-      actionHtml = `<div class="action-box warn"><div class="action-icon">⚠️</div><div class="action-text">강행 작업 <b>${neededKang}회 필요</b> / 가능 <b>${maxKang}회</b> — 다른 작업 스킬 혼용 검토 필요</div></div>`;
+      actionHtml = `<div class="action-box warn"><div class="action-icon">⚠️</div><div class="action-text">강행 작업 <b>${neededKang}회 필요</b> / 가능 <b>${maxKang}회</b> — 다른 작업 스킬 혼용 검토 필요 <span style="font-size:10px;color:var(--text-dim)">공경 없는 기준</span></div></div>`;
     } else {
-      actionHtml = `<div class="action-box warn"><div class="action-icon">⚡</div><div class="action-text">오프너 후 남은 진행도 <b>${remaining.toLocaleString()}</b> — 강행 작업 약 <b>${neededKang}회</b> 필요 (내구도 미입력)</div></div>`;
+      actionHtml = `<div class="action-box warn"><div class="action-icon">⚡</div><div class="action-text">오프너 후 남은 진행도 <b>${remaining.toLocaleString()}</b> — 강행 작업 약 <b>${neededKang}회</b> 필요 <span style="font-size:10px;color:var(--text-dim)">공경 없는 기준 · 내구도 미입력</span></div></div>`;
     }
   }
 
@@ -847,7 +848,6 @@ function renderWorkHTML(s0, recipe, variantUI, mode) {
         <div class="recipe-stat"><div class="stat-lbl">작업량</div><div class="stat-val warn">${workReq ? workReq.toLocaleString() : '−'}</div></div>
         <div class="recipe-stat"><div class="stat-lbl">최고품질</div><div class="stat-val">${recipe.quality ? recipe.quality.toLocaleString() : '−'}</div></div>
         <div class="recipe-stat"><div class="stat-lbl">내구도</div><div class="stat-val">${recipe.durability || '−'}</div></div>
-        <div class="recipe-stat"><div class="stat-lbl">s0 (효율100)</div><div class="stat-val ok">${s0}</div></div>
       </div>
     </div>
 
@@ -865,7 +865,12 @@ function renderWorkHTML(s0, recipe, variantUI, mode) {
         <tbody>
           ${openerRows.map(row => `
           <tr class="${row.highlight ? 'highlight' : ''}">
-            <td><div class="skill-chips">${row.chips.map(c => `<span class="chip ${c.type}">${c.text}</span>`).join('')}</div></td>
+            <td><div class="skill-chips">${row.chips.map(c => {
+              if (c.type === 'sep') return `<span class="chip sep">${c.text}</span>`;
+              const sk = SKILL_ICONS[c.text];
+              const iconHtml = sk ? `<img class="chip-icon" src="https://xivapi.com/i/${sk.folder}/${sk.id}_hr1.png" alt="${c.text}" onerror="this.style.display='none'">` : '';
+              return `<span class="chip ${c.type}">${iconHtml}${c.text}</span>`;
+            }).join('')}</div></td>
             <td class="num">${row.skillEff}</td>
             <td class="num">${row.skillWork.toLocaleString()}</td>
             <td class="num"><b>${row.total.toLocaleString()}</b></td>
@@ -928,12 +933,24 @@ function onQGroupChange() {
   qGroup = document.getElementById('q-group').value;
   qVariantIdx = 0;
   buildQVariantSelector();
+  updateQDurPlaceholder();
   renderQuality();
 }
 
 function onQVariantChange() {
   qVariantIdx = parseInt(document.getElementById('q-variant').value) || 0;
+  updateQDurPlaceholder();
   renderQuality();
+}
+
+function updateQDurPlaceholder() {
+  const el = document.getElementById('q-dur-current');
+  if (!el) return;
+  const variants = HARD_RECIPES.filter(r => r.region === qRegion && r.group === qGroup);
+  if (!variants.length) { el.placeholder = '예: 55'; el.max = ''; return; }
+  const recipe = variants[Math.min(qVariantIdx, variants.length - 1)];
+  el.placeholder = `최대 ${recipe.durability}`;
+  el.max = recipe.durability;
 }
 
 function calcQualDur() {
@@ -994,17 +1011,22 @@ function buildQGroupSelector() {
 
 function buildQVariantSelector() {
   const field = document.getElementById('q-variant-field');
-  const sel = document.getElementById('q-variant');
   const variants = HARD_RECIPES.filter(r => r.region === qRegion && r.group === qGroup);
   if (variants.length <= 1) { field.style.display = 'none'; return; }
-  field.style.display = '';
-  sel.innerHTML = '';
-  variants.forEach((v, i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `${v.tag} — 품질 ${v.quality.toLocaleString()} / 내구 ${v.durability}`;
-    sel.appendChild(opt);
-  });
+  field.style.display = 'flex';
+  field.innerHTML = variants.map((v, i) => `
+    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})">
+      <span class="vp-tag">${v.tag}</span>
+      <span class="vp-meta">내구 ${v.durability} · 품질 ${v.quality.toLocaleString()}</span>
+    </button>
+  `).join('');
+}
+
+function selectQVariant(idx) {
+  qVariantIdx = idx;
+  buildQVariantSelector();
+  updateQDurPlaceholder();
+  renderQuality();
 }
 
 function renderQuality() {
@@ -1072,23 +1094,8 @@ function renderQuality() {
     ...rows.filter(r => !r.canDo).sort((a, b) => b.pct - a.pct),
   ];
 
-  // ── 변형 선택 UI ──
+  // 변형 UI는 상단 바에서 이미 처리됨
   let variantUI = '';
-  if (variants.length > 1) {
-    variantUI = `<div class="c-result-card"><div class="c-result-card-title">레시피 변형 선택</div><div class="variant-selector">`;
-    variants.forEach((v, i) => {
-      variantUI += `<button class="variant-btn ${i === qVariantIdx ? 'active' : ''}" onclick="qVariantIdx=${i};document.getElementById('q-variant').value=${i};renderQuality()">
-        <span><b style="color:var(--text-bright)">${v.tag}</b>
-        <span style="font-size:10px;color:var(--text-dim);margin-left:6px;">${v.missionName}</span></span>
-        <span class="variant-meta">
-          <span>품질 <b>${v.quality.toLocaleString()}</b></span>
-          <span>내구 <b>${v.durability}</b></span>
-          <span>rlvl <b>${v.rlvl}</b></span>
-        </span>
-      </button>`;
-    });
-    variantUI += `</div></div>`;
-  }
 
   // ── 현재 품질 입력 ──
   const currentQuality = parseInt(document.getElementById('q-current-quality').value) || 0;
@@ -1196,7 +1203,13 @@ function renderQuality() {
   const okCards     = canDoRows.filter(r => !(best && r.id === best.id)).map(renderRotaCard).join('');
   const cantCards   = cantDoRows.map(renderRotaCard).join('');
   const cantDivider = cantDoRows.length
-    ? `<div class="rota-divider"><hr><span>조건 미충족 · ${cantDoRows.length}개</span><hr></div>${cantCards}`
+    ? `<div class="rota-divider cant-divider">
+        <button class="cant-toggle" onclick="this.closest('.cant-divider').classList.toggle('open')">
+          <span>조건 미충족 · ${cantDoRows.length}개</span>
+          <svg class="cant-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cant-body">${cantCards}</div>
+      </div>`
     : '';
 
   resultEl.innerHTML = `
