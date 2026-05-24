@@ -1073,9 +1073,9 @@ function renderQuality() {
     } else {
       q = calcQuality(cons, rot.iqStacks, rot.efficiency, rot.buffSum);
     }
-    const remaining = qualityGoal - q;
-    const pct = Math.min(100, Math.round(q / qualityGoal * 100));
-    const ok    = q >= qualityGoal;
+    const remaining = (qualityGoal - currentQuality) - q;
+    const pct = Math.min(100, Math.round((currentQuality + q) / qualityGoal * 100));
+    const ok    = (currentQuality + q) >= qualityGoal;
     const cpOk  = cp === 0 || rot.cpCost <= cp;
     const durOk = durLimit === 0 || rot.durCost <= durLimit;
     const canDo = cpOk && durOk;  // CP·내구 조건 모두 만족
@@ -1138,7 +1138,7 @@ function renderQuality() {
     <div class="rec-card">
       <div class="rec-card-header">
         <span class="rec-badge">★ 추천</span>
-        <span class="rec-quality">${best.q.toLocaleString()}</span>
+        <span class="rec-quality">${(currentQuality + best.q).toLocaleString()}</span>
         <span class="rec-quality-label">/ ${qualityGoal.toLocaleString()}</span>
         <span class="rec-achieved">달성 ✔</span>
       </div>
@@ -1159,12 +1159,12 @@ function renderQuality() {
     <div class="rec-card rec-card-fail">
       <div class="rec-card-header">
         <span class="rec-badge rec-badge-fail">⚠ 달성 불가</span>
-        <span class="rec-quality" style="color:var(--text-dim)">${bestCanDo ? bestCanDo.q.toLocaleString() : '−'}</span>
+        <span class="rec-quality" style="color:var(--text-dim)">${bestCanDo ? (currentQuality + bestCanDo.q).toLocaleString() : '−'}</span>
         <span class="rec-quality-label">/ ${qualityGoal.toLocaleString()}</span>
       </div>
       <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">
         현재 수치로는 CP·내구 조건을 만족하면서 품질을 달성할 수 있는 로테이션이 없어요.<br>
-        ${bestCanDo ? `조건 내 최대 품질: <b style="color:var(--text-bright)">${bestCanDo.q.toLocaleString()}</b> (목표까지 <b style="color:var(--yellow)">+${(qualityGoal - bestCanDo.q).toLocaleString()}</b> 부족)` : ''}
+        ${bestCanDo ? `조건 내 최대 품질: <b style="color:var(--text-bright)">${(currentQuality + bestCanDo.q).toLocaleString()}</b> (목표까지 <b style="color:var(--yellow)">+${(qualityGoal - currentQuality - bestCanDo.q).toLocaleString()}</b> 부족)` : ''}
       </div>
     </div>`;
   }
@@ -1193,7 +1193,7 @@ function renderQuality() {
         </div>
         ${tagHtml ? `<div class="rota-card-tags">${tagHtml}</div>` : ''}
       </div>
-      <div class="rota-card-quality" style="color:${qColor}">${row.q.toLocaleString()}</div>
+      <div class="rota-card-quality" style="color:${qColor}">${(currentQuality + row.q).toLocaleString()}</div>
     </div>`;
   }
 
