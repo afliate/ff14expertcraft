@@ -1460,9 +1460,13 @@ document.addEventListener('DOMContentLoaded', () => {
 </div><!-- /tab-calc -->
 
 <div id="tab-qualcalc" class="tab-panel">
+  <div class="page-hero">
+    <div class="eyebrow">Quality Calculator</div>
+    <h1><em>품질</em> 계산기</h1>
+    <p>가공숙련도와 레시피를 선택하면 마무리 로테이션별 품질을 계산해요</p>
+  </div>
 
-  <!-- 레이아웃: 왼쪽 입력 패널 + 오른쪽(hero + 지역/레시피 + 결과) -->
-  <div class="calc-body" style="align-items:stretch;">
+  <div class="calc-body">
 
     <!-- 입력 패널 -->
     <div class="input-panel">
@@ -1550,17 +1554,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     </div><!-- /input-panel -->
 
-    <!-- 결과 패널 (지역/레시피 포함) -->
-    <div id="quality-result-wrap" style="display:flex;flex-direction:column;gap:0;min-width:0;overflow:hidden;">
+    <!-- 결과 패널 (지역/레시피 + 결과) -->
+    <div id="quality-result-wrap" style="display:flex;flex-direction:column;gap:0;min-width:0;">
 
-      <!-- 헤더 (hero 대체) -->
-      <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--border);">
-        <div class="eyebrow" style="font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Quality Calculator</div>
-        <h1 style="font-size:22px;font-weight:700;color:var(--text-bright);margin-bottom:4px;"><em style="color:var(--accent);font-style:normal;">품질</em> 계산기</h1>
-        <p style="color:var(--text-dim);font-size:12px;">가공숙련도와 레시피를 선택하면 마무리 로테이션별 품질을 계산해요</p>
-      </div>
-
-      <!-- 지역/레시피 선택 바 (결과 패널 상단) -->
+      <!-- 지역/레시피 선택 바 -->
       <div class="qual-recipe-bar" style="margin-bottom:12px;">
         <div class="qual-recipe-selects">
           <div class="c-field">
