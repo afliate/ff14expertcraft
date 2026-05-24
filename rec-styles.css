@@ -62,3 +62,97 @@
 }
 .rec-meta-item b { color: var(--text-bright); }
 .rec-meta-sep { color: var(--border); }
+
+/* ── 달성불가 아코디언 ── */
+.cant-divider { margin-top: 8px; }
+.cant-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  padding: 8px 0 4px;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.cant-toggle:hover { color: var(--text); }
+.cant-arrow {
+  margin-left: auto;
+  transition: transform .2s;
+}
+.cant-divider.open .cant-arrow { transform: rotate(180deg); }
+.cant-body { display: none; padding-top: 6px; }
+.cant-divider.open .cant-body { display: block; }
+
+/* ── 레시피 변형 pill 버튼 ── */
+.qual-recipe-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.qual-recipe-selects {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.qual-recipe-selects .c-field {
+  flex: 1;
+  min-width: 120px;
+}
+.qual-variant-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 0;
+}
+.variant-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color .15s;
+}
+.variant-pill:hover { border-color: var(--accent-dim); }
+.variant-pill.active {
+  border-color: var(--accent);
+  background: rgba(99,179,237,.08);
+}
+.vp-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+.vp-meta {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+/* ── 스킬 아이콘 (chip 안) ── */
+.chip-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 3px;
+  filter: saturate(0.75) brightness(0.9);
+  transition: filter .15s;
+}
+.chip:hover .chip-icon { filter: none; }
+
+/* ── 로테이션 스킬 아이콘 filter ── */
+.rota-skill-icon {
+  filter: saturate(0.75) brightness(0.9);
+  transition: filter .15s;
+}
+.rota-card:hover .rota-skill-icon { filter: none; }
