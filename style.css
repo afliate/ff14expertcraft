@@ -1093,3 +1093,91 @@ body::before{
   gap: 2px;
   flex-wrap: wrap;
 }
+
+/* ── 로테이션 카드 ── */
+.rota-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 8px 0 4px;
+}
+.rota-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-bottom: 5px;
+  position: relative;
+  overflow: hidden;
+}
+.rota-card-best {
+  border-color: var(--green);
+  border-width: 1.5px;
+}
+.rota-card-disabled {
+  opacity: .35;
+  pointer-events: none;
+}
+.rota-card-disabled::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  border-radius: 4px;
+}
+.rota-card-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  max-width: 220px;
+}
+.rota-card-mid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rota-card-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.rota-card-meta b { color: var(--text-bright); }
+.rota-card-tags { display: flex; gap: 4px; }
+.rota-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 3px;
+  letter-spacing: .04em;
+}
+.tag-expert { background: rgba(99,179,237,.12); color: #63b3ed; border: 1px solid rgba(99,179,237,.3); }
+.tag-lowdur { background: rgba(236,201,75,.12); color: var(--yellow); border: 1px solid rgba(236,201,75,.3); }
+.rota-card-quality {
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 60px;
+  text-align: right;
+}
+.rota-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin: 8px 0 5px;
+}
+.rota-divider hr {
+  flex: 1;
+  border: none;
+  border-top: 1px solid var(--border);
+}
