@@ -1163,38 +1163,41 @@ function renderQuality() {
   }
 
 
-  // ── 로테이션 카드 HTML ──
-  // ── 태그별 그룹핑 후 테이블 렌더 ──
-  function renderRotaTable(rows) {
-    if (!rows.length) return '';
-    return rows.map(row => {
-      const isBest  = best && row.id === best.id;
-      const dimmed  = !row.canDo ? ' rota-row-dim' : '';
-      const hilite  = isBest ? ' rota-row-best' : '';
-      const qClass  = row.ok ? 'ok' : '';
-      const cpClass = row.cpOk  ? '' : 'bad';
-      const durClass= row.durOk ? '' : 'bad';
-      const tagHtml = row.tag === '전문'
-        ? `<span class="rota-tag tag-expert">전문</span>`
-        : row.tag === '저내구도'
-        ? `<span class="rota-tag tag-lowdur">저내구</span>`
-        : '';
-      const starHtml = isBest ? `<span class="rota-star">★</span>` : '';
-      const remaining = row.ok
-        ? `<span class="ok">달성</span>`
-        : `<span class="${row.canDo ? 'warn' : 'bad'}">+${row.remaining.toLocaleString()}</span>`;
-      return `
-      <tr class="rota-row${hilite}${dimmed}">
-        <td class="rota-icons">${starHtml}${tagHtml}${skillSeq(row.skills)}</td>
-        <td class="rota-num">${row.skills.length}</td>
-        <td class="rota-num ${durClass}">${row.durCost}</td>
-        <td class="rota-num ${qClass}">${row.q.toLocaleString()}</td>
-        <td class="rota-num ${cpClass}">${row.cpCost}</td>
-      </tr>`;
-    }).join('');
+  // ── 카드 렌더 ──
+  function renderRotaCard(row) {
+    const isBest = best && row.id === best.id;
+    const qColor = row.ok ? 'var(--green)' : 'var(--text-dim)';
+    const tagHtml = row.tag === '전문'
+      ? `<span class="rota-badge tag-expert">전문장인</span>`
+      : row.tag === '저내구도'
+      ? `<span class="rota-badge tag-lowdur">저내구도</span>`
+      : '';
+    const cpBad  = !row.cpOk  ? ' style="color:var(--red)"' : '';
+    const durBad = !row.durOk ? ' style="color:var(--red)"' : '';
+    const disabled = !row.canDo ? ' rota-card-disabled' : '';
+    const bestBorder = isBest ? ' rota-card-best' : '';
+    return `
+    <div class="rota-card${bestBorder}${disabled}">
+      <div class="rota-card-icons">${skillSeq(row.skills)}</div>
+      <div class="rota-card-mid">
+        <div class="rota-card-meta">
+          <span${durBad}>내구 <b>${row.durCost}</b></span>
+          <span${cpBad}>CP <b>${row.cpCost}</b></span>
+        </div>
+        ${tagHtml ? `<div class="rota-card-tags">${tagHtml}</div>` : ''}
+      </div>
+      <div class="rota-card-quality" style="color:${qColor}">${row.q.toLocaleString()}</div>
+    </div>`;
   }
 
-  const rotaTableRows = renderRotaTable(sorted);
+  const canDoRows   = sorted.filter(r => r.canDo);
+  const cantDoRows  = sorted.filter(r => !r.canDo);
+  const bestCards   = canDoRows.filter(r => best && r.id === best.id).map(renderRotaCard).join('');
+  const okCards     = canDoRows.filter(r => !(best && r.id === best.id)).map(renderRotaCard).join('');
+  const cantCards   = cantDoRows.map(renderRotaCard).join('');
+  const cantDivider = cantDoRows.length
+    ? `<div class="rota-divider"><hr><span>조건 미충족 · ${cantDoRows.length}개</span><hr></div>${cantCards}`
+    : '';
 
   resultEl.innerHTML = `
     ${variantUI}
@@ -1212,19 +1215,9 @@ function renderQuality() {
 
     <div class="c-result-card">
       <div class="c-result-card-title">마무리 로테이션 목록</div>
-      <table class="rotation-table rota-table">
-        <thead>
-          <tr>
-            <th>스킬 순서</th>
-            <th class="rota-num">수</th>
-            <th class="rota-num">내구</th>
-            <th class="rota-num">품질</th>
-            <th class="rota-num">CP</th>
-          </tr>
-        </thead>
-        <tbody>${rotaTableRows}</tbody>
-      </table>
-      <div style="font-size:10px;color:var(--text-dim);margin-top:10px;">흐린 행 = CP 또는 내구 조건 미충족</div>
+      ${bestCards ? `<div class="rota-section-label">★ 추천</div>${bestCards}` : ''}
+      ${okCards   ? `<div class="rota-section-label">가능</div>${okCards}` : ''}
+      ${cantDivider}
     </div>
   `;
 }
