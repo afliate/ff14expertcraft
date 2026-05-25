@@ -1186,7 +1186,7 @@ function renderQuality() {
     const disabled = !row.canDo ? ' rota-card-disabled' : '';
     const bestBorder = isBest ? ' rota-card-best' : '';
     return `
-    <div class="rota-card${bestBorder}${disabled}">
+    <div class="rota-card${bestBorder}${disabled}" style="width:100%;min-width:0;box-sizing:border-box;">
       <div class="rota-card-icons">${skillSeq(row.skills)}</div>
       <div class="rota-card-mid">
         <div class="rota-card-meta">
@@ -1213,7 +1213,7 @@ function renderQuality() {
           <span>조건 미충족 · ${cantDoRows.length}개</span>
           <svg class="cant-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="cant-body">${cantCards}</div>
+        <div class="cant-body" style="overflow:hidden;width:100%;">${cantCards}</div>
       </div>`
     : '';
 
