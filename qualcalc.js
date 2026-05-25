@@ -1015,7 +1015,7 @@ function buildQVariantSelector() {
   if (variants.length <= 1) { field.style.display = 'none'; return; }
   field.style.display = 'flex';
   field.innerHTML = variants.map((v, i) => `
-    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})" style="padding:4px 8px;flex:1;text-align:center;align-items:center;justify-content:center;">
+    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})" style="padding:4px 8px;text-align:center;align-items:center;justify-content:center;">
       <span class="vp-tag" style="font-size:11px;display:block;text-align:center;">${v.tag}</span>
       <span class="vp-meta" style="display:block;text-align:center;">내구 ${v.durability}</span>
       <span class="vp-meta" style="display:block;text-align:center;">품질 ${v.quality.toLocaleString()}</span>
@@ -1213,7 +1213,7 @@ function renderQuality() {
           <span>조건 미충족 · ${cantDoRows.length}개</span>
           <svg class="cant-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="cant-body" style="overflow:hidden;width:100%;">${cantCards}</div>
+        <div class="cant-body" style="overflow-x:hidden;width:100%;box-sizing:border-box;">${cantCards}</div>
       </div>`
     : '';
 
