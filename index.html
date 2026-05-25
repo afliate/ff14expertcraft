@@ -1528,7 +1528,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="input-section-label">현재 품질</div>
         <div class="c-field">
           <label>마무리 시작 시점의 현재 품질</label>
-          <input type="number" id="q-current-quality" placeholder="예: 7000" oninput="onQualityChange()">
+          <input type="number" id="q-current-quality" placeholder="예: 7000" min="0" oninput="onQualityChange()">
         </div>
       </div>
 
@@ -1540,7 +1540,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="c-field-row" style="margin-bottom:6px;">
           <div class="c-field">
             <label>남은 내구</label>
-            <input type="number" id="q-dur-current" placeholder="예: 55" oninput="calcQualDur()">
+            <input type="number" id="q-dur-current" placeholder="예: 55" min="0" oninput="calcQualDur()">
           </div>
           <div class="c-field">
             <label>교묘 남은 턴</label>
