@@ -64,7 +64,7 @@
 .rec-meta-sep { color: var(--border); }
 
 /* ── 달성불가 아코디언 ── */
-.cant-divider { margin-top: 8px; }
+.cant-divider { margin-top: 8px; display: block; width: 100%; }
 .cant-toggle {
   display: flex;
   align-items: center;
@@ -85,7 +85,7 @@
   transition: transform .2s;
 }
 .cant-divider.open .cant-arrow { transform: rotate(180deg); }
-.cant-body { display: none; padding-top: 6px; overflow: hidden; }
+.cant-body { display: none; padding-top: 6px; overflow: hidden; width: 100%; box-sizing: border-box; }
 .cant-divider.open .cant-body { display: block; }
 
 /* ── 레시피 변형 pill 버튼 ── */
@@ -120,8 +120,10 @@
   border-radius: 4px;
   cursor: pointer;
   font-family: inherit;
-  text-align: left;
+  text-align: center;
   transition: border-color .15s;
+  min-width: 80px;
+  flex-shrink: 0;
 }
 .variant-pill:hover { border-color: var(--accent-dim); }
 .variant-pill.active {
