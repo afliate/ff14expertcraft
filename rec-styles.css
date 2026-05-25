@@ -85,7 +85,7 @@
   transition: transform .2s;
 }
 .cant-divider.open .cant-arrow { transform: rotate(180deg); }
-.cant-body { display: none; padding-top: 6px; }
+.cant-body { display: none; padding-top: 6px; overflow: hidden; }
 .cant-divider.open .cant-body { display: block; }
 
 /* ── 레시피 변형 pill 버튼 ── */
