@@ -1015,8 +1015,8 @@ function buildQVariantSelector() {
   if (variants.length <= 1) { field.style.display = 'none'; return; }
   field.style.display = 'flex';
   field.innerHTML = variants.map((v, i) => `
-    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})">
-      <span class="vp-tag">${v.tag}</span>
+    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})" style="padding:3px 8px;">
+      <span class="vp-tag" style="font-size:11px;">${v.tag}</span>
       <span class="vp-meta">내구 ${v.durability} · 품질 ${v.quality.toLocaleString()}</span>
     </button>
   `).join('');
@@ -1060,6 +1060,9 @@ function renderQuality() {
   // ── 전문장인 여부 ──
   const isExpert = document.getElementById('q-expert')?.checked || false;
 
+  // ── 현재 품질 (rows 계산 전에 선언 필요) ──
+  const currentQuality = parseInt(document.getElementById('q-current-quality').value) || 0;
+
   // ── 로테이션 계산 (전문 필터링 포함) ──
   const rows = QUALITY_ROTATIONS.filter(rot => {
     if (rot.tag === '전문') return isExpert;
@@ -1096,9 +1099,6 @@ function renderQuality() {
 
   // 변형 UI는 상단 바에서 이미 처리됨
   let variantUI = '';
-
-  // ── 현재 품질 입력 ──
-  const currentQuality = parseInt(document.getElementById('q-current-quality').value) || 0;
 
   // ── 품질 진행 바 ──
   const neededQuality = Math.max(0, qualityGoal - currentQuality);
