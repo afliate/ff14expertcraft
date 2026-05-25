@@ -1015,9 +1015,10 @@ function buildQVariantSelector() {
   if (variants.length <= 1) { field.style.display = 'none'; return; }
   field.style.display = 'flex';
   field.innerHTML = variants.map((v, i) => `
-    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})" style="padding:3px 8px;">
+    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})" style="padding:4px 8px;flex:1;text-align:center;align-items:center;">
       <span class="vp-tag" style="font-size:11px;">${v.tag}</span>
-      <span class="vp-meta">내구 ${v.durability} · 품질 ${v.quality.toLocaleString()}</span>
+      <span class="vp-meta" style="display:block;">내구 ${v.durability}</span>
+      <span class="vp-meta" style="display:block;">품질 ${v.quality.toLocaleString()}</span>
     </button>
   `).join('');
 }
