@@ -1015,10 +1015,10 @@ function buildQVariantSelector() {
   if (variants.length <= 1) { field.style.display = 'none'; return; }
   field.style.display = 'flex';
   field.innerHTML = variants.map((v, i) => `
-    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})" style="padding:4px 8px;flex:1;text-align:center;align-items:center;">
-      <span class="vp-tag" style="font-size:11px;">${v.tag}</span>
-      <span class="vp-meta" style="display:block;">내구 ${v.durability}</span>
-      <span class="vp-meta" style="display:block;">품질 ${v.quality.toLocaleString()}</span>
+    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})" style="padding:4px 8px;flex:1;text-align:center;align-items:center;justify-content:center;">
+      <span class="vp-tag" style="font-size:11px;display:block;text-align:center;">${v.tag}</span>
+      <span class="vp-meta" style="display:block;text-align:center;">내구 ${v.durability}</span>
+      <span class="vp-meta" style="display:block;text-align:center;">품질 ${v.quality.toLocaleString()}</span>
     </button>
   `).join('');
 }
@@ -1141,6 +1141,7 @@ function renderQuality() {
         <span class="rec-badge">★ 추천</span>
         <span class="rec-quality">${(currentQuality + best.q).toLocaleString()}</span>
         <span class="rec-quality-label">/ ${qualityGoal.toLocaleString()}</span>
+        ${currentQuality > 0 ? `<span style="font-size:11px;color:var(--text-dim);">(+${best.q.toLocaleString()})</span>` : ''}
         <span class="rec-achieved">달성 ✔</span>
       </div>
       <div class="rec-chips">
@@ -1194,7 +1195,10 @@ function renderQuality() {
         </div>
         ${tagHtml ? `<div class="rota-card-tags">${tagHtml}</div>` : ''}
       </div>
-      <div class="rota-card-quality" style="color:${qColor}">${(currentQuality + row.q).toLocaleString()}</div>
+      <div class="rota-card-quality" style="color:${qColor}">
+        ${(currentQuality + row.q).toLocaleString()}
+        ${currentQuality > 0 ? `<div style="font-size:10px;color:var(--text-dim);font-weight:400;">+${row.q.toLocaleString()}</div>` : ''}
+      </div>
     </div>`;
   }
 
