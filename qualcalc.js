@@ -760,6 +760,15 @@ function selectRecipePill(group, vidx, btn) {
   btn.classList.add('active');
   calcGroupVal   = group;
   calcVariantIdx = vidx;
+  // 레시피 바뀌면 마무리 입력값 리셋
+  ['q-current-quality','q-dur-current','q-gyomyo'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('filled'); }
+  });
+  const hiddenDur = document.getElementById('q-dur');
+  const calcBox   = document.getElementById('q-dur-calc');
+  if (hiddenDur) hiddenDur.value = '';
+  if (calcBox)   { calcBox.style.display = 'none'; calcBox.innerHTML = ''; }
   updateQDurPlaceholder();
   renderBothResults();
 }
@@ -1066,12 +1075,6 @@ function renderQuality() {
 
   const progressHtml = `
     <div class="qp-layout">
-      <!-- 왼쪽: 내구만 -->
-      <div class="qp-left">
-        <div class="qp-stat-label">내구</div>
-        <div class="qp-stat-val">${durLimit || '−'}</div>
-      </div>
-      <!-- 오른쪽: 바 + 수치 -->
       <div class="qp-right">
         <div class="qp-row">
           <span class="qp-label">현재</span>
@@ -1086,6 +1089,7 @@ function renderQuality() {
         <div class="qp-footer">
           <span>남은 품질 <b class="${achieved ? 'ok' : 'highlight'}">${achieved ? '달성 ✔' : '+' + neededQuality.toLocaleString()}</b></span>
           <span>달성률 <b>${pctCurrent}%</b></span>
+          <span style="margin-left:auto;">내구 <b style="color:var(--text-bright)">${durLimit || '−'}</b></span>
         </div>
       </div>
     </div>`;
