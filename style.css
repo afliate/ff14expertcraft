@@ -591,10 +591,27 @@ body::before{
 
 .calc-body {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 20px;
+  grid-template-columns: 185px 1fr;
+  gap: 16px;
   align-items: start;
 }
+
+/* 계산기 내부 탭 버튼 */
+.calc-tab-btn {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  cursor: pointer;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: 'Noto Sans KR', sans-serif;
+  letter-spacing: .04em;
+  transition: color .15s;
+}
+.calc-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.calc-tab-btn:hover:not(.active) { color: var(--text); }
 @media (max-width: 768px) {
   .calc-body { grid-template-columns: 1fr; }
 }
@@ -1180,4 +1197,105 @@ body::before{
   flex: 1;
   border: none;
   border-top: 1px solid var(--border);
+}
+
+/* ── 통합 계산기 탭 버튼 ── */
+.calc-tab-btn {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  cursor: pointer;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: inherit;
+  transition: color .15s;
+}
+.calc-tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.calc-tab-panel { display: none; }
+.calc-tab-panel.active { display: block; }
+
+/* ── 레시피 pill (통합 계산기용) ── */
+.recipe-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.recipe-pill-row:last-child { margin-bottom: 0; }
+.recipe-chain-arrow {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.rpill {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 9px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-family: inherit;
+  background: var(--surface2);
+  transition: border-color .15s;
+  text-align: left;
+}
+.rpill:hover { border-color: var(--accent-dim); }
+.rpill.active { background: var(--accent-glow); border-color: var(--accent); }
+.rpill.active .rpill-tag { color: var(--accent); }
+.rpill-tag { font-weight: 600; color: var(--text); font-size: 10px; }
+.rpill-meta { font-size: 9px; color: var(--text-dim); }
+
+/* 그룹 색상 */
+.rpill.gc0 { border-color: rgba(90,184,212,.3); }
+.rpill.gc0 .rpill-tag { color: #5ab8d4; }
+.rpill.gc1 { border-color: rgba(200,184,64,.3); }
+.rpill.gc1 .rpill-tag { color: #c8b840; }
+.rpill.gc2 { border-color: rgba(160,108,204,.3); }
+.rpill.gc2 .rpill-tag { color: #a06ccc; }
+.rpill.gc3 { border-color: rgba(77,200,144,.3); }
+.rpill.gc3 .rpill-tag { color: #4dc890; }
+.rpill.gc4 { border-color: rgba(232,90,122,.3); }
+.rpill.gc4 .rpill-tag { color: #e85a7a; }
+.rpill.gc5 { border-color: rgba(250,160,80,.3); }
+.rpill.gc5 .rpill-tag { color: #f0a050; }
+.rpill.active.gc0, .rpill.active.gc1, .rpill.active.gc2,
+.rpill.active.gc3, .rpill.active.gc4, .rpill.active.gc5 {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+}
+.rpill.active .rpill-tag { color: var(--accent) !important; }
+
+/* 카테고리 섹션 헤더 */
+.pill-cat-header {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.pill-cat-header:first-child { margin-top: 0; }
+.pill-cat-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.pill-cat-sub {
+  font-size: 8px;
+  opacity: .6;
+  margin-left: 2px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
 }
