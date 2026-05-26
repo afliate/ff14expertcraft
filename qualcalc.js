@@ -162,27 +162,37 @@ const FINISH_EFF = 120;
 // multiStep: true 인 경우 steps 배열로 다단 계산
 // ── 스킬 아이콘 맵 (qualcalc 내부용) ──
 const SKILL_ICONS = {
-  '혁신':         { id: '001987', folder: '001000' },
-  '장족의 발전':   { id: '001955', folder: '001000' },
-  '비레고의 축복': { id: '001975', folder: '001000' },
-  '밑가공':       { id: '001507', folder: '001000' },
-  '절약 가공':    { id: '001535', folder: '001000' },
-  '상급 가공':    { id: '001519', folder: '001000' },
-  '중급 가공':    { id: '001516', folder: '001000' },
-  '가공':         { id: '001502', folder: '001000' },
-  '경과 관찰':    { id: '001954', folder: '001000' },
-  '교묘한 손놀림': { id: '001985', folder: '001000' },
-  '근검절약':     { id: '001992', folder: '001000' },
-  '신속한 혁신':  { id: '001999', folder: '001000' },
-  '성급한 손길':  { id: '001989', folder: '001000' },
-  '대담한 손길':  { id: '001998', folder: '001000' },
-  '장인의 황금손':{ id: '001997', folder: '001000' },
+  '작업':           { id: '001501' },
+  '가공':           { id: '001502' },
+  '정밀 작업':      { id: '001503' },
+  '밑가공':         { id: '001507' },
+  '집중 작업':      { id: '001514' },
+  '중급 가공':      { id: '001516' },
+  '밑작업':         { id: '001518' },
+  '상급 가공':      { id: '001519' },
+  '절약 작업':      { id: '001520' },
+  '절약 가공':      { id: '001535' },
+  '경과 관찰':      { id: '001954' },
+  '장족의 발전':    { id: '001955' },
+  '비레고의 축복':  { id: '001975' },
+  '진가':           { id: '001982' },
+  '교묘한 손놀림':  { id: '001985' },
+  '모범 작업':      { id: '001986' },
+  '혁신':           { id: '001987' },
+  '강행 작업':      { id: '001988' },
+  '성급한 손길':    { id: '001989' },
+  '근검절약':       { id: '001992' },
+  '확신':           { id: '001994' },
+  '공경':           { id: '001995' },
+  '장인의 황금손':  { id: '001997' },
+  '대담한 손길':    { id: '001998' },
+  '신속한 혁신':    { id: '001999' },
 };
 
 function skillIcon(name) {
   const sk = SKILL_ICONS[name];
   if (!sk) return `<span class="rota-skill-text">${name}</span>`;
-  return `<img class="rota-skill-icon" src="https://xivapi.com/i/${sk.folder}/${sk.id}_hr1.png" alt="${name}" title="${name}" onerror="this.style.display='none'">`;
+  return `<img class="rota-skill-icon" src="https://xivapi.com/i/001000/${sk.id}_hr1.png" alt="${name}" title="${name}" onerror="this.style.display='none'">`;
 }
 
 function skillSeq(names) {
@@ -854,22 +864,26 @@ function renderWorkHTML(s0, recipe, variantUI) {
             <th>스킬 조합</th>
             <th class="num">효율</th>
             <th class="num">스킬 작업량</th>
+            <th class="num"><img src="https://xivapi.com/i/001000/001995_hr1.png" style="width:14px;height:14px;vertical-align:middle;border-radius:2px;" title="공경 적용"> 작업량</th>
             <th class="num">확신 + 스킬 합산</th>
           </tr>
         </thead>
         <tbody>
-          ${openerRows.map(row => `
+          ${openerRows.map(row => {
+            const koWork = calcWork(s0, row.skillEff, (row.skillBuff + 0.5) * (1 + row.stateBuff));
+            return `
           <tr class="${row.highlight ? 'highlight' : ''}">
             <td><div class="skill-chips">${row.chips.map(c => {
               if (c.type === 'sep') return `<span class="chip sep">${c.text}</span>`;
               const sk = SKILL_ICONS[c.text];
-              const iconHtml = sk ? `<img class="chip-icon" src="https://xivapi.com/i/${sk.folder}/${sk.id}_hr1.png" alt="${c.text}" onerror="this.style.display='none'">` : '';
+              const iconHtml = sk ? `<img class="chip-icon" src="https://xivapi.com/i/001000/${sk.id}_hr1.png" alt="${c.text}" onerror="this.style.display='none'">` : '';
               return `<span class="chip ${c.type}">${iconHtml}${c.text}</span>`;
             }).join('')}</div></td>
             <td class="num">${row.skillEff}</td>
             <td class="num">${row.skillWork.toLocaleString()}</td>
+            <td class="num" style="color:var(--yellow)">${koWork.toLocaleString()}</td>
             <td class="num"><b>${row.total.toLocaleString()}</b></td>
-          </tr>`).join('')}
+          </tr>`}).join('')}
         </tbody>
       </table>
       ${remaining !== null ? `
@@ -891,17 +905,24 @@ function renderWorkHTML(s0, recipe, variantUI) {
     <div class="c-result-card">
       <div class="c-result-card-title">스킬별 1회 작업량 참고</div>
       <table class="rotation-table">
-        <thead><tr><th>스킬</th><th class="num">효율</th><th class="num">작업량</th></tr></thead>
+        <thead><tr>
+          <th>스킬</th>
+          <th class="num">효율</th>
+          <th class="num">작업량</th>
+          <th class="num"><img src="https://xivapi.com/i/001000/001995_hr1.png" style="width:14px;height:14px;vertical-align:middle;border-radius:2px;" title="공경 적용"> 작업량</th>
+        </tr></thead>
         <tbody>
           ${skillRows.map(row => `<tr>
-            <td><span class="chip work">${row.name}</span></td>
+            <td><div class="skill-chips"><span class="chip work"><img class="chip-icon" src="https://xivapi.com/i/001000/${(SKILL_ICONS[row.name]||{}).id||'001501'}_hr1.png" onerror="this.style.display='none'">${row.name}</span></div></td>
             <td class="num">${row.eff}</td>
             <td class="num">${row.workAmt.toLocaleString()}</td>
+            <td class="num" style="color:var(--yellow)">${calcWork(s0, row.eff, 1.5).toLocaleString()}</td>
           </tr>`).join('')}
           <tr style="opacity:.5">
-            <td><span class="chip">마무리 '작업'</span></td>
+            <td><div class="skill-chips"><span class="chip">마무리 '작업'</span></div></td>
             <td class="num">120</td>
             <td class="num">${finishWork.toLocaleString()}</td>
+            <td class="num" style="color:var(--yellow)">${calcWork(s0, 120, 1.5).toLocaleString()}</td>
           </tr>
         </tbody>
       </table>
