@@ -674,115 +674,110 @@ const QUALITY_ROTATIONS = [
 //  작업 계산기 UI
 // ============================================================
 
-let calcRegion = '';
-let calcGroup = '';
-let calcVariantIdx = 0;
-let calcMode = 'preset';
+// ── 통합 계산기 상태 ──
+let calcRegionVal = '', calcCategoryVal = '', calcGroupVal = '', calcVariantIdx = 0;
 
-function switchCalcMode(mode, btn) {
-  calcMode = mode;
-  btn.closest('.mode-toggle').querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('work-preset-mode').style.display = mode === 'preset' ? '' : 'none';
-  document.getElementById('work-custom-mode').style.display = mode === 'custom' ? '' : 'none';
-  if (mode === 'custom') calcCustomWork();
-  else renderWorkResult_main();
-}
+// category 매핑
+const CAT_DISPLAY = { 'A': 'A등급', 'A-EX': 'A등급 EX', '시간제': '시간제', '날씨제': '날씨제', '기타': '기타' };
+const CAT_ORDER   = ['A', 'A-EX', '시간제', '날씨제', '기타'];
 
 function onRegionChange() {
-  calcRegion = document.getElementById('sel-region').value;
-  calcGroup = '';
-  calcVariantIdx = 0;
-  buildGroupSelector();
-  renderWorkResult_main();
+  calcRegionVal   = document.getElementById('sel-region').value;
+  calcCategoryVal = '';
+  calcGroupVal    = '';
+  calcVariantIdx  = 0;
+
+  const catSel = document.getElementById('sel-category');
+  catSel.innerHTML = '<option value="">── 카테고리 선택 ──</option>';
+  catSel.disabled = !calcRegionVal;
+
+  if (calcRegionVal) {
+    const cats = [...new Set(HARD_RECIPES.filter(r => r.region === calcRegionVal).map(r => r.category || 'A-EX'))];
+    CAT_ORDER.filter(c => cats.includes(c)).forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = CAT_DISPLAY[c] || c;
+      catSel.appendChild(opt);
+    });
+  }
+
+  document.getElementById('recipe-pill-bar').style.display = 'none';
+  resetCalcResults();
 }
 
-function onGroupChange() {
-  calcGroup = document.getElementById('sel-group').value;
-  calcVariantIdx = 0;
-  renderWorkResult_main();
+function onCategoryChange() {
+  calcCategoryVal = document.getElementById('sel-category').value;
+  calcGroupVal    = '';
+  calcVariantIdx  = 0;
+  buildRecipePills();
+  resetCalcResults();
+}
+
+function buildRecipePills() {
+  const bar = document.getElementById('recipe-pill-bar');
+  bar.innerHTML = '';
+  if (!calcRegionVal || !calcCategoryVal) { bar.style.display = 'none'; return; }
+
+  const recipes = HARD_RECIPES.filter(r => r.region === calcRegionVal && (r.category || 'A-EX') === calcCategoryVal);
+  const groups  = [...new Set(recipes.map(r => r.group))];
+
+  // 그룹별 색 할당
+  const GROUP_COLORS = ['#5ab8d4','#c8b840','#a06ccc','#4dc890','#e85a7a'];
+  const colorMap = {};
+  groups.forEach((g, i) => { colorMap[g] = GROUP_COLORS[i % GROUP_COLORS.length]; });
+
+  let html = '';
+  groups.forEach((grp, gi) => {
+    const items = recipes.filter(r => r.group === grp);
+    const col   = colorMap[grp];
+    html += `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:6px;">`;
+    items.forEach((r, i) => {
+      if (i > 0) html += `<span style="font-size:10px;color:var(--text-dim)">→</span>`;
+      html += `<button class="variant-pill" style="border-color:${col}33;" data-group="${r.group}" data-vidx="${i}"
+        onclick="selectRecipePill('${r.group}',${i},this)">
+        <span class="vp-tag" style="color:${col}">${r.tag}</span>
+        <span class="vp-meta">작${r.work.toLocaleString()} · 내${r.durability}</span>
+      </button>`;
+    });
+    html += `</div>`;
+  });
+
+  bar.innerHTML = html;
+  bar.style.display = 'block';
+}
+
+function selectRecipePill(group, vidx, btn) {
+  document.querySelectorAll('#recipe-pill-bar .variant-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  calcGroupVal   = group;
+  calcVariantIdx = vidx;
+  updateQDurPlaceholder();
+  renderBothResults();
 }
 
 function onCraftsChange() {
   const el = document.getElementById('crafts-input');
-  el.classList.toggle('filled', el.value !== '');
-  if (calcMode === 'preset') renderWorkResult_main();
-  else calcCustomWork();
+  if (el) el.classList.toggle('filled', el.value !== '');
+  renderBothResults();
 }
 
-function selectVariant(idx) {
-  calcVariantIdx = idx;
-  renderWorkResult_main();
+function resetCalcResults() {
+  document.getElementById('calc-tab-work').innerHTML = `<div class="c-empty-state"><div class="c-empty-icon">⚒</div><p>지역과 레시피를 선택하면<br>작업량 계산 결과가 표시됩니다</p></div>`;
+  document.getElementById('calc-tab-qual').innerHTML = `<div class="c-empty-state"><div class="c-empty-icon">✨</div><p>레시피와 능력치를 입력하면<br>품질 마무리 로테이션이 표시됩니다</p></div>`;
 }
 
-function buildGroupSelector() {
-  const sel = document.getElementById('sel-group');
-  if (!calcRegion) {
-    sel.innerHTML = '<option value="">── 지역을 먼저 선택 ──</option>';
-    sel.disabled = true;
-    return;
-  }
-  sel.disabled = false;
-  sel.innerHTML = '<option value="">── 레시피 선택 ──</option>';
-  const groups = [...new Set(
-    HARD_RECIPES.filter(r => r.region === calcRegion).map(r => r.group)
-  )];
-  groups.forEach(g => {
-    const opt = document.createElement('option');
-    opt.value = g; opt.textContent = g;
-    sel.appendChild(opt);
-  });
-}
-
-function calcCustomWork() {
-  const crafts     = parseInt(document.getElementById('crafts-input').value)    || 0;
-  const workReq    = parseInt(document.getElementById('custom-work').value)     || 0;
-  const quality    = parseInt(document.getElementById('custom-quality').value)  || 0;
-  const durability = parseInt(document.getElementById('custom-dur').value)      || 0;
-  const rlvl       = parseInt(document.getElementById('custom-rlvl').value)     || 720;
-  const s0 = calcS0(crafts, rlvl);
-  const fakeRecipe = {
-    work: workReq, quality, durability,
-    rlvl, group: '커스텀', region: '', tag: '', missionName: ''
-  };
-  renderWorkHTML(s0, fakeRecipe, '', 'custom');
-}
-
-function renderWorkResult_main() {
-  const resultEl = document.getElementById('work-result');
-  if (!calcRegion || !calcGroup) {
-    resultEl.innerHTML = `<div class="c-empty-state"><div class="c-empty-icon">⚒</div><p>지역과 레시피를 선택하면<br>작업량 계산 결과가 표시됩니다</p></div>`;
-    return;
-  }
-  const variants = HARD_RECIPES.filter(r => r.region === calcRegion && r.group === calcGroup);
+function renderBothResults() {
+  if (!calcRegionVal || !calcGroupVal) { resetCalcResults(); return; }
+  const variants = HARD_RECIPES.filter(r => r.region === calcRegionVal && r.group === calcGroupVal);
   if (!variants.length) return;
-
-  const crafts = parseInt(document.getElementById('crafts-input').value) || 0;
-
-  let variantUI = '';
-  if (variants.length > 1) {
-    variantUI = `<div class="c-result-card"><div class="c-result-card-title">레시피 변형 선택</div><div class="variant-selector">`;
-    variants.forEach((v, i) => {
-      variantUI += `<button class="variant-btn ${i === calcVariantIdx ? 'active' : ''}" onclick="selectVariant(${i})">
-        <span><b style="color:var(--text-bright)">${v.tag}</b>
-        ${v.missionName ? `<span style="font-size:10px;color:var(--text-dim);margin-left:6px;">${v.missionName}</span>` : ''}</span>
-        <span class="variant-meta">
-          <span>작업량 <b>${v.work.toLocaleString()}</b></span>
-          <span>내구 <b>${v.durability}</b></span>
-          <span>rlvl <b>${v.rlvl}</b></span>
-        </span>
-      </button>`;
-    });
-    variantUI += `</div></div>`;
-  }
-
   const recipe = variants[Math.min(calcVariantIdx, variants.length - 1)];
-  const s0 = calcS0(crafts, recipe.rlvl);
-  renderWorkHTML(s0, recipe, variantUI, 'preset');
+  const crafts = parseInt(document.getElementById('crafts-input').value) || 0;
+  const s0     = calcS0(crafts, recipe.rlvl);
+  renderWorkHTML(s0, recipe, '');
+  renderQualityHTML(recipe);
 }
 
-function renderWorkHTML(s0, recipe, variantUI, mode) {
-  const resultEl  = document.getElementById('work-result');
+function renderWorkHTML(s0, recipe, variantUI) {
+  const resultEl  = document.getElementById('calc-tab-work');
   const workReq   = recipe.work;
   const finishWork = calcWork(s0, FINISH_EFF, 1);
   const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만', '': '' };
@@ -920,37 +915,22 @@ function renderWorkHTML(s0, recipe, variantUI, mode) {
 //  품질 계산기 UI
 // ============================================================
 
-let qRegion = '', qGroup = '', qVariantIdx = 0;
-
-function onQRegionChange() {
-  qRegion = document.getElementById('q-region').value;
-  qGroup = ''; qVariantIdx = 0;
-  buildQGroupSelector();
-  renderQuality();
-}
-
-function onQGroupChange() {
-  qGroup = document.getElementById('q-group').value;
-  qVariantIdx = 0;
-  buildQVariantSelector();
-  updateQDurPlaceholder();
-  renderQuality();
-}
-
-function onQVariantChange() {
-  qVariantIdx = parseInt(document.getElementById('q-variant').value) || 0;
-  updateQDurPlaceholder();
-  renderQuality();
-}
-
 function updateQDurPlaceholder() {
   const el = document.getElementById('q-dur-current');
   if (!el) return;
-  const variants = HARD_RECIPES.filter(r => r.region === qRegion && r.group === qGroup);
+  const variants = HARD_RECIPES.filter(r => r.region === calcRegionVal && r.group === calcGroupVal);
   if (!variants.length) { el.placeholder = '예: 55'; el.max = ''; return; }
-  const recipe = variants[Math.min(qVariantIdx, variants.length - 1)];
+  const recipe = variants[Math.min(calcVariantIdx, variants.length - 1)];
   el.placeholder = `최대 ${recipe.durability}`;
   el.max = recipe.durability;
+}
+
+function onQualityChange() {
+  ['q-cons','q-cp','q-current-quality'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('filled', el.value !== '');
+  });
+  renderQuality();
 }
 
 function calcQualDur() {
@@ -986,64 +966,21 @@ function calcQualDur() {
   renderQuality();
 }
 
-function onQualityChange() {
-  ['q-cons','q-cp','q-current-quality'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('filled', el.value !== '');
-  });
-  renderQuality();
-}
-
-function buildQGroupSelector() {
-  const sel = document.getElementById('q-group');
-  if (!qRegion) {
-    sel.innerHTML = '<option value="">── 지역을 먼저 선택 ──</option>';
-    sel.disabled = true; return;
-  }
-  sel.disabled = false;
-  sel.innerHTML = '<option value="">── 레시피 선택 ──</option>';
-  [...new Set(HARD_RECIPES.filter(r => r.region === qRegion).map(r => r.group))].forEach(g => {
-    const opt = document.createElement('option');
-    opt.value = g; opt.textContent = g;
-    sel.appendChild(opt);
-  });
-}
-
-function buildQVariantSelector() {
-  const field = document.getElementById('q-variant-field');
-  const variants = HARD_RECIPES.filter(r => r.region === qRegion && r.group === qGroup);
-  if (variants.length <= 1) { field.style.display = 'none'; return; }
-  field.style.display = 'flex';
-  field.innerHTML = variants.map((v, i) => `
-    <button class="variant-pill ${i === qVariantIdx ? 'active' : ''}" onclick="selectQVariant(${i})" style="padding:4px 8px;text-align:center;align-items:center;justify-content:center;">
-      <span class="vp-tag" style="font-size:11px;display:block;text-align:center;">${v.tag}</span>
-      <span class="vp-meta" style="display:block;text-align:center;">내구 ${v.durability}</span>
-      <span class="vp-meta" style="display:block;text-align:center;">품질 ${v.quality.toLocaleString()}</span>
-    </button>
-  `).join('');
-}
-
-function selectQVariant(idx) {
-  qVariantIdx = idx;
-  buildQVariantSelector();
-  updateQDurPlaceholder();
-  renderQuality();
-}
-
 function renderQuality() {
-  const resultEl = document.getElementById('quality-result');
+  const resultEl = document.getElementById('calc-tab-qual');
+  if (!resultEl) return;
   const cons = parseInt(document.getElementById('q-cons').value) || 0;
   const cp   = parseInt(document.getElementById('q-cp').value)   || 0;
   const durInput = parseInt(document.getElementById('q-dur').value) || 0;
 
-  if (!qRegion || !qGroup || !cons) {
+  if (!calcRegionVal || !calcGroupVal || !cons) {
     resultEl.innerHTML = `<div class="c-empty-state"><div class="c-empty-icon">✨</div><p>레시피와 가공 숙련도를 입력하면<br>품질 로테이션 결과가 표시됩니다</p></div>`;
     return;
   }
 
-  const variants = HARD_RECIPES.filter(r => r.region === qRegion && r.group === qGroup);
+  const variants = HARD_RECIPES.filter(r => r.region === calcRegionVal && r.group === calcGroupVal);
   if (!variants.length) return;
-  const recipe = variants[Math.min(qVariantIdx, variants.length - 1)];
+  const recipe = variants[Math.min(calcVariantIdx, variants.length - 1)];
 
   const durLimit = durInput || recipe.durability;
   const c0    = calcC0(cons);
@@ -1213,7 +1150,7 @@ function renderQuality() {
           <span>조건 미충족 · ${cantDoRows.length}개</span>
           <svg class="cant-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="cant-body" style="overflow-x:hidden;width:100%;box-sizing:border-box;">${cantCards}</div>
+        <div class="cant-body" style="overflow:hidden;width:100%;">${cantCards}</div>
       </div>`
     : '';
 
