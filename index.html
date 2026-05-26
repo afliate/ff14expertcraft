@@ -35,96 +35,45 @@ const POT_BUFFS = {
   '약액': { cp: 27 },
   '약주': { cp: 21 },
 };
-let workGear = '고금단', workFood = '알이페브레', workPot = '약액';
-let qualGear = '고금단', qualFood = '알이페브레', qualPot = '약액';
 
-function calcFinalStats(gear, food, pot) {
-  const g = GEAR_PRESETS[gear], f = FOOD_BUFFS[food], p = POT_BUFFS[pot];
-  return { crafts: g.crafts + f.crafts, cons: g.cons + f.cons, cp: g.cp + f.cp + p.cp };
-}
+let curGear = '고금단', curFood = '알이페브레', curPot = '약액';
+
 function setActiveBtnGroup(groupId, activeBtn) {
   document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
   activeBtn.classList.add('active');
 }
-function selectWorkGear(name, btn) { workGear = name; setActiveBtnGroup('work-gear-btns', btn); applyWorkPreset(); }
-function selectWorkFood(name, btn) { workFood = name; setActiveBtnGroup('work-food-btns', btn); applyWorkPreset(); }
-function selectWorkPot(name, btn)  { workPot  = name; setActiveBtnGroup('work-pot-btns',  btn); applyWorkPreset(); }
-   /* ── 프리셋 해제 (사용자가 직접 입력 시) ── */
-function clearWorkPresetUI() {
+
+function selectGear(name, btn) { curGear = name; setActiveBtnGroup('work-gear-btns', btn); applyPreset(); }
+function selectFood(name, btn) { curFood = name; setActiveBtnGroup('work-food-btns', btn); applyPreset(); }
+function selectPot(name, btn)  { curPot  = name; setActiveBtnGroup('work-pot-btns',  btn); applyPreset(); }
+
+function clearPresetUI() {
   document.querySelectorAll('#work-gear-btns .preset-btn, #work-food-btns .preset-btn, #work-pot-btns .preset-btn')
     .forEach(b => b.classList.remove('active'));
 }
-function applyWorkPreset() {
-  const s = calcFinalStats(workGear, workFood, workPot);
-  const el = document.getElementById('crafts-input');
-  if (el) { el.value = s.crafts; el.classList.add('filled'); onCraftsChange(); }
+
+function applyPreset() {
+  const g = GEAR_PRESETS[curGear];
+  const f = FOOD_BUFFS[curFood] || { crafts:0, cons:0, cp:0 };
+  const p = POT_BUFFS[curPot]   || { cp:0 };
+  const s = { crafts: g.crafts + f.crafts, cons: g.cons + f.cons, cp: g.cp + f.cp + p.cp };
+  const setVal = (id, v) => { const el = document.getElementById(id); if(el){ el.value = v; el.classList.add('filled'); } };
+  setVal('crafts-input', s.crafts);
+  setVal('q-cons', s.cons);
+  setVal('q-cp', s.cp);
+  onStatsChange();
 }
-function selectQualGear(name, btn) {
-  if (btn.classList.contains('active')) {
-    // 이미 active → 해제 + 입력창 리셋
-    btn.classList.remove('active');
-    qualGear = '고금단'; // 내부 기본값 유지 (food/pot 반영용)
-    const cons = document.getElementById('q-cons');
-    const cp   = document.getElementById('q-cp');
-    if (cons) { cons.value = ''; cons.classList.remove('filled'); }
-    if (cp)   { cp.value   = ''; cp.classList.remove('filled');   }
-    onQualityChange();
-    return;
-  }
-  qualGear = name; setActiveBtnGroup('qual-gear-btns', btn); applyQualPreset();
-}
-function selectQualFood(name, btn) {
-  if (btn.classList.contains('active')) {
-    btn.classList.remove('active');
-    qualFood = '없음'; applyQualPreset(); return;
-  }
-  qualFood = name; setActiveBtnGroup('qual-food-btns', btn); applyQualPreset();
-}
-function selectQualPot(name, btn) {
-  if (btn.classList.contains('active')) {
-    btn.classList.remove('active');
-    qualPot = '없음'; applyQualPreset(); return;
-  }
-  qualPot = name; setActiveBtnGroup('qual-pot-btns', btn); applyQualPreset();
-}
-function clearQualPresetUI() {
-  document.querySelectorAll('#qual-gear-btns .preset-btn, #qual-food-btns .preset-btn, #qual-pot-btns .preset-btn')
-    .forEach(b => b.classList.remove('active'));
-}
-function applyQualPreset() {
-  const g = GEAR_PRESETS[qualGear];
-  const f = FOOD_BUFFS[qualFood]  || { crafts:0, cons:0, cp:0 };
-  const p = POT_BUFFS[qualPot]    || { cp:0 };
-  if (!g) return;
-  const s = { cons: g.cons + f.cons, cp: g.cp + f.cp + p.cp };
-  const cons = document.getElementById('q-cons');
-  const cp   = document.getElementById('q-cp');
-  if (cons) { cons.value = s.cons; cons.classList.add('filled'); }
-  if (cp)   { cp.value   = s.cp;   cp.classList.add('filled');   }
+
+function onStatsChange() {
+  onCraftsChange();
   onQualityChange();
 }
+
 document.addEventListener('DOMContentLoaded', () => {
-  applyWorkPreset();
-  applyQualPreset();
-
-  /* ── 사용자가 입력 필드를 직접 수정하면 프리셋 active 해제 ── */
-  // 작업 계산기: 작숙 직접 입력 → 작업 프리셋 해제
-  const craftsEl = document.getElementById('crafts-input');
-  if (craftsEl) {
-    craftsEl.addEventListener('input', (e) => {
-      // 프리셋 함수가 호출한 게 아니라 사용자가 직접 키보드로 입력한 경우만
-      if (e.isTrusted) clearWorkPresetUI();
-    });
-  }
-
-  // 품질 계산기: 가공숙 또는 CP 직접 입력 → 품질 프리셋 해제
-  ['q-cons', 'q-cp'].forEach(id => {
+  applyPreset();
+  ['crafts-input','q-cons','q-cp'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', (e) => {
-        if (e.isTrusted) clearQualPresetUI();
-      });
-    }
+    if (el) el.addEventListener('input', (e) => { if (e.isTrusted) clearPresetUI(); });
   });
 });
 </script>
@@ -147,8 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <button class="tab-btn" data-tab="status"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><span class="t-label">상태</span></button>
     <button class="tab-btn" data-tab="summary"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span class="t-label">요약</span></button>
     <button class="tab-btn" data-tab="example"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="t-label">예시</span></button>
-    <button class="tab-btn" data-tab="calc"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></span><span class="t-label">작업계산기</span></button>
-    <button class="tab-btn" data-tab="qualcalc"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="t-label">품질계산기</span></button>
+    <button class="tab-btn" data-tab="calc"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></span><span class="t-label">계산기</span></button>
     <button class="tab-btn" data-tab="gear"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span><span class="t-label">금단표</span></button>
   </nav>
   <div class="sidebar-bottom">
@@ -206,19 +154,14 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="home-link" onclick="switchTab('calc')">
       <div class="hl-num">CALC</div>
-      <div class="hl-title">작업계산기</div>
-      <div class="hl-desc">작숙으로 작업량 계산</div>
+      <div class="hl-title">계산기</div>
+      <div class="hl-desc">작업량 · 품질 마무리</div>
     </div>
     <div class="home-link" onclick="switchTab('gear')">
       <div class="hl-num">GEAR</div>
       <div class="hl-title">금단표</div>
       <div class="hl-desc">단계별 수치 & 링크</div>
     </div>
-    <div class="home-link" onclick="switchTab('qualcalc')">
-  <div class="hl-num">QUALITY</div>
-  <div class="hl-title">품질계산기</div>
-  <div class="hl-desc">마무리 로테이션 계산기</div>
-</div>
   </div>
 
   <div class="home-patch">
@@ -1335,166 +1278,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div id="tab-calc" class="tab-panel">
   <div class="page-hero">
-    <div class="eyebrow">Progress Calculator</div>
-    <h1><em>작업량</em> 계산기</h1>
-    <p>작숙 입력 후 레시피를 선택하면 스킬 조합별 작업량을 계산해요</p>
+    <div class="eyebrow">Calculator</div>
+    <h1><em>계산기</em></h1>
+    <p>레시피를 선택하면 작업량과 품질 마무리 로테이션을 한 번에 확인할 수 있어요</p>
   </div>
- 
+
   <div class="calc-body">
- 
+
     <!-- 입력 패널 -->
     <div class="input-panel">
 
-      <div>
-        <div class="input-section-label">모드</div>
-        <div class="mode-toggle">
-          <button class="mode-btn active" onclick="switchCalcMode('preset',this)">우주개척</button>
-          <button class="mode-btn" onclick="switchCalcMode('custom',this)">커스텀</button>
-        </div>
-      </div>
-
-      <!-- 우주개척 모드 -->
-      <div id="work-preset-mode">
-        <div class="input-section-label">레시피 선택</div>
-        <div class="recipe-chain">
-          <div class="c-field">
-            <label>지역</label>
-            <select id="sel-region" onchange="onRegionChange()">
-              <option value="">── 지역 선택 ──</option>
-              <option value="oizys">오이지스</option>
-              <option value="paenna">파엔나</option>
-              <option value="dongyeong">동경의 만</option>
-            </select>
-          </div>
-          <div class="chain-arrow">▼</div>
-          <div class="c-field">
-            <label>레시피</label>
-            <select id="sel-group" onchange="onGroupChange()" disabled>
-              <option value="">── 지역을 먼저 선택 ──</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- 커스텀 모드 -->
-      <div id="work-custom-mode" style="display:none;">
-        <div class="input-section-label">레시피 수치 직접 입력</div>
-        <div class="custom-box">
-          <div class="c-field-row">
-            <div class="c-field">
-              <label>작업량 요구치</label>
-              <input type="number" id="custom-work" value="9700" oninput="calcCustomWork()" placeholder="예: 9700">
-            </div>
-            <div class="c-field">
-              <label>최고 품질</label>
-              <input type="number" id="custom-quality" value="17300" oninput="calcCustomWork()" placeholder="예: 17300">
-            </div>
-          </div>
-          <div class="c-field-row">
-            <div class="c-field">
-              <label>내구도</label>
-              <input type="number" id="custom-dur" value="65" oninput="calcCustomWork()" placeholder="예: 65">
-            </div>
-            <div class="c-field">
-              <label>rlvl</label>
-              <input type="number" id="custom-rlvl" value="720" oninput="calcCustomWork()" placeholder="예: 720">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="c-divider"></div>
-
-      <div>
-        <div class="input-section-label">작업 숙련도</div>
-        <div class="c-field">
-          <label>작업 숙련도 (음식·약액 포함)</label>
-          <input type="number" id="crafts-input" value="5811" class="filled" oninput="onCraftsChange()">
-        </div>
-      </div>
-
-      <div class="c-divider"></div>
-
+      <!-- 장비 프리셋 -->
       <div>
         <div class="input-section-label">장비 프리셋</div>
         <div id="work-gear-btns" class="preset-btn-group">
-          <button class="preset-btn" onclick="selectWorkGear('저금단',this)">저금단</button>
-          <button class="preset-btn" onclick="selectWorkGear('중금단',this)">중금단</button>
-          <button class="preset-btn active" onclick="selectWorkGear('고금단',this)">고금단</button>
-          <button class="preset-btn" onclick="selectWorkGear('고금단+우주',this)">고금단+우주</button>
-          <button class="preset-btn" onclick="selectWorkGear('우주전용',this)">우주전용</button>
+          <button class="preset-btn" onclick="selectGear('저금단',this)">저금단</button>
+          <button class="preset-btn" onclick="selectGear('중금단',this)">중금단</button>
+          <button class="preset-btn active" onclick="selectGear('고금단',this)">고금단</button>
+          <button class="preset-btn" onclick="selectGear('고금단+우주',this)">고금단+우주</button>
+          <button class="preset-btn" onclick="selectGear('우주전용',this)">우주전용</button>
         </div>
         <div class="c-divider" style="margin:8px 0 6px;"></div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <div>
             <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">음식</div>
             <div id="work-food-btns" class="preset-btn-group">
-              <button class="preset-btn" onclick="selectWorkFood('없음',this)">없음</button>
-              <button class="preset-btn active" onclick="selectWorkFood('알이페브레',this)">알이페브레</button>
-              <button class="preset-btn" onclick="selectWorkFood('세비체',this)">세비체</button>
-              <button class="preset-btn" onclick="selectWorkFood('로네크',this)">로네크</button>
+              <button class="preset-btn" onclick="selectFood('없음',this)">없음</button>
+              <button class="preset-btn active" onclick="selectFood('알이페브레',this)">알이페브레</button>
+              <button class="preset-btn" onclick="selectFood('세비체',this)">세비체</button>
+              <button class="preset-btn" onclick="selectFood('로네크',this)">로네크</button>
             </div>
           </div>
           <div>
             <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">약액</div>
             <div id="work-pot-btns" class="preset-btn-group">
-              <button class="preset-btn" onclick="selectWorkPot('없음',this)">없음</button>
-              <button class="preset-btn active" onclick="selectWorkPot('약액',this)">약액 HQ</button>
-              <button class="preset-btn" onclick="selectWorkPot('약주',this)">약주 HQ</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /input-panel -->
- 
-    <!-- 결과 패널 -->
-    <div class="c-result-panel" id="work-result">
-      <div class="c-empty-state">
-        <div class="c-empty-icon">⚒</div>
-        <p>지역과 레시피를 선택하면<br>작업량 계산 결과가 표시됩니다</p>
-      </div>
-    </div>
- 
-  </div><!-- /calc-body -->
-</div><!-- /tab-calc -->
-
-<div id="tab-qualcalc" class="tab-panel">
-  <div class="page-hero">
-    <div class="eyebrow">Quality Calculator</div>
-    <h1><em>품질</em> 계산기</h1>
-    <p>가공숙련도와 레시피를 선택하면 마무리 로테이션별 품질을 계산해요</p>
-  </div>
-
-  <div class="calc-body">
-
-    <!-- 입력 패널 -->
-    <div class="input-panel">
-
-      <div>
-        <div class="input-section-label">장비 프리셋</div>
-        <div id="qual-gear-btns" class="preset-btn-group">
-          <button class="preset-btn" onclick="selectQualGear('저금단',this)">저금단</button>
-          <button class="preset-btn" onclick="selectQualGear('중금단',this)">중금단</button>
-          <button class="preset-btn active" onclick="selectQualGear('고금단',this)">고금단</button>
-          <button class="preset-btn" onclick="selectQualGear('고금단+우주',this)">고금단+우주</button>
-          <button class="preset-btn" onclick="selectQualGear('우주전용',this)">우주전용</button>
-        </div>
-        <div class="c-divider" style="margin:10px 0 6px;"></div>
-        <div style="display:flex;gap:16px;flex-wrap:wrap;">
-          <div>
-            <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">음식</div>
-            <div id="qual-food-btns" class="preset-btn-group">
-              <button class="preset-btn active" onclick="selectQualFood('알이페브레',this)">알이페브레</button>
-              <button class="preset-btn" onclick="selectQualFood('세비체',this)">세비체</button>
-              <button class="preset-btn" onclick="selectQualFood('로네크',this)">로네크</button>
-            </div>
-          </div>
-          <div>
-            <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">약액</div>
-            <div id="qual-pot-btns" class="preset-btn-group">
-              <button class="preset-btn active" onclick="selectQualPot('약액',this)">약액 HQ</button>
-              <button class="preset-btn" onclick="selectQualPot('약주',this)">약주 HQ</button>
+              <button class="preset-btn" onclick="selectPot('없음',this)">없음</button>
+              <button class="preset-btn active" onclick="selectPot('약액',this)">약액 HQ</button>
+              <button class="preset-btn" onclick="selectPot('약주',this)">약주 HQ</button>
             </div>
           </div>
         </div>
@@ -1502,20 +1322,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="c-divider"></div>
 
+      <!-- 능력치 3열 -->
       <div>
         <div class="input-section-label">능력치</div>
-        <div class="c-field-row">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
           <div class="c-field">
-            <label>가공 숙련도</label>
-            <input type="number" id="q-cons" placeholder="예: 5580" oninput="onQualityChange()">
+            <label>작숙</label>
+            <input type="number" id="crafts-input" class="filled" oninput="onStatsChange()">
+          </div>
+          <div class="c-field">
+            <label>가숙</label>
+            <input type="number" id="q-cons" class="filled" oninput="onStatsChange()">
           </div>
           <div class="c-field">
             <label>보유 CP</label>
-            <input type="number" id="q-cp" placeholder="예: 649" oninput="onQualityChange()">
+            <input type="number" id="q-cp" class="filled" oninput="onStatsChange()">
           </div>
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);cursor:pointer;padding:6px 0 2px;">
-          <input type="checkbox" id="q-expert" onchange="onQualityChange()" style="accent-color:var(--accent);width:13px;height:13px;">
+          <input type="checkbox" id="q-expert" onchange="onStatsChange()" style="accent-color:var(--accent);width:13px;height:13px;">
           전문장인 보유
           <span style="font-size:10px;color:var(--text-dim)">(전문 로테이션 표시)</span>
         </label>
@@ -1523,74 +1348,87 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="c-divider"></div>
 
-      <!-- 현재 품질 -->
+      <!-- 마무리 시작 시점 3열 -->
       <div>
-        <div class="input-section-label">현재 품질</div>
-        <div class="c-field">
-          <label>마무리 시작 시점의 현재 품질</label>
-          <input type="number" id="q-current-quality" placeholder="예: 7000" min="0" oninput="onQualityChange()">
-        </div>
-      </div>
-
-      <div class="c-divider"></div>
-
-      <!-- 내구도 -->
-      <div>
-        <div class="input-section-label">내구도</div>
-        <div class="c-field-row" style="margin-bottom:6px;">
+        <div class="input-section-label">마무리 시작 시점</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+          <div class="c-field">
+            <label>현재 품질</label>
+            <input type="number" id="q-current-quality" placeholder="예: 7000" min="0" oninput="onStatsChange()">
+          </div>
           <div class="c-field">
             <label>남은 내구</label>
             <input type="number" id="q-dur-current" placeholder="예: 55" min="0" oninput="calcQualDur()">
           </div>
           <div class="c-field">
-            <label>교묘 남은 턴</label>
+            <label>교묘 턴</label>
             <input type="number" id="q-gyomyo" placeholder="예: 5" min="0" max="8" oninput="calcQualDur()">
           </div>
         </div>
-        <div id="q-dur-calc" style="font-size:11px;color:var(--text-dim);padding:5px 8px;background:var(--surface2);border-radius:3px;display:none;"></div>
+        <div id="q-dur-calc" style="font-size:11px;color:var(--text-dim);padding:5px 8px;background:var(--surface2);border-radius:3px;display:none;margin-top:6px;"></div>
         <input type="hidden" id="q-dur">
-        <span class="c-hint" style="margin-top:4px;display:block;">교묘 1턴 = 내구 +5 회복 (최대 8턴). 마무리용 내구 10은 자동 차감돼요.</span>
+        <span class="c-hint" style="margin-top:4px;display:block;">교묘 1턴 = 내구 +5 회복 (최대 8턴). 마무리용 내구 10 자동 차감.</span>
       </div>
 
     </div><!-- /input-panel -->
 
-    <!-- 결과 패널 (지역/레시피 + 결과) -->
-    <div id="quality-result-wrap" style="display:flex;flex-direction:column;gap:0;min-width:0;">
+    <!-- 오른쪽: 레시피 + 탭 결과 -->
+    <div style="display:flex;flex-direction:column;gap:0;min-width:0;">
 
-      <!-- 지역/레시피 선택 바 -->
-      <div class="qual-recipe-bar" style="margin-bottom:12px;">
-        <div class="qual-recipe-selects">
-          <div class="c-field">
-            <label>지역</label>
-            <select id="q-region" onchange="onQRegionChange()">
-              <option value="">── 지역 선택 ──</option>
-              <option value="dongyeong">동경의 만</option>
-              <option value="paenna">파엔나</option>
-              <option value="oizys">오이지스</option>
-            </select>
-          </div>
-          <div class="c-field">
-            <label>레시피</label>
-            <select id="q-group" onchange="onQGroupChange()" disabled>
-              <option value="">── 지역을 먼저 선택 ──</option>
-            </select>
-          </div>
+      <!-- 레시피 선택 바 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:4px 4px 0 0;border-bottom:none;">
+        <div class="c-field">
+          <label>지역</label>
+          <select id="sel-region" onchange="onRegionChange()">
+            <option value="">── 지역 선택 ──</option>
+            <option value="dongyeong">동경의 만</option>
+            <option value="paenna">파엔나</option>
+            <option value="oizys">오이지스</option>
+            <option value="auxesia">아욱세시아</option>
+          </select>
         </div>
-        <div id="q-variant-field" class="qual-variant-pills" style="display:none;"></div>
-      </div>
-
-      <!-- 실제 결과 -->
-      <div id="quality-result" style="flex:1;">
-        <div class="c-empty-state">
-          <div class="c-empty-icon">✨</div>
-          <p>레시피와 가공 숙련도를 입력하면<br>품질 로테이션 결과가 표시됩니다</p>
+        <div class="c-field">
+          <label>카테고리</label>
+          <select id="sel-category" onchange="onCategoryChange()" disabled>
+            <option value="">── 지역을 먼저 선택 ──</option>
+          </select>
         </div>
       </div>
 
-    </div><!-- /result-wrap -->
+      <!-- 레시피 pill 목록 -->
+      <div id="recipe-pill-bar" style="display:none;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-top:none;border-bottom:none;">
+      </div>
+
+      <!-- 결과 탭 -->
+      <div style="display:flex;border-bottom:1px solid var(--border);background:var(--surface);padding:0 14px;border-left:1px solid var(--border);border-right:1px solid var(--border);">
+        <button class="calc-tab-btn active" onclick="switchCalcTab('work',this)">작업량</button>
+        <button class="calc-tab-btn" onclick="switchCalcTab('qual',this)">품질 마무리</button>
+      </div>
+
+      <!-- 결과 본문 -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;padding:14px;min-height:140px;">
+
+        <!-- 작업량 탭 -->
+        <div id="calc-tab-work" class="calc-tab-panel active">
+          <div class="c-empty-state">
+            <div class="c-empty-icon">⚒</div>
+            <p>지역과 레시피를 선택하면<br>작업량 계산 결과가 표시됩니다</p>
+          </div>
+        </div>
+
+        <!-- 품질 마무리 탭 -->
+        <div id="calc-tab-qual" class="calc-tab-panel" style="display:none;">
+          <div class="c-empty-state">
+            <div class="c-empty-icon">✨</div>
+            <p>레시피와 능력치를 입력하면<br>품질 마무리 로테이션이 표시됩니다</p>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /right panel -->
 
   </div><!-- /calc-body -->
-</div><!-- /tab-qualcalc -->
+</div><!-- /tab-calc -->
 
 <div id="tab-gear" class="tab-panel">
   <div class="page-hero">
@@ -1667,6 +1505,8 @@ const tabPanels = document.querySelectorAll('.tab-panel');
 tabBtns.forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
 
 function switchTab(id) {
+  // qualcalc 해시는 calc로 리다이렉트
+  if (id === 'qualcalc') id = 'calc';
   tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
   tabPanels.forEach(p => p.classList.toggle('active', p.id === 'tab-' + id));
   window.scrollTo({top:0, behavior:'smooth'});
@@ -1674,11 +1514,20 @@ function switchTab(id) {
   closeSidebar();
 }
 
+/* ── 계산기 내부 탭 전환 ── */
+function switchCalcTab(id, btn) {
+  document.querySelectorAll('.calc-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.calc-tab-panel').forEach(p => p.style.display = 'none');
+  btn.classList.add('active');
+  document.getElementById('calc-tab-' + id).style.display = 'block';
+}
+
 // 페이지 로드 시 해시 읽기
 (function() {
   const hash = location.hash.replace('#', '');
   const valid = [...tabBtns].some(b => b.dataset.tab === hash);
   if (valid) switchTab(hash);
+  else if (hash === 'qualcalc') switchTab('calc');
 })();
 
 /* ── 모바일 사이드바 ── */
