@@ -43,16 +43,40 @@ function setActiveBtnGroup(groupId, activeBtn) {
   activeBtn.classList.add('active');
 }
 
-function selectGear(name, btn) { curGear = name; setActiveBtnGroup('work-gear-btns', btn); applyPreset(); }
-function selectFood(name, btn) { curFood = name; setActiveBtnGroup('work-food-btns', btn); applyPreset(); }
-function selectPot(name, btn)  { curPot  = name; setActiveBtnGroup('work-pot-btns',  btn); applyPreset(); }
+function selectGear(name, btn) {
+  if (btn.classList.contains('active')) {
+    btn.classList.remove('active'); curGear = null; applyPreset(); return;
+  }
+  curGear = name; setActiveBtnGroup('work-gear-btns', btn); applyPreset();
+}
+function selectFood(name, btn) {
+  if (btn.classList.contains('active')) {
+    btn.classList.remove('active'); curFood = null; applyPreset(); return;
+  }
+  curFood = name; setActiveBtnGroup('work-food-btns', btn); applyPreset();
+}
+function selectPot(name, btn) {
+  if (btn.classList.contains('active')) {
+    btn.classList.remove('active'); curPot = null; applyPreset(); return;
+  }
+  curPot = name; setActiveBtnGroup('work-pot-btns', btn); applyPreset();
+}
 
 function clearPresetUI() {
   document.querySelectorAll('#work-gear-btns .preset-btn, #work-food-btns .preset-btn, #work-pot-btns .preset-btn')
     .forEach(b => b.classList.remove('active'));
+  curGear = null; curFood = null; curPot = null;
 }
 
 function applyPreset() {
+  if (!curGear) {
+    // 장비 해제 시 입력창 초기화
+    ['crafts-input','q-cons','q-cp'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.value = ''; el.classList.remove('filled'); }
+    });
+    onStatsChange(); return;
+  }
   const g = GEAR_PRESETS[curGear];
   const f = FOOD_BUFFS[curFood] || { crafts:0, cons:0, cp:0 };
   const p = POT_BUFFS[curPot]   || { cp:0 };
@@ -1322,22 +1346,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="c-divider"></div>
 
-      <!-- 능력치 3열 -->
+      <!-- 능력치 2+1열 -->
       <div>
         <div class="input-section-label">능력치</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
           <div class="c-field">
-            <label>작숙</label>
+            <label>작업 숙련도</label>
             <input type="number" id="crafts-input" class="filled" oninput="onStatsChange()">
           </div>
           <div class="c-field">
-            <label>가숙</label>
+            <label>가공 숙련도</label>
             <input type="number" id="q-cons" class="filled" oninput="onStatsChange()">
           </div>
-          <div class="c-field">
-            <label>보유 CP</label>
-            <input type="number" id="q-cp" class="filled" oninput="onStatsChange()">
-          </div>
+        </div>
+        <div class="c-field" style="margin-bottom:4px;">
+          <label>보유 CP</label>
+          <input type="number" id="q-cp" class="filled" oninput="onStatsChange()">
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);cursor:pointer;padding:6px 0 2px;">
           <input type="checkbox" id="q-expert" onchange="onStatsChange()" style="accent-color:var(--accent);width:13px;height:13px;">
@@ -1348,14 +1372,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="c-divider"></div>
 
-      <!-- 마무리 시작 시점 3열 -->
+      <!-- 마무리 시작 시점 1+2열 -->
       <div>
         <div class="input-section-label">마무리 시작 시점</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-          <div class="c-field">
-            <label>현재 품질</label>
-            <input type="number" id="q-current-quality" placeholder="예: 7000" min="0" oninput="onStatsChange()">
-          </div>
+        <div class="c-field" style="margin-bottom:6px;">
+          <label>현재 품질</label>
+          <input type="number" id="q-current-quality" placeholder="예: 7000" min="0" oninput="onStatsChange()">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
           <div class="c-field">
             <label>남은 내구</label>
             <input type="number" id="q-dur-current" placeholder="예: 55" min="0" oninput="calcQualDur()">
