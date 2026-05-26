@@ -1151,9 +1151,10 @@ body::before{
   display: flex;
   align-items: center;
   gap: 2px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   flex-shrink: 0;
-  max-width: 220px;
+  max-width: none;
+  overflow: visible;
 }
 .rota-card-mid {
   flex: 1;
