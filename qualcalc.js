@@ -746,6 +746,7 @@ function buildRecipePills() {
         onclick="selectRecipePill('${r.group}',${i},this)">
         <span class="vp-tag" style="color:${col}">${r.tag}</span>
         <span class="vp-meta">작${r.work.toLocaleString()} · 내${r.durability}</span>
+        <span class="vp-meta" style="color:var(--green)">품 ${r.quality.toLocaleString()}</span>
       </button>`;
     });
     html += `</div>`;
