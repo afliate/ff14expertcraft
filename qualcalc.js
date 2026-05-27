@@ -745,7 +745,8 @@ function buildRecipePills() {
       html += `<button class="variant-pill" style="border-color:${col}33;" data-group="${r.group}" data-vidx="${i}"
         onclick="selectRecipePill('${r.group}',${i},this)">
         <span class="vp-tag" style="color:${col}">${r.tag}</span>
-        <span class="vp-meta">${r.durability} · ${r.work.toLocaleString()} · <span style="color:var(--green)">${r.quality.toLocaleString()}</span></span>
+        <span class="vp-meta">${r.durability} · ${r.work.toLocaleString()}</span>
+        <span class="vp-meta" style="color:var(--green)">${r.quality.toLocaleString()}</span>
       </button>`;
     });
     html += `</div>`;
