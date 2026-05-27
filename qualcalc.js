@@ -18,7 +18,7 @@ function getRlvlParams(rlvl) {
 // ※ 팀크래프트/라파엘 공식: baseProgress를 먼저 floor한 뒤 modifier 적용
 function calcS0(crafts, rlvl) {
   const { pD, pM } = getRlvlParams(rlvl);
-  const base = crafts * 10 / pD + 2;          // floor 제거
+  const base = Math.floor(crafts * 10 / pD + 2); // 팀크/라파엘 공식대로 중간 floor 적용
   return Math.floor(base * pM / 100);
 }
 
