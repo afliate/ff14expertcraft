@@ -818,11 +818,11 @@ body::before{
 .rotation-table .bad  { color: var(--red); }
 
 .skill-chips { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
-.chip.work    { color: #5ab8d4; border-color: rgba(90,184,212,.3); background: rgba(90,184,212,.06); }
-.chip.buff    { color: #c8b840; border-color: rgba(200,184,64,.3);  background: rgba(200,184,64,.06); }
-.chip.state   { color: #a06ccc; border-color: rgba(160,108,204,.3); background: rgba(160,108,204,.06); }
+.chip.work    { color: #5ab8d4; border: none; background: rgba(90,184,212,.12); }
+.chip.buff    { color: #c8b840; border: none; background: rgba(200,184,64,.12); }
+.chip.state   { color: #a06ccc; border: none; background: rgba(160,108,204,.15); }
 .chip.sep     { color: var(--border); background: none; border: none; padding: 2px; font-size: 12px; }
-.chip.quality { color: #3ecfaa; border-color: rgba(62,207,170,.3);  background: rgba(62,207,170,.06); }
+.chip.quality { color: #3ecfaa; border: none; background: rgba(62,207,170,.12); }
 
 .work-total-box {
   display: flex;
