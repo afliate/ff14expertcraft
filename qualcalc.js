@@ -728,7 +728,7 @@ function buildRecipePills() {
   if (!calcRegionVal || !calcCategoryVal) { bar.style.display = 'none'; return; }
 
   const recipes = HARD_RECIPES.filter(r => r.region === calcRegionVal && (r.category || 'A-EX') === calcCategoryVal);
-  const groups  = [...new Set(recipes.map(r => r.group))];
+  const groups  = [...new Set(recipes.map(r => r.group))].sort((a, b) => a.localeCompare(b, 'ko', { numeric: true }));
 
   // 그룹별 색 할당
   const GROUP_COLORS = ['#5ab8d4','#c8b840','#a06ccc','#4dc890','#e85a7a'];
@@ -745,8 +745,7 @@ function buildRecipePills() {
       html += `<button class="variant-pill" style="border-color:${col}33;" data-group="${r.group}" data-vidx="${i}"
         onclick="selectRecipePill('${r.group}',${i},this)">
         <span class="vp-tag" style="color:${col}">${r.tag}</span>
-        <span class="vp-meta">작${r.work.toLocaleString()} · 내${r.durability}</span>
-        <span class="vp-meta" style="color:var(--green)">품 ${r.quality.toLocaleString()}</span>
+        <span class="vp-meta">${r.durability} · ${r.work.toLocaleString()} · <span style="color:var(--green)">${r.quality.toLocaleString()}</span></span>
       </button>`;
     });
     html += `</div>`;
