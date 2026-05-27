@@ -76,7 +76,11 @@ const OPENER_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'강행 작업'},
     ],
-    skillEff: 500, skillBuff: 1.5, stateBuff: 0, highlight: true,
+    // 확신(300, 버프없음) + 공경(150, 확신50%) + 강행(500, 확신50%+공경50%)
+    shinEff: 300, shinBuff: 1.0,
+    koEff:   150, koBuff:   1.5,
+    skillEff: 500, skillBuff: 2.25, // 확신1.5 × 공경1.5
+    stateBuff: 0, highlight: true,
   },
   {
     id: 'shin-ko-fast-kang',
@@ -87,7 +91,10 @@ const OPENER_COMBOS = [
       {type:'state',text:'빠른 진행'},{type:'sep',text:'+'},
       {type:'work',text:'강행 작업'},
     ],
-    skillEff: 500, skillBuff: 1.5, stateBuff: 0.5, highlight: false,
+    shinEff: 300, shinBuff: 1.0,
+    koEff:   150, koBuff:   1.5,
+    skillEff: 500, skillBuff: 2.25,
+    stateBuff: 0.5, highlight: false, // 빠른진행 +50%
   },
   {
     id: 'shin-ko-jip',
@@ -97,7 +104,24 @@ const OPENER_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'집중 작업'},
     ],
-    skillEff: 400, skillBuff: 1.5, stateBuff: 0, highlight: false,
+    shinEff: 300, shinBuff: 1.0,
+    koEff:   150, koBuff:   1.5,
+    skillEff: 400, skillBuff: 2.25,
+    stateBuff: 0, highlight: false,
+  },
+  {
+    id: 'shin-ko-fast-mit',
+    label: '확신 + 공경 + 빠른진행 + 밑작업',
+    chips: [
+      {type:'buff',text:'확신'},{type:'sep',text:'+'},
+      {type:'buff',text:'공경'},{type:'sep',text:'+'},
+      {type:'state',text:'빠른 진행'},{type:'sep',text:'+'},
+      {type:'work',text:'밑작업'},
+    ],
+    shinEff: 300, shinBuff: 1.0,
+    koEff:   150, koBuff:   1.5,
+    skillEff: 360, skillBuff: 2.25,
+    stateBuff: 0.5, highlight: false,
   },
   {
     id: 'shin-ko-mit',
@@ -107,17 +131,10 @@ const OPENER_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'밑작업'},
     ],
-    skillEff: 360, skillBuff: 1.5, stateBuff: 0, highlight: false,
-  },
-  {
-    id: 'shin-ko-work',
-    label: '확신 + 공경 + 작업',
-    chips: [
-      {type:'buff',text:'확신'},{type:'sep',text:'+'},
-      {type:'buff',text:'공경'},{type:'sep',text:'+'},
-      {type:'work',text:'작업'},
-    ],
-    skillEff: 120, skillBuff: 1.5, stateBuff: 0, highlight: false,
+    shinEff: 300, shinBuff: 1.0,
+    koEff:   150, koBuff:   1.5,
+    skillEff: 360, skillBuff: 2.25,
+    stateBuff: 0, highlight: false,
   },
 ];
 
@@ -802,15 +819,13 @@ function renderWorkHTML(s0, recipe, variantUI) {
   const finishWork = calcWork(s0, FINISH_EFF, 1);
   const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만', '': '' };
 
-  // ── 확신 작업량 (효율 300) ──
-  const shinWork = calcWork(s0, 300, 1);
-
   // ── 오프너 조합 행 계산 ──
   const openerRows = OPENER_COMBOS.map(combo => {
-    const totalBuff = combo.skillBuff * (1 + combo.stateBuff); // 버프는 곱셈
-    const skillWork = calcWork(s0, combo.skillEff, totalBuff);
-    const total     = shinWork + skillWork;
-    return { ...combo, shinWork, skillWork, total };
+    const shinWork  = calcWork(s0, combo.shinEff,  combo.shinBuff);
+    const koWork    = calcWork(s0, combo.koEff,    combo.koBuff);
+    const skillWork = calcWork(s0, combo.skillEff, combo.skillBuff * (1 + combo.stateBuff));
+    const total     = shinWork + koWork + skillWork;
+    return { ...combo, shinWork, koWork, skillWork, total };
   });
 
   // 기준: 확신+공경+강행 (첫 번째 조합)
@@ -874,13 +889,11 @@ function renderWorkHTML(s0, recipe, variantUI) {
             <th>스킬 조합</th>
             <th class="num">효율</th>
             <th class="num">스킬 작업량</th>
-            <th class="num"><img src="https://xivapi.com/i/001000/001995_hr1.png" style="width:14px;height:14px;vertical-align:middle;border-radius:2px;" title="공경 적용"> 작업량</th>
             <th class="num">확신 + 스킬 합산</th>
           </tr>
         </thead>
         <tbody>
           ${openerRows.map(row => {
-            const koWork = calcWork(s0, row.skillEff, (row.skillBuff + 0.5) * (1 + row.stateBuff));
             return `
           <tr class="${row.highlight ? 'highlight' : ''}">
             <td><div class="skill-chips">${row.chips.map(c => {
@@ -891,9 +904,8 @@ function renderWorkHTML(s0, recipe, variantUI) {
             }).join('')}</div></td>
             <td class="num">${row.skillEff}</td>
             <td class="num">${row.skillWork.toLocaleString()}</td>
-            <td class="num" style="color:var(--yellow)">${koWork.toLocaleString()}</td>
             <td class="num"><b>${row.total.toLocaleString()}</b></td>
-          </tr>`}).join('')}
+          </tr>`;}).join('')}
         </tbody>
       </table>
       ${remaining !== null ? `
@@ -919,20 +931,17 @@ function renderWorkHTML(s0, recipe, variantUI) {
           <th>스킬</th>
           <th class="num">효율</th>
           <th class="num">작업량</th>
-          <th class="num"><img src="https://xivapi.com/i/001000/001995_hr1.png" style="width:14px;height:14px;vertical-align:middle;border-radius:2px;" title="공경 적용"> 작업량</th>
         </tr></thead>
         <tbody>
           ${skillRows.map(row => `<tr>
             <td><div class="skill-chips"><span class="chip work"><img class="chip-icon" src="https://xivapi.com/i/001000/${(SKILL_ICONS[row.name]||{}).id||'001501'}_hr1.png" onerror="this.style.display='none'">${row.name}</span></div></td>
             <td class="num">${row.eff}</td>
             <td class="num">${row.workAmt.toLocaleString()}</td>
-            <td class="num" style="color:var(--yellow)">${calcWork(s0, row.eff, 1.5).toLocaleString()}</td>
           </tr>`).join('')}
           <tr style="opacity:.5">
             <td><div class="skill-chips"><span class="chip">마무리 '작업'</span></div></td>
             <td class="num">120</td>
             <td class="num">${finishWork.toLocaleString()}</td>
-            <td class="num" style="color:var(--yellow)">${calcWork(s0, 120, 1.5).toLocaleString()}</td>
           </tr>
         </tbody>
       </table>
