@@ -120,7 +120,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-family: inherit;
-  text-align: left;
+  text-align: center;
   transition: border-color .15s;
 }
 .variant-pill:hover { border-color: var(--accent-dim); }
