@@ -805,7 +805,7 @@ function renderBothResults() {
   const crafts = parseInt(document.getElementById('crafts-input').value) || 0;
   const s0     = calcS0(crafts, recipe.rlvl);
   renderWorkHTML(s0, recipe, '');
-  renderQualityHTML(recipe);
+  renderQuality();
 }
 
 function renderWorkHTML(s0, recipe, variantUI) {
@@ -818,7 +818,8 @@ function renderWorkHTML(s0, recipe, variantUI) {
   const openerRows = OPENER_COMBOS.map(combo => {
     const shinWork  = calcWork(s0, combo.shinEff,  combo.shinBuff);
     const koWork    = 0; // 공경은 작업량 0인 순수 버프스킬
-    const skillWork = calcWork(s0, combo.skillEff, combo.skillBuff + combo.stateBuff);
+    // 빠른진행 등 상태 버프는 별도 ×(1+stateBuff) 곱셈 적용
+    const skillWork = Math.floor(calcWork(s0, combo.skillEff, combo.skillBuff) * (1 + combo.stateBuff));
     const total     = shinWork + koWork + skillWork;
     return { ...combo, shinWork, koWork, skillWork, total };
   });
