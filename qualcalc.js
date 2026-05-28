@@ -22,9 +22,10 @@ function calcS0(crafts, rlvl) {
   return Math.floor(crafts * 10 / pD + 2);
 }
 
-// 작업량 = floor(s0 × 효율/100 × 버프배율)
+// 작업량 = floor(floor(s0 × 효율/100) × 버프배율)
+// ※ 팀크/라파엘 공식: 효율 적용 후 중간 floor, 그 다음 버프배율 적용
 function calcWork(s0, efficiency, buffMult) {
-  return Math.floor(s0 * efficiency / 100 * buffMult);
+  return Math.floor(Math.floor(s0 * efficiency / 100) * buffMult);
 }
 
 // c0 (기본 품질, IQ 스택 미포함)
