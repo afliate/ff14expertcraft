@@ -1016,8 +1016,9 @@ function renderQuality() {
   const recipe = variants[Math.min(calcVariantIdx, variants.length - 1)];
 
   const durLimit = durInput || recipe.durability;
-  const c0    = calcC0(cons);
-  const c0iq  = calcC0WithIQ(cons, 10);
+  const rlvl   = recipe.rlvl;
+  const c0    = calcC0(cons, rlvl);
+  const c0iq  = calcC0(cons, rlvl); // IQ는 calcQuality 내부에서 처리
   const qualityGoal = recipe.quality;
   const regionNames = { oizys: '오이지스', paenna: '파엔나', dongyeong: '동경의 만' };
 
@@ -1042,10 +1043,10 @@ function renderQuality() {
     let q;
     if (rot.multiStep) {
       q = rot.steps.reduce(
-        (sum, s) => sum + calcQuality(cons, s.iqStacks, s.efficiency, s.buffSum), 0
+        (sum, s) => sum + calcQuality(cons, rlvl, s.iqStacks, s.efficiency, s.buffSum), 0
       );
     } else {
-      q = calcQuality(cons, rot.iqStacks, rot.efficiency, rot.buffSum);
+      q = calcQuality(cons, rlvl, rot.iqStacks, rot.efficiency, rot.buffSum);
     }
     const remaining = (qualityGoal - currentQuality) - q;
     const pct = Math.min(100, Math.round((currentQuality + q) / qualityGoal * 100));
