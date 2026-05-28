@@ -14,12 +14,12 @@ function getRlvlParams(rlvl) {
   return { pD: 160, pM: 80 };
 }
 
-// s0 = floor(floor(crafts * 10/pD + 2) * pM/100)
-// ※ 팀크래프트/라파엘 공식: baseProgress를 먼저 floor한 뒤 modifier 적용
+// baseProgress = floor(crafts * 10/pD + 2)
+// ※ 팀크래프트/라파엘 공식: pM(progressModifier)은 레시피 required progress에
+//    이미 반영된 값이므로, 스킬 작업량 계산에는 base만 사용
 function calcS0(crafts, rlvl) {
-  const { pD, pM } = getRlvlParams(rlvl);
-  const base = Math.floor(crafts * 10 / pD + 2); // 팀크/라파엘 공식대로 중간 floor 적용
-  return Math.floor(base * pM / 100);
+  const { pD } = getRlvlParams(rlvl);
+  return Math.floor(crafts * 10 / pD + 2);
 }
 
 // 작업량 = floor(s0 × 효율/100 × 버프배율)
@@ -64,9 +64,9 @@ function calcQuality(cons, iqStacks, efficiency, buffSum) {
 }
 
 // ── 확신 오프너 조합 데이터 (상단 표) ──
-// shinWork  = floor(s0 × 3.0)          확신 자체 작업량 (효율300)
-// skillWork = floor(s0 × eff/100 × (skillBuff + stateBuff))
-// total     = shinWork + skillWork
+// 버프는 덧셈 누적: 확신+0.5, 공경+0.5, 빠른진행+0.5
+// 스킬 작업량 = floor(baseProgress × eff/100 × (1 + buffSum))
+// ※ 공경(Veneration)은 작업량 0인 순수 버프스킬
 const OPENER_COMBOS = [
   {
     id: 'shin-ko-kang',
@@ -76,10 +76,9 @@ const OPENER_COMBOS = [
       {type:'buff',text:'공경'},{type:'sep',text:'+'},
       {type:'work',text:'강행 작업'},
     ],
-    // 확신(300, 버프없음) + 공경(150, 확신50%) + 강행(500, 확신50%+공경50%)
+    // 확신(300%, 버프없음) + 공경(작업량0, 버프) + 강행(500%, 확신+0.5+공경+0.5 → ×2.5)
     shinEff: 300, shinBuff: 1.0,
-    koEff:   150, koBuff:   1.5,
-    skillEff: 500, skillBuff: 2.25, // 확신1.5 × 공경1.5
+    skillEff: 500, skillBuff: 2.5,
     stateBuff: 0, highlight: true,
   },
   {
@@ -92,9 +91,8 @@ const OPENER_COMBOS = [
       {type:'work',text:'강행 작업'},
     ],
     shinEff: 300, shinBuff: 1.0,
-    koEff:   150, koBuff:   1.5,
-    skillEff: 500, skillBuff: 2.25,
-    stateBuff: 0.5, highlight: false, // 빠른진행 +50%
+    skillEff: 500, skillBuff: 2.5,
+    stateBuff: 0.5, highlight: false, // 빠른진행 +50% 추가
   },
   {
     id: 'shin-ko-jip',
@@ -105,8 +103,7 @@ const OPENER_COMBOS = [
       {type:'work',text:'집중 작업'},
     ],
     shinEff: 300, shinBuff: 1.0,
-    koEff:   150, koBuff:   1.5,
-    skillEff: 400, skillBuff: 2.25,
+    skillEff: 400, skillBuff: 2.5,
     stateBuff: 0, highlight: false,
   },
   {
@@ -119,8 +116,7 @@ const OPENER_COMBOS = [
       {type:'work',text:'밑작업'},
     ],
     shinEff: 300, shinBuff: 1.0,
-    koEff:   150, koBuff:   1.5,
-    skillEff: 360, skillBuff: 2.25,
+    skillEff: 360, skillBuff: 2.5,
     stateBuff: 0.5, highlight: false,
   },
   {
@@ -132,8 +128,7 @@ const OPENER_COMBOS = [
       {type:'work',text:'밑작업'},
     ],
     shinEff: 300, shinBuff: 1.0,
-    koEff:   150, koBuff:   1.5,
-    skillEff: 360, skillBuff: 2.25,
+    skillEff: 360, skillBuff: 2.5,
     stateBuff: 0, highlight: false,
   },
 ];
@@ -822,8 +817,8 @@ function renderWorkHTML(s0, recipe, variantUI) {
   // ── 오프너 조합 행 계산 ──
   const openerRows = OPENER_COMBOS.map(combo => {
     const shinWork  = calcWork(s0, combo.shinEff,  combo.shinBuff);
-    const koWork    = calcWork(s0, combo.koEff,    combo.koBuff);
-    const skillWork = calcWork(s0, combo.skillEff, combo.skillBuff * (1 + combo.stateBuff));
+    const koWork    = 0; // 공경은 작업량 0인 순수 버프스킬
+    const skillWork = calcWork(s0, combo.skillEff, combo.skillBuff + combo.stateBuff);
     const total     = shinWork + koWork + skillWork;
     return { ...combo, shinWork, koWork, skillWork, total };
   });
