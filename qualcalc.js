@@ -819,8 +819,8 @@ function renderWorkHTML(s0, recipe, variantUI) {
   const openerRows = OPENER_COMBOS.map(combo => {
     const shinWork  = calcWork(s0, combo.shinEff,  combo.shinBuff);
     const koWork    = 0; // 공경은 작업량 0인 순수 버프스킬
-    // 빠른진행 등 상태 버프는 별도 ×(1+stateBuff) 곱셈 적용
-    const skillWork = Math.floor(calcWork(s0, combo.skillEff, combo.skillBuff) * (1 + combo.stateBuff));
+    // 빠른진행 state버프는 skillBuff와 함께 한 번에 곱하고 마지막에 floor 한 번만
+    const skillWork = Math.floor(Math.floor(s0 * combo.skillEff / 100) * combo.skillBuff * (1 + combo.stateBuff));
     const total     = shinWork + koWork + skillWork;
     return { ...combo, shinWork, koWork, skillWork, total };
   });
