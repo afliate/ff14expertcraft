@@ -22,10 +22,9 @@ function calcS0(crafts, rlvl) {
   return Math.floor(crafts * 10 / pD + 2);
 }
 
-// 작업량 = floor(floor(s0 × 효율/100) × 버프배율)
-// ※ 팀크/라파엘 공식: 효율 적용 후 중간 floor, 그 다음 버프배율 적용
+// 작업량 = floor(s0 × 효율/100 × 버프배율)
 function calcWork(s0, efficiency, buffMult) {
-  return Math.floor(Math.floor(s0 * efficiency / 100) * buffMult);
+  return Math.floor(s0 * efficiency / 100 * buffMult);
 }
 
 // c0 (기본 품질, IQ 스택 미포함)
@@ -819,8 +818,7 @@ function renderWorkHTML(s0, recipe, variantUI) {
   const openerRows = OPENER_COMBOS.map(combo => {
     const shinWork  = calcWork(s0, combo.shinEff,  combo.shinBuff);
     const koWork    = 0; // 공경은 작업량 0인 순수 버프스킬
-    // 빠른진행 state버프는 skillBuff와 함께 한 번에 곱하고 마지막에 floor 한 번만
-    const skillWork = Math.floor(Math.floor(s0 * combo.skillEff / 100) * combo.skillBuff * (1 + combo.stateBuff));
+    const skillWork = Math.floor(s0 * combo.skillEff / 100 * combo.skillBuff * (1 + combo.stateBuff));
     const total     = shinWork + koWork + skillWork;
     return { ...combo, shinWork, koWork, skillWork, total };
   });
