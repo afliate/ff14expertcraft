@@ -3,15 +3,32 @@
 //  HARD_RECIPES 는 recipes.js 에서 로드됨
 // ============================================================
 
-// ── rlvl별 progressDivider / progressModifier ──
+// ── recipe-level-table.json 로드 ──
+let RLVL_TABLE = {};
+(async () => {
+  try {
+    RLVL_TABLE = await fetch('./recipe-level-table.json').then(r => r.json());
+  } catch(e) {
+    console.warn('recipe-level-table.json 로드 실패:', e);
+  }
+})();
+
 function getRlvlParams(rlvl) {
-  if (rlvl >= 750) return { pD: 180, pM: 90 };
-  if (rlvl >= 740) return { pD: 178, pM: 90 };
-  if (rlvl >= 730) return { pD: 175, pM: 90 };
-  if (rlvl >= 720) return { pD: 170, pM: 90 };
-  if (rlvl >= 710) return { pD: 168, pM: 90 };
-  if (rlvl >= 700) return { pD: 165, pM: 85 };
-  return { pD: 160, pM: 80 };
+  const data = RLVL_TABLE[String(rlvl)];
+  if (data) return {
+    pD: data.progressDivider,
+    pM: data.progressModifier,
+    qD: data.qualityDivider,
+    qM: data.qualityModifier,
+  };
+  // fallback (JSON 로드 전 또는 없는 rlvl)
+  if (rlvl >= 750) return { pD: 180, pM: 100, qD: 180, qM: 100 };
+  if (rlvl >= 740) return { pD: 178, pM: 100, qD: 178, qM: 100 };
+  if (rlvl >= 730) return { pD: 175, pM: 100, qD: 175, qM: 100 };
+  if (rlvl >= 720) return { pD: 170, pM: 100, qD: 170, qM: 100 };
+  if (rlvl >= 710) return { pD: 168, pM: 100, qD: 168, qM: 100 };
+  if (rlvl >= 700) return { pD: 165, pM: 100, qD: 165, qM: 100 };
+  return { pD: 160, pM: 100, qD: 160, qM: 100 };
 }
 
 // baseProgress = floor(crafts * 10/pD + 2)
@@ -27,38 +44,19 @@ function calcWork(s0, efficiency, buffMult) {
   return Math.floor(s0 * efficiency / 100 * buffMult);
 }
 
-// c0 (기본 품질, IQ 스택 미포함)
-// = floor(floor(cons * 10/150 + 35) * 75/100)
-function calcC0(cons) {
-  const base = cons * 10 / 150 + 35;          // floor 제거
-  return Math.floor(base * 75 / 100);
+// c0 = floor(cons × 10/qD + 35) × qM/100
+function calcC0(cons, rlvl) {
+  const { qD, qM } = getRlvlParams(rlvl);
+  const base = Math.floor(cons * 10 / qD + 35);
+  return Math.floor(base * qM / 100);
 }
 
-
-// c0_iq: 정신집중(Inner Quiet) 스택 반영 품질 기반값
-// IQ 10스택 = 가공 효율 스택당 +10%, 10스택 = +100%"
-// IQ 스택별 보너스: 스택 × 3.5%
-function calcC0WithIQ(cons, iqStacks) {
-  const iqBonus = 1 + (iqStacks * 0.1);       // 0.035 → 0.1 (스택당 +10%)
-  const effectiveCons = cons * iqBonus;       // floor 제거
-  const base = effectiveCons * 10 / 150 + 35; // floor 제거
-  return Math.floor(base * 75 / 100);
-}
-
-// ============================================================
-//  통합 품질 계산 함수
-//  품질 = floor(c0_raw × IQ보너스 × 효율/100 × (1 + 버프합))
-//
-//  - c0_raw : (cons × 10/150 + 35) × 75/100  (floor 없이 raw)
-//  - IQ보너스: 1 + 0.1 × IQ스택  (10스택 = ×2.0)
-//  - 효율   : 액션 효율 (밑가공 200, 상급 150, 비레고 100+20×IQ ...)
-//  - 버프합 : 혁신(+0.5), 장족(+1.0) 등 덧셈 누적
-//
-//  ※ floor를 마지막에 한 번만 적용해야 팀크/라파엘과 일치
-// ============================================================
-function calcQuality(cons, iqStacks, efficiency, buffSum) {
-  const base = cons * 10 / 150 + 35;
-  const c0   = base * 75 / 100;             // floor 없이 raw 값 유지
+// 통합 품질 계산
+// 품질 = floor(c0 × IQ배율 × 효율/100 × (1 + 버프합))
+function calcQuality(cons, rlvl, iqStacks, efficiency, buffSum) {
+  const { qD, qM } = getRlvlParams(rlvl);
+  const base = Math.floor(cons * 10 / qD + 35);
+  const c0   = base * qM / 100;  // raw (floor 없이)
   const iqMult = 1 + iqStacks * 0.1;
   return Math.floor(c0 * iqMult * efficiency / 100 * (1 + buffSum));
 }
