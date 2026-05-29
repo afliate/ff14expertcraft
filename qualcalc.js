@@ -209,7 +209,7 @@ function skillSeq(names) {
   return names.map(n => skillIcon(n)).join('');
 }
 
-// tag: '' = 일반, '전문' = 전문장인 전용, '저내구도' = 저내구도
+// tag: '' = 일반, '전문장인' = 전문장인 전용 스킬 포함, '저내구도' = 저내구도
 // cpCost: CP 소모 합계 (시트 기준)
 // durCost: 소모 내구 (마무리 작업 10 포함)
 // 품질 계산은 multiStep steps[]로 자동 계산
@@ -417,7 +417,7 @@ const QUALITY_ROTATIONS = [
 
   // ══ 전문장인 전용 ══
 
-  { id:'p01', tag:'전문',
+  { id:'p01', tag:'',
     label:'[전문] 교손+경관+장족+혁신+밑가공+절약×3+혁신+절약+장족+비레고',
     skills:['교묘한 손놀림','경과 관찰','장족의 발전','혁신','밑가공','절약 가공','절약 가공','절약 가공','혁신','절약 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -429,7 +429,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.0, iqStacks:10 },
     ], cpCost:404, durCost:40 },
 
-  { id:'p02', tag:'전문',
+  { id:'p02', tag:'',
     label:'[전문] 교손+경관+장족+혁신+밑가공+절약×3+혁신+장족+비레고',
     skills:['교묘한 손놀림','경과 관찰','장족의 발전','혁신','밑가공','절약 가공','절약 가공','절약 가공','혁신','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -440,7 +440,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:382, durCost:40 },
 
-  { id:'p03', tag:'전문',
+  { id:'p03', tag:'',
     label:'[전문] 교손+장족+혁신+중급+밑가공+장족+비레고',
     skills:['교묘한 손놀림','장족의 발전','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -449,7 +449,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (2번째장족+혁신)
     ], cpCost:263, durCost:40 },
 
-  { id:'p04', tag:'전문',
+  { id:'p04', tag:'',
     label:'[전문] 교손+경관+혁신+중급+밑가공+장족+비레고',
     skills:['교묘한 손놀림','경과 관찰','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -458,7 +458,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:248, durCost:40 },
 
-  { id:'p05', tag:'전문',
+  { id:'p05', tag:'',
     label:'[전문] 교손+장족+혁신+밑가공+장족+밑가공+장족+혁신+밑가공+장족+비레고',
     skills:['교묘한 손놀림','장족의 발전','혁신','밑가공','장족의 발전','밑가공','장족의 발전','혁신','밑가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -468,7 +468,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:349, durCost:50 },
 
-  { id:'p06', tag:'전문',
+  { id:'p06', tag:'',
     label:'[전문] 교손+장족+혁신+밑가공+장족+밑가공+절약+혁신+경관+상급+장족+비레고',
     skills:['교묘한 손놀림','장족의 발전','혁신','밑가공','장족의 발전','밑가공','절약 가공','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -479,7 +479,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:382, durCost:40 },
 
-  { id:'p07', tag:'전문',
+  { id:'p07', tag:'',
     label:'[전문] 교손+혁신+경관+상급×2+경관+상급×2+장족+혁신+경관+상급+장족+비레고',
     skills:['교묘한 손놀림','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -491,7 +491,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:343, durCost:50 },
 
-  { id:'p08', tag:'전문',
+  { id:'p08', tag:'',
     label:'[전문] 교손+혁신+경관+상급×2+장족+혁신+밑가공+절약+장족+비레고',
     skills:['교묘한 손놀림','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -502,7 +502,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:335, durCost:25 },
 
-  { id:'p09', tag:'전문',
+  { id:'p09', tag:'',
     label:'[전문] 교손+혁신+경관+상급×4+혁신+경관+상급×3+장족+비레고',
     skills:['교묘한 손놀림','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -514,7 +514,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:317, durCost:30 },
 
-  { id:'p10', tag:'전문',
+  { id:'p10', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+경관+상급+장족+비레고',
     skills:['장족의 발전','혁신','근검절약','밑가공','장족의 발전','밑가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -524,7 +524,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:349, durCost:40 },
 
-  { id:'p11', tag:'전문',
+  { id:'p11', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+가공+장족+비레고',
     skills:['장족의 발전','혁신','근검절약','밑가공','장족의 발전','밑가공','장족의 발전','혁신','가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -534,7 +534,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:343, durCost:40 },
 
-  { id:'p12', tag:'전문',
+  { id:'p12', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+혁신+경관+상급+장족+비레고',
     skills:['장족의 발전','혁신','근검절약','밑가공','장족의 발전','밑가공','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -544,7 +544,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:278, durCost:60 },
 
-  { id:'p13', tag:'전문',
+  { id:'p13', tag:'',
     label:'[전문] 장족+혁신+경관+상급+장족+밑가공+장족+혁신+경관+상급+장족+비레고',
     skills:['장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','밑가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -554,7 +554,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:404, durCost:40 },
 
-  { id:'p14', tag:'전문',
+  { id:'p14', tag:'',
     label:'[전문] 장족+혁신+경관+상급+경관+상급+장족+혁신+밑가공+장족+비레고',
     skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','밑가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -564,7 +564,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:382, durCost:30 },
 
-  { id:'p15', tag:'전문',
+  { id:'p15', tag:'',
     label:'[전문] 장족+혁신+경관+상급+경관+상급+장족+혁신+경관+상급+장족+비레고',
     skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -574,7 +574,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:382, durCost:30 },
 
-  { id:'p16', tag:'전문',
+  { id:'p16', tag:'',
     label:'[전문] 혁신+경관+상급+경관+상급+장족+혁신+경관+상급+장족+비레고',
     skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
@@ -1029,17 +1029,11 @@ function renderQuality() {
     return `<span class="recipe-badge badge-normal">일반</span>`;
   }
 
-  // ── 전문장인 여부 ──
-  const isExpert = document.getElementById('q-expert')?.checked || false;
-
   // ── 현재 품질 (rows 계산 전에 선언 필요) ──
   const currentQuality = parseInt(document.getElementById('q-current-quality').value) || 0;
 
-  // ── 로테이션 계산 (전문 필터링 포함) ──
-  const rows = QUALITY_ROTATIONS.filter(rot => {
-    if (rot.tag === '전문') return isExpert;
-    return true;
-  }).map(rot => {
+  // ── 로테이션 계산 ──
+  const rows = QUALITY_ROTATIONS.map(rot => {
     let q;
     if (rot.multiStep) {
       q = rot.steps.reduce(
@@ -1142,7 +1136,7 @@ function renderQuality() {
   function renderRotaCard(row) {
     const isBest = best && row.id === best.id;
     const qColor = row.ok ? 'var(--green)' : 'var(--text-dim)';
-    const tagHtml = row.tag === '전문'
+    const tagHtml = row.tag === '전문장인'
       ? `<span class="rota-badge tag-expert">전문장인</span>`
       : row.tag === '저내구도'
       ? `<span class="rota-badge tag-lowdur">저내구도</span>`
@@ -1174,14 +1168,14 @@ function renderQuality() {
   const okCards     = canDoRows.filter(r => !(best && r.id === best.id)).map(renderRotaCard).join('');
   const cantCards   = cantDoRows.map(renderRotaCard).join('');
   const cantDivider = cantDoRows.length
-  ? `<div class="cant-divider" style="width:100%;min-width:0;">
-      <button class="cant-toggle" onclick="this.closest('.cant-divider').classList.toggle('open')">
-        <span>조건 미충족 · ${cantDoRows.length}개</span>
-        <svg class="cant-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="cant-body" style="width:100%;min-width:0;box-sizing:border-box;">${cantCards}</div>
-    </div>`
-  : '';
+    ? `<div class="rota-divider cant-divider">
+        <button class="cant-toggle" onclick="this.closest('.cant-divider').classList.toggle('open')">
+          <span>조건 미충족 · ${cantDoRows.length}개</span>
+          <svg class="cant-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cant-body" style="overflow:hidden;width:100%;">${cantCards}</div>
+      </div>`
+    : '';
 
   resultEl.innerHTML = `
     ${variantUI}
