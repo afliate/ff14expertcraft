@@ -224,7 +224,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 }, // 밑가공 (장족+혁신)
       { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
-      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
     ], cpCost:186, durCost:50 },
 
   { id:'r02', tag:'',
@@ -233,7 +233,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:192, durCost:50 },
 
   { id:'r03', tag:'',
@@ -242,7 +242,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:178, durCost:50 },
 
   { id:'r04', tag:'',
@@ -251,7 +251,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:164, durCost:50 },
 
   { id:'r05', tag:'',
@@ -260,7 +260,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:171, durCost:45 },
 
   { id:'r06', tag:'',
@@ -269,7 +269,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:154, durCost:50 },
 
   { id:'r07', tag:'',
@@ -289,7 +289,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:150, buffSum:0,   iqStacks:10 }, // 경관+상급 (버프 없음)
       { efficiency:150, buffSum:1.5, iqStacks:10 }, // 경관+상급 (장족+혁신)
-      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족+혁신)
     ], cpCost:156, durCost:40 },
 
   { id:'r09', tag:'',
@@ -297,7 +297,7 @@ const QUALITY_ROTATIONS = [
     skills:['장족의 발전','혁신','밑가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (2번째장족+혁신)
     ], cpCost:146, durCost:40 },
 
   { id:'r10', tag:'',
@@ -305,7 +305,7 @@ const QUALITY_ROTATIONS = [
     skills:['장족의 발전','혁신','근검절약','밑가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:202, durCost:20 },
 
   { id:'r11', tag:'',
@@ -323,7 +323,7 @@ const QUALITY_ROTATIONS = [
     skills:['장족의 발전','혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
       { efficiency:150, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:131, durCost:30 },
 
   { id:'r13', tag:'',
@@ -332,7 +332,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:110, durCost:40 },
 
   { id:'r14', tag:'',
@@ -341,7 +341,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:124, durCost:30 },
 
   { id:'r15', tag:'',
@@ -350,7 +350,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0,   iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:92, durCost:40 },
 
   { id:'r16', tag:'',
@@ -358,7 +358,7 @@ const QUALITY_ROTATIONS = [
     skills:['혁신','중급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
       { efficiency:125, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:106, durCost:30 },
 
   { id:'r17', tag:'',
@@ -366,7 +366,7 @@ const QUALITY_ROTATIONS = [
     skills:['혁신','가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:92, durCost:30 },
 
   { id:'r18', tag:'',
@@ -374,7 +374,7 @@ const QUALITY_ROTATIONS = [
     skills:['혁신','절약 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:99, durCost:25 },
 
   { id:'n01', tag:'',
@@ -383,7 +383,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 황금손1 (혁신)
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 황금손2 (혁신)
-      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
     ], cpCost:138, durCost:30 },
 
   { id:'n02', tag:'',
@@ -391,7 +391,7 @@ const QUALITY_ROTATIONS = [
     skills:['혁신','경과 관찰','상급 가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
       { efficiency:150, buffSum:0.5, iqStacks:10 }, // 경관→상급 (혁신)
-      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
     ], cpCost:99, durCost:30 },
 
   { id:'n04', tag:'',
@@ -400,7 +400,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 절약 (혁신)
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 가공 (혁신)
-      { efficiency:300, buffSum:1.0, iqStacks:10 }, // 비레고 (장족)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
     ], cpCost:117, durCost:30 },
 
   { id:'r19', tag:'',
@@ -409,7 +409,7 @@ const QUALITY_ROTATIONS = [
     efficiency:300, buffSum:1.5, iqStacks:10,
     cpCost:74, durCost:20 },
 
-  { id:'r20', tag:'',
+  { id:'r20', tag:'전문장인',
     label:'신속한혁신+장족+비레고',
     skills:['신속한 혁신','장족의 발전','비레고의 축복'],
     efficiency:300, buffSum:1.0, iqStacks:10,
@@ -444,9 +444,9 @@ const QUALITY_ROTATIONS = [
     label:'[전문] 교손+장족+혁신+중급+밑가공+장족+비레고',
     skills:['교묘한 손놀림','장족의 발전','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
     multiStep:true, steps:[
-      { efficiency:125, buffSum:1.5, iqStacks:10 },
-      { efficiency:200, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:125, buffSum:1.5, iqStacks:10 }, // 중급 (장족+혁신)
+      { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신, 장족소진)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (2번째장족+혁신)
     ], cpCost:263, durCost:40 },
 
   { id:'p04', tag:'전문',
@@ -455,7 +455,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:248, durCost:40 },
 
   { id:'p05', tag:'전문',
@@ -465,7 +465,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:200, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:349, durCost:50 },
 
   { id:'p06', tag:'전문',
@@ -476,7 +476,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:100, buffSum:0,   iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:382, durCost:40 },
 
   { id:'p07', tag:'전문',
@@ -488,7 +488,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:343, durCost:50 },
 
   { id:'p08', tag:'전문',
@@ -499,7 +499,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:335, durCost:25 },
 
   { id:'p09', tag:'전문',
@@ -511,7 +511,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:317, durCost:30 },
 
   { id:'p10', tag:'전문',
@@ -521,7 +521,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:349, durCost:40 },
 
   { id:'p11', tag:'전문',
@@ -531,7 +531,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:100, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:343, durCost:40 },
 
   { id:'p12', tag:'전문',
@@ -541,7 +541,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:278, durCost:60 },
 
   { id:'p13', tag:'전문',
@@ -551,7 +551,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:404, durCost:40 },
 
   { id:'p14', tag:'전문',
@@ -561,7 +561,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:382, durCost:30 },
 
   { id:'p15', tag:'전문',
@@ -571,7 +571,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:382, durCost:30 },
 
   { id:'p16', tag:'전문',
@@ -581,7 +581,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:231, durCost:50 },
 
   // ══ 저내구도 ══
@@ -595,7 +595,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:404, durCost:40 },
 
   { id:'d02', tag:'저내구도',
@@ -615,7 +615,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:125, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:274, durCost:35 },
 
   { id:'d04', tag:'저내구도',
@@ -624,7 +624,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:248, durCost:35 },
 
   // ══ 비레고 단독 ══
@@ -665,7 +665,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:92, durCost:80 },
 
   { id:'cx02', tag:'',
@@ -685,7 +685,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
     ], cpCost:74, durCost:40 },
 ];
 
