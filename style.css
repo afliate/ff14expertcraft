@@ -1131,6 +1131,7 @@ body::before{
   margin-bottom: 5px;
   position: relative;
   overflow: hidden;
+  min-width: 0;   /* 추가 */
 }
 .rota-card-best {
   border-color: var(--green);
@@ -1151,10 +1152,10 @@ body::before{
   display: flex;
   align-items: center;
   gap: 2px;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
-  max-width: none;
-  overflow: visible;
+  flex-wrap: wrap;      /* nowrap → wrap */
+  flex-shrink: 1;       /* 0 → 1 */
+  min-width: 0;         /* 추가 */
+  overflow: hidden;     /* visible → hidden */
 }
 .rota-card-mid {
   flex: 1;
