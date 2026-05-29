@@ -57,7 +57,7 @@ function calcQuality(cons, rlvl, iqStacks, efficiency, buffSum) {
   const { qD, qM } = getRlvlParams(rlvl);
   const base = Math.floor(cons * 10 / qD + 35);
   const c0   = base * qM / 100;  // raw (floor 없이)
-  const iqMult = 1 + iqStacks * 0.1;
+  const iqMult = 1 + iqStacks / 15;
   return Math.floor(c0 * iqMult * efficiency / 100 * (1 + buffSum));
 }
 
