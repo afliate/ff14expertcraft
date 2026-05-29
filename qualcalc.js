@@ -1179,7 +1179,7 @@ function renderQuality() {
           <span>조건 미충족 · ${cantDoRows.length}개</span>
           <svg class="cant-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="cant-body" style="overflow:hidden;width:100%;">${cantCards}</div>
+        <div class="cant-body" style="overflow-x:hidden;width:100%;min-width:0;box-sizing:border-box;">${cantCards}</div>
       </div>`
     : '';
 
