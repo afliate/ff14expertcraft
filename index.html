@@ -80,7 +80,9 @@ function applyPreset() {
   const g = GEAR_PRESETS[curGear];
   const f = FOOD_BUFFS[curFood] || { crafts:0, cons:0, cp:0 };
   const p = POT_BUFFS[curPot]   || { cp:0 };
-  const s = { crafts: g.crafts + f.crafts, cons: g.cons + f.cons, cp: g.cp + f.cp + p.cp };
+  const isExpert = document.getElementById('q-expert')?.checked || false;
+  const e = isExpert ? { crafts:20, cons:20, cp:15 } : { crafts:0, cons:0, cp:0 };
+  const s = { crafts: g.crafts + f.crafts + e.crafts, cons: g.cons + f.cons + e.cons, cp: g.cp + f.cp + p.cp + e.cp };
   const setVal = (id, v) => { const el = document.getElementById(id); if(el){ el.value = v; el.classList.add('filled'); } };
   setVal('crafts-input', s.crafts);
   setVal('q-cons', s.cons);
@@ -1364,8 +1366,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <input type="number" id="q-cp" class="filled" oninput="onStatsChange()">
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);cursor:pointer;padding:6px 0 2px;">
-          <input type="checkbox" id="q-expert" onchange="onStatsChange()" style="accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;">
-          <span>전문장인 보유<br><span style="font-size:10px;color:var(--text-dim);">전문 로테이션 표시</span></span>
+          <input type="checkbox" id="q-expert" onchange="applyPreset()" style="accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;">
+          <span>전문장인 보유<span style="font-size:10px;color:var(--text-dim);margin-left:4px;">작숙+20 가숙+20 CP+15</span></span>
         </label>
       </div>
 
