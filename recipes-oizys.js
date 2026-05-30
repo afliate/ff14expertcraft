@@ -10,7 +10,8 @@ const RECIPES_OIZYS = [
     "durability": 70,
     "tag": "A-EX 3",
     "group": "A-EX 3",
-    "category": "A-EX"
+    "category": "A-EX",
+    "isSub": false
   },
   {
     "region": "oizys",
@@ -23,7 +24,8 @@ const RECIPES_OIZYS = [
     "durability": 70,
     "tag": "A-EX 2",
     "group": "A-EX 2",
-    "category": "A-EX"
+    "category": "A-EX",
+    "isSub": false
   },
   {
     "region": "oizys",
@@ -36,7 +38,8 @@ const RECIPES_OIZYS = [
     "durability": 60,
     "tag": "A-EX",
     "group": "A-EX",
-    "category": "A-EX"
+    "category": "A-EX",
+    "isSub": false
   },
   {
     "region": "oizys",
@@ -49,7 +52,8 @@ const RECIPES_OIZYS = [
     "durability": 50,
     "tag": "날씨제 1",
     "group": "날씨제 1",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": false
   },
   {
     "region": "oizys",
@@ -62,7 +66,8 @@ const RECIPES_OIZYS = [
     "durability": 40,
     "tag": "시간제 1",
     "group": "시간제 1",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": true
   },
   {
     "region": "oizys",
@@ -75,7 +80,8 @@ const RECIPES_OIZYS = [
     "durability": 70,
     "tag": "시간제 1",
     "group": "시간제 1",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
     "region": "oizys",
@@ -88,7 +94,8 @@ const RECIPES_OIZYS = [
     "durability": 80,
     "tag": "날씨제 2",
     "group": "날씨제 2",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": false
   },
   {
     "region": "oizys",
@@ -101,7 +108,8 @@ const RECIPES_OIZYS = [
     "durability": 35,
     "tag": "시간제 2",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": true
   },
   {
     "region": "oizys",
@@ -114,7 +122,8 @@ const RECIPES_OIZYS = [
     "durability": 50,
     "tag": "시간제 2",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
     "region": "oizys",
@@ -127,7 +136,8 @@ const RECIPES_OIZYS = [
     "durability": 35,
     "tag": "시간제 2 - 2",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": true
   },
   {
     "region": "oizys",
@@ -140,7 +150,8 @@ const RECIPES_OIZYS = [
     "durability": 60,
     "tag": "시간제 2 - 2",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
     "region": "oizys",
@@ -153,7 +164,8 @@ const RECIPES_OIZYS = [
     "durability": 50,
     "tag": "시간제 2 - 3",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": true
   },
   {
     "region": "oizys",
@@ -166,6 +178,7 @@ const RECIPES_OIZYS = [
     "durability": 70,
     "tag": "시간제 2 -3",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   }
 ];
