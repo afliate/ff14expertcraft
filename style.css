@@ -1151,7 +1151,7 @@ body::before{
 .rota-card-icons {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   flex-wrap: wrap;      /* nowrap → wrap */
   flex-shrink: 1;       /* 0 → 1 */
   min-width: 0;         /* 추가 */
