@@ -1205,9 +1205,6 @@ body::before{
   color: var(--border);
 }
 .rota-divider {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   font-size: 10px;
   color: var(--text-dim);
   margin: 8px 0 5px;
