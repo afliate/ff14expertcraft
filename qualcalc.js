@@ -1148,19 +1148,19 @@ function renderQuality() {
     return `
     <div class="rota-card${bestBorder}${disabled}" style="width:100%;min-width:0;box-sizing:border-box;">
       <div class="rota-card-icons">${skillSeq(row.skills)}</div>
-      <div class="rota-card-mid">
+      <div class="rota-card-right">
+        <div class="rota-card-quality" style="color:${qColor}">
+          ${(currentQuality + row.q).toLocaleString()}
+          ${currentQuality > 0 ? `<span class="rota-card-qdiff">+${row.q.toLocaleString()}</span>` : ''}
+        </div>
         <div class="rota-card-meta">
           <span${durBad}>내구 <b>${row.durCost}</b></span>
+          <span class="rota-meta-sep">|</span>
           <span${cpBad}>CP <b>${row.cpCost}</b></span>
+          ${tagHtml}
         </div>
-        ${tagHtml ? `<div class="rota-card-tags">${tagHtml}</div>` : ''}
-      </div>
-      <div class="rota-card-quality" style="color:${qColor}">
-        ${(currentQuality + row.q).toLocaleString()}
-        ${currentQuality > 0 ? `<div style="font-size:10px;color:var(--text-dim);font-weight:400;">+${row.q.toLocaleString()}</div>` : ''}
       </div>
     </div>`;
-  }
 
   const canDoRows   = sorted.filter(r => r.canDo);
   const cantDoRows  = sorted.filter(r => !r.canDo);
