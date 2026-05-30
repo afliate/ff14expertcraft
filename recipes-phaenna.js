@@ -1,6 +1,6 @@
 const RECIPES_PHAENNA = [
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 571,
     "missionName": "EX: 야외 활동용 비품 제작",
     "job": "CRP",
@@ -13,7 +13,7 @@ const RECIPES_PHAENNA = [
     "category": "A-EX"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 572,
     "missionName": "EX: 고성능 장인 도구 조달",
     "job": "CRP",
@@ -26,7 +26,7 @@ const RECIPES_PHAENNA = [
     "category": "A-EX"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 572,
     "missionName": "EX: 고성능 장인 도구 조달",
     "job": "CRP",
@@ -39,7 +39,7 @@ const RECIPES_PHAENNA = [
     "category": "A-EX"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 572,
     "missionName": "EX: 고성능 장인 도구 조달",
     "job": "CRP",
@@ -52,7 +52,7 @@ const RECIPES_PHAENNA = [
     "category": "A-EX"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 573,
     "missionName": "EX: 우주 운송용 포장재 제작",
     "job": "CRP",
@@ -65,7 +65,7 @@ const RECIPES_PHAENNA = [
     "category": "날씨제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 573,
     "missionName": "EX: 우주 운송용 포장재 제작",
     "job": "CRP",
@@ -78,7 +78,7 @@ const RECIPES_PHAENNA = [
     "category": "날씨제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 574,
     "missionName": "EX+: 임시 저장소 건설 지원",
     "job": "CRP",
@@ -91,7 +91,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 574,
     "missionName": "EX+: 임시 저장소 건설 지원",
     "job": "CRP",
@@ -104,7 +104,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 575,
     "missionName": "EX+: 고성능 침구 제작",
     "job": "CRP",
@@ -117,7 +117,7 @@ const RECIPES_PHAENNA = [
     "category": "날씨제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 578,
     "missionName": "EX: 의회 전달용 공예품 제작",
     "job": "CRP",
@@ -130,7 +130,7 @@ const RECIPES_PHAENNA = [
     "category": "A-EX"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 579,
     "missionName": "EX: 의회 전달용 공예품 제작 2",
     "job": "CRP",
@@ -143,7 +143,7 @@ const RECIPES_PHAENNA = [
     "category": "A-EX"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 580,
     "missionName": "EX: 의회 전달용 공예품 제작 3",
     "job": "CRP",
@@ -156,7 +156,7 @@ const RECIPES_PHAENNA = [
     "category": "A-EX"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 581,
     "missionName": "거주구 환경 개선 계획",
     "job": "CRP",
@@ -169,7 +169,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 582,
     "missionName": "EX: 거주구 환경 개선 계획 2",
     "job": "CRP",
@@ -182,7 +182,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 583,
     "missionName": "EX+: 거주구 환경 개선 계획 3",
     "job": "CRP",
@@ -195,7 +195,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 584,
     "missionName": "EX+: 수지 결정 정제 검증",
     "job": "CRP",
@@ -208,7 +208,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 584,
     "missionName": "EX+: 수지 결정 정제 검증",
     "job": "CRP",
@@ -221,7 +221,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 585,
     "missionName": "EX+: 수지 결정 정제 검증 2",
     "job": "CRP",
@@ -234,7 +234,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 585,
     "missionName": "EX+: 수지 결정 정제 검증 2",
     "job": "CRP",
@@ -247,7 +247,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 586,
     "missionName": "EX+: 수지 결정 정제 검증 3",
     "job": "CRP",
@@ -260,7 +260,7 @@ const RECIPES_PHAENNA = [
     "category": "시간제"
   },
   {
-    "region": "paenna",
+    "region": "phaenna",
     "missionId": 586,
     "missionName": "EX+: 수지 결정 정제 검증 3",
     "job": "CRP",
