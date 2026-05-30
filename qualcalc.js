@@ -21,7 +21,7 @@ function getRlvlParams(rlvl) {
     qD: data.qualityDivider,
     qM: data.qualityModifier,
   };
-  // fallback (JSON 로드 전 또는 없는 rlvl)
+  
   if (rlvl >= 750) return { pD: 180, pM: 100, qD: 180, qM: 100 };
   if (rlvl >= 740) return { pD: 178, pM: 100, qD: 178, qM: 100 };
   if (rlvl >= 730) return { pD: 175, pM: 100, qD: 175, qM: 100 };
