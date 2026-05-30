@@ -1098,8 +1098,8 @@ body::before{
 
 /* ── 품질 로테이션 테이블 아이콘 ── */
 .rota-skill-icon {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 3px;
   object-fit: cover;
   vertical-align: middle;
@@ -1151,7 +1151,7 @@ body::before{
 .rota-card-icons {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   flex-wrap: wrap;      /* nowrap → wrap */
   flex-shrink: 1;       /* 0 → 1 */
   min-width: 0;         /* 추가 */
