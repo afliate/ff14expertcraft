@@ -25,7 +25,7 @@ const RECIPES_PHAENNA = [
     "tag": "A-EX 3",
     "group": "A-EX 3",
     "category": "A-EX",
-    "isSub": true
+    "isSub": false
   },
   {
     "region": "phaenna",
