@@ -1078,14 +1078,14 @@ document.addEventListener('DOMContentLoaded', () => {
   <!-- 지역 필터 -->
   <div class="region-filter">
     <button class="region-btn active" onclick="filterRegion('all')">전체</button>
-    <button class="region-btn" onclick="filterRegion('dongyeong')">동경의 만 <span class="region-patch">7.21</span></button>
-    <button class="region-btn" onclick="filterRegion('paenna')">파엔나 <span class="region-patch">7.31</span></button>
+    <button class="region-btn" onclick="filterRegion('sinus')">동경의 만 <span class="region-patch">7.21</span></button>
+    <button class="region-btn" onclick="filterRegion('phaenna')">파엔나 <span class="region-patch">7.31</span></button>
     <button class="region-btn" onclick="filterRegion('oijis')">오이지스 <span class="region-patch">7.41</span></button>
     <button class="region-btn" onclick="filterRegion('auksesia')">아욱세시아 <span class="region-patch">7.51</span></button>
   </div>
 
   <!-- 동경의 만 -->
-  <div class="region-section" data-region="dongyeong">
+  <div class="region-section" data-region="sinus">
     <div class="section">
       <div class="section-title"><div class="num">동경의 만</div>7.21 패치</div>
 
@@ -1173,8 +1173,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <div class="accordion" id="ac-dongyeong-2">
-        <button class="accordion-btn" onclick="toggleAc('ac-dongyeong-2')">
+      <div class="accordion" id="ac-sinus-2">
+        <button class="accordion-btn" onclick="toggleAc('ac-sinus-2')">
           <div class="ac-left">
             <div class="ac-label">동경의 만 · A-3</div>
             <div class="ac-title">동경의만 A-3 — 풀금단+전문+세비체</div>
@@ -1201,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 
   <!-- 파엔나 -->
-  <div class="region-section" data-region="paenna">
+  <div class="region-section" data-region="phaenna">
     <div class="section">
       <div class="section-title"><div class="num">파엔나</div>7.31 패치</div>
       <div class="guide-note tip">파엔나 예시는 업데이트 예정이에요.</div>
@@ -1406,8 +1406,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <label>지역</label>
           <select id="sel-region" onchange="onRegionChange()">
             <option value="">── 지역 선택 ──</option>
-            <option value="dongyeong">동경의 만</option>
-            <option value="paenna">파엔나</option>
+            <option value="sinus">동경의 만</option>
+            <option value="phaenna">파엔나</option>
             <option value="oizys">오이지스</option>
             <option value="auxesia">아욱세시아</option>
           </select>
