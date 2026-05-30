@@ -53,7 +53,7 @@ const RECIPES_SINUS_ARDORUM = [
     "tag": "날씨제 1",
     "group": "날씨제 1",
     "category": "날씨제",
-    "isSub": true
+    "isSub": false
   },
   {
     "region": "sinus",
