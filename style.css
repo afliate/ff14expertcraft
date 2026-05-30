@@ -1021,7 +1021,7 @@ body::before{
 .qp-footer b { color: var(--text-bright); }
 .qp-footer .highlight { color: var(--yellow); }
 
-/* ── 로테이션 카드 (샘플 스타일) ── */
+/* ── 로테이션 카드  ── */
 .rota-cards { display: flex; flex-direction: column; gap: 8px; }
 .rota-card {
   background: var(--surface);
@@ -1157,12 +1157,15 @@ body::before{
   min-width: 0;         /* 추가 */
   overflow: hidden;     /* visible → hidden */
 }
-.rota-card-mid {
-  flex: 1;
+.rota-card-right {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: flex-end;
+  gap: 2px;
+  margin-left: auto;
+  flex-shrink: 0;
 }
+
 .rota-card-meta {
   display: flex;
   gap: 10px;
@@ -1181,11 +1184,25 @@ body::before{
 .tag-expert { background: rgba(99,179,237,.12); color: #63b3ed; border: 1px solid rgba(99,179,237,.3); }
 .tag-lowdur { background: rgba(236,201,75,.12); color: var(--yellow); border: 1px solid rgba(236,201,75,.3); }
 .rota-card-quality {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  flex-shrink: 0;
-  min-width: 60px;
-  text-align: right;
+  line-height: 1;
+}
+.rota-card-qdiff {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-weight: 400;
+  margin-left: 3px;
+}
+.rota-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.rota-meta-sep {
+  color: var(--border);
 }
 .rota-divider {
   display: flex;
