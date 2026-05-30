@@ -1,6 +1,6 @@
 const RECIPES_SINUS_ARDORUM = [
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 27,
     "missionName": "EX: 시험용 소재 최종 가공 검증",
     "job": "CRP",
@@ -10,10 +10,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 65,
     "tag": "A-EX",
     "group": "A-EX",
-    "category": "A-EX"
+    "category": "A-EX",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 28,
     "missionName": "EX: 배식용 쟁반 제작",
     "job": "CRP",
@@ -23,10 +24,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 80,
     "tag": "A-EX 2",
     "group": "A-EX 2",
-    "category": "A-EX"
+    "category": "A-EX",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 29,
     "missionName": "EX: 이층 침대 제작",
     "job": "CRP",
@@ -36,10 +38,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 70,
     "tag": "A-EX 3",
     "group": "A-EX 3",
-    "category": "A-EX"
+    "category": "A-EX",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 30,
     "missionName": "EX: 작업 보조 설비 제작",
     "job": "CRP",
@@ -49,10 +52,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 55,
     "tag": "날씨제 1",
     "group": "날씨제 1",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": true
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 30,
     "missionName": "EX: 작업 보조 설비 제작",
     "job": "CRP",
@@ -62,10 +66,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 55,
     "tag": "날씨제 1 - 1",
     "group": "날씨제 1",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 30,
     "missionName": "EX: 작업 보조 설비 제작",
     "job": "CRP",
@@ -75,10 +80,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 55,
     "tag": "날씨제 1 - 2",
     "group": "날씨제 1",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 31,
     "missionName": "EX+: 고품질 제작도구 보충",
     "job": "CRP",
@@ -88,10 +94,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 20,
     "tag": "날씨제 2",
     "group": "날씨제 2",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": true
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 31,
     "missionName": "EX+: 고품질 제작도구 보충",
     "job": "CRP",
@@ -101,10 +108,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 60,
     "tag": "날씨제 2",
     "group": "날씨제 2",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 32,
     "missionName": "EX+: 상부용 발판 제작",
     "job": "CRP",
@@ -114,10 +122,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 20,
     "tag": "날씨제 3",
     "group": "날씨제 3",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": true
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 32,
     "missionName": "EX+: 상부용 발판 제작",
     "job": "CRP",
@@ -127,10 +136,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 60,
     "tag": "날씨제 3",
     "group": "날씨제 3",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 33,
     "missionName": "동력 전달용 샤프트 제작",
     "job": "CRP",
@@ -140,10 +150,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 40,
     "tag": "A - 2",
     "group": "A-2",
-    "category": "A"
+    "category": "A",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 34,
     "missionName": "EX: 동력 전달용 샤프트 제작 2",
     "job": "CRP",
@@ -153,10 +164,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 75,
     "tag": "A - 2 - 2",
     "group": "A-2",
-    "category": "A"
+    "category": "A",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 35,
     "missionName": "성질 특화 소재 조달",
     "job": "CRP",
@@ -166,10 +178,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 20,
     "tag": "A - 1",
     "group": "A-1",
-    "category": "A"
+    "category": "A",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 36,
     "missionName": "EX: 성질 특화 소재 조달 2",
     "job": "CRP",
@@ -179,10 +192,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 25,
     "tag": "A - 1- 2",
     "group": "A-1",
-    "category": "A"
+    "category": "A",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 37,
     "missionName": "EX+: 연구용 대형 수조 제작",
     "job": "CRP",
@@ -192,10 +206,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 80,
     "tag": "A - 1 - 3",
     "group": "A-1",
-    "category": "A"
+    "category": "A",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 38,
     "missionName": "EX: 휴식 시설용 소재 제작",
     "job": "CRP",
@@ -205,10 +220,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 35,
     "tag": "A-EX 4",
     "group": "A-EX 4",
-    "category": "A-EX"
+    "category": "A-EX",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 39,
     "missionName": "EX+: 휴식 시설용 가구 제작",
     "job": "CRP",
@@ -218,10 +234,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 50,
     "tag": "A-EX 4 - 2",
     "group": "A-EX 4",
-    "category": "A-EX"
+    "category": "A-EX",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 40,
     "missionName": "화물 포장 소재 제작",
     "job": "CRP",
@@ -231,10 +248,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 35,
     "tag": "시간제 1",
     "group": "시간제 1",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 41,
     "missionName": "EX: 화물 포장 소재 제작 2",
     "job": "CRP",
@@ -244,10 +262,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 55,
     "tag": "시간제 1 - 2",
     "group": "시간제 1",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 42,
     "missionName": "EX+: 탐사차용 화물 포장재 제작",
     "job": "CRP",
@@ -257,10 +276,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 75,
     "tag": "시간제 1 - 3",
     "group": "시간제 1",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 43,
     "missionName": "EX+: 생물연료 제작",
     "job": "CRP",
@@ -270,10 +290,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 30,
     "tag": "시간제 2",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": true
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 43,
     "missionName": "EX+: 생물연료 제작",
     "job": "CRP",
@@ -283,10 +304,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 55,
     "tag": "시간제 2",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 44,
     "missionName": "EX+: 생물연료 제작 2",
     "job": "CRP",
@@ -296,10 +318,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 35,
     "tag": "시간제 2 - 2",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": true
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 44,
     "missionName": "EX+: 생물연료 제작 2",
     "job": "CRP",
@@ -309,10 +332,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 60,
     "tag": "시간제 2 - 2",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 45,
     "missionName": "EX+: 생물연료 제작 최종 공정",
     "job": "CRP",
@@ -322,10 +346,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 40,
     "tag": "시간제 2 - 3",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": true
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 45,
     "missionName": "EX+: 생물연료 제작 최종 공정",
     "job": "CRP",
@@ -335,10 +360,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 70,
     "tag": "시간제 2 -3",
     "group": "시간제 2",
-    "category": "시간제"
+    "category": "시간제",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 496,
     "missionName": "EX: 수산물 연구용 물자함 증산",
     "job": "CRP",
@@ -348,10 +374,11 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 75,
     "tag": "광부 + 목수",
     "group": "광부 + 목수",
-    "category": "기타"
+    "category": "기타",
+    "isSub": false
   },
   {
-    "region": "dongyeong",
+    "region": "sinus",
     "missionId": 505,
     "missionName": "EX+: 월면 소재 채집 도구 이용",
     "job": "CRP",
@@ -361,6 +388,7 @@ const RECIPES_SINUS_ARDORUM = [
     "durability": 80,
     "tag": "날씨제 어부 + 목수",
     "group": "날씨제 어부 + 목수",
-    "category": "날씨제"
+    "category": "날씨제",
+    "isSub": false
   }
 ];
