@@ -740,27 +740,38 @@ function buildRecipePills() {
   const recipes = HARD_RECIPES.filter(r => r.region === calcRegionVal && (r.category || 'A-EX') === calcCategoryVal);
   const groups  = [...new Set(recipes.map(r => r.group))].sort((a, b) => a.localeCompare(b, 'ko', { numeric: true }));
 
-  // 그룹별 색 할당
   const GROUP_COLORS = ['#5ab8d4','#c8b840','#a06ccc','#4dc890','#e85a7a'];
   const colorMap = {};
   groups.forEach((g, i) => { colorMap[g] = GROUP_COLORS[i % GROUP_COLORS.length]; });
 
   let html = '';
-  groups.forEach((grp, gi) => {
+  groups.forEach((grp) => {
     const items = recipes.filter(r => r.group === grp);
     const col   = colorMap[grp];
-    html += `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:6px;">`;
+
+    const missionIds = [...new Set(items.map(r => r.missionId))];
+    const hasSub = missionIds.length > 1;
+
+    html += `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;">`;
     items.forEach((r, i) => {
-      if (i > 0) html += `<span style="font-size:10px;color:var(--text-dim)">→</span>`;
-      html += `<button class="variant-pill" style="border-color:${col}33;" data-group="${r.group}" data-vidx="${i}"
+      const isSub      = hasSub && r.missionId === missionIds[0];
+      const borderCol  = isSub ? 'rgba(236,201,75,.4)' : `${col}33`;
+      const tagCol     = isSub ? 'var(--yellow)'       : col;
+      html += `<button class="variant-pill"
+        style="border-color:${borderCol};min-width:88px;max-width:88px;"
+        data-group="${r.group}" data-vidx="${i}"
         onclick="selectRecipePill('${r.group}',${i},this)">
-        <span class="vp-tag" style="color:${col}">${r.tag}</span>
+        <span class="vp-tag" style="color:${tagCol}">${r.tag}</span>
         <span class="vp-meta">${r.durability} · ${r.work.toLocaleString()}</span>
         <span class="vp-meta" style="color:var(--green)">${r.quality.toLocaleString()}</span>
       </button>`;
     });
     html += `</div>`;
   });
+
+  bar.innerHTML = html;
+  bar.style.display = 'block';
+}
 
   bar.innerHTML = html;
   bar.style.display = 'block';
