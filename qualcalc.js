@@ -1161,6 +1161,7 @@ function renderQuality() {
         </div>
       </div>
     </div>`;
+    }
 
   const canDoRows   = sorted.filter(r => r.canDo);
   const cantDoRows  = sorted.filter(r => !r.canDo);
