@@ -768,11 +768,7 @@ function buildRecipePills() {
     });
     html += `</div>`;
   });
-
-  bar.innerHTML = html;
-  bar.style.display = 'block';
-}
-
+  
   bar.innerHTML = html;
   bar.style.display = 'block';
 }
