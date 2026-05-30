@@ -752,7 +752,7 @@ function buildRecipePills() {
     html += `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;">`;
     items.forEach((r, i) => {
       const isSub      = !!r.isSub;
-      const borderCol  = isSub ? 'rgba(236,201,75,.4)' : `${col}33`;
+      const borderCol  = isSub ? 'rgba(237,137,54,.6)' : `${col}33`;
       const tagCol     = col;
       html += `<button class="variant-pill"
         style="border-color:${borderCol};min-width:88px;max-width:88px;"
