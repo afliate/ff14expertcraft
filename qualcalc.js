@@ -749,14 +749,11 @@ function buildRecipePills() {
     const items = recipes.filter(r => r.group === grp);
     const col   = colorMap[grp];
 
-    const missionIds = [...new Set(items.map(r => r.missionId))];
-    const hasSub = missionIds.length > 1;
-
     html += `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;">`;
     items.forEach((r, i) => {
-      const isSub      = hasSub && r.missionId === missionIds[0];
+      const isSub      = !!r.isSub;
       const borderCol  = isSub ? 'rgba(236,201,75,.4)' : `${col}33`;
-      const tagCol     = isSub ? 'var(--yellow)'       : col;
+      const tagCol     = col;
       html += `<button class="variant-pill"
         style="border-color:${borderCol};min-width:88px;max-width:88px;"
         data-group="${r.group}" data-vidx="${i}"
