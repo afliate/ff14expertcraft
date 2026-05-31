@@ -149,3 +149,36 @@
   transition: filter .15s;
 }
 .chip:hover .chip-icon { filter: none; }
+
+/* ── 라이트모드 대비 강화 ── */
+body.light .rec-card {
+  background: linear-gradient(135deg, rgba(26,120,180,.07), rgba(26,120,180,.03));
+  border-color: rgba(26,120,180,.4);
+}
+body.light .rec-card-fail {
+  background: rgba(0,0,0,.03);
+  border-color: #7a9eb4;
+}
+body.light .rec-badge {
+  color: #7a6000;
+  background: rgba(180,140,0,.1);
+  border-color: rgba(180,140,0,.35);
+}
+body.light .rec-badge-fail {
+  color: #3a5468;
+  background: rgba(0,0,0,.05);
+  border-color: #7a9eb4;
+}
+body.light .variant-pill {
+  background: #edf3f8;
+  border-color: #7a9eb4;
+}
+body.light .variant-pill:hover { border-color: var(--accent); }
+body.light .variant-pill.active {
+  border-color: var(--accent);
+  background: rgba(26,158,130,.08);
+}
+body.light .vp-tag { color: #18283a; }
+body.light .vp-meta { color: #3a5468; }
+body.light .cant-toggle { color: #3a5468; }
+body.light .cant-toggle:hover { color: #18283a; }
