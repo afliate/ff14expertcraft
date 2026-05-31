@@ -950,6 +950,7 @@ const ICONS = {
   '작업':            '001501','능숙한 땜질':      '001952',
   '장인의 황금손':   '001997','교묘한 손놀림':    '001985',
   '장족의 발전':     '001955','비레고의 축복':    '001975',
+  '초절':            '001926','장인의 초절 기술': '001926',
 };
 function renderSkillCell(el, text) {
   const folder = (id) => id.startsWith('06') ? '061000' : '001000';
@@ -1074,6 +1075,24 @@ document.addEventListener('DOMContentLoaded', () => {
         <td><strong style="color:var(--text-bright)">147</strong></td>
         <td>20</td>
       </tr>
+      <tr>
+        <td class="tbl-combo-name">초절 품질 콤보<br><span class="tbl-combo-sub">초절기술로 밑가공 내구 절약</span></td>
+        <td class="col-k" data-skills="초절 → 장족 → 혁신 → 밑가공"></td>
+        <td><strong style="color:var(--text-bright)">90</strong></td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td class="tbl-combo-name">초절 풀콤보<br><span class="tbl-combo-sub">초절+밑가공 후 가공 풀세트</span></td>
+        <td class="col-k" data-skills="초절 → 장족 → 혁신 → 밑가공 → 가공 → 중급 가공 → 상급 가공"></td>
+        <td><strong style="color:var(--text-bright)">158</strong></td>
+        <td>30</td>
+      </tr>
+      <tr>
+        <td class="tbl-combo-name">초절 황금손 콤보<br><span class="tbl-combo-sub">황금손 연계 품질업</span></td>
+        <td class="col-k" data-skills="초절 → 장족 → 혁신 → 밑가공 → 장인의 황금손 → 경과 관찰 → 상급 가공"></td>
+        <td><strong style="color:var(--text-bright)">147</strong></td>
+        <td>10</td>
+      </tr>
     </table></div>
   </div>
 
@@ -1090,6 +1109,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <td><strong style="color:var(--text-bright)">74</strong></td><td>10</td>
         <td class="col-k" data-skills="장족 → 혁신 → 비레고"></td>
         <td class="tbl-rota-note">기본 ★</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright)">74</strong></td><td>0</td>
+        <td class="col-k" data-skills="초절 → 장족 → 혁신 → 비레고"></td>
+        <td class="tbl-rota-note">초절기술</td>
       </tr>
       <tr>
         <td><strong style="color:var(--text-bright)">124</strong></td><td>30</td>
