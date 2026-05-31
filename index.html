@@ -1497,6 +1497,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="c-hint" style="display:block;margin-top:2px;">교묘 1턴 = 내구 +5 (최대 8턴). 마무리용 내구 10 자동 차감.</span>
         </div>
         <input type="hidden" id="q-dur">
+        <div class="c-field" style="flex:0;min-width:fit-content;">
+          <label style="white-space:nowrap;">초절 기술</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="q-transcend" onchange="renderQuality()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
       </div>
 
       <!-- 결과 본문 -->
