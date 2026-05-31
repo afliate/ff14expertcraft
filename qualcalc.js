@@ -404,6 +404,51 @@ const QUALITY_ROTATIONS = [
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
     ], cpCost:117, durCost:30 },
 
+  { id:'n05', tag:'',
+    label:'혁신+밑가공+상급+장족+비레고',
+    skills:['혁신','밑가공','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
+      { efficiency:150, buffSum:0.5, iqStacks:10 }, // 상급 (혁신)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:160, durCost:40 },
+
+  { id:'n06', tag:'',
+    label:'혁신+밑가공+중급+장족+비레고',
+    skills:['혁신','밑가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
+      { efficiency:125, buffSum:0.5, iqStacks:10 }, // 중급 (혁신)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:146, durCost:40 },
+
+  { id:'n07', tag:'',
+    label:'혁신+밑가공+가공+장족+비레고',
+    skills:['혁신','밑가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
+      { efficiency:100, buffSum:0.5, iqStacks:10 }, // 가공 (혁신)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:132, durCost:40 },
+
+  { id:'n08', tag:'',
+    label:'혁신+밑가공+황금손+장족+비레고',
+    skills:['혁신','밑가공','장인의 황금손','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
+      { efficiency:100, buffSum:0.5, iqStacks:10 }, // 황금손 (혁신)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:146, durCost:30 },
+
+  { id:'n09', tag:'',
+    label:'혁신+밑가공+절약가공+장족+비레고',
+    skills:['혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
+      { efficiency:100, buffSum:0.5, iqStacks:10 }, // 절약 (혁신)
+      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
+    ], cpCost:139, durCost:35 },
+
   { id:'r19', tag:'',
     label:'장족+혁신+비레고',
     skills:['장족의 발전','혁신','비레고의 축복'],
@@ -1422,7 +1467,11 @@ function renderQuality() {
   const currentQuality = parseInt(document.getElementById('q-current-quality').value) || 0;
 
   // ── 로테이션 계산 ──
-  const rows = QUALITY_ROTATIONS.map(rot => {
+  const useTranscend = document.getElementById('q-transcend')?.checked || false;
+  const rows = QUALITY_ROTATIONS.filter(rot => {
+    if (rot.tag === '초절') return useTranscend;
+    return true;
+  }).map(rot => {
     let q;
     if (rot.multiStep) {
       q = rot.steps.reduce(
@@ -1529,6 +1578,8 @@ function renderQuality() {
       ? `<span class="rota-badge tag-expert">전문장인</span>`
       : row.tag === '저내구도'
       ? `<span class="rota-badge tag-lowdur">저내구도</span>`
+      : row.tag === '초절'
+      ? `<span class="rota-badge tag-transcend">초절</span>`
       : '';
     const cpBad  = !row.cpOk  ? ' style="color:var(--red)"' : '';
     const durBad = !row.durOk ? ' style="color:var(--red)"' : '';
