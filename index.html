@@ -18,11 +18,11 @@
    스탯 프리셋 데이터 & 로직
    ============================================= */
 const GEAR_PRESETS = {
-  '저금단':     { crafts: 5635, cons: 4969, cp: 583 },
-  '중금단':     { crafts: 5812, cons: 5083, cp: 649 },
-  '고금단':     { crafts: 5811, cons: 5461, cp: 649 },
-  '고금단(고작숙)': { crafts: 6012, cons: 5320, cp: 649 },
-  '고금단+우주': { crafts: 5867, cons: 5424, cp: 649 },
+  '버젯':     { crafts: 5635, cons: 4969, cp: 583 },
+  '미드':     { crafts: 5812, cons: 5083, cp: 649 },
+  '엔드':     { crafts: 5811, cons: 5461, cp: 649 },
+  '엔드(고작숙)': { crafts: 6012, cons: 5320, cp: 649 },
+  '엔드+우주': { crafts: 5867, cons: 5424, cp: 649 },
   '우주전용':   { crafts: 5812, cons: 5464, cp: 649 },
 };
 const FOOD_BUFFS = {
@@ -39,7 +39,7 @@ const POT_BUFFS = {
   '거장약액': { crafts: 0,  cons: 63, cp: 0  },
 };
 
-let curGear = '고금단', curFood = '알이페브레', curPot = '명인약액';
+let curGear = '엔드', curFood = '알이페브레', curPot = '명인약액';
 
 function setActiveBtnGroup(groupId, activeBtn) {
   document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
@@ -1349,11 +1349,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <div>
         <div class="input-section-label">장비 프리셋</div>
         <div id="work-gear-btns" class="preset-btn-group">
-          <button class="preset-btn" onclick="selectGear('저금단',this)">저금단</button>
-          <button class="preset-btn" onclick="selectGear('중금단',this)">중금단</button>
-          <button class="preset-btn active" onclick="selectGear('고금단',this)">고금단</button>
-          <button class="preset-btn" onclick="selectGear('고금단(고작숙)',this)">고금단 (고작숙)</button>
-          <button class="preset-btn" onclick="selectGear('고금단+우주',this)">고금단+우주</button>
+          <button class="preset-btn" onclick="selectGear('버젯',this)">버젯</button>
+          <button class="preset-btn" onclick="selectGear('미드',this)">미드</button>
+          <button class="preset-btn active" onclick="selectGear('엔드',this)">엔드</button>
+          <button class="preset-btn" onclick="selectGear('엔드(고작숙)',this)">엔드 (고작숙)</button>
+          <button class="preset-btn" onclick="selectGear('엔드+우주',this)">엔드+우주</button>
           <button class="preset-btn" onclick="selectGear('우주전용',this)">우주전용</button>
         </div>
         <div class="preset-sub-row">
@@ -1512,7 +1512,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="https://ffxivteamcraft.com/gearset/348rb5jQEjZ7pv4Yyn0" target="_blank" class="gear-link">링크 →</a>
       </div>
       <div class="gear-row">
-        <span class="gear-tier t-high">하이엔드</span>
+        <span class="gear-tier t-high">엔드</span>
         <div class="gear-stats">
           <span class="gear-stat">작숙 <strong>5,811</strong></span>
           <span class="gear-stat">가숙 <strong>5,461</strong></span>
@@ -1532,13 +1532,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="https://ffxivteamcraft.com/gearset/2m1KMkLGKV7JnIM9pSpt" target="_blank" class="gear-link">링크 →</a>
       </div>
       <div class="gear-row">
-        <span class="gear-tier t-full">고금단 + 우주개척</span>
+        <span class="gear-tier t-full">엔드 + 우주개척</span>
         <div class="gear-stats">
           <span class="gear-stat">작숙 <strong>5,867</strong></span>
           <span class="gear-stat">가숙 <strong>5,424</strong></span>
           <span class="gear-stat">CP <strong>649</strong></span>
         </div>
-        <span class="gear-note">공작깃 하이엔드 + 초공간 도구 (오이지스 최종)</span>
+        <span class="gear-note">공작깃 엔드 + 초공간 도구 (오이지스 최종)</span>
       </div>
       <div class="gear-row">
         <span class="gear-tier t-space">우주개척 전용</span>
