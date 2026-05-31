@@ -970,7 +970,7 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
   vertical-align: middle;
 }
 .si span {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text);
 }
 
