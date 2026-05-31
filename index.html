@@ -117,12 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg></span>
       <span class="logo-text">파판14 고난도 제작</span>
     </div>
-    <button class="theme-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="테마 전환">
-      <span class="theme-icon" id="theme-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-      </span>
-      <span class="theme-label t-label" id="theme-label">라이트 모드</span>
-    </button>
   </div>
   <nav class="sidebar-nav">
     <button class="tab-btn active" data-tab="home"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="t-label">메인</span></button>
@@ -135,6 +129,12 @@ document.addEventListener('DOMContentLoaded', () => {
     <button class="tab-btn" data-tab="gear"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span><span class="t-label">금단표</span></button>
   </nav>
   <div class="sidebar-bottom">
+    <button class="theme-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="테마 전환">
+      <span class="theme-icon" id="theme-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </span>
+      <span class="theme-label t-label" id="theme-label">라이트 모드</span>
+    </button>
     <div class="patch-badge">
       <span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
       <span class="t-label">7.5 패치 기준</span>
@@ -777,6 +777,24 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 
     <div class="skill-group">
+      <div class="skill-group-title">[ 특수 자원 스킬 ] 조건부 강력 스킬</div>
+      <div class="skill-cards">
+        <div class="skill-card">
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001997_hr1.png" alt="장인의 황금손"><div class="sk-name">장인의 황금손</div></div>
+            <div class="sk-sub">정신집중 10중첩 필요</div>
+          </div>
+          <div><div class="sk-desc">정신집중이 10중첩일 때에만 사용 가능. 내구도를 소비하지 않고 품질을 높여요. 효율 100 / 성공률 100%. CP 소모가 커서 약간 비효율적이지만, CP가 넘치는데 내구도가 부족한 상황에서 꺼내들기 좋아요.</div></div>
+        </div>
+        <div class="skill-card sp2">
+          <div>
+            <div class="sk-header"><img class="sk-icon" src="https://xivapi.com/i/001000/001926_hr1.png" alt="장인의 초절 기술"><div class="sk-name">장인의 초절 기술 <span class="tag tr">제작 중 1회</span></div></div>
+            <div class="sk-sub">제작 전체에서 단 1번</div>
+          </div>
+          <div><div class="sk-desc">1회에 한해 내구도 소비 없이 기술을 사용할 수 있어요. 내구도 소모가 큰 <strong>밑가공(20)</strong>이나 <strong>밑작업(20)</strong>에 쓰는 게 가장 효과적이에요. 쓸 타이밍을 미리 정해두고 제작을 시작하세요.</div></div>
+        </div>
+      </div>
+
       <div class="skill-group-title">[ 우주개척 전용 ]</div>
       <div class="skill-cards">
         <div class="skill-card sp2">
@@ -1065,7 +1083,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <tr><th>CP</th><th>내구</th><th>스킬 조합</th><th>비고</th></tr>
       <tr>
         <td><strong style="color:var(--text-bright)">54</strong></td><td>10</td>
-        <td class="col-k" data-skills="신속한 혁신 → 장족 → 비레고"></td>
+        <td class="col-k" data-skills="장족 → 신속한 혁신 → 비레고"></td>
         <td class="tbl-rota-note expert">전문장인 전용</td>
       </tr>
       <tr>
