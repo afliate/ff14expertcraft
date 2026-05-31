@@ -472,118 +472,6 @@ body::before{
   .tbl th,.tbl td{padding:5px 7px;}
 }
 
-/* ===== 품질 계산기 ===== */
-
-.qc-wrap {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 24px 16px;
-  color: var(--text-main);
-}
-
-.qc-section-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--accent);
-  border-left: 4px solid var(--accent);
-  padding-left: 10px;
-  margin: 28px 0 14px;
-}
-
-.qc-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.qc-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.qc-label {
-  width: 130px;
-  font-size: 0.9rem;
-  color: var(--text-dim);
-  flex-shrink: 0;
-}
-
-.qc-input {
-  flex: 1;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 7px 12px;
-  color: var(--text-main);
-  font-size: 0.95rem;
-}
-
-.qc-input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.qc-btn {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: opacity 0.2s;
-}
-
-.qc-btn:hover { opacity: 0.85; }
-
-.qc-result-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px;
-  margin-top: 20px;
-}
-
-.qc-result-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.95rem;
-}
-
-.qc-result-row:last-child { border-bottom: none; }
-
-.qc-result-label { color: var(--text-dim); }
-
-.qc-result-value {
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.qc-hq-ok {
-  color: #4caf50;
-  font-weight: 900;
-  font-size: 1.1rem;
-}
-
-.qc-hq-fail {
-  color: #e85a7a;
-  font-weight: 900;
-  font-size: 1.1rem;
-}
-
-@media (max-width: 480px) {
-  .qc-label { width: 100px; font-size: 0.82rem; }
-  .qc-input { font-size: 0.88rem; }
-}
 
 /* =============================================
    계산기 공통 레이아웃 (calculator.html 기반)
@@ -940,30 +828,6 @@ body::before{
   font-weight: 600;
 }
 
-/* ── 품질계산기 레시피 선택 바 ── */
-.qual-recipe-bar {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding: 14px 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-}
-.qual-recipe-bar .c-field {
-  flex: 1;
-  min-width: 140px;
-  max-width: 260px;
-}
-.qual-recipe-arrow {
-  font-size: 11px;
-  color: var(--text-dim);
-  padding-bottom: 10px;
-  flex-shrink: 0;
-}
-
 /* ── 품질 진행 바 ── */
 .quality-progress {
   display: flex;
@@ -1103,7 +967,10 @@ body::before{
   border-radius: 3px;
   object-fit: cover;
   vertical-align: middle;
+  filter: saturate(0.75) brightness(0.9);
+  transition: filter .15s;
 }
+.rota-card:hover .rota-skill-icon { filter: none; }
 .rota-icons {
   display: flex;
   align-items: center;
@@ -1166,13 +1033,6 @@ body::before{
   flex-shrink: 0;
 }
 
-.rota-card-meta {
-  display: flex;
-  gap: 10px;
-  font-size: 11px;
-  color: var(--text-dim);
-}
-.rota-card-meta b { color: var(--text-bright); }
 .rota-card-tags { display: flex; gap: 4px; }
 .rota-badge {
   font-size: 9px;
@@ -1201,6 +1061,7 @@ body::before{
   font-size: 11px;
   color: var(--text-dim);
 }
+.rota-card-meta b { color: var(--text-bright); }
 .rota-meta-sep {
   color: var(--border);
 }
@@ -1215,25 +1076,6 @@ body::before{
   border-top: 1px solid var(--border);
 }
 
-/* ── 통합 계산기 탭 버튼 ── */
-.calc-tab-btn {
-  padding: 8px 14px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-dim);
-  cursor: pointer;
-  border: none;
-  border-bottom: 2px solid transparent;
-  background: none;
-  font-family: inherit;
-  transition: color .15s;
-}
-.calc-tab-btn.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-.calc-tab-panel { display: none; }
-.calc-tab-panel.active { display: block; }
 
 /* ── 레시피 pill (통합 계산기용) ── */
 .recipe-pill-row {
@@ -1288,7 +1130,27 @@ body::before{
 }
 .rpill.active .rpill-tag { color: var(--accent) !important; }
 
-/* 카테고리 섹션 헤더 */
+/* ── 참고 자료 링크 ── */
+.ref-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: rgba(99,179,237,.07);
+  border: 1px solid rgba(99,179,237,.25);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color .15s, background .15s;
+}
+.ref-link:hover {
+  border-color: var(--accent);
+  background: rgba(99,179,237,.14);
+  color: var(--text-bright);
+}
+
+/* ── 카테고리 섹션 헤더 ── */
 .pill-cat-header {
   font-size: 9px;
   font-weight: 700;
