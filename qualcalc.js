@@ -197,6 +197,7 @@ const SKILL_ICONS = {
   '장인의 황금손':  { id: '001997' },
   '대담한 손길':    { id: '001998' },
   '신속한 혁신':    { id: '001999' },
+  '장인의 초절 기술': { id: '001926' },
 };
 
 function skillIcon(name) {
@@ -414,6 +415,394 @@ const QUALITY_ROTATIONS = [
     skills:['장족의 발전','신속한 혁신','비레고의 축복'],
     efficiency:300, buffSum:1.0, iqStacks:10,
     cpCost:56, durCost:20 },
+
+  // ══ 초절기술 마무리 로테이션 ══
+
+  // ── 기본 마무리 ──
+  { id:'sc01', tag:'초절',
+    label:'초절+장족+혁신+비레고',
+    skills:['장인의 초절 기술','장족의 발전','혁신','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:74, durCost:0 },
+
+  // ── 초절+장족+혁신+밑가공 기반 마무리 ──
+  { id:'sc02', tag:'초절',
+    label:'초절+장족+혁신+밑가공+밑가공+장족+비레고',
+    skills:['장인의 초절 기술','장족의 발전','혁신','밑가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:186, durCost:30 },
+
+  { id:'sc03', tag:'초절',
+    label:'초절+장족+혁신+밑가공+상급+장족+비레고',
+    skills:['장인의 초절 기술','장족의 발전','혁신','밑가공','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:192, durCost:20 },
+
+  { id:'sc04', tag:'초절',
+    label:'초절+장족+혁신+밑가공+중급+장족+비레고',
+    skills:['장인의 초절 기술','장족의 발전','혁신','밑가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:178, durCost:20 },
+
+  { id:'sc05', tag:'초절',
+    label:'초절+장족+혁신+밑가공+가공+장족+비레고',
+    skills:['장인의 초절 기술','장족의 발전','혁신','밑가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:164, durCost:20 },
+
+  { id:'sc06', tag:'초절',
+    label:'초절+장족+혁신+밑가공+황금손+장족+비레고',
+    skills:['장인의 초절 기술','장족의 발전','혁신','밑가공','장인의 황금손','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:178, durCost:10 },
+
+  { id:'sc07', tag:'초절',
+    label:'초절+장족+혁신+밑가공+절약가공+장족+비레고',
+    skills:['장인의 초절 기술','장족의 발전','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:171, durCost:15 },
+
+  // ── 초절+혁신+밑가공 기반 마무리 ──
+  { id:'sc08', tag:'초절',
+    label:'초절+혁신+밑가공+밑가공+장족+비레고',
+    skills:['장인의 초절 기술','혁신','밑가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:154, durCost:30 },
+
+  { id:'sc09', tag:'초절',
+    label:'초절+혁신+밑가공+상급+장족+비레고',
+    skills:['장인의 초절 기술','혁신','밑가공','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:160, durCost:20 },
+
+  { id:'sc10', tag:'초절',
+    label:'초절+혁신+밑가공+중급+장족+비레고',
+    skills:['장인의 초절 기술','혁신','밑가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:146, durCost:20 },
+
+  { id:'sc11', tag:'초절',
+    label:'초절+혁신+밑가공+가공+장족+비레고',
+    skills:['장인의 초절 기술','혁신','밑가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:132, durCost:20 },
+
+  { id:'sc12', tag:'초절',
+    label:'초절+혁신+밑가공+황금손+장족+비레고',
+    skills:['장인의 초절 기술','혁신','밑가공','장인의 황금손','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:146, durCost:10 },
+
+  { id:'sc13', tag:'초절',
+    label:'초절+혁신+밑가공+절약가공+장족+비레고',
+    skills:['장인의 초절 기술','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:139, durCost:15 },
+
+  // ── 장족+혁신+경관×2상급 + 초절+장족+혁신+밑가공 기반 ──
+  { id:'sc14', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+밑가공+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:286, durCost:50 },
+
+  { id:'sc15', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+상급+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:292, durCost:40 },
+
+  { id:'sc16', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+중급+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:278, durCost:40 },
+
+  { id:'sc17', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+가공+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:264, durCost:40 },
+
+  { id:'sc18', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+황금손+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','장인의 황금손','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:278, durCost:30 },
+
+  { id:'sc19', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+절약가공+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:271, durCost:35 },
+
+  // ── 장족+혁신+경관×2상급 + 초절+혁신+밑가공 기반 ──
+  { id:'sc20', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+밑가공+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:254, durCost:50 },
+
+  { id:'sc21', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+상급+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:260, durCost:40 },
+
+  { id:'sc22', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+중급+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:246, durCost:40 },
+
+  { id:'sc23', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+가공+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:232, durCost:40 },
+
+  { id:'sc24', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+황금손+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','장인의 황금손','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:246, durCost:30 },
+
+  { id:'sc25', tag:'초절',
+    label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+절약가공+장족+비레고',
+    skills:['장족의 발전','혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:239, durCost:35 },
+
+  // ── 혁신+경관×2상급 + 초절+장족+혁신+밑가공 기반 ──
+  { id:'sc26', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+밑가공+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:254, durCost:50 },
+
+  { id:'sc27', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+상급+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:260, durCost:40 },
+
+  { id:'sc28', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+중급+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:246, durCost:40 },
+
+  { id:'sc29', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+가공+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:232, durCost:40 },
+
+  { id:'sc30', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+황금손+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','장인의 황금손','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:246, durCost:30 },
+
+  { id:'sc31', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+절약가공+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','장족의 발전','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:1.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:239, durCost:35 },
+
+  // ── 혁신+경관×2상급 + 초절+혁신+밑가공 기반 ──
+  { id:'sc32', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+밑가공+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','밑가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:222, durCost:50 },
+
+  { id:'sc33', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+상급+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','상급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:228, durCost:40 },
+
+  { id:'sc34', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+중급+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','중급 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:125, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:214, durCost:40 },
+
+  { id:'sc35', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+가공+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:200, durCost:40 },
+
+  { id:'sc36', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+황금손+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','장인의 황금손','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:214, durCost:30 },
+
+  { id:'sc37', tag:'초절',
+    label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+절약가공+장족+비레고',
+    skills:['혁신','경과 관찰','상급 가공','경과 관찰','상급 가공','장인의 초절 기술','혁신','밑가공','절약 가공','장족의 발전','비레고의 축복'],
+    multiStep:true, steps:[
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:150, buffSum:0.5, iqStacks:10 },
+      { efficiency:200, buffSum:0.5, iqStacks:10 },
+      { efficiency:100, buffSum:0.5, iqStacks:10 },
+      { efficiency:300, buffSum:1.5, iqStacks:10 },
+    ], cpCost:207, durCost:35 },
 
   // ══ 전문장인 전용 ══
 
