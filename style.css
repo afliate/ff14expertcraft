@@ -16,7 +16,6 @@
   --yellow: #c8b840;
 }
 
-/* ── 라이트 모드 변수 ── */
 body.light {
   --bg: #e8eef4;
   --surface: #f0f5f9;
