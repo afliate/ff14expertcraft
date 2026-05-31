@@ -31,12 +31,14 @@ const FOOD_BUFFS = {
   '로네크':    { crafts: 0,   cons: 97,  cp: 92  },
 };
 const POT_BUFFS = {
-  '없음': { cp: 0  },
-  '약액': { cp: 27 },
-  '약주': { cp: 21 },
+  '없음':    { crafts: 0,  cons: 0,  cp: 0  },
+  '명인약액': { crafts: 0,  cons: 0,  cp: 27 },
+  '명인약주': { crafts: 0,  cons: 0,  cp: 21 },
+  '장인약액': { crafts: 63, cons: 0,  cp: 0  },
+  '거장약액': { crafts: 0,  cons: 63, cp: 0  },
 };
 
-let curGear = '고금단', curFood = '알이페브레', curPot = '약액';
+let curGear = '고금단', curFood = '알이페브레', curPot = '명인약액';
 
 function setActiveBtnGroup(groupId, activeBtn) {
   document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
@@ -82,7 +84,7 @@ function applyPreset() {
   const p = POT_BUFFS[curPot]   || { cp:0 };
   const isExpert = document.getElementById('q-expert')?.checked || false;
   const e = isExpert ? { crafts:20, cons:20, cp:15 } : { crafts:0, cons:0, cp:0 };
-  const s = { crafts: g.crafts + f.crafts + e.crafts, cons: g.cons + f.cons + e.cons, cp: g.cp + f.cp + p.cp + e.cp };
+  const s = { crafts: g.crafts + f.crafts + p.crafts + e.crafts, cons: g.cons + f.cons + p.cons + e.cons, cp: g.cp + f.cp + p.cp + e.cp };
   const setVal = (id, v) => { const el = document.getElementById(id); if(el){ el.value = v; el.classList.add('filled'); } };
   setVal('crafts-input', s.crafts);
   setVal('q-cons', s.cons);
@@ -1348,7 +1350,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
           <div>
-            <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">음식</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">음식 HQ</div>
             <div id="work-food-btns" class="preset-btn-group">
               <button class="preset-btn" onclick="selectFood('없음',this)">없음</button>
               <button class="preset-btn active" onclick="selectFood('알이페브레',this)">알이페브레</button>
@@ -1357,11 +1359,13 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           <div>
-            <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">약액</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">도핑 HQ</div>
             <div id="work-pot-btns" class="preset-btn-group">
               <button class="preset-btn" onclick="selectPot('없음',this)">없음</button>
-              <button class="preset-btn active" onclick="selectPot('약액',this)">약액 HQ</button>
-              <button class="preset-btn" onclick="selectPot('약주',this)">약주 HQ</button>
+              <button class="preset-btn active" onclick="selectPot('명인약액',this)">명인 약액</button>
+              <button class="preset-btn" onclick="selectPot('명인약주',this)">명인 약주</button>
+              <button class="preset-btn" onclick="selectPot('장인약액',this)">장인 약액</button>
+              <button class="preset-btn" onclick="selectPot('거장약액',this)">거장 약액</button>
             </div>
           </div>
         </div>
@@ -1370,7 +1374,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- 능력치 -->
       <div>
         <div class="input-section-label">능력치</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
           <div class="c-field">
             <label>작업 숙련도</label>
             <input type="number" id="crafts-input" class="filled" oninput="onStatsChange()">
@@ -1379,10 +1383,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <label>가공 숙련도</label>
             <input type="number" id="q-cons" class="filled" oninput="onStatsChange()">
           </div>
-        </div>
-        <div class="c-field" style="margin-bottom:4px;">
-          <label>보유 CP</label>
-          <input type="number" id="q-cp" class="filled" oninput="onStatsChange()">
+          <div class="c-field">
+            <label>보유 CP</label>
+            <input type="number" id="q-cp" class="filled" oninput="onStatsChange()">
+          </div>
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);cursor:pointer;padding:6px 0 2px;">
           <input type="checkbox" id="q-expert" onchange="applyPreset()" style="accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;">
