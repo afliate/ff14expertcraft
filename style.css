@@ -680,6 +680,44 @@ body.light .c-field select {
 body.light .c-field input[type="number"]:focus,
 body.light .c-field select:focus { border-color: var(--accent); }
 body.light .c-field select option { background: #ffffff; }
+/* 라이트모드 버튼/pill 대비 강화 */
+body.light .preset-btn {
+  background: #f0f5f9;
+  border-color: #7a9eb4;
+  color: #2a4458;
+}
+body.light .preset-btn:hover:not(.active) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #e6f0f7;
+}
+body.light .rpill {
+  background: #edf3f8;
+  border-color: #7a9eb4;
+}
+body.light .rpill-tag { color: #1a3448; }
+body.light .rpill-meta { color: #3a5468; }
+body.light .rpill.gc0 { border-color: rgba(42,112,160,.5); }
+body.light .rpill.gc1 { border-color: rgba(140,110,20,.5); }
+body.light .rpill.gc2 { border-color: rgba(110,60,160,.5); }
+body.light .rpill.gc3 { border-color: rgba(20,140,80,.5); }
+body.light .rpill.gc4 { border-color: rgba(180,40,80,.5); }
+body.light .rpill.gc5 { border-color: rgba(180,100,20,.5); }
+/* placeholder 가시성 */
+body.light ::placeholder { color: #7090a8; opacity: 1; }
+body.light .c-hint { color: #3a5468; }
+body.light .c-field label { color: #2a4458; }
+body.light .region-btn {
+  border-color: #7a9eb4;
+  color: #2a4458;
+}
+body.light .mode-btn {
+  color: #2a4458;
+}
+body.light .mode-toggle {
+  border-color: #7a9eb4;
+}
+body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
 .c-hint { font-size: 11px; color: var(--text-dim); }
 
 .custom-box {
