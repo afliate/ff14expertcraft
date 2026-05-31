@@ -853,11 +853,11 @@ function renderWorkHTML(s0, recipe, variantUI) {
       // 오프너만으로 작업량 초과 → 진가 오프너 권장
       actionHtml = `<div class="action-box ok"><div class="action-icon">💡</div><div class="action-text">확신 오프너로 작업량이 바로 완성돼요. <b>진가 오프너</b>로 시작하는 게 더 좋아요 — 작업량 걱정 없이 품질에 집중할 수 있어요.</div></div>`;
     } else if (durability > 0 && neededKang <= maxKang) {
-      actionHtml = `<div class="action-box ok"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회</b> 필요 (${kangWork.toLocaleString()} × ${neededKang}) — 가능 횟수 <b>${maxKang}회</b> ✔ <span style="font-size:10px;color:var(--text-dim)">공경 없는 기준</span></div></div>`;
+      actionHtml = `<div class="action-box ok"><div class="action-icon">⚡</div><div class="action-text">강행 작업 <b>${neededKang}회</b> 필요 (${kangWork.toLocaleString()} × ${neededKang}) — 가능 횟수 <b>${maxKang}회</b> ✔ <span style="font-size:11px;color:var(--text-dim)">공경 없는 기준</span></div></div>`;
     } else if (durability > 0) {
-      actionHtml = `<div class="action-box warn"><div class="action-icon">⚠️</div><div class="action-text">강행 작업 <b>${neededKang}회 필요</b> / 가능 <b>${maxKang}회</b> — 다른 작업 스킬 혼용 검토 필요 <span style="font-size:10px;color:var(--text-dim)">공경 없는 기준</span></div></div>`;
+      actionHtml = `<div class="action-box warn"><div class="action-icon">⚠️</div><div class="action-text">강행 작업 <b>${neededKang}회 필요</b> / 가능 <b>${maxKang}회</b> — 다른 작업 스킬 혼용 검토 필요 <span style="font-size:11px;color:var(--text-dim)">공경 없는 기준</span></div></div>`;
     } else {
-      actionHtml = `<div class="action-box warn"><div class="action-icon">⚡</div><div class="action-text">오프너 후 남은 진행도 <b>${remaining.toLocaleString()}</b> — 강행 작업 약 <b>${neededKang}회</b> 필요 <span style="font-size:10px;color:var(--text-dim)">공경 없는 기준 · 내구도 미입력</span></div></div>`;
+      actionHtml = `<div class="action-box warn"><div class="action-icon">⚡</div><div class="action-text">오프너 후 남은 진행도 <b>${remaining.toLocaleString()}</b> — 강행 작업 약 <b>${neededKang}회</b> 필요 <span style="font-size:11px;color:var(--text-dim)">공경 없는 기준 · 내구도 미입력</span></div></div>`;
     }
   }
 
@@ -869,7 +869,7 @@ function renderWorkHTML(s0, recipe, variantUI) {
       <div class="recipe-info-header">
         ${getBadge(recipe.missionName)}
         <span class="recipe-name">${recipe.group || '커스텀'}</span>
-        ${recipe.region ? `<span style="font-size:11px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>` : ''}
+        ${recipe.region ? `<span style="font-size:12px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>` : ''}
       </div>
       <div class="recipe-stats">
         <div class="recipe-stat"><div class="stat-lbl">작업량</div><div class="stat-val warn">${workReq ? workReq.toLocaleString() : '−'}</div></div>
@@ -942,7 +942,7 @@ function renderWorkHTML(s0, recipe, variantUI) {
           </tr>
         </tbody>
       </table>
-      <div style="font-size:10px;color:var(--text-dim);margin-top:8px;">※ 마무리 '작업' 수치는 참고용이며 총 작업량에 포함되지 않습니다.</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:8px;">※ 마무리 '작업' 수치는 참고용이며 총 작업량에 포함되지 않습니다.</div>
     </div>
   `;
 }
@@ -1105,7 +1105,7 @@ function renderQuality() {
         <span class="rec-badge">★ 추천</span>
         <span class="rec-quality">${(currentQuality + best.q).toLocaleString()}</span>
         <span class="rec-quality-label">/ ${qualityGoal.toLocaleString()}</span>
-        ${currentQuality > 0 ? `<span style="font-size:11px;color:var(--text-dim);">(+${best.q.toLocaleString()})</span>` : ''}
+        ${currentQuality > 0 ? `<span style="font-size:12px;color:var(--text-dim);">(+${best.q.toLocaleString()})</span>` : ''}
         <span class="rec-achieved">달성 ✔</span>
       </div>
       <div class="rec-chips">
@@ -1128,7 +1128,7 @@ function renderQuality() {
         <span class="rec-quality" style="color:var(--text-dim)">${bestCanDo ? (currentQuality + bestCanDo.q).toLocaleString() : '−'}</span>
         <span class="rec-quality-label">/ ${qualityGoal.toLocaleString()}</span>
       </div>
-      <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">
+      <div style="font-size:12px;color:var(--text-dim);margin-top:6px;">
         현재 수치로는 CP·내구 조건을 만족하면서 품질을 달성할 수 있는 로테이션이 없어요.<br>
         ${bestCanDo ? `조건 내 최대 품질: <b style="color:var(--text-bright)">${(currentQuality + bestCanDo.q).toLocaleString()}</b> (목표까지 <b style="color:var(--yellow)">+${(qualityGoal - currentQuality - bestCanDo.q).toLocaleString()}</b> 부족)` : ''}
       </div>
@@ -1188,8 +1188,8 @@ function renderQuality() {
       <div class="recipe-info-header">
         ${getBadge(recipe.missionName)}
         <span class="recipe-name">${recipe.group}</span>
-        <span style="font-size:11px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-dim)">rlvl <b style="color:var(--text-bright)">${recipe.rlvl}</b></span>
+        <span style="font-size:12px;color:var(--text-dim)">${regionNames[recipe.region] || ''}</span>
+        <span style="margin-left:auto;font-size:12px;color:var(--text-dim)">rlvl <b style="color:var(--text-bright)">${recipe.rlvl}</b></span>
       </div>
       ${progressHtml}
     </div>
