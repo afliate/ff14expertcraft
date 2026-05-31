@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="checklist-item"><div class="check-icon"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="item-name">명인의 약액 HQ</div><div class="item-desc">수치를 한 뼘씩 올려줘요. 음식이랑 항상 세트.</div></div></div>
     </div>
     <div class="guide-note tip" style="margin-top:10px">
-      금단 수치 / 장비 링크는 <button onclick="switchTab('gear')" style="background:none;border:none;border-bottom:1px solid var(--sky-dim);color:var(--sky);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;padding:0;">금단표 탭</button>에서 확인할 수 있어요.
+      금단 수치 / 장비 링크는 <button onclick="switchTab('gear')" class="inline-link-btn sky">금단표 탭</button>에서 확인할 수 있어요.
     </div>
   </div>
 
@@ -798,7 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   <div class="guide-note key" style="margin-top:8px">
     스킬을 익혔다면 다음은 <strong>상태 대응</strong>이에요. 같은 스킬이라도 어떤 상태에서 쓰느냐에 따라 효율이 크게 달라져요.
-    <div style="margin-top:8px"><button onclick="switchTab('status')" style="background:none;border:1px solid var(--accent-dim);border-radius:2px;padding:4px 12px;color:var(--accent);font-family:'Noto Sans KR',sans-serif;font-size:11px;cursor:pointer;letter-spacing:.04em;">상태 가이드 보기 →</button></div>
+    <div style="margin-top:8px"><button onclick="switchTab('status')" class="inline-link-btn accent">상태 가이드 보기 →</button></div>
   </div>
 </div>
 
@@ -855,7 +855,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <span style="color:var(--red)">❌ 나쁜 예:</span> 내구 10 → 5 → 0 (종료)<br>
   <span style="color:var(--green)">✅ 좋은 예:</span> 내구 12 → 7 → 2 (1회 더 가능!)<br>
   <strong>근검절약 주의:</strong> 근검절약 버프와 겹쳐도 내구 소비는 똑같이 5만 감소해요. 버프 턴 낭비 조심!<br>
-  <span style="font-size:11px;color:var(--text-dim)"> ※ 장기 절약·근검절약 같은 내구 절약 버프가 없는 상태일 때 가르기가 의도대로 잘 들어가니, 버프가 꺼져 있을 때 노려보세요.</span>
+  <span class="note-sm"> ※ 장기 절약·근검절약 같은 내구 절약 버프가 없는 상태일 때 가르기가 의도대로 잘 들어가니, 버프가 꺼져 있을 때 노려보세요.</span>
 </div>
     </div>
   </div>
@@ -960,7 +960,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* 괄호 안 차수 텍스트(혁신 (3차)) 처리: 스킬명만 추출해 아이콘, 차수는 뒤에 붙임 */
     const match = raw.match(/^(.+?)(\s*\(.+\))?$/);
     const skillName = match[1].trim();
-    const suffix = match[2] ? `<span style="font-size:10px;color:var(--text-dim);margin-left:3px">${match[2].trim()}</span>` : '';
+    const suffix = match[2] ? `<span class="tbl-suffix">${match[2].trim()}</span>` : '';
     const id = ICONS[skillName];
     const folder = id && id.startsWith('06') ? '061000' : '001000';
     const img = id ? `<img src="https://xivapi.com/i/${folder}/${id}_hr1.png" alt="${skillName}" onerror="this.style.display='none'" style="width:18px;height:18px;border-radius:3px;vertical-align:middle;flex-shrink:0">` : '';
@@ -1023,13 +1023,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <tr><td class="col-s st-normal">보통</td><td class="col-k" data-skills="절약 가공 / 성급한 손길 / 가공 콤보"></td></tr>
       <tr><td class="col-s st-hq">★ 고품질</td><td class="col-k" data-skills="집중 가공"></td></tr>
       <tr><td class="col-s st-solid">견고</td><td class="col-k" data-skills="절약 가공 → 성급한 손길 / 밑가공"></td></tr>
-      <tr><td class="col-s st-stable">안정</td><td class="col-k" style="padding-right:8px"><span class="si"><img src="https://xivapi.com/i/001000/001989_hr1.png" alt="성급한 손길"><span>성급한 손길</span></span><span style="display:inline-block;width:32px"></span><span style="color:var(--text-dim);font-size:11px">작업량 부족 시</span> <span class="sep">→</span> <span class="si"><img src="https://xivapi.com/i/001000/001988_hr1.png" alt="강행 작업"><span>강행 작업</span></span></td></tr>
+      <tr><td class="col-s st-stable">안정</td><td class="col-k" style="padding-right:8px"><span class="si"><img src="https://xivapi.com/i/001000/001989_hr1.png" alt="성급한 손길"><span>성급한 손길</span></span><span style="display:inline-block;width:32px"></span><span class="note-sm">작업량 부족 시</span> <span class="sep">→</span> <span class="si"><img src="https://xivapi.com/i/001000/001988_hr1.png" alt="강행 작업"><span>강행 작업</span></span></td></tr>
       <tr><td class="col-s st-he">★ 고효율</td><td class="col-k" data-skills="교손 → 장기 절약 / 밑가공"></td></tr>
       <tr><td class="col-s st-long">장기 지속</td><td class="col-k" data-skills="근검절약 / 교손 / 혁신"></td></tr>
       <tr><td class="col-s st-good">길조</td><td class="col-k" data-skills="절약 가공 / 성급한 손길"></td></tr>
     </table></div>
     <div style="margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;border-left:2px solid var(--text-dim)">
-      <span style="font-size:11px;color:var(--text-dim)"><strong style="color:var(--text)">💡 내구 가르기</strong> — 내구 뒷자리가 0·5로 안 끝나게 자르면 스킬 1회를 더 쓸 수 있어요. 견고에서 절약 가공(내구 -3)을 쓰면 뒷자리가 2로 남고, 교손 +5 회복 후에도 7이 돼서 추가 공정이 가능해요.</span>
+      <span class="note-sm"><strong class="note-strong">💡 내구 가르기</strong> — 내구 뒷자리가 0·5로 안 끝나게 자르면 스킬 1회를 더 쓸 수 있어요. 견고에서 절약 가공(내구 -3)을 쓰면 뒷자리가 2로 남고, 교손 +5 회복 후에도 7이 돼서 추가 공정이 가능해요.</span>
     </div>
   </div>
 
@@ -1038,19 +1038,19 @@ document.addEventListener('DOMContentLoaded', () => {
     <div style="overflow-x:auto"><table class="tbl">
       <tr><th>콤보</th><th>스킬 순서</th><th>CP</th><th>내구</th></tr>
       <tr>
-        <td style="font-size:12px;color:var(--text-bright);font-weight:600;white-space:nowrap">기본 가공 콤보</td>
+        <td class="tbl-combo-name">기본 가공 콤보</td>
         <td class="col-k" data-skills="혁신 → 성급한 손길 → 가공 → 중급 가공 → 상급 가공"></td>
         <td><strong style="color:var(--text-bright)">72</strong></td>
         <td>40</td>
       </tr>
       <tr>
-        <td style="font-size:12px;color:var(--text-bright);font-weight:600;white-space:nowrap">경과 관찰 콤보</td>
+        <td class="tbl-combo-name">경과 관찰 콤보</td>
         <td class="col-k" data-skills="혁신 → 경과 관찰 → 상급 가공 → 경과 관찰 → 상급 가공"></td>
         <td><strong style="color:var(--text-bright)">68</strong></td>
         <td>20</td>
       </tr>
       <tr>
-        <td style="font-size:12px;color:var(--text-bright);font-weight:600;white-space:nowrap">견고 활용 콤보<br><span style="font-size:11px;color:var(--text-dim);font-weight:400;">견고 상태에서 밑가공</span></td>
+        <td class="tbl-combo-name">견고 활용 콤보<br><span class="tbl-combo-sub">견고 상태에서 밑가공</span></td>
         <td class="col-k" data-skills="장족 → 혁신 → 밑가공 → 장족 → 경과 관찰 → 상급 가공"></td>
         <td><strong style="color:var(--text-bright)">147</strong></td>
         <td>20</td>
@@ -1065,12 +1065,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <tr>
         <td><strong style="color:var(--text-bright)">54</strong></td><td>10</td>
         <td class="col-k" data-skills="신속한 혁신 → 장족 → 비레고"></td>
-        <td style="font-size:11px;color:var(--accent)">전문장인 전용</td>
+        <td class="tbl-rota-note expert">전문장인 전용</td>
       </tr>
       <tr>
         <td><strong style="color:var(--text-bright)">74</strong></td><td>10</td>
         <td class="col-k" data-skills="장족 → 혁신 → 비레고"></td>
-        <td style="font-size:11px;color:var(--text-bright)">기본 ★</td>
+        <td class="tbl-rota-note">기본 ★</td>
       </tr>
       <tr>
         <td><strong style="color:var(--text-bright)">124</strong></td><td>30</td>
@@ -1085,15 +1085,15 @@ document.addEventListener('DOMContentLoaded', () => {
       <tr>
         <td><strong style="color:var(--text-bright)">186</strong></td><td>60</td>
         <td class="col-k" data-skills="장족 → 혁신 → 밑가공 → 밑가공 → 장족 → 비레고"></td>
-        <td style="font-size:11px;color:var(--text-bright)">최고효율 ★</td>
+        <td class="tbl-rota-note">최고효율 ★</td>
       </tr>
       <tr>
         <td><strong style="color:var(--text-bright)">202</strong></td><td>15</td>
         <td class="col-k" data-skills="장족 → 혁신 → 근검절약 → 밑가공 → 장족 → 비레고"></td>
-        <td style="font-size:11px;color:var(--text-dim)">내구 적을 때</td>
+        <td class="tbl-rota-note dim">내구 적을 때</td>
       </tr>
     </table></div>
-    <div class="guide-note" style="margin-top:10px;font-size:12px"><strong>장족의 발전 = 장족 / 비레고의 축복 = 비레고</strong>로 줄여서 표기했어요.</div>
+    <div class="guide-note" style="margin-top:10px;"><strong>장족의 발전 = 장족 / 비레고의 축복 = 비레고</strong>로 줄여서 표기했어요.</div>
   </div>
 </div>
 
@@ -1218,7 +1218,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg class="ac-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="accordion-body">
-          <div style="font-size:12px;color:var(--text-dim);line-height:1.8;margin-bottom:12px;">
+          <div class="accordion-desc">
             일반 레시피라서 상태 종류가 제한적 (보통, 고품질, 최고품질, 저품질). 품질 목표는 낮은 편 (약 13,000대). 기적의 물질은 초반이 아닌 <strong style="color:var(--text-bright)">중반</strong>에 사용하는 게 더 여유로워요.<br><br>
             <strong style="color:var(--text-bright)">오프너:</strong> 확신 → 공경 → 교묘 → 장기 절약 → 강행 × N번<br>
             <strong style="color:var(--text-bright)">기적 이후:</strong> 고효율→장기 절약, 고품질→집중 가공, 견고→밑가공 순으로 10스택 빠르게 채우기<br>
@@ -1354,9 +1354,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <button class="preset-btn" onclick="selectGear('고금단+우주',this)">고금단+우주</button>
           <button class="preset-btn" onclick="selectGear('우주전용',this)">우주전용</button>
         </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+        <div class="preset-sub-row">
           <div>
-            <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">음식 HQ</div>
+            <div class="preset-sub-label">음식 HQ</div>
             <div id="work-food-btns" class="preset-btn-group">
               <button class="preset-btn" onclick="selectFood('없음',this)">없음</button>
               <button class="preset-btn active" onclick="selectFood('알이페브레',this)">알이페브레</button>
@@ -1365,7 +1365,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           <div>
-            <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">도핑 HQ</div>
+            <div class="preset-sub-label">도핑 HQ</div>
             <div id="work-pot-btns" class="preset-btn-group">
               <button class="preset-btn" onclick="selectPot('없음',this)">없음</button>
               <button class="preset-btn active" onclick="selectPot('명인약액',this)">명인 약액</button>
@@ -1380,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- 능력치 -->
       <div>
         <div class="input-section-label">능력치</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div class="stats-grid-3">
           <div class="c-field">
             <label>작업 숙련도</label>
             <input type="number" id="crafts-input" class="filled" oninput="onStatsChange()">
@@ -1394,19 +1394,19 @@ document.addEventListener('DOMContentLoaded', () => {
             <input type="number" id="q-cp" class="filled" oninput="onStatsChange()">
           </div>
         </div>
-        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);cursor:pointer;padding:6px 0 2px;">
-          <input type="checkbox" id="q-expert" onchange="applyPreset()" style="accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;">
-          <span>전문장인 보유<span style="font-size:11px;color:var(--text-dim);margin-left:4px;">작숙+20 가숙+20 CP+15</span></span>
+        <label class="check-label">
+          <input type="checkbox" id="q-expert" onchange="applyPreset()" class="check-input">
+          <span>전문장인 보유<span class="check-sub">작숙+20 가숙+20 CP+15</span></span>
         </label>
       </div>
 
     </div><!-- /input-panel -->
 
     <!-- 레시피 선택 + 탭 + 결과 -->
-    <div style="display:flex;flex-direction:column;gap:0;">
+    <div class="recipe-select-bar">
 
       <!-- 레시피 선택 바 -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:4px 4px 0 0;border-bottom:none;">
+      <div class="recipe-selects-header">
         <div class="c-field">
           <label>지역</label>
           <select id="sel-region" onchange="onRegionChange()">
@@ -1429,7 +1429,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div id="recipe-pill-bar" style="display:none;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-top:none;border-bottom:none;"></div>
 
       <!-- 결과 탭 버튼 -->
-      <div style="display:flex;border-bottom:1px solid var(--border);background:var(--surface);padding:0 14px;border-left:1px solid var(--border);border-right:1px solid var(--border);">
+      <div class="calc-tab-bar">
         <button class="calc-tab-btn active" onclick="switchCalcTab('work',this)">작업량</button>
         <button class="calc-tab-btn" onclick="switchCalcTab('qual',this)">품질 마무리</button>
       </div>
@@ -1449,14 +1449,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <input type="number" id="q-gyomyo" placeholder="예: 5" min="0" max="8" oninput="calcQualDur()">
         </div>
         <div style="flex:2;min-width:180px;">
-          <div id="q-dur-calc" style="font-size:12px;color:var(--text-dim);padding:5px 8px;background:var(--surface);border:1px solid var(--border);border-radius:3px;display:none;"></div>
+          <div id="q-dur-calc" class="dur-calc-box" style="display:none;"></div>
           <span class="c-hint" style="display:block;margin-top:2px;">교묘 1턴 = 내구 +5 (최대 8턴). 마무리용 내구 10 자동 차감.</span>
         </div>
         <input type="hidden" id="q-dur">
       </div>
 
       <!-- 결과 본문 -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;padding:14px;min-height:140px;">
+      <div class="calc-result-body">
 
         <!-- 작업량 탭 -->
         <div id="calc-tab-work" class="calc-tab-panel active">
@@ -1540,7 +1540,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
   </div>
-  <div class="guide-note tip" style="font-size:12px;">링크는 ffxivteamcraft / etro.gg 로 연결돼요. 수치는 <strong style="color:var(--text)">7.5 패치 기준</strong>이에요.</div>
+  <div class="guide-note tip">링크는 ffxivteamcraft / etro.gg 로 연결돼요. 수치는 <strong style="color:var(--text)">7.5 패치 기준</strong>이에요.</div>
 </div>
 
 </main>
