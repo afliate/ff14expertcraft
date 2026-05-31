@@ -17,7 +17,7 @@
   margin-bottom: 10px;
 }
 .rec-badge {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: .06em;
   color: var(--yellow);
@@ -33,17 +33,17 @@
   border-color: rgba(255,255,255,.1);
 }
 .rec-quality {
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--green);
   letter-spacing: -.01em;
 }
 .rec-quality-label {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-dim);
 }
 .rec-achieved {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--green);
   margin-left: 2px;
 }
@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-dim);
 }
 .rec-meta-item b { color: var(--text-bright); }
@@ -75,7 +75,7 @@
   border-top: 1px solid var(--border);
   padding: 8px 0 4px;
   color: var(--text-dim);
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   font-family: inherit;
 }
@@ -110,33 +110,66 @@
   gap: 6px;
   padding: 4px 0;
 }
+
+/* 그룹 컨테이너 */
+.vpill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.vpill-group:last-child { margin-bottom: 0; }
+
+/* pill 기본 — 고정 너비 제거, 내용 기반으로 */
 .variant-pill {
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding: 5px 10px;
+  min-width: 72px;        /* 너무 좁아지지 않을 최소값 */
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
   font-family: inherit;
   text-align: center;
-  transition: border-color .15s;
+  transition: border-color .15s, background .15s;
+  white-space: nowrap;    /* 텍스트 줄바꿈 방지 */
 }
 .variant-pill:hover { border-color: var(--accent-dim); }
-.variant-pill.active {
-  border-color: var(--accent);
-  background: rgba(99,179,237,.08);
-}
+
+/* gc 색상 — rpill과 동일 팔레트 */
+.variant-pill.gc0 { border-color: rgba(90,184,212,.3); }
+.variant-pill.gc0 .vp-tag { color: #5ab8d4; }
+.variant-pill.gc1 { border-color: rgba(200,184,64,.3); }
+.variant-pill.gc1 .vp-tag { color: #c8b840; }
+.variant-pill.gc2 { border-color: rgba(160,108,204,.3); }
+.variant-pill.gc2 .vp-tag { color: #a06ccc; }
+.variant-pill.gc3 { border-color: rgba(77,200,144,.3); }
+.variant-pill.gc3 .vp-tag { color: #4dc890; }
+.variant-pill.gc4 { border-color: rgba(232,90,122,.3); }
+.variant-pill.gc4 .vp-tag { color: #e85a7a; }
+
+/* 서브 레시피 (isSub) */
+.variant-pill.vp-sub { border-style: dashed; opacity: .85; }
+
+/* active 상태 */
+.variant-pill.active.gc0 { border-color: rgba(90,184,212,.9);  background: rgba(90,184,212,.1); }
+.variant-pill.active.gc1 { border-color: rgba(200,184,64,.9);  background: rgba(200,184,64,.1); }
+.variant-pill.active.gc2 { border-color: rgba(160,108,204,.9); background: rgba(160,108,204,.1); }
+.variant-pill.active.gc3 { border-color: rgba(77,200,144,.9);  background: rgba(77,200,144,.1); }
+.variant-pill.active.gc4 { border-color: rgba(232,90,122,.9);  background: rgba(232,90,122,.1); }
+
 .vp-tag {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text-bright);
+  color: var(--text-dim); /* gc 클래스로 덮어씀 */
 }
 .vp-meta {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-dim);
 }
+.vp-quality { color: var(--green); }
 
 /* ── 스킬 아이콘 (chip 안) ── */
 .chip-icon {
@@ -169,16 +202,32 @@ body.light .rec-badge-fail {
   background: rgba(0,0,0,.05);
   border-color: #7a9eb4;
 }
+/* ── 라이트모드 pill ── */
 body.light .variant-pill {
   background: #edf3f8;
-  border-color: #7a9eb4;
+  border-color: #b0c8d8;
 }
 body.light .variant-pill:hover { border-color: var(--accent); }
-body.light .variant-pill.active {
-  border-color: var(--accent);
-  background: rgba(26,158,130,.08);
-}
-body.light .vp-tag { color: #18283a; }
+
+/* gc 라이트모드 — 채도 유지, 명도 낮춤 */
+body.light .variant-pill.gc0 { border-color: rgba(26,100,160,.4); }
+body.light .variant-pill.gc0 .vp-tag { color: #1a6090; }
+body.light .variant-pill.gc1 { border-color: rgba(140,120,0,.4); }
+body.light .variant-pill.gc1 .vp-tag { color: #7a6800; }
+body.light .variant-pill.gc2 { border-color: rgba(110,60,160,.4); }
+body.light .variant-pill.gc2 .vp-tag { color: #6a38a0; }
+body.light .variant-pill.gc3 { border-color: rgba(20,140,80,.4); }
+body.light .variant-pill.gc3 .vp-tag { color: #0e7840; }
+body.light .variant-pill.gc4 { border-color: rgba(180,40,80,.4); }
+body.light .variant-pill.gc4 .vp-tag { color: #b02850; }
+
+body.light .variant-pill.active.gc0 { border-color: rgba(26,100,160,.9);  background: rgba(26,100,160,.08); }
+body.light .variant-pill.active.gc1 { border-color: rgba(140,120,0,.9);   background: rgba(140,120,0,.08); }
+body.light .variant-pill.active.gc2 { border-color: rgba(110,60,160,.9);  background: rgba(110,60,160,.08); }
+body.light .variant-pill.active.gc3 { border-color: rgba(20,140,80,.9);   background: rgba(20,140,80,.08); }
+body.light .variant-pill.active.gc4 { border-color: rgba(180,40,80,.9);   background: rgba(180,40,80,.08); }
+
 body.light .vp-meta { color: #3a5468; }
+body.light .vp-quality { color: var(--green); }
 body.light .cant-toggle { color: #3a5468; }
 body.light .cant-toggle:hover { color: #18283a; }
