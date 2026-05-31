@@ -1449,3 +1449,71 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
 
 /* JS 생성 suffix 텍스트 */
 .tbl-suffix { font-size: 12px; color: var(--text-dim); margin-left: 3px; }
+
+/* ══════════════════════════════════════════
+   라이트모드 — 섹션 라벨 / 테이블 헤더 대비 강화
+   small + uppercase + text-dim 조합이 라이트에서 안 보이는 문제 해결
+   ══════════════════════════════════════════ */
+
+/* 결과 카드 섹션 타이틀 (확신 오프너 로테이션, 스킬별 1회 작업량 참고 등) */
+body.light .c-result-card-title {
+  color: var(--accent);
+}
+body.light .c-result-card-title::after {
+  background: var(--accent-dim);
+  opacity: .4;
+}
+
+/* 테이블 헤더 (스킬 조합 / 효율 / 스킬 작업량 / 확신+스킬 합산) */
+body.light .rotation-table th {
+  color: var(--text);
+  border-bottom-color: var(--border);
+}
+
+/* 품질 로테이션 섹션 라벨 (★ 추천 / 가능) */
+body.light .rota-section-label {
+  color: var(--text);
+}
+
+/* 계산기 입력 구분 라벨 */
+body.light .input-section-label {
+  color: var(--text);
+}
+body.light .input-section-label::after {
+  background: var(--border);
+}
+
+/* 스킬 탭 그룹 제목 */
+body.light .skill-group-title {
+  color: var(--text);
+  border-left-color: var(--accent-dim);
+}
+
+/* 아코디언 레이블 */
+body.light .ac-label {
+  color: var(--text-dim);
+}
+
+/* section-title (섹션 번호 구분선 라벨) */
+body.light .section-title {
+  color: var(--text);
+}
+body.light .section-title::after {
+  background: var(--border);
+}
+
+/* 업데이트 구분 라벨 */
+body.light .update-label {
+  color: var(--text);
+}
+body.light .update-label::after {
+  background: var(--border);
+}
+
+/* pill 카테고리 헤더 */
+body.light .pill-cat-header {
+  color: var(--text);
+}
+body.light .pill-cat-header::after {
+  background: var(--border);
+}
