@@ -410,8 +410,8 @@ const QUALITY_ROTATIONS = [
     cpCost:74, durCost:20 },
 
   { id:'r20', tag:'전문장인',
-    label:'신속한혁신+장족+비레고',
-    skills:['신속한 혁신','장족의 발전','비레고의 축복'],
+    label:'장족+신속한혁신+비레고',
+    skills:['장족의 발전','신속한 혁신','비레고의 축복'],
     efficiency:300, buffSum:1.0, iqStacks:10,
     cpCost:56, durCost:20 },
 
