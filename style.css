@@ -14,6 +14,15 @@
   --red: #e05060;
   --green: #4dc890;
   --yellow: #c8b840;
+
+  /* 라이트/다크 공용 — 하드코딩 rgba 대체 */
+  --overlay: rgba(0,0,0,.45);          /* 달성불가 카드 오버레이 */
+  --tint-blue: rgba(99,179,237,.08);   /* 추천카드 배경 */
+  --tint-blue-bd: rgba(99,179,237,.3); /* 추천카드 테두리 */
+  --chip-work-bg: rgba(90,184,212,.12);
+  --chip-buff-bg: rgba(200,184,64,.12);
+  --chip-state-bg: rgba(160,108,204,.15);
+  --chip-qual-bg: rgba(62,207,170,.12);
 }
 
 /* ── 라이트 모드 변수 ── */
@@ -33,6 +42,15 @@ body.light {
   --red: #c03040;
   --green: #1a8a58;
   --yellow: #8a7010;
+
+  /* 라이트모드 공용 토큰 오버라이드 */
+  --overlay: rgba(0,0,0,.15);
+  --tint-blue: rgba(26,120,180,.06);
+  --tint-blue-bd: rgba(26,120,180,.35);
+  --chip-work-bg: rgba(42,122,160,.12);
+  --chip-buff-bg: rgba(140,120,0,.12);
+  --chip-state-bg: rgba(110,60,160,.12);
+  --chip-qual-bg: rgba(26,158,130,.12);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -843,11 +861,11 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
 .rotation-table .bad  { color: var(--red); }
 
 .skill-chips { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
-.chip.work    { color: #5ab8d4; border: none; background: rgba(90,184,212,.12); }
-.chip.buff    { color: #c8b840; border: none; background: rgba(200,184,64,.12); }
-.chip.state   { color: #a06ccc; border: none; background: rgba(160,108,204,.15); }
+.chip.work    { color: #5ab8d4; border: none; background: var(--chip-work-bg); }
+.chip.buff    { color: #c8b840; border: none; background: var(--chip-buff-bg); }
+.chip.state   { color: #a06ccc; border: none; background: var(--chip-state-bg); }
 .chip.sep     { color: var(--border); background: none; border: none; padding: 2px; font-size: 14px; }
-.chip.quality { color: #3ecfaa; border: none; background: rgba(62,207,170,.12); }
+.chip.quality { color: #3ecfaa; border: none; background: var(--chip-qual-bg); }
 
 .work-total-box {
   display: flex;
@@ -1149,7 +1167,7 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,.45);
+  background: var(--overlay);
   border-radius: 4px;
 }
 .rota-card-icons {
@@ -1267,9 +1285,9 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
 .rpill.gc5:hover { border-color: rgba(250,160,80,.6); }
 
 /* active — gc 고유 색 배경+테두리 진하게 */
-.rpill.active.gc0 { background: rgba(90,184,212,.12); border-color: rgba(90,184,212,.8); }
+.rpill.active.gc0 { background: var(--chip-work-bg); border-color: rgba(90,184,212,.8); }
 .rpill.active.gc0 .rpill-tag { color: #5ab8d4; }
-.rpill.active.gc1 { background: rgba(200,184,64,.12); border-color: rgba(200,184,64,.8); }
+.rpill.active.gc1 { background: var(--chip-buff-bg); border-color: rgba(200,184,64,.8); }
 .rpill.active.gc1 .rpill-tag { color: #c8b840; }
 .rpill.active.gc2 { background: rgba(160,108,204,.12); border-color: rgba(160,108,204,.8); }
 .rpill.active.gc2 .rpill-tag { color: #a06ccc; }
