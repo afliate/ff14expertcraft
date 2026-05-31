@@ -16,6 +16,7 @@
   --yellow: #c8b840;
 }
 
+/* ── 라이트 모드 변수 ── */
 body.light {
   --bg: #e8eef4;
   --surface: #f0f5f9;
@@ -1313,3 +1314,85 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
   text-transform: uppercase;
   letter-spacing: .08em;
 }
+
+/* ── index.html 인라인 스타일 클래스화 ── */
+
+/* 계산기 음식/도핑 라벨 */
+.preset-sub-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.preset-sub-label { font-size: 12px; color: var(--text-dim); margin-bottom: 3px; }
+
+/* 능력치 3칸 그리드 */
+.stats-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+
+/* 전문장인 체크박스 */
+.check-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text); cursor: pointer; padding: 6px 0 2px; }
+.check-input { accent-color: var(--accent); width: 13px; height: 13px; flex-shrink: 0; }
+.check-sub { font-size: 11px; color: var(--text-dim); margin-left: 4px; }
+
+/* 레시피 선택 바 */
+.recipe-select-bar { display: flex; flex-direction: column; gap: 0; }
+.recipe-selects-header {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px 4px 0 0;
+  border-bottom: none;
+}
+
+/* 계산기 탭 바 */
+.calc-tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0 14px;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+/* 내구 계산 박스 */
+.dur-calc-box {
+  font-size: 13px;
+  color: var(--text-dim);
+  padding: 5px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+/* 결과 본문 래퍼 */
+.calc-result-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  padding: 14px;
+  min-height: 140px;
+}
+
+/* 예시 아코디언 설명 */
+.accordion-desc { font-size: 13px; color: var(--text-dim); line-height: 1.8; margin-bottom: 12px; }
+
+/* 요약 테이블 콤보 이름 */
+.tbl-combo-name { font-size: 13px; color: var(--text-bright); font-weight: 600; white-space: nowrap; }
+.tbl-combo-sub { font-size: 11px; color: var(--text-dim); font-weight: 400; }
+
+/* 마무리 테이블 비고 */
+.tbl-rota-note { font-size: 12px; color: var(--text-bright); }
+.tbl-rota-note.expert { color: var(--accent); }
+.tbl-rota-note.dim { color: var(--text-dim); }
+
+/* 인라인 텍스트 버튼 (금단표 탭, 상태 가이드 버튼) */
+.inline-link-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 0;
+}
+.inline-link-btn.sky { border-bottom: 1px solid var(--sky-dim); color: var(--sky); }
+.inline-link-btn.accent { border: 1px solid var(--accent-dim); border-radius: 2px; padding: 4px 12px; color: var(--accent); letter-spacing: .04em; }
+
+/* 작은 노트 텍스트 */
+.note-sm { font-size: 12px; color: var(--text-dim); }
+.note-strong { color: var(--text); }
+
+/* JS 생성 suffix 텍스트 */
+.tbl-suffix { font-size: 10px; color: var(--text-dim); margin-left: 3px; }
