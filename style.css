@@ -140,6 +140,7 @@ body.light .qual-extra-inputs {
   display:flex;align-items:center;gap:12px;
   width:100%;padding:9px 13px;
   background:none;border:none;
+  border-top:1px solid var(--border);
   font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:500;
   color:var(--text-dim);cursor:pointer;
   white-space:nowrap;overflow:hidden;
@@ -161,8 +162,8 @@ body.light .qual-extra-inputs {
 .region-section.hidden{display:none;}
 
 /* 지역별 섹션 타이틀 색상 */
-.region-section[data-region="sinnus"] .section-title .num{border-color:rgba(160,170,190,.4);color:#a0aabe;background:rgba(160,170,190,.08);}
-.region-section[data-region="phaenna"] .section-title .num{border-color:rgba(210,80,130,.4);color:#d2507e;background:rgba(210,80,130,.08);}
+.region-section[data-region="dongyeong"] .section-title .num{border-color:rgba(160,170,190,.4);color:#a0aabe;background:rgba(160,170,190,.08);}
+.region-section[data-region="paenna"] .section-title .num{border-color:rgba(210,80,130,.4);color:#d2507e;background:rgba(210,80,130,.08);}
 .region-section[data-region="oijis"] .section-title .num{border-color:rgba(200,170,110,.4);color:#c8aa6e;background:rgba(200,170,110,.08);}
 .region-section[data-region="auksesia"] .section-title .num{border-color:rgba(90,180,100,.4);color:#5ab464;background:rgba(90,180,100,.08);}
 
@@ -970,7 +971,7 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
   vertical-align: middle;
 }
 .si span {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text);
 }
 
