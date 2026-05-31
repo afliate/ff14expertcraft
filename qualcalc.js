@@ -740,27 +740,23 @@ function buildRecipePills() {
   const recipes = HARD_RECIPES.filter(r => r.region === calcRegionVal && (r.category || 'A-EX') === calcCategoryVal);
   const groups  = [...new Set(recipes.map(r => r.group))].sort((a, b) => a.localeCompare(b, 'ko', { numeric: true }));
 
-  const GROUP_COLORS = ['#5ab8d4','#c8b840','#a06ccc','#4dc890','#e85a7a'];
-  const colorMap = {};
-  groups.forEach((g, i) => { colorMap[g] = GROUP_COLORS[i % GROUP_COLORS.length]; });
+  // 그룹 인덱스 → CSS 클래스 색상 (rpill의 gc0~gc4와 동일 팔레트)
+  const GC_CLASSES = ['gc0','gc1','gc2','gc3','gc4'];
 
   let html = '';
-  groups.forEach((grp) => {
-    const items = recipes.filter(r => r.group === grp);
-    const col   = colorMap[grp];
+  groups.forEach((grp, gi) => {
+    const items   = recipes.filter(r => r.group === grp);
+    const gcClass = GC_CLASSES[gi % GC_CLASSES.length];
 
-    html += `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;">`;
+    html += `<div class="vpill-group">`;
     items.forEach((r, i) => {
-      const isSub      = !!r.isSub;
-      const borderCol  = isSub ? 'rgba(237,137,54,.6)' : `${col}33`;
-      const tagCol     = col;
-      html += `<button class="variant-pill"
-        style="border-color:${borderCol};min-width:88px;max-width:88px;"
+      const subClass = r.isSub ? ' vp-sub' : '';
+      html += `<button class="variant-pill ${gcClass}${subClass}"
         data-group="${r.group}" data-vidx="${i}"
         onclick="selectRecipePill('${r.group}',${i},this)">
-        <span class="vp-tag" style="color:${tagCol}">${r.tag}</span>
+        <span class="vp-tag">${r.tag}</span>
         <span class="vp-meta">${r.durability} · ${r.work.toLocaleString()}</span>
-        <span class="vp-meta" style="color:var(--green)">${r.quality.toLocaleString()}</span>
+        <span class="vp-meta vp-quality">${r.quality.toLocaleString()}</span>
       </button>`;
     });
     html += `</div>`;
