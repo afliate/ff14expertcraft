@@ -1237,35 +1237,49 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
   border: 1px solid var(--border);
   font-size: 11px;
   font-family: inherit;
-  background: var(--surface2);
-  transition: border-color .15s;
+  background: transparent;
+  transition: border-color .15s, background .15s;
   text-align: left;
 }
-.rpill:hover { border-color: var(--accent-dim); }
-.rpill.active { background: var(--accent-glow); border-color: var(--accent); }
-.rpill.active .rpill-tag { color: var(--accent); }
-.rpill-tag { font-weight: 600; color: var(--text); font-size: 11px; }
-.rpill-meta { font-size: 10px; color: var(--text-dim); }
+.rpill-tag { font-weight: 600; color: var(--text-dim); font-size: 11px; transition: color .15s; }
+.rpill-meta { font-size: 10px; color: var(--text-dim); opacity: .7; }
 
-/* 그룹 색상 */
-.rpill.gc0 { border-color: rgba(90,184,212,.3); }
-.rpill.gc0 .rpill-tag { color: #5ab8d4; }
-.rpill.gc1 { border-color: rgba(200,184,64,.3); }
-.rpill.gc1 .rpill-tag { color: #c8b840; }
-.rpill.gc2 { border-color: rgba(160,108,204,.3); }
-.rpill.gc2 .rpill-tag { color: #a06ccc; }
-.rpill.gc3 { border-color: rgba(77,200,144,.3); }
-.rpill.gc3 .rpill-tag { color: #4dc890; }
-.rpill.gc4 { border-color: rgba(232,90,122,.3); }
-.rpill.gc4 .rpill-tag { color: #e85a7a; }
-.rpill.gc5 { border-color: rgba(250,160,80,.3); }
-.rpill.gc5 .rpill-tag { color: #f0a050; }
-.rpill.active.gc0, .rpill.active.gc1, .rpill.active.gc2,
-.rpill.active.gc3, .rpill.active.gc4, .rpill.active.gc5 {
-  background: var(--accent-glow);
-  border-color: var(--accent);
-}
-.rpill.active .rpill-tag { color: var(--accent) !important; }
+/* 그룹 색상 — 비선택: 테두리+텍스트 dim */
+.rpill.gc0 { border-color: rgba(90,184,212,.25); }
+.rpill.gc0 .rpill-tag { color: rgba(90,184,212,.6); }
+.rpill.gc1 { border-color: rgba(200,184,64,.25); }
+.rpill.gc1 .rpill-tag { color: rgba(200,184,64,.6); }
+.rpill.gc2 { border-color: rgba(160,108,204,.25); }
+.rpill.gc2 .rpill-tag { color: rgba(160,108,204,.6); }
+.rpill.gc3 { border-color: rgba(77,200,144,.25); }
+.rpill.gc3 .rpill-tag { color: rgba(77,200,144,.6); }
+.rpill.gc4 { border-color: rgba(232,90,122,.25); }
+.rpill.gc4 .rpill-tag { color: rgba(232,90,122,.6); }
+.rpill.gc5 { border-color: rgba(250,160,80,.25); }
+.rpill.gc5 .rpill-tag { color: rgba(250,160,80,.6); }
+
+/* hover */
+.rpill.gc0:hover { border-color: rgba(90,184,212,.6); }
+.rpill.gc1:hover { border-color: rgba(200,184,64,.6); }
+.rpill.gc2:hover { border-color: rgba(160,108,204,.6); }
+.rpill.gc3:hover { border-color: rgba(77,200,144,.6); }
+.rpill.gc4:hover { border-color: rgba(232,90,122,.6); }
+.rpill.gc5:hover { border-color: rgba(250,160,80,.6); }
+
+/* active — gc 고유 색 배경+테두리 진하게 */
+.rpill.active.gc0 { background: rgba(90,184,212,.12); border-color: rgba(90,184,212,.8); }
+.rpill.active.gc0 .rpill-tag { color: #5ab8d4; }
+.rpill.active.gc1 { background: rgba(200,184,64,.12); border-color: rgba(200,184,64,.8); }
+.rpill.active.gc1 .rpill-tag { color: #c8b840; }
+.rpill.active.gc2 { background: rgba(160,108,204,.12); border-color: rgba(160,108,204,.8); }
+.rpill.active.gc2 .rpill-tag { color: #a06ccc; }
+.rpill.active.gc3 { background: rgba(77,200,144,.12); border-color: rgba(77,200,144,.8); }
+.rpill.active.gc3 .rpill-tag { color: #4dc890; }
+.rpill.active.gc4 { background: rgba(232,90,122,.12); border-color: rgba(232,90,122,.8); }
+.rpill.active.gc4 .rpill-tag { color: #e85a7a; }
+.rpill.active.gc5 { background: rgba(250,160,80,.12); border-color: rgba(250,160,80,.8); }
+.rpill.active.gc5 .rpill-tag { color: #f0a050; }
+.rpill.active .rpill-meta { opacity: 1; color: var(--text); }
 
 /* ── 참고 자료 링크 ── */
 .ref-link {
