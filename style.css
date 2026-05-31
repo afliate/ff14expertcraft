@@ -1220,6 +1220,7 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
 }
 .tag-expert { background: rgba(99,179,237,.12); color: #63b3ed; border: 1px solid rgba(99,179,237,.3); }
 .tag-lowdur { background: rgba(236,201,75,.12); color: var(--yellow); border: 1px solid rgba(236,201,75,.3); }
+.tag-transcend { background: rgba(160,108,204,.12); color: #a06ccc; border: 1px solid rgba(160,108,204,.3); }
 .rota-card-quality {
   font-size: 20px;
   font-weight: 700;
@@ -1518,3 +1519,45 @@ body.light .pill-cat-header {
 body.light .pill-cat-header::after {
   background: var(--border);
 }
+
+/* ── 초절 기술 토글 스위치 ── */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  margin-top: 4px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--surface3, #2a3a4a);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  transition: background .2s, border-color .2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  left: 2px;
+  top: 2px;
+  background: var(--text-dim);
+  border-radius: 50%;
+  transition: transform .2s, background .2s;
+}
+.toggle-switch input:checked + .toggle-slider {
+  background: rgba(99,179,237,.2);
+  border-color: var(--accent);
+}
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(16px);
+  background: var(--accent);
+}
+body.light .toggle-slider { background: #dde8f0; }
+body.light .toggle-slider::before { background: #8aaabf; }
+body.light .toggle-switch input:checked + .toggle-slider { background: rgba(26,120,180,.15); }
+body.light .toggle-switch input:checked + .toggle-slider::before { background: var(--accent); }
