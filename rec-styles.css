@@ -149,10 +149,3 @@
   transition: filter .15s;
 }
 .chip:hover .chip-icon { filter: none; }
-
-/* ── 로테이션 스킬 아이콘 filter ── */
-.rota-skill-icon {
-  filter: saturate(0.75) brightness(0.9);
-  transition: filter .15s;
-}
-.rota-card:hover .rota-skill-icon { filter: none; }
