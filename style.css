@@ -8,9 +8,9 @@
   --accent-glow: rgba(62,207,170,.12);
   --sky: #5ab8d4;
   --sky-dim: #2a7090;
-  --text: #c8dce8;
-  --text-dim: #7a96a8;
-  --text-bright: #eef6ff;
+  --text: #deeaf4;
+  --text-dim: #8aaabb;
+  --text-bright: #f8fcff;
   --red: #e05060;
   --green: #4dc890;
   --yellow: #c8b840;
@@ -27,16 +27,16 @@ body.light {
   --accent-glow: rgba(26,158,130,.1);
   --sky: #2a7aa0;
   --sky-dim: #1a5070;
-  --text: #2c3e4e;
-  --text-dim: #5a7080;
-  --text-bright: #0e1e2e;
+  --text: #18283a;
+  --text-dim: #3a5468;
+  --text-bright: #060e18;
   --red: #c03040;
   --green: #1a8a58;
   --yellow: #8a7010;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;transition:background .25s,color .25s;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:16px;line-height:1.8;min-height:100vh;transition:background .25s,color .25s;}
 
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -100,6 +100,15 @@ body.light::before{
 .sidebar:hover .t-label{opacity:1;}
 .tab-btn:hover{color:var(--text);background:rgba(128,128,128,.08);}
 body.light .tab-btn:hover{background:rgba(0,0,0,.06);}
+body.light .input-panel,
+body.light .custom-box {
+  background: #f8fbfd;
+  border-color: #8aabbd;
+}
+body.light .qual-extra-inputs {
+  background: #edf3f8;
+  border-color: #8aabbd;
+}
 .tab-btn.active{color:var(--accent);}
 .tab-btn.active .t-icon{filter:drop-shadow(0 0 5px var(--accent));}
 
@@ -184,7 +193,7 @@ body.light .tab-btn:hover{background:rgba(0,0,0,.06);}
 .eyebrow{font-size:10px;letter-spacing:.28em;color:var(--accent-dim);text-transform:uppercase;margin-bottom:8px;}
 .page-hero h1{font-family:'Noto Sans KR',sans-serif;font-size:24px;font-weight:700;color:var(--text-bright);letter-spacing:.02em;margin-bottom:4px;}
 .page-hero h1 em{color:var(--accent);font-style:normal;}
-.page-hero p{color:var(--text-dim);font-size:13px;}
+.page-hero p{color:var(--text-dim);font-size:14px;}
 
 /* ── SECTION ── */
 .section{margin-bottom:28px;}
@@ -204,7 +213,7 @@ body.light .tab-btn:hover{background:rgba(0,0,0,.06);}
 .guide-note{
   border-left:2px solid var(--accent-dim);
   padding:10px 14px;
-  font-size:14px;line-height:1.8;color:var(--text);
+  font-size:15px;line-height:1.8;color:var(--text);
   background:rgba(62,207,170,.04);
   border-radius:0 3px 3px 0;
 }
@@ -242,7 +251,7 @@ body.light .tab-btn:hover{background:rgba(0,0,0,.06);}
 }
 .home-title em{color:var(--accent);font-style:normal;}
 .home-sub{
-  font-size:14px;color:var(--text-dim);line-height:1.8;
+  font-size:15px;color:var(--text-dim);line-height:1.8;
   max-width:480px;
 }
 .home-sub strong{color:var(--text);}
@@ -291,7 +300,7 @@ body.light .tab-btn:hover{background:rgba(0,0,0,.06);}
 .hl-title{font-size:14px;font-weight:700;color:var(--text-bright);transition:color .15s;}
 .hl-desc{font-size:12px;color:var(--text-dim);line-height:1.5;}
 .home-patch{
-  font-size:12px;color:var(--text-dim);
+  font-size:13px;color:var(--text-dim);
   padding:10px 0 0;
   border-top:1px solid var(--border);
   display:flex;align-items:center;gap:6px;
@@ -640,20 +649,20 @@ body.light .tab-btn:hover{background:rgba(0,0,0,.06);}
 }
 
 .c-field { display: flex; flex-direction: column; gap: 4px; }
-.c-field label { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+.c-field label { font-size: 12px; color: var(--text-dim); font-weight: 500; }
 /* 가로 배치용 - 두 필드를 한 줄에 */
 .c-field-row { display: flex; gap: 8px; }
 .c-field-row .c-field { flex: 1; }
 .c-field input[type="number"],
 .c-field select {
   width: 100%;
-  padding: 5px 8px;
+  padding: 6px 9px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 3px;
   color: var(--text-bright);
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   transition: border-color .15s;
   outline: none;
 }
@@ -661,6 +670,16 @@ body.light .tab-btn:hover{background:rgba(0,0,0,.06);}
 .c-field select:focus { border-color: var(--accent-dim); }
 .c-field input[type="number"].filled { border-color: var(--accent-dim); background: rgba(62,207,170,.04); }
 .c-field select option { background: #1a2535; }
+/* 라이트모드 input 대비 강화 */
+body.light .c-field input[type="number"],
+body.light .c-field select {
+  background: #ffffff;
+  border-color: #8aabbd;
+  color: var(--text-bright);
+}
+body.light .c-field input[type="number"]:focus,
+body.light .c-field select:focus { border-color: var(--accent); }
+body.light .c-field select option { background: #ffffff; }
 .c-hint { font-size: 11px; color: var(--text-dim); }
 
 .custom-box {
