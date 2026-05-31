@@ -7,6 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="rec-styles.css">
+<style>
+.ref-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: rgba(99,179,237,.07);
+  border: 1px solid rgba(99,179,237,.25);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color .15s, background .15s;
+}
+.ref-link:hover {
+  border-color: var(--accent);
+  background: rgba(99,179,237,.14);
+  color: var(--text-bright);
+}
+</style>
 <script src="recipes-sinus-ardorum.js"></script>
 <script src="recipes-phaenna.js"></script>
 <script src="recipes-oizys.js"></script>
@@ -210,6 +230,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="u-date">예정</span>
         <span class="u-text">예시 추가 — 동경의만 / 각 지역별 공정 예시 / 아욱세시아 업데이트 예정 </span>
       </div>
+    </div>
+  </div>
+  <div class="update-section" style="margin-top:8px;">
+    <div class="update-label">관련 자료</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;padding:6px 0;">
+      <a href="https://buly.kr/BeLnFXM" target="_blank" rel="noopener" class="ref-link">› 우주개척 정보 시트</a>
+      <a href="https://docs.google.com/spreadsheets/d/1MUvhXUby78wvPSGO4REZf7UzcGQdtNC5JiqXXsLoxu8/edit?usp=sharing" target="_blank" rel="noopener" class="ref-link">› 일반 제작 매크로 시트</a>
     </div>
   </div>
 </div>
@@ -1531,7 +1558,14 @@ document.addEventListener('DOMContentLoaded', () => {
 </main>
 </div>
 
-<footer class="site-footer"> FINAL FANTASY XIV @ SQUARE ENIX ; COSMIC EXPLORATION_7.51 </footer>
+<footer class="site-footer">
+  FINAL FANTASY XIV @ SQUARE ENIX &nbsp;&middot;&nbsp; COSMIC EXPLORATION_7.51
+  <span style="margin:0 8px;opacity:.3">|</span>
+  참고:
+  <a href="https://ffxivteamcraft.com/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">Teamcraft</a>
+  &nbsp;&middot;&nbsp;
+  <a href="https://www.raphael-xiv.com/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">Raphael</a>
+</footer>
 
 <script>
 /* ── 탭 전환 + 해시 라우팅 ── */
