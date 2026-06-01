@@ -1669,10 +1669,4 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   .theme-btn     { padding: 9px 9px; }
   .sidebar-logo  { padding: 0 9px; }
 }
-
- .notice {
-  font-size: 10px;
-  opacity: 0.75;
-  margin-top: 8px;
-}
 }
