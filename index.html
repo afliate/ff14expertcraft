@@ -119,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
   <nav class="sidebar-nav">
-    <button class="theme-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="테마 전환"><span class="theme-icon" id="theme-icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span class="theme-label t-label" id="theme-label">라이트 모드</span></button>
     <button class="tab-btn active" data-tab="home"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="t-label">메인</span></button>
     <button class="tab-btn" data-tab="start"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span class="t-label">시작가이드</span></button>
     <button class="tab-btn" data-tab="skill"><span class="t-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span><span class="t-label">스킬</span></button>
@@ -1157,7 +1156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="section">
       <div class="section-title"><div class="num">동경의 만</div>7.21 패치</div>
 
-      <div class="accordion" id="ac-1">
+      <div class="accordion open" id="ac-1">
         <button class="accordion-btn" onclick="toggleAc('ac-1')">
           <div class="ac-left">
             <div class="ac-label">동경의 만 · A-1</div>
@@ -1281,7 +1280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="section">
       <div class="section-title"><div class="num">오이지스</div>7.41 패치</div>
 
-      <div class="accordion" id="ac-oizys-1">
+      <div class="accordion open" id="ac-oizys-1">
         <button class="accordion-btn" onclick="toggleAc('ac-oizys-1')">
           <div class="ac-left">
             <div class="ac-label">오이지스 · A-ex</div>
@@ -1707,5 +1706,6 @@ function filterRegion(region) {
 }
 </script>
 
+<button class="theme-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="테마 전환" style="position:fixed;top:12px;right:12px;z-index:500;"><span class="theme-icon" id="theme-icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span class="theme-label t-label" id="theme-label">라이트 모드</span></button>
 </body>
 </html>
