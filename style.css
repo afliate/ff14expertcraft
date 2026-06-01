@@ -1657,14 +1657,14 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
     flex-wrap: wrap;
   }
   .rotation-table .chip {
-    padding: 2px 4px;
-    font-size: 11px;
+    padding: 4px 6px;
+    font-size: 12px;
     border-radius: 3px;
   }
   .rotation-table .chip-icon {
-    width: 16px;
-    height: 16px;
-    margin-right: 2px;
+    width: 18px;
+    height: 18px;
+    margin-right: 3px;
     display: inline-block;
   }
 }
