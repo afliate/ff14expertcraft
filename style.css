@@ -1670,11 +1670,9 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   .sidebar-logo  { padding: 0 9px; }
 }
 
-  .notice {
-  margin-top: 12px;
-  padding-left: 12px;
-  border-left: 3px solid #5b9cff;
-  color: #bfcfff;
+ .notice {
   font-size: 0.9rem;
+  opacity: 0.75;
+  margin-top: 8px;
 }
 }
