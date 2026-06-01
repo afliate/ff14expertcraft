@@ -906,6 +906,7 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
 .rotation-table .bad  { color: var(--red); }
 
 .skill-chips { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.rotation-note { margin-top: 6px; font-size: 13px; color: var(--text-dim); }
 .chip.work    { color: #5ab8d4; border: none; background: var(--chip-work-bg); }
 .chip.buff    { color: #c8b840; border: none; background: var(--chip-buff-bg); }
 .chip.state   { color: #a06ccc; border: none; background: var(--chip-state-bg); }
@@ -1619,28 +1620,45 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 
 /* ── 모바일 (640px 이하) ── */
 @media (max-width: 640px) {
-  /* 작업량 테이블 — thead 숨기고 행을 카드형으로 */
-  .rotation-table thead { display: none; }
-  .rotation-table tbody tr {
-    display: flex;
-    flex-direction: column;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    gap: 4px;
+  /* 작업량 테이블 — 2열 레이아웃 (로테이션 | 총합) */
+  .rotation-table thead { display: table-header-group; }
+  .rotation-table th:nth-child(1) { 
+    color: transparent;
+    position: relative;
   }
-  .rotation-table td { border: none; padding: 0; }
-  .rotation-table td.num {
-    text-align: left;
-    font-size: 12px;
+  .rotation-table th:nth-child(1)::before { 
+    content: '로테이션';
     color: var(--text-dim);
+    position: absolute;
+    left: 8px;
   }
-  .rotation-table td.num b { color: var(--text-bright); font-size: 14px; }
-  /* 숫자 두 개를 가로 한 줄로 */
-  .rotation-table td:nth-child(2),
-  .rotation-table td:nth-child(3) {
-    display: inline-block;
-    margin-right: 12px;
+  .rotation-table th:nth-child(2) { display: none; }
+  .rotation-table th:nth-child(3) { 
+    color: transparent;
+    position: relative;
+    text-align: right;
   }
+  .rotation-table th:nth-child(3)::before { 
+    content: '총합';
+    color: var(--text-dim);
+    position: absolute;
+    right: 8px;
+  }
+  .rotation-table td:nth-child(2) { display: none; }
+  .rotation-table tbody tr {
+    display: table-row;
+    border-bottom: 1px solid var(--border);
+  }
+  .rotation-table td { 
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+  }
+  .rotation-table td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .rotation-table td.num b { color: var(--text-bright); font-size: 15px; }
 }
 
 /* ── 스몰 모바일 (480px 이하) ── */
