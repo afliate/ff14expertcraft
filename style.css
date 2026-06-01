@@ -1664,13 +1664,32 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   }
   .rotation-table td:first-child {
     word-break: break-word;
+    width: 55%;
   }
   .rotation-table td.num {
     text-align: right;
     font-variant-numeric: tabular-nums;
     font-size: 13px;
+    width: 45%;
   }
   .rotation-table td.num b { color: var(--text-bright); font-size: 13px; font-weight: bold; }
+  
+  /* 모바일 스킬 칩 조정 */
+  .rotation-table .skill-chips {
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+  .rotation-table .chip {
+    padding: 2px 4px;
+    font-size: 11px;
+    border-radius: 3px;
+  }
+  .rotation-table .chip-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+    display: inline-block;
+  }
 }
 
 /* ── 스몰 모바일 (480px 이하) ── */
