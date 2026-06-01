@@ -1353,7 +1353,7 @@ function renderWorkHTML(s0, recipe, variantUI) {
         <thead><tr>
           <th>스킬</th>
           <th class="num">작업량</th>
-          <th class="num">공경 적용</th>
+          <th class="num"><img class="chip-icon" src="https://xivapi.com/i/001000/001995_hr1.png" alt="공경" style="width:18px;height:18px;vertical-align:middle;"></th>
         </tr></thead>
         <tbody>
           ${skillRows.map(row => {
