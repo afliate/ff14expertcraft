@@ -1352,15 +1352,18 @@ function renderWorkHTML(s0, recipe, variantUI) {
       <table class="rotation-table">
         <thead><tr>
           <th>스킬</th>
-          <th class="num">효율</th>
           <th class="num">작업량</th>
+          <th class="num">공경 적용</th>
         </tr></thead>
         <tbody>
-          ${skillRows.map(row => `<tr>
+          ${skillRows.map(row => {
+            const koWork = Math.floor(row.workAmt * 1.5); // 공경 버프 +50%
+            return `<tr>
             <td><div class="skill-chips"><span class="chip work"><img class="chip-icon" src="https://xivapi.com/i/001000/${(SKILL_ICONS[row.name]||{}).id||'001501'}_hr1.png" onerror="this.style.display='none'">${row.name}</span></div></td>
-            <td class="num">${row.eff}</td>
             <td class="num">${row.workAmt.toLocaleString()}</td>
-          </tr>`).join('')}
+            <td class="num"><img class="chip-icon" src="https://xivapi.com/i/001000/001995_hr1.png" alt="공경" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">${koWork.toLocaleString()}</td>
+          </tr>`;
+          }).join('')}
         </tbody>
       </table>
     </div>
