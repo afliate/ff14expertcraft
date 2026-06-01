@@ -1645,20 +1645,32 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
     right: 8px;
   }
   .rotation-table td:nth-child(2) { display: none; }
+  .rotation-table thead {
+    font-size: 12px;
+    padding: 10px 8px;
+    line-height: 1.4;
+  }
   .rotation-table tbody tr {
     display: table-row;
     border-bottom: 1px solid var(--border);
+    line-height: 1.5;
   }
   .rotation-table td { 
     border: none;
-    padding: 8px;
-    font-size: 14px;
+    padding: 10px 8px;
+    font-size: 12px;
+    min-height: 24px;
+    vertical-align: middle;
+  }
+  .rotation-table td:first-child {
+    word-break: break-word;
   }
   .rotation-table td.num {
     text-align: right;
     font-variant-numeric: tabular-nums;
+    font-size: 13px;
   }
-  .rotation-table td.num b { color: var(--text-bright); font-size: 15px; }
+  .rotation-table td.num b { color: var(--text-bright); font-size: 13px; font-weight: bold; }
 }
 
 /* ── 스몰 모바일 (480px 이하) ── */
