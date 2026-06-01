@@ -1310,29 +1310,21 @@ function renderWorkHTML(s0, recipe, variantUI) {
 
     <div class="c-result-card">
       <div class="c-result-card-title">확신 오프너 로테이션</div>
-      <table class="rotation-table">
-        <thead>
-          <tr>
-            <th>스킬 조합</th>
-            <th class="num">스킬 작업량</th>
-            <th class="num">확신 + 스킬 합산</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${openerRows.map(row => {
-            return `
-          <tr class="${row.highlight ? 'highlight' : ''}">
-            <td><div class="skill-chips">${row.chips.map(c => {
-              if (c.type === 'sep') return `<span class="chip sep">${c.text}</span>`;
-              const sk = SKILL_ICONS[c.text];
-              const iconHtml = sk ? `<img class="chip-icon" src="https://xivapi.com/i/001000/${sk.id}_hr1.png" alt="${c.text}" onerror="this.style.display='none'">` : '';
-              return `<span class="chip ${c.type}">${iconHtml}${c.text}</span>`;
-            }).join('')}</div></td>
-            <td class="num">${row.skillWork.toLocaleString()}</td>
-            <td class="num"><b>${row.total.toLocaleString()}</b></td>
-          </tr>`;}).join('')}
-        </tbody>
-      </table>
+      <div class="opener-card-list">
+        ${openerRows.map(row => `
+        <div class="opener-card${row.highlight ? ' opener-card-highlight' : ''}">
+          <div class="skill-chips">${row.chips.map(c => {
+            if (c.type === 'sep') return `<span class="chip sep">${c.text}</span>`;
+            const sk = SKILL_ICONS[c.text];
+            const iconHtml = sk ? `<img class="chip-icon" src="https://xivapi.com/i/001000/${sk.id}_hr1.png" alt="${c.text}" onerror="this.style.display='none'">` : '';
+            return `<span class="chip ${c.type}">${iconHtml}${c.text}</span>`;
+          }).join('')}</div>
+          <div class="opener-card-nums">
+            <span class="opener-skill-work">${row.skillWork.toLocaleString()}</span>
+            <span class="opener-total">${row.total.toLocaleString()}</span>
+          </div>
+        </div>`).join('')}
+      </div>
       ${remaining !== null ? `
       <div class="work-total-box">
         <div>
