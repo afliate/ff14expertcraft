@@ -1672,9 +1672,9 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 
   .notice {
   margin-top: 12px;
-  padding: 10px 12px;
-  border-left: 3px solid var(--accent);
-  background: rgba(255,255,255,0.04);
+  padding-left: 12px;
+  border-left: 3px solid #5b9cff;
+  color: #bfcfff;
   font-size: 0.9rem;
 }
 }
