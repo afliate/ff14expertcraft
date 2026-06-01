@@ -1586,8 +1586,8 @@ body.light .toggle-slider::before { background: #8aaabf; }
 body.light .toggle-switch input:checked + .toggle-slider { background: rgba(26,120,180,.15); }
 body.light .toggle-switch input:checked + .toggle-slider::before { background: var(--accent); }
 
-/* ── 로테이션 카드 모바일형 (공통) ── */
-/* 기본: 기존 가로 레이아웃 유지 */
+/* ── 로테이션 카드 ── */
+/* PC (640px 초과): 로테이션(왼쪽) | 품질+메타(오른쪽) */
 .rota-card-mobile {
   width: 100%;
   min-width: 0;
@@ -1620,10 +1620,26 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 
 /* ── 모바일 (640px 이하) ── */
 @media (max-width: 640px) {
-  /* 작업량 테이블 — 모바일 폰트 조정 */
-  .rotation-table thead { display: table-header-group; }
-  .rotation-table thead {
+  /* 작업량 테이블 — 모바일에서 2열로 표시 (중간 열 숨김) */
+  .rotation-table th:nth-child(1) {
+    font-size: 0;
+  }
+  .rotation-table th:nth-child(1)::before {
+    content: '로테이션';
     font-size: 12px;
+  }
+  .rotation-table th:nth-child(2),
+  .rotation-table td:nth-child(2) { 
+    display: none; 
+  }
+  .rotation-table th:nth-child(3) {
+    font-size: 0;
+  }
+  .rotation-table th:nth-child(3)::before {
+    content: '총합';
+    font-size: 12px;
+  }
+  .rotation-table thead {
     padding: 10px 8px;
     line-height: 1.4;
   }
@@ -1666,6 +1682,23 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
     height: 18px;
     margin-right: 3px;
     display: inline-block;
+  }
+
+  /* 모바일 마무리 로테이션 카드 — 세로형 (품질+메타 위, 로테이션 아래) */
+  .rota-card-mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .rota-card-mobile .rota-card-top {
+    width: 100%;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+  .rota-card-mobile .rota-card-icons {
+    width: 100%;
   }
 }
 
