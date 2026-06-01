@@ -1586,6 +1586,7 @@ function renderQuality() {
       : '';
     return `
     <div class="rota-card rota-card-mobile${bestBorder}${disabled}">
+      <div class="rota-card-icons">${skillSeq(row.skills)}</div>
       <div class="rota-card-top">
         <div class="rota-card-quality" style="color:${qColor}">${totalQ}${diffHtml}</div>
         <div class="rota-card-meta">
@@ -1595,7 +1596,6 @@ function renderQuality() {
           <span${cpBad}>CP <b>${row.cpCost}</b></span>
         </div>
       </div>
-      <div class="rota-card-icons">${skillSeq(row.skills)}</div>
     </div>`;
   }
 
