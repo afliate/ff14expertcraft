@@ -1361,14 +1361,8 @@ function renderWorkHTML(s0, recipe, variantUI) {
             <td class="num">${row.eff}</td>
             <td class="num">${row.workAmt.toLocaleString()}</td>
           </tr>`).join('')}
-          <tr style="opacity:.5">
-            <td><div class="skill-chips"><span class="chip">마무리 '작업'</span></div></td>
-            <td class="num">120</td>
-            <td class="num">${finishWork.toLocaleString()}</td>
-          </tr>
         </tbody>
       </table>
-      <div style="font-size:11px;color:var(--text-dim);margin-top:8px;">※ 마무리 '작업' 수치는 참고용이며 총 작업량에 포함되지 않습니다.</div>
     </div>
   `;
 }
