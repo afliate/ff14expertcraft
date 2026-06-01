@@ -242,7 +242,8 @@ body.light .st-low   { color: #505050; }
   .mobile-theme-btn{display:flex;}
   .sidebar:hover{width:44px;}
   .sidebar.open{width:180px;}
-  .sidebar .theme-btn{display:none;}
+  .sidebar .theme-btn{display:none !important;}
+  .sidebar .theme-btn .theme-icon{display:none;}
   /* 오버레이 */
   .sidebar-overlay{display:none;position:fixed;inset:0;z-index:199;background:rgba(0,0,0,.4);}
   .sidebar-overlay.show{display:block;}
