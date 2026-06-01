@@ -1622,29 +1622,7 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 @media (max-width: 640px) {
   /* 작업량 테이블 — 2열 레이아웃 (로테이션 | 총합) */
   .rotation-table thead { display: table-header-group; }
-  .rotation-table th:nth-child(1) { 
-    color: transparent;
-    position: relative;
-  }
-  .rotation-table th:nth-child(1)::before { 
-    content: '로테이션';
-    color: var(--text-dim);
-    position: absolute;
-    left: 8px;
-  }
-  .rotation-table th:nth-child(2) { display: none; }
-  .rotation-table th:nth-child(3) { 
-    color: transparent;
-    position: relative;
-    text-align: right;
-  }
-  .rotation-table th:nth-child(3)::before { 
-    content: '총합';
-    color: var(--text-dim);
-    position: absolute;
-    right: 8px;
-  }
-  .rotation-table td:nth-child(2) { display: none; }
+  /* 스킬 작업량 열 숨김 (2열 레이아웃) */
   .rotation-table thead {
     font-size: 12px;
     padding: 10px 8px;
