@@ -162,9 +162,9 @@ body.light .qual-extra-inputs {
 .region-section.hidden{display:none;}
 
 /* 지역별 섹션 타이틀 색상 */
-.region-section[data-region="dongyeong"] .section-title .num{border-color:rgba(160,170,190,.4);color:#a0aabe;background:rgba(160,170,190,.08);}
-.region-section[data-region="paenna"] .section-title .num{border-color:rgba(210,80,130,.4);color:#d2507e;background:rgba(210,80,130,.08);}
-.region-section[data-region="oijis"] .section-title .num{border-color:rgba(200,170,110,.4);color:#c8aa6e;background:rgba(200,170,110,.08);}
+.region-section[data-region="sinus"] .section-title .num{border-color:rgba(160,170,190,.4);color:#a0aabe;background:rgba(160,170,190,.08);}
+.region-section[data-region="phaenna"] .section-title .num{border-color:rgba(210,80,130,.4);color:#d2507e;background:rgba(210,80,130,.08);}
+.region-section[data-region="oizys"] .section-title .num{border-color:rgba(200,170,110,.4);color:#c8aa6e;background:rgba(200,170,110,.08);}
 .region-section[data-region="auksesia"] .section-title .num{border-color:rgba(90,180,100,.4);color:#5ab464;background:rgba(90,180,100,.08);}
 
 /* 예시 테이블 상태 색상 */
