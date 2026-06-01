@@ -207,6 +207,26 @@ body.light .st-low   { color: #505050; }
 }
 .menu-btn:hover{color:var(--accent);}
 
+.mobile-theme-btn{
+  display:none;
+  position:fixed;
+  top:14px;
+  right:14px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  z-index:300;
+  cursor:pointer;
+  transition:background .2s,transform .2s,color .2s;
+}
+.mobile-theme-btn:hover{background:rgba(128,128,128,.08);}
+
 /* ── 중형 노트북 (1025~1280px) ── */
 @media(max-width:1280px){
   .main-wrap{padding:22px 22px 80px;}
@@ -219,8 +239,10 @@ body.light .st-low   { color: #505050; }
 
 @media(max-width:640px){
   .menu-btn{display:flex;}
+  .mobile-theme-btn{display:flex;}
   .sidebar:hover{width:44px;}
   .sidebar.open{width:180px;}
+  .sidebar .theme-btn{display:none;}
   /* 오버레이 */
   .sidebar-overlay{display:none;position:fixed;inset:0;z-index:199;background:rgba(0,0,0,.4);}
   .sidebar-overlay.show{display:block;}

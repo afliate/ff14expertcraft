@@ -145,6 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
 
+<button class="mobile-theme-btn" onclick="toggleTheme()" aria-label="테마 전환">
+  <span class="theme-icon" id="mobile-theme-icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>
+</button>
+
 <div id="tab-home" class="tab-panel active">
   <div class="home-intro">
     <div class="home-eyebrow">Eorzea Crafting Guide · 7.5</div>
@@ -1643,7 +1647,7 @@ function switchTab(id) {
   closeSidebar();
 }
 
-/* ── 테마 토글 ── */
+/* ── 라이트/다크 모드 토글 ── */
 const DARK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
 const LIGHT_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
 
@@ -1651,8 +1655,11 @@ function applyTheme(mode) {
   const isLight = mode === 'light';
   document.body.classList.toggle('light', isLight);
   const icon = document.getElementById('theme-icon');
+  const mobileIcon = document.getElementById('mobile-theme-icon');
   const label = document.getElementById('theme-label');
-  if (icon) icon.innerHTML = isLight ? LIGHT_ICON : DARK_ICON;
+  const iconHtml = isLight ? LIGHT_ICON : DARK_ICON;
+  if (icon) icon.innerHTML = iconHtml;
+  if (mobileIcon) mobileIcon.innerHTML = iconHtml;
   if (label) label.textContent = isLight ? '다크 모드' : '라이트 모드';
 }
 function toggleTheme() {
