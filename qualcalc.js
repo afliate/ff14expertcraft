@@ -1361,7 +1361,7 @@ function renderWorkHTML(s0, recipe, variantUI) {
             return `<tr>
             <td><div class="skill-chips"><span class="chip work"><img class="chip-icon" src="https://xivapi.com/i/001000/${(SKILL_ICONS[row.name]||{}).id||'001501'}_hr1.png" onerror="this.style.display='none'">${row.name}</span></div></td>
             <td class="num">${row.workAmt.toLocaleString()}</td>
-            <td class="num"><img class="chip-icon" src="https://xivapi.com/i/001000/001995_hr1.png" alt="공경" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">${koWork.toLocaleString()}</td>
+            <td class="num">${koWork.toLocaleString()}</td>
           </tr>`;
           }).join('')}
         </tbody>
