@@ -1314,7 +1314,6 @@ function renderWorkHTML(s0, recipe, variantUI) {
         <thead>
           <tr>
             <th>스킬 조합</th>
-            <th class="num">효율</th>
             <th class="num">스킬 작업량</th>
             <th class="num">확신 + 스킬 합산</th>
           </tr>
@@ -1329,7 +1328,6 @@ function renderWorkHTML(s0, recipe, variantUI) {
               const iconHtml = sk ? `<img class="chip-icon" src="https://xivapi.com/i/001000/${sk.id}_hr1.png" alt="${c.text}" onerror="this.style.display='none'">` : '';
               return `<span class="chip ${c.type}">${iconHtml}${c.text}</span>`;
             }).join('')}</div></td>
-            <td class="num">${row.skillEff}</td>
             <td class="num">${row.skillWork.toLocaleString()}</td>
             <td class="num"><b>${row.total.toLocaleString()}</b></td>
           </tr>`;}).join('')}
