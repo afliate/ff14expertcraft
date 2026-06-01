@@ -1310,21 +1310,29 @@ function renderWorkHTML(s0, recipe, variantUI) {
 
     <div class="c-result-card">
       <div class="c-result-card-title">확신 오프너 로테이션</div>
-      <div class="opener-card-list">
-        ${openerRows.map(row => `
-        <div class="opener-card${row.highlight ? ' opener-card-highlight' : ''}">
-          <div class="skill-chips">${row.chips.map(c => {
-            if (c.type === 'sep') return `<span class="chip sep">${c.text}</span>`;
-            const sk = SKILL_ICONS[c.text];
-            const iconHtml = sk ? `<img class="chip-icon" src="https://xivapi.com/i/001000/${sk.id}_hr1.png" alt="${c.text}" onerror="this.style.display='none'">` : '';
-            return `<span class="chip ${c.type}">${iconHtml}${c.text}</span>`;
-          }).join('')}</div>
-          <div class="opener-card-nums">
-            <span class="opener-skill-work">${row.skillWork.toLocaleString()}</span>
-            <span class="opener-total">${row.total.toLocaleString()}</span>
-          </div>
-        </div>`).join('')}
-      </div>
+      <table class="rotation-table">
+        <thead>
+          <tr>
+            <th>스킬 조합</th>
+            <th class="num">스킬 작업량</th>
+            <th class="num">확신 + 스킬 합산</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${openerRows.map(row => {
+            return `
+          <tr class="${row.highlight ? 'highlight' : ''}">
+            <td><div class="skill-chips">${row.chips.map(c => {
+              if (c.type === 'sep') return `<span class="chip sep">${c.text}</span>`;
+              const sk = SKILL_ICONS[c.text];
+              const iconHtml = sk ? `<img class="chip-icon" src="https://xivapi.com/i/001000/${sk.id}_hr1.png" alt="${c.text}" onerror="this.style.display='none'">` : '';
+              return `<span class="chip ${c.type}">${iconHtml}${c.text}</span>`;
+            }).join('')}</div></td>
+            <td class="num">${row.skillWork.toLocaleString()}</td>
+            <td class="num"><b>${row.total.toLocaleString()}</b></td>
+          </tr>`;}).join('')}
+        </tbody>
+      </table>
       ${remaining !== null ? `
       <div class="work-total-box">
         <div>
@@ -1560,7 +1568,7 @@ function renderQuality() {
   }
 
 
-  // ── 카드 렌더 ──
+  // ── 카드 렌더 (카드형: 품질 합산 크게, 스킬+메타 inline 작게) ──
   function renderRotaCard(row) {
     const isBest = best && row.id === best.id;
     const qColor = row.ok ? 'var(--green)' : 'var(--text-dim)';
@@ -1575,14 +1583,14 @@ function renderQuality() {
     const durBad = !row.durOk ? ' style="color:var(--red)"' : '';
     const disabled = !row.canDo ? ' rota-card-disabled' : '';
     const bestBorder = isBest ? ' rota-card-best' : '';
+    const totalQ = (currentQuality + row.q).toLocaleString();
+    const diffHtml = currentQuality > 0
+      ? `<span class="rota-card-qdiff">+${row.q.toLocaleString()}</span>`
+      : '';
     return `
-    <div class="rota-card${bestBorder}${disabled}" style="width:100%;min-width:0;box-sizing:border-box;">
-      <div class="rota-card-icons">${skillSeq(row.skills)}</div>
-      <div class="rota-card-right">
-        <div class="rota-card-quality" style="color:${qColor}">
-          ${(currentQuality + row.q).toLocaleString()}
-          ${currentQuality > 0 ? `<span class="rota-card-qdiff">+${row.q.toLocaleString()}</span>` : ''}
-        </div>
+    <div class="rota-card rota-card-mobile${bestBorder}${disabled}">
+      <div class="rota-card-top">
+        <div class="rota-card-quality" style="color:${qColor}">${totalQ}${diffHtml}</div>
         <div class="rota-card-meta">
           ${tagHtml}
           <span${durBad}>내구 <b>${row.durCost}</b></span>
@@ -1590,6 +1598,7 @@ function renderQuality() {
           <span${cpBad}>CP <b>${row.cpCost}</b></span>
         </div>
       </div>
+      <div class="rota-card-icons">${skillSeq(row.skills)}</div>
     </div>`;
   }
 
