@@ -1671,7 +1671,7 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 }
 
  .notice {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   opacity: 0.75;
   margin-top: 8px;
 }
