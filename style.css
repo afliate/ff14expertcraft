@@ -1620,9 +1620,8 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 
 /* ── 모바일 (640px 이하) ── */
 @media (max-width: 640px) {
-  /* 작업량 테이블 — 2열 레이아웃 (로테이션 | 총합) */
+  /* 작업량 테이블 — 모바일 폰트 조정 */
   .rotation-table thead { display: table-header-group; }
-  /* 스킬 작업량 열 숨김 (2열 레이아웃) */
   .rotation-table thead {
     font-size: 12px;
     padding: 10px 8px;
