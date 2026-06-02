@@ -1353,7 +1353,7 @@ function renderWorkHTML(s0, recipe, variantUI) {
   const resultEl  = document.getElementById('calc-tab-work');
   const workReq   = recipe.work;
   const finishWork = calcWork(s0, FINISH_EFF, 1);
-  const regionNames = { oizys: '오이지스', phaenna: '파엔나', sinus: '동경의 만', '': '' };
+  const regionNames = { oizys: '오이지스', phaenna: '파엔나', sinus: '동경의 만', auxesia: '아욱세시아', '': '' };
 
   // ── 오프너 조합 행 계산 ──
   const openerRows = OPENER_COMBOS.map(combo => {
@@ -1558,7 +1558,7 @@ function renderQuality() {
   const c0    = calcC0(cons, rlvl);
   const c0iq  = calcC0(cons, rlvl); // IQ는 calcQuality 내부에서 처리
   const qualityGoal = recipe.quality;
-  const regionNames = { oizys: '오이지스', phaenna: '파엔나', sinus: '동경의 만' };
+  const regionNames = { oizys: '오이지스', phaenna: '파엔나', sinus: '동경의 만', auxesia: '아욱세시아' };
 
   function getBadge(n) {
     if (!n) return '';
