@@ -1439,7 +1439,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- 능력치 -->
       <div>
         <div class="input-section-label">능력치</div>
-        <div class="stats-grid-3">
+        <div class="stats-grid-2">
           <div class="c-field">
             <label>작업 숙련도</label>
             <input type="number" id="crafts-input" class="filled" oninput="onStatsChange()">
@@ -1447,10 +1447,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="c-field">
             <label>가공 숙련도</label>
             <input type="number" id="q-cons" class="filled" oninput="onStatsChange()">
-          </div>
-          <div class="c-field">
-            <label>보유 CP</label>
-            <input type="number" id="q-cp" class="filled" oninput="onStatsChange()">
           </div>
         </div>
         <label class="check-label">
@@ -1495,30 +1491,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <!-- 품질 탭 전용: 마무리 시작 시점 입력 (탭 바로 아래) -->
       <div id="qual-extra-inputs" class="qual-extra-inputs" style="display:none;">
-        <div class="c-field">
-          <label>현재 품질</label>
-          <input type="number" id="q-current-quality" placeholder="예: 7000" min="0" oninput="onStatsChange()">
+        <div class="qual-inputs-row">
+          <div class="c-field">
+            <label>현재 품질</label>
+            <input type="number" id="q-current-quality" placeholder="예: 7000" min="0" oninput="onStatsChange()">
+          </div>
+          <div class="c-field">
+            <label>남은 내구</label>
+            <input type="number" id="q-dur-current" placeholder="예: 55" min="0" oninput="calcQualDur()">
+          </div>
+          <div class="c-field">
+            <label>교묘 턴</label>
+            <input type="number" id="q-gyomyo" placeholder="예: 5" min="0" max="8" oninput="calcQualDur()">
+          </div>
+          <div class="c-field">
+            <label>남은 CP</label>
+            <input type="number" id="q-cp" placeholder="예: 400" min="0" oninput="onStatsChange()">
+          </div>
+          <div class="c-field" style="flex:0;min-width:fit-content;">
+            <label style="white-space:nowrap;">초절 기술</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="q-transcend" onchange="renderQuality()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
-        <div class="c-field">
-          <label>남은 내구</label>
-          <input type="number" id="q-dur-current" placeholder="예: 55" min="0" oninput="calcQualDur()">
-        </div>
-        <div class="c-field">
-          <label>교묘 턴</label>
-          <input type="number" id="q-gyomyo" placeholder="예: 5" min="0" max="8" oninput="calcQualDur()">
-        </div>
-        <div style="flex:2;min-width:180px;">
+        <div class="qual-inputs-hint">
           <div id="q-dur-calc" class="dur-calc-box" style="display:none;"></div>
-          <span class="c-hint" style="display:block;margin-top:2px;">교묘 1턴 = 내구 +5 (최대 8턴). 마무리용 내구 10 자동 차감.</span>
+          <span class="c-hint">교묘 1턴 = 내구 +5 (최대 8턴). 마무리용 내구 10 자동 차감.</span>
         </div>
         <input type="hidden" id="q-dur">
-        <div class="c-field" style="flex:0;min-width:fit-content;">
-          <label style="white-space:nowrap;">초절 기술</label>
-          <label class="toggle-switch">
-            <input type="checkbox" id="q-transcend" onchange="renderQuality()">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
       </div>
 
       <!-- 결과 본문 -->
