@@ -651,19 +651,30 @@ body.light .st-low   { color: #505050; }
 
 /* 품질 탭 전용 입력 섹션 */
 .qual-extra-inputs {
-  padding: 12px 14px;
+  padding: 10px 14px 8px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-bottom: none;
   border-radius: 4px 4px 0 0;
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.qual-inputs-row {
+  display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-end;
 }
-.qual-extra-inputs .c-field {
+.qual-inputs-row .c-field {
   flex: 1;
-  min-width: 120px;
+  min-width: 100px;
+}
+.qual-inputs-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .input-section-label {
@@ -1401,6 +1412,7 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
 .preset-sub-label { font-size: 13px; color: var(--text-dim); margin-bottom: 3px; }
 
 /* 능력치 3칸 그리드 */
+.stats-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
 .stats-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px; }
 
 /* 전문장인 체크박스 */
@@ -1736,8 +1748,8 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   /* 입력 패널 — 세로로 */
   .input-panel { flex-direction: column; gap: 10px; }
   .input-panel > div { min-width: unset; }
-  .qual-extra-inputs { gap: 8px; }
-  .qual-extra-inputs .c-field { min-width: unset; flex: 1 1 calc(50% - 4px); }
+  .qual-inputs-row { gap: 8px; }
+  .qual-inputs-row .c-field { min-width: unset; flex: 1 1 calc(50% - 4px); }
 
   /* qp-footer wrap */
   .qp-footer { flex-wrap: wrap; gap: 8px; }
