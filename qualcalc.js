@@ -223,19 +223,20 @@ function calcRotationDur(skills) {
     if (sk === '근검절약') { kenjaku = 4; continue; }
     if (sk === '장인의 초절 기술') { transcend = true; continue; }
 
-    const dur = SKILL_DUR[sk];
-    if (dur === undefined) continue; // 내구소모 없는 스킬 (버프류)
+    const dur = SKILL_DUR[sk] ?? 0; // 버프류 등 미정의 스킬은 내구 0
 
     // 초절 무효화 (내구소모 > 0인 첫 스킬만)
-    // 근검절약은 초절로 무효화된 스킬에도 카운트 소모됨
     if (transcend && dur > 0) {
       transcend = false;
       if (kenjaku > 0) kenjaku--;
       continue;
     }
 
-    let cost = dur;
-    if (kenjaku > 0 && dur > 0) { cost = Math.floor(dur / 2); kenjaku--; }
+    // 근검절약: 버프류 포함 모든 스킬 실행에서 카운트 소모
+    const wasKenjaku = kenjaku > 0;
+    if (kenjaku > 0) kenjaku--;
+
+    const cost = (wasKenjaku && dur > 0) ? Math.floor(dur / 2) : dur;
     total += cost;
   }
   return total;
