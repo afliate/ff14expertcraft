@@ -227,7 +227,12 @@ function calcRotationDur(skills) {
     if (dur === undefined) continue; // 내구소모 없는 스킬 (버프류)
 
     // 초절 무효화 (내구소모 > 0인 첫 스킬만)
-    if (transcend && dur > 0) { transcend = false; continue; }
+    // 근검절약은 초절로 무효화된 스킬에도 카운트 소모됨
+    if (transcend && dur > 0) {
+      transcend = false;
+      if (kenjaku > 0) kenjaku--;
+      continue;
+    }
 
     let cost = dur;
     if (kenjaku > 0 && dur > 0) { cost = Math.floor(dur / 2); kenjaku--; }
@@ -294,8 +299,7 @@ function skillSeq(names) {
 }
 
 // tag: '' = 일반, '전문장인' = 전문장인 전용 스킬 포함, '저내구도' = 저내구도
-// cpCost: CP 소모 합계 (시트 기준)
-// durCost: 소모 내구 (마무리 작업 10 포함)
+// cpCost/durCost: calcRotationCP/calcRotationDur 로 자동 계산
 // 품질 계산은 multiStep steps[]로 자동 계산
 // ─────────────────────────────────────────────
 const QUALITY_ROTATIONS = [
@@ -309,7 +313,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 }, // 밑가공 (장족+혁신)
       { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:50 },
+    ] },
 
   { id:'r02', tag:'',
     label:'장족+혁신+밑가공+상급+장족+비레고',
@@ -318,7 +322,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'r03', tag:'',
     label:'장족+혁신+밑가공+중급+장족+비레고',
@@ -327,7 +331,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'r04', tag:'',
     label:'장족+혁신+밑가공+가공+장족+비레고',
@@ -336,7 +340,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'r05', tag:'',
     label:'장족+혁신+밑가공+절약가공+장족+비레고',
@@ -345,7 +349,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:35 },
+    ] },
 
   { id:'r06', tag:'',
     label:'혁신+밑가공+밑가공+장족+비레고',
@@ -354,7 +358,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:50 },
+    ] },
 
   { id:'r07', tag:'',
     label:'혁신+절약가공×4+혁신+장족+비레고',
@@ -365,7 +369,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'r08', tag:'',
     label:'경관+상급+장족+혁신+경관+상급+장족+비레고',
@@ -374,7 +378,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0,   iqStacks:10 }, // 경관+상급 (버프 없음)
       { efficiency:150, buffSum:1.5, iqStacks:10 }, // 경관+상급 (장족+혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족+혁신)
-    ], durCost:30 },
+    ] },
 
   { id:'r09', tag:'',
     label:'장족+혁신+밑가공+장족+비레고',
@@ -382,7 +386,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (2번째장족+혁신)
-    ], durCost:30 },
+    ] },
 
   { id:'r10', tag:'',
     label:'장족+혁신+근검+밑가공+장족+비레고',
@@ -390,7 +394,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:15 },
+    ] },
 
   { id:'r11', tag:'',
     label:'혁신+절약가공×3+혁신+장족+비레고',
@@ -400,7 +404,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:25 },
+    ] },
 
   { id:'r12', tag:'',
     label:'장족+혁신+경관+상급+장족+비레고',
@@ -408,7 +412,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'r13', tag:'',
     label:'혁신+가공+중급+장족+비레고',
@@ -417,7 +421,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'r14', tag:'',
     label:'혁신+절약가공×2+장족+비레고',
@@ -426,7 +430,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'r15', tag:'',
     label:'혁신+가공+성손+장족+비레고',
@@ -435,7 +439,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0,   iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'r16', tag:'',
     label:'혁신+중급+장족+비레고',
@@ -443,7 +447,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'r17', tag:'',
     label:'혁신+가공+장족+비레고',
@@ -451,7 +455,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'r18', tag:'',
     label:'혁신+절약가공+장족+비레고',
@@ -459,7 +463,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:15 },
+    ] },
 
   { id:'n01', tag:'',
     label:'혁신+장인황금손+장인황금손+장족+비레고',
@@ -468,7 +472,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 황금손1 (혁신)
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 황금손2 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:30 },
+    ] },
 
   { id:'n02', tag:'',
     label:'혁신+경관+상급+장족+비레고',
@@ -476,7 +480,7 @@ const QUALITY_ROTATIONS = [
     multiStep:true, steps:[
       { efficiency:150, buffSum:0.5, iqStacks:10 }, // 경관→상급 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:20 },
+    ] },
 
   { id:'n04', tag:'',
     label:'혁신+절약+가공+장족+비레고',
@@ -485,7 +489,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 절약 (혁신)
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 가공 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:25 },
+    ] },
 
   { id:'n05', tag:'',
     label:'혁신+밑가공+상급+장족+비레고',
@@ -494,7 +498,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
       { efficiency:150, buffSum:0.5, iqStacks:10 }, // 상급 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:40 },
+    ] },
 
   { id:'n06', tag:'',
     label:'혁신+밑가공+중급+장족+비레고',
@@ -503,7 +507,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
       { efficiency:125, buffSum:0.5, iqStacks:10 }, // 중급 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:40 },
+    ] },
 
   { id:'n07', tag:'',
     label:'혁신+밑가공+가공+장족+비레고',
@@ -512,7 +516,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 가공 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:40 },
+    ] },
 
   { id:'n08', tag:'',
     label:'혁신+밑가공+황금손+장족+비레고',
@@ -521,7 +525,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 황금손 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:40 },
+    ] },
 
   { id:'n09', tag:'',
     label:'혁신+밑가공+절약가공+장족+비레고',
@@ -530,19 +534,17 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신)
       { efficiency:100, buffSum:0.5, iqStacks:10 }, // 절약 (혁신)
       { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (장족)
-    ], durCost:35 },
+    ] },
 
   { id:'r19', tag:'',
     label:'장족+혁신+비레고',
     skills:['장족의 발전','혁신','비레고의 축복'],
-    efficiency:300, buffSum:1.5, iqStacks:10,
-    durCost:10 },
+    efficiency:300, buffSum:1.5, iqStacks:10 },
 
   { id:'r20', tag:'전문장인',
     label:'장족+신속한혁신+비레고',
     skills:['장족의 발전','신속한 혁신','비레고의 축복'],
-    efficiency:300, buffSum:1.0, iqStacks:10,
-    durCost:10 },
+    efficiency:300, buffSum:1.0, iqStacks:10 },
 
   // ══ 초절기술 마무리 로테이션 ══
 
@@ -552,7 +554,7 @@ const QUALITY_ROTATIONS = [
     skills:['장인의 초절 기술','장족의 발전','혁신','비레고의 축복'],
     multiStep:true, steps:[
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:0 },
+    ] },
 
   // ── 초절+장족+혁신+밑가공 기반 마무리 ──
   { id:'sc02', tag:'초절',
@@ -562,7 +564,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'sc03', tag:'초절',
     label:'초절+장족+혁신+밑가공+상급+장족+비레고',
@@ -571,7 +573,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'sc04', tag:'초절',
     label:'초절+장족+혁신+밑가공+중급+장족+비레고',
@@ -580,7 +582,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'sc05', tag:'초절',
     label:'초절+장족+혁신+밑가공+가공+장족+비레고',
@@ -589,7 +591,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'sc06', tag:'초절',
     label:'초절+장족+혁신+밑가공+황금손+장족+비레고',
@@ -598,7 +600,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:10 },
+    ] },
 
   { id:'sc07', tag:'초절',
     label:'초절+장족+혁신+밑가공+절약가공+장족+비레고',
@@ -607,7 +609,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:15 },
+    ] },
 
   // ── 초절+혁신+밑가공 기반 마무리 ──
   { id:'sc08', tag:'초절',
@@ -617,7 +619,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'sc09', tag:'초절',
     label:'초절+혁신+밑가공+상급+장족+비레고',
@@ -626,7 +628,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'sc10', tag:'초절',
     label:'초절+혁신+밑가공+중급+장족+비레고',
@@ -635,7 +637,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'sc11', tag:'초절',
     label:'초절+혁신+밑가공+가공+장족+비레고',
@@ -644,7 +646,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'sc12', tag:'초절',
     label:'초절+혁신+밑가공+황금손+장족+비레고',
@@ -653,7 +655,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:10 },
+    ] },
 
   { id:'sc13', tag:'초절',
     label:'초절+혁신+밑가공+절약가공+장족+비레고',
@@ -662,7 +664,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:15 },
+    ] },
 
   // ── 장족+혁신+경관×2상급 + 초절+장족+혁신+밑가공 기반 ──
   { id:'sc14', tag:'초절',
@@ -674,7 +676,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:50 },
+    ] },
 
   { id:'sc15', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+상급+장족+비레고',
@@ -685,7 +687,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc16', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+중급+장족+비레고',
@@ -696,7 +698,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc17', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+가공+장족+비레고',
@@ -707,7 +709,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc18', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+황금손+장족+비레고',
@@ -718,7 +720,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'sc19', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+절약가공+장족+비레고',
@@ -729,7 +731,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:35 },
+    ] },
 
   // ── 장족+혁신+경관×2상급 + 초절+혁신+밑가공 기반 ──
   { id:'sc20', tag:'초절',
@@ -741,7 +743,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:50 },
+    ] },
 
   { id:'sc21', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+상급+장족+비레고',
@@ -752,7 +754,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc22', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+중급+장족+비레고',
@@ -763,7 +765,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc23', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+가공+장족+비레고',
@@ -774,7 +776,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc24', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+황금손+장족+비레고',
@@ -785,7 +787,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'sc25', tag:'초절',
     label:'장족+혁신+경관+상급+경관+상급+초절+혁신+밑가공+절약가공+장족+비레고',
@@ -796,7 +798,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:35 },
+    ] },
 
   // ── 혁신+경관×2상급 + 초절+장족+혁신+밑가공 기반 ──
   { id:'sc26', tag:'초절',
@@ -808,7 +810,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:50 },
+    ] },
 
   { id:'sc27', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+상급+장족+비레고',
@@ -819,7 +821,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc28', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+중급+장족+비레고',
@@ -830,7 +832,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc29', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+가공+장족+비레고',
@@ -841,7 +843,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc30', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+황금손+장족+비레고',
@@ -852,7 +854,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'sc31', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+장족+혁신+밑가공+절약가공+장족+비레고',
@@ -863,7 +865,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:35 },
+    ] },
 
   // ── 혁신+경관×2상급 + 초절+혁신+밑가공 기반 ──
   { id:'sc32', tag:'초절',
@@ -875,7 +877,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:50 },
+    ] },
 
   { id:'sc33', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+상급+장족+비레고',
@@ -886,7 +888,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc34', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+중급+장족+비레고',
@@ -897,7 +899,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc35', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+가공+장족+비레고',
@@ -908,7 +910,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'sc36', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+황금손+장족+비레고',
@@ -919,7 +921,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'sc37', tag:'초절',
     label:'혁신+경관+상급+경관+상급+초절+혁신+밑가공+절약가공+장족+비레고',
@@ -930,7 +932,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:35 },
+    ] },
 
   // ══ 전문장인 전용 ══
 
@@ -942,7 +944,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'p06', tag:'',
     label:'[전문] 교손+장족+혁신+밑가공+장족+밑가공+절약+혁신+경관+상급+장족+비레고',
@@ -953,7 +955,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0,   iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:25 },
+    ] },
 
   { id:'p07', tag:'',
     label:'[전문] 교손+혁신+경관+상급×2+경관+상급×2+장족+혁신+경관+상급+장족+비레고',
@@ -965,7 +967,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'p08', tag:'',
     label:'[전문] 교손+혁신+경관+상급×2+장족+혁신+밑가공+절약+장족+비레고',
@@ -976,7 +978,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:15 },
+    ] },
 
   { id:'p09', tag:'',
     label:'[전문] 교손+혁신+경관+상급×4+혁신+경관+상급×3+장족+비레고',
@@ -988,7 +990,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:20 },
+    ] },
 
   { id:'p10', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+경관+상급+장족+비레고',
@@ -998,7 +1000,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'p11', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+가공+장족+비레고',
@@ -1008,7 +1010,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:100, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'p12', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+혁신+경관+상급+장족+비레고',
@@ -1018,7 +1020,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   // ── p12 기반 변형 (장족+혁신+근검+밑가공+장족+밑가공+혁신+X+장족+비레고) ──
   { id:'p12a', tag:'',
@@ -1029,7 +1031,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'p12b', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+혁신+중급+장족+비레고',
@@ -1039,7 +1041,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'p12c', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+혁신+절약+장족+비레고',
@@ -1049,7 +1051,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:35 },
+    ] },
 
   { id:'p12d', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+혁신+황금손+장족+비레고',
@@ -1059,7 +1061,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   // ── p10 기반 변형 (장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+X+장족+비레고) ──
   { id:'p10a', tag:'',
@@ -1070,7 +1072,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'p10c', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+절약+장족+비레고',
@@ -1080,7 +1082,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:35 },
+    ] },
 
   { id:'p10d', tag:'',
     label:'[전문] 장족+혁신+근검+밑가공+장족+밑가공+장족+혁신+황금손+장족+비레고',
@@ -1090,7 +1092,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 
   { id:'p13', tag:'',
     label:'[전문] 장족+혁신+경관+상급+장족+밑가공+장족+혁신+경관+상급+장족+비레고',
@@ -1100,7 +1102,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:200, buffSum:1.0, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:50 },
+    ] },
 
   { id:'p14', tag:'',
     label:'[전문] 장족+혁신+경관+상급+경관+상급+장족+혁신+밑가공+장족+비레고',
@@ -1110,7 +1112,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:50 },
+    ] },
 
   { id:'p15', tag:'',
     label:'[전문] 장족+혁신+경관+상급+경관+상급+장족+혁신+경관+상급+장족+비레고',
@@ -1120,7 +1122,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   { id:'p16', tag:'',
     label:'[전문] 혁신+경관+상급+경관+상급+장족+혁신+경관+상급+장족+비레고',
@@ -1130,7 +1132,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:1.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:40 },
+    ] },
 
   // ══ 저내구도 ══
 
@@ -1144,7 +1146,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:10 },
+    ] },
 
   { id:'d02', tag:'저내구도',
     label:'[저내구] 교손+경관+장족+혁신+밑가공+절약×3+혁신+장족+비레고',
@@ -1155,7 +1157,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:5 },
+    ] },
 
   { id:'d03', tag:'저내구도',
     label:'[저내구] 교손+장족+혁신+중급+밑가공+장족+비레고',
@@ -1164,7 +1166,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:125, buffSum:1.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:0 },
+    ] },
 
   { id:'d04', tag:'저내구도',
     label:'[저내구] 교손+경관+혁신+중급+밑가공+장족+비레고',
@@ -1173,27 +1175,24 @@ const QUALITY_ROTATIONS = [
       { efficiency:125, buffSum:0.5, iqStacks:10 },
       { efficiency:200, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:0 },
+    ] },
 
   // ══ 비레고 단독 ══
 
   { id:'b01', tag:'',
     label:'비레고의 축복',
     skills:['비레고의 축복'],
-    efficiency:300, buffSum:0, iqStacks:10,
-    durCost:10 },
+    efficiency:300, buffSum:0, iqStacks:10 },
 
   { id:'b02', tag:'',
     label:'혁신+비레고',
     skills:['혁신','비레고의 축복'],
-    efficiency:300, buffSum:0.5, iqStacks:10,
-    durCost:10 },
+    efficiency:300, buffSum:0.5, iqStacks:10 },
 
   { id:'b03', tag:'',
     label:'장족+비레고',
     skills:['장족의 발전','비레고의 축복'],
-    efficiency:300, buffSum:1.0, iqStacks:10,
-    durCost:10 },
+    efficiency:300, buffSum:1.0, iqStacks:10 },
 
   // ══ CP X (성손/대손 포함) ══
 
@@ -1208,7 +1207,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:70 },
+    ] },
 
   { id:'cx02', tag:'',
     label:'혁신+성손+대손×2+혁신+장족+비레고',
@@ -1219,7 +1218,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:50 },
+    ] },
 
   { id:'cx03', tag:'',
     label:'혁신+성손+대손+장족+비레고',
@@ -1228,7 +1227,7 @@ const QUALITY_ROTATIONS = [
       { efficiency:100, buffSum:0.5, iqStacks:10 },
       { efficiency:150, buffSum:0.5, iqStacks:10 },
       { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:30 },
+    ] },
 ];
 
 
