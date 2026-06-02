@@ -894,47 +894,6 @@ const QUALITY_ROTATIONS = [
 
   // ══ 전문장인 전용 ══
 
-  { id:'p01', tag:'',
-    label:'[전문] 교손+경관+장족+혁신+밑가공+절약×3+혁신+절약+장족+비레고',
-    skills:['교묘한 손놀림','경과 관찰','장족의 발전','혁신','밑가공','절약 가공','절약 가공','절약 가공','혁신','절약 가공','장족의 발전','비레고의 축복'],
-    multiStep:true, steps:[
-      { efficiency:200, buffSum:1.5, iqStacks:10 },
-      { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.0, iqStacks:10 },
-    ], durCost:10 },
-
-  { id:'p02', tag:'',
-    label:'[전문] 교손+경관+장족+혁신+밑가공+절약×3+혁신+장족+비레고',
-    skills:['교묘한 손놀림','경과 관찰','장족의 발전','혁신','밑가공','절약 가공','절약 가공','절약 가공','혁신','장족의 발전','비레고의 축복'],
-    multiStep:true, steps:[
-      { efficiency:200, buffSum:1.5, iqStacks:10 },
-      { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:100, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:5 },
-
-  { id:'p03', tag:'',
-    label:'[전문] 교손+장족+혁신+중급+밑가공+장족+비레고',
-    skills:['교묘한 손놀림','장족의 발전','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
-    multiStep:true, steps:[
-      { efficiency:125, buffSum:1.5, iqStacks:10 }, // 중급 (장족+혁신)
-      { efficiency:200, buffSum:0.5, iqStacks:10 }, // 밑가공 (혁신, 장족소진)
-      { efficiency:300, buffSum:1.5, iqStacks:10 }, // 비레고 (2번째장족+혁신)
-    ], durCost:0 },
-
-  { id:'p04', tag:'',
-    label:'[전문] 교손+경관+혁신+중급+밑가공+장족+비레고',
-    skills:['교묘한 손놀림','경과 관찰','혁신','중급 가공','밑가공','장족의 발전','비레고의 축복'],
-    multiStep:true, steps:[
-      { efficiency:125, buffSum:0.5, iqStacks:10 },
-      { efficiency:200, buffSum:0.5, iqStacks:10 },
-      { efficiency:300, buffSum:1.5, iqStacks:10 },
-    ], durCost:0 },
-
   { id:'p05', tag:'',
     label:'[전문] 교손+장족+혁신+밑가공+장족+밑가공+장족+혁신+밑가공+장족+비레고',
     skills:['교묘한 손놀림','장족의 발전','혁신','밑가공','장족의 발전','밑가공','장족의 발전','혁신','밑가공','장족의 발전','비레고의 축복'],
@@ -1194,12 +1153,6 @@ const QUALITY_ROTATIONS = [
     label:'장족+비레고',
     skills:['장족의 발전','비레고의 축복'],
     efficiency:300, buffSum:1.0, iqStacks:10,
-    durCost:10 },
-
-  { id:'b04', tag:'',
-    label:'장족+혁신+비레고',
-    skills:['장족의 발전','혁신','비레고의 축복'],
-    efficiency:300, buffSum:1.5, iqStacks:10,
     durCost:10 },
 
   // ══ CP X (성손/대손 포함) ══
