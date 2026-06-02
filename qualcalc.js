@@ -196,7 +196,47 @@ const SKILL_CP = {
   '신속한 혁신':      0,
 };
 
-// 콤보 할인 규칙:
+// ── 스킬별 내구 소모 ──
+const SKILL_DUR = {
+  '밑가공':         20,
+  '상급 가공':      10,
+  '중급 가공':      10,
+  '가공':           10,
+  '절약 가공':      5,
+  '세련 가공':      10,
+  '집중 가공':      10,
+  '장인의 황금손':  0,
+  '성급한 손길':    10,
+  '대담한 손길':    10,
+  '비레고의 축복':  10,
+  '진가':           10,
+};
+
+// 근검절약: 이후 4회 내구소모 스킬 절반
+// 장인의 초절 기술: 이후 첫 번째 내구소모 스킬 무효화
+function calcRotationDur(skills) {
+  let total = 0;
+  let kenjaku = 0;    // 근검절약 남은 횟수
+  let transcend = false; // 초절 무효화 대기 중
+
+  for (const sk of skills) {
+    if (sk === '근검절약') { kenjaku = 4; continue; }
+    if (sk === '장인의 초절 기술') { transcend = true; continue; }
+
+    const dur = SKILL_DUR[sk];
+    if (dur === undefined) continue; // 내구소모 없는 스킬 (버프류)
+
+    // 초절 무효화 (내구소모 > 0인 첫 스킬만)
+    if (transcend && dur > 0) { transcend = false; continue; }
+
+    let cost = dur;
+    if (kenjaku > 0 && dur > 0) { cost = Math.floor(dur / 2); kenjaku--; }
+    total += cost;
+  }
+  return total;
+}
+
+
 //   가공 → 중급 가공: 중급 18
 //   가공/중급 가공 → 상급 가공: 상급 18
 //   경과 관찰 → 상급 가공: 상급 18
@@ -1543,14 +1583,15 @@ function renderQuality() {
     } else {
       q = calcQuality(cons, rlvl, rot.iqStacks, rot.efficiency, rot.buffSum);
     }
-    const cpCost = calcRotationCP(rot.skills);
+    const cpCost  = calcRotationCP(rot.skills);
+    const durCost = calcRotationDur(rot.skills);
     const remaining = (qualityGoal - currentQuality) - q;
     const pct = Math.min(100, Math.round((currentQuality + q) / qualityGoal * 100));
     const ok    = (currentQuality + q) >= qualityGoal;
     const cpOk  = cp === 0 || cpCost <= cp;
-    const durOk = durLimit === 0 || rot.durCost <= durLimit;
+    const durOk = durLimit === 0 || durCost <= durLimit;
     const canDo = cpOk && durOk;
-    return { ...rot, cpCost, q, remaining, pct, ok, cpOk, durOk, canDo };
+    return { ...rot, cpCost, durCost, q, remaining, pct, ok, cpOk, durOk, canDo };
   });
 
   // ── 추천 로테이션 선정 ──
