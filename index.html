@@ -1796,7 +1796,6 @@ function renderCustomSkills() {
   customSkills.forEach((skill, idx) => {
 
     const btn = document.createElement('button');
-
     btn.className = 'selected-skill';
 
     const iconId = SKILL_ICONS[skill]?.id;
@@ -1817,6 +1816,7 @@ function renderCustomSkills() {
     wrap.appendChild(btn);
   });
 }
+
 function calcCustomQuality(){
 
   const result =
@@ -1842,13 +1842,12 @@ function calcCustomQuality(){
 
   totalDur = calcRotationDur(customSkills);
 
-  result.innerHTML = `
-    <div class="recipe-info-card">
-      <div>선택 스킬 수 : <b>${customSkills.length}</b></div>
-      <div>CP 소모 : <b>${totalCp}</b></div>
-      <div>내구 소모 : <b>${totalDur}</b></div>
-    </div>
-  `;
+ result.innerHTML = `
+  <div class="recipe-info-card">
+    <div>CP 소모 : <b>${totalCp}</b></div>
+    <div>내구 소모 : <b>${totalDur}</b></div>
+  </div>
+`;
 }
 
 </script>

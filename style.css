@@ -1778,13 +1778,14 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   align-items:center;
   justify-content:center;
 
-  background:none;
-  border:none;
-
   width:64px;
   min-height:60px;
 
   padding:2px;
+
+  background:none;
+  border:none;
+
   cursor:pointer;
 }
 
@@ -1805,7 +1806,7 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 }
 
 .rotation-box{
-  min-height:48px;
+  min-height:40px;
 
   margin-top:12px;
   margin-bottom:12px;
@@ -1840,20 +1841,6 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 }
 
 .guide-note{
-  font-size:15px;
-  line-height:2;
-}
-
-.rotation-box{
-  min-height:40px;
-
-  margin-top:12px;
-  margin-bottom:12px;
-
-  padding:8px;
-
-  border:1px solid var(--border-color);
-  border-radius:10px;
-
-  background:rgba(255,255,255,.03);
+  font-size:12px;
+  line-height:1.5;
 }
