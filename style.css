@@ -1773,26 +1773,34 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 }
 
 .skill-btn{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
   background:none;
   border:none;
-  padding:0;
-  margin:0;
 
-  width:32px;
-  height:32px;
+  width:64px;
+  min-height:60px;
 
+  padding:2px;
   cursor:pointer;
 }
 
 .skill-btn img{
-  width:32px;
-  height:32px;
-
+  width:36px;
+  height:36px;
   display:block;
 }
 
 .skill-btn span{
-  font-size:13px;
+  margin-top:2px;
+
+  font-size:10px;
+  color:inherit;
+
+  white-space:nowrap;
   text-align:center;
 }
 
@@ -1814,6 +1822,7 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   display:flex;
   flex-wrap:wrap;
   gap:4px;
+  align-items:center;
 }
 
 .selected-skill{
@@ -1825,12 +1834,26 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 }
 
 .selected-skill img{
-  width:32px;
-  height:32px;
+  width:24px;
+  height:24px;
   display:block;
 }
 
 .guide-note{
-  font-size:12px;
-  line-height:1.5;
+  font-size:15px;
+  line-height:2;
+}
+
+.rotation-box{
+  min-height:40px;
+
+  margin-top:12px;
+  margin-bottom:12px;
+
+  padding:8px;
+
+  border:1px solid var(--border-color);
+  border-radius:10px;
+
+  background:rgba(255,255,255,.03);
 }
