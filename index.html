@@ -1801,14 +1801,12 @@ function renderCustomSkills(){
 
     const btn = document.createElement('button');
 
-    btn.className = 'selected-skill';
-    const iconId = SKILL_ICONS[skill]?.id;
-    
-    btn.innerHTML = `
-   <img src="https://xivapi.com/i/001000/${iconId}_hr1.png">
-   <span>${skill}</span>
-   <span class="remove-skill">✕</span>
- `;
+   btn.className = 'selected-skill';
+   
+   btn.innerHTML = `
+   <img src="https://xivapi.com/i/001000/${SKILL_ICONS[skill]?.id}_hr1.png"
+       title="${skill}">
+`;
 
     btn.onclick = () => {
       customSkills.splice(idx,1);

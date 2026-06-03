@@ -1797,17 +1797,15 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 }
 
 .selected-skill{
-  display:flex;
-  align-items:center;
-  gap:6px;
-
-  padding:4px 8px;
-  border-radius:8px;
+  border:none;
+  background:none;
+  padding:0;
+  cursor:pointer;
 }
 
 .selected-skill img{
-  width:24px;
-  height:24px;
+  width:32px;
+  height:32px;
 }
 
 .selected-skill span{
