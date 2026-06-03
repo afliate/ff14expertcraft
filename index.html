@@ -1791,9 +1791,9 @@ function addSkill(skill){
   calcCustomQuality();
 }
 
-function renderCustomSkills(){
+function renderCustomSkills() {
   const wrap = document.getElementById('selected-skills');
-  if(!wrap) return;
+  if (!wrap) return;
 
   wrap.innerHTML = '';
 
@@ -1801,22 +1801,25 @@ function renderCustomSkills(){
 
     const btn = document.createElement('button');
 
-   btn.className = 'selected-skill';
-   
-   btn.innerHTML = `
-   <img src="https://xivapi.com/i/001000/${SKILL_ICONS[skill]?.id}_hr1.png"
-        onerror="this.src='https://xivapi.com/i/001000/000000_hr1.png'">
-`;
+    btn.className = 'selected-skill';
+
+    const iconId = SKILL_ICONS[skill]?.id;
+
+    btn.innerHTML = `
+      <img
+        src="https://xivapi.com/i/001000/${iconId}_hr1.png"
+        alt="${skill}"
+        title="${skill}">
+    `;
 
     btn.onclick = () => {
-      customSkills.splice(idx,1);
+      customSkills.splice(idx, 1);
       renderCustomSkills();
       calcCustomQuality();
     };
 
     wrap.appendChild(btn);
   });
-
 }
 function calcCustomQuality(){
 
