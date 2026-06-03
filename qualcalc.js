@@ -1768,6 +1768,7 @@ const CQ_SKILLS = {
 };
 
 let cqSequence = []; // 현재 시퀀스
+let cqDragIdx  = null; // 드래그 중인 인덱스
 
 function cqAddSkill(name) {
   cqSequence.push(name);
@@ -1784,6 +1785,27 @@ function cqClearAll() {
   cqRender();
 }
 
+function cqDragStart(i) {
+  cqDragIdx = i;
+}
+function cqDragOver(e, i) {
+  e.preventDefault();
+  document.querySelectorAll('.cq-seq-item').forEach((el, idx) => {
+    el.classList.toggle('cq-drag-over', idx === i && i !== cqDragIdx);
+  });
+}
+function cqDrop(i) {
+  if (cqDragIdx === null || cqDragIdx === i) { cqDragEnd(); return; }
+  const item = cqSequence.splice(cqDragIdx, 1)[0];
+  cqSequence.splice(i, 0, item);
+  cqDragIdx = null;
+  cqRender();
+}
+function cqDragEnd() {
+  cqDragIdx = null;
+  document.querySelectorAll('.cq-seq-item').forEach(el => el.classList.remove('cq-drag-over'));
+}
+
 function cqRender() {
   const seq = document.getElementById('cq-sequence');
   if (!seq) return;
@@ -1794,7 +1816,13 @@ function cqRender() {
     seq.innerHTML = cqSequence.map((name, i) => {
       const sk = CQ_SKILLS[name];
       const icon = sk ? `<img src="https://xivapi.com/i/${sk.icon}_hr1.png" alt="${name}" class="cq-seq-icon">` : '';
-      return `<button class="cq-seq-item" onclick="cqRemoveSkill(${i})" title="클릭하면 제거">${icon}<span>${name}</span></button>`;
+      return `<button class="cq-seq-item" draggable="true"
+        onclick="cqRemoveSkill(${i})"
+        ondragstart="cqDragStart(${i})"
+        ondragover="cqDragOver(event,${i})"
+        ondrop="cqDrop(${i})"
+        ondragend="cqDragEnd()"
+        title="드래그로 순서 변경 · 클릭하면 제거">${icon}<span>${name}</span></button>`;
     }).join('');
   }
 
