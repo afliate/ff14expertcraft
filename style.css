@@ -1763,6 +1763,8 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   .theme-btn     { padding: 9px 9px; }
   .sidebar-logo  { padding: 0 9px; }
 }
+}
+
 /* 스킬 풀 — 아이콘과 텍스트 세로 정렬, 80x80 크기로 터치하기 쉽게 */
 .skill-pool{
   display:flex;
