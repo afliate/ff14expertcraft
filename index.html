@@ -1545,38 +1545,85 @@ document.addEventListener('DOMContentLoaded', () => {
        class="calc-tab-panel"
        style="display:none;">
 
-    <h3>스킬 선택</h3>
-
-    <div id="skill-pool" class="skill-pool">
-      <button onclick="addSkill('혁신')" class="skill-btn"><img src="https://xivapi.com/i/001000/001987_hr1.png"><span>혁신</span></button>
-      <button onclick="addSkill('장족의 발전')" class="skill-btn"><img src="https://xivapi.com/i/001000/001955_hr1.png"><span>장족</span></button>
-      <button onclick="addSkill('밑가공')" class="skill-btn"><img src="https://xivapi.com/i/001000/001507_hr1.png"><span>밑가공</span></button>
-      <button onclick="addSkill('가공')" class="skill-btn"><img src="https://xivapi.com/i/001000/001502_hr1.png"><span>가공</span></button>
-      <button onclick="addSkill('중급 가공')" class="skill-btn"><img src="https://xivapi.com/i/001000/001516_hr1.png"><span>중급</span></button>
-      <button onclick="addSkill('상급 가공')" class="skill-btn"><img src="https://xivapi.com/i/001000/001519_hr1.png"><span>상급</span></button>
-      <button onclick="addSkill('성급한 손길')" class="skill-btn"><img src="https://xivapi.com/i/001000/001989_hr1.png"><span>성급</span></button>
-      <button onclick="addSkill('대담한 손길')" class="skill-btn"><img src="https://xivapi.com/i/001000/001998_hr1.png"><span>대담</span></button>
-      <button onclick="addSkill('경과 관찰')" class="skill-btn"><img src="https://xivapi.com/i/001000/001954_hr1.png"><span>경과</span></button>
+    <!-- 안내 문구 -->
+    <div class="cq-hint">
+      <span class="cq-hint-icon">💡</span>
+      <span>정신집중 <strong>10스택</strong> 달성 이후 기준. 스킬을 눌러 조합해보세요.</span>
     </div>
-    
-    <div class="rotation-box">
-  <div id="selected-skills" class="selected-skills"></div>
-</div>
 
-<div id="custom-qual-result"></div>
+    <!-- 스킬 팔레트 -->
+    <div class="cq-palette">
+      <!-- 버프 -->
+      <div class="cq-palette-group">
+        <div class="cq-palette-label">버프</div>
+        <div class="cq-palette-btns">
+          <button class="cq-skill-btn" data-skill="혁신" onclick="cqAddSkill('혁신',this)">
+            <img src="https://xivapi.com/i/001000/001987_hr1.png" alt="혁신">
+            <span>혁신</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="장족의 발전" onclick="cqAddSkill('장족의 발전',this)">
+            <img src="https://xivapi.com/i/001000/001955_hr1.png" alt="장족의 발전">
+            <span>장족</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="경과 관찰" onclick="cqAddSkill('경과 관찰',this)">
+            <img src="https://xivapi.com/i/001000/001954_hr1.png" alt="경과 관찰">
+            <span>경과 관찰</span>
+          </button>
+        </div>
+      </div>
+      <!-- 가공 스킬 -->
+      <div class="cq-palette-group">
+        <div class="cq-palette-label">가공</div>
+        <div class="cq-palette-btns">
+          <button class="cq-skill-btn" data-skill="밑가공" onclick="cqAddSkill('밑가공',this)">
+            <img src="https://xivapi.com/i/001000/001507_hr1.png" alt="밑가공">
+            <span>밑가공</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="상급 가공" onclick="cqAddSkill('상급 가공',this)">
+            <img src="https://xivapi.com/i/001000/001519_hr1.png" alt="상급 가공">
+            <span>상급 가공</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="중급 가공" onclick="cqAddSkill('중급 가공',this)">
+            <img src="https://xivapi.com/i/001000/001516_hr1.png" alt="중급 가공">
+            <span>중급 가공</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="가공" onclick="cqAddSkill('가공',this)">
+            <img src="https://xivapi.com/i/001000/001502_hr1.png" alt="가공">
+            <span>가공</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="절약 가공" onclick="cqAddSkill('절약 가공',this)">
+            <img src="https://xivapi.com/i/001000/001510_hr1.png" alt="절약 가공">
+            <span>절약 가공</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="집중 가공" onclick="cqAddSkill('집중 가공',this)">
+            <img src="https://xivapi.com/i/001000/001524_hr1.png" alt="집중 가공">
+            <span>집중 가공</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="성급한 손길" onclick="cqAddSkill('성급한 손길',this)">
+            <img src="https://xivapi.com/i/001000/001989_hr1.png" alt="성급한 손길">
+            <span>성급한 손길</span>
+          </button>
+          <button class="cq-skill-btn" data-skill="대담한 손길" onclick="cqAddSkill('대담한 손길',this)">
+            <img src="https://xivapi.com/i/001000/001998_hr1.png" alt="대담한 손길">
+            <span>대담한 손길</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
-<div class="guide-note">
-  <strong>CP 부족</strong><br>
-  혁신 → 성급한손길 / 대담한손길 반복
-  <hr>
+    <!-- 로테이션 입력 영역 -->
+    <div class="cq-rotation-wrap">
+      <div class="cq-rotation-header">
+        <span class="cq-rotation-label">로테이션</span>
+        <button class="cq-clear-btn" onclick="cqClearAll()">전체 지우기</button>
+      </div>
+      <div id="cq-sequence" class="cq-sequence">
+        <span class="cq-seq-empty">스킬을 눌러 추가하세요</span>
+      </div>
+    </div>
 
-  <strong>CP 보통</strong><br>
-  장족 → 혁신 → 경과관찰 → 상급가공
-  <hr>
-
-  <strong>CP 풍부</strong><br>
-  장족 → 혁신 → 밑가공(견고) → 가공 → 중급 → 상급
-</div>
+    <!-- 결과 -->
+    <div id="cq-result" class="cq-result"></div>
 
   </div>
 </div>
