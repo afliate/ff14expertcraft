@@ -1778,19 +1778,19 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   align-items:center;
   justify-content:center;
 
-  width:80px;
-  min-height:80px;
+  width:20px;
+  min-height:20px;
 
   gap:4px;
 }
 
 .skill-btn img{
-  width:36px;
-  height:36px;
+  width:16px;
+  height:16px;
 }
 
 .skill-btn span{
-  font-size:11px;
+  font-size:13px;
   text-align:center;
 }
-}
+
