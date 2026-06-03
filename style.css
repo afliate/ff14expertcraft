@@ -1796,3 +1796,25 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   text-align:center;
 }
 
+.selected-skill{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  padding:4px 8px;
+  border-radius:8px;
+}
+
+.selected-skill img{
+  width:24px;
+  height:24px;
+}
+
+.selected-skill span{
+  font-size:12px;
+}
+
+.remove-skill{
+  margin-left:4px;
+  opacity:.7;
+}
