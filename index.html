@@ -1780,8 +1780,10 @@ function filterRegion(region) {
       sec.classList.toggle('hidden', sec.dataset.region !== region);
     }
   });
-
-  let customSkills = [];
+  
+}
+/* ── 계산기: 품질 프리셋 선택 ── */
+let customSkills = [];
 
 function addSkill(skill){
   customSkills.push(skill);
@@ -1800,17 +1802,17 @@ function renderCustomSkills(){
     const btn = document.createElement('button');
 
     btn.className = 'selected-skill';
-
     btn.textContent = skill + ' ✕';
 
     btn.onclick = () => {
-  customSkills.splice(idx,1);
-  renderCustomSkills();
-  calcCustomQuality();
-};
+      customSkills.splice(idx,1);
+      renderCustomSkills();
+      calcCustomQuality();
+    };
 
     wrap.appendChild(btn);
   });
+
 }
 function calcCustomQuality(){
 
