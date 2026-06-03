@@ -1773,20 +1773,22 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 }
 
 .skill-btn{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  border-radius:8px;
-  width:40px;
-  min-height:40px;
-  gap:2px;
-  padding:4px;
+  background:none;
+  border:none;
+  padding:0;
+  margin:0;
+
+  width:32px;
+  height:32px;
+
+  cursor:pointer;
 }
 
 .skill-btn img{
-  width:28px;
-  height:28px;
+  width:32px;
+  height:32px;
+
+  display:block;
 }
 
 .skill-btn span{
