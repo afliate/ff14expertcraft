@@ -1747,3 +1747,172 @@ function renderQuality() {
     </div>
   `;
 }
+
+// ============================================================
+//  품질 탭 (customqual) — 스킬 시퀀스 빌더 & 계산기
+// ============================================================
+
+const CQ_SKILLS = {
+  '혁신':        { cp: 18, dur: 0,  eff: 0,   type: 'buff',  icon: '001000/001987' },
+  '장족의 발전': { cp: 32, dur: 0,  eff: 0,   type: 'buff',  icon: '001000/001955' },
+  '경과 관찰':   { cp: 7,  dur: 0,  eff: 0,   type: 'obs',   icon: '001000/001954' },
+  '밑가공':      { cp: 0,  dur: 20, eff: 200, type: 'qual',  icon: '001000/001507' },
+  '상급 가공':   { cp: 18, dur: 20, eff: 150, type: 'qual',  icon: '001000/001519' },
+  '중급 가공':   { cp: 12, dur: 20, eff: 125, type: 'qual',  icon: '001000/001516' },
+  '가공':        { cp: 0,  dur: 10, eff: 100, type: 'qual',  icon: '001000/001502' },
+  '절약 가공':   { cp: 24, dur: 10, eff: 100, type: 'qual',  icon: '001000/001510' },
+  '집중 가공':   { cp: 18, dur: 20, eff: 300, type: 'qual',  icon: '001000/001524' },
+  '성급한 손길': { cp: 0,  dur: 10, eff: 100, type: 'qual',  icon: '001000/001989' },
+  '대담한 손길': { cp: 0,  dur: 30, eff: 150, type: 'qual',  icon: '001000/001998' },
+  '황금손':      { cp: 88, dur: 0,  eff: 0,   type: 'repair',icon: '001000/001982' },
+};
+
+let cqSequence = []; // 현재 시퀀스
+
+function cqAddSkill(name) {
+  cqSequence.push(name);
+  cqRender();
+}
+
+function cqRemoveSkill(idx) {
+  cqSequence.splice(idx, 1);
+  cqRender();
+}
+
+function cqClearAll() {
+  cqSequence = [];
+  cqRender();
+}
+
+function cqRender() {
+  const seq = document.getElementById('cq-sequence');
+  if (!seq) return;
+
+  if (cqSequence.length === 0) {
+    seq.innerHTML = '<span class="cq-seq-empty">스킬을 눌러 추가하세요</span>';
+  } else {
+    seq.innerHTML = cqSequence.map((name, i) => {
+      const sk = CQ_SKILLS[name];
+      const icon = sk ? `<img src="https://xivapi.com/i/${sk.icon}_hr1.png" alt="${name}" class="cq-seq-icon">` : '';
+      return `<button class="cq-seq-item" onclick="cqRemoveSkill(${i})" title="클릭하면 제거">${icon}<span>${name}</span></button>`;
+    }).join('');
+  }
+
+  cqCalcAndShow();
+}
+
+// 스킬 시퀀스 시뮬레이션 (IQ 10스택 고정)
+function cqCalcAndShow() {
+  const resultEl = document.getElementById('cq-result');
+  if (!resultEl) return;
+
+  if (cqSequence.length === 0) {
+    resultEl.innerHTML = '';
+    return;
+  }
+
+  // 능력치 가져오기
+  const cons = parseInt(document.getElementById('q-cons')?.value) || 0;
+  const cp   = parseInt(document.getElementById('q-cp')?.value)   || 0;
+
+  // 레시피 rlvl 가져오기 (선택된 레시피 기준)
+  let rlvl = 640; // 기본값
+  try {
+    const variants = HARD_RECIPES.filter(r => r.region === calcRegionVal && r.group === calcGroupVal);
+    if (variants.length > 0) {
+      const recipe = variants[Math.min(calcVariantIdx, variants.length - 1)];
+      rlvl = recipe.rlvl;
+    }
+  } catch(e) {}
+
+  if (!cons || !cp) {
+    resultEl.innerHTML = '<div class="cq-result-hint">장비 프리셋 또는 가숙/CP를 먼저 입력해주세요.</div>';
+    return;
+  }
+
+  // 스텝별 시뮬레이션
+  const IQ = 10;
+  let remCp  = cp;
+  let remDur = 60; // 기본 내구 (계산 전용, 절대값 표시용)
+  let innovBuff = 0;   // 혁신 남은 턴
+  let greatBuff = 0;   // 장족 남은 턴
+  let obsNext   = false; // 경과 관찰 효과
+  let totalQual = 0;
+  let cpUsed    = 0;
+  let durUsed   = 0;
+  let steps = [];
+
+  for (const name of cqSequence) {
+    const sk = CQ_SKILLS[name];
+    if (!sk) continue;
+
+    let qual = 0;
+    let note = '';
+    const buffSum = (innovBuff > 0 ? 0.5 : 0) + (greatBuff > 0 ? 1.0 : 0);
+
+    if (sk.type === 'buff') {
+      if (name === '혁신')        { innovBuff = 4; note = '혁신 4턴'; }
+      if (name === '장족의 발전') { greatBuff = 4; note = '장족 4턴'; }
+    } else if (sk.type === 'obs') {
+      obsNext = true; note = '다음 스킬 효율 2배 + 내구-5';
+    } else if (sk.type === 'repair') {
+      // 황금손: 내구 +30, CP 소모
+    } else if (sk.type === 'qual') {
+      let eff = sk.eff;
+      let durCost = sk.dur;
+      if (obsNext) { eff = eff * 2; durCost = Math.max(0, durCost - 5); obsNext = false; }
+      qual = calcQuality(cons, rlvl, IQ, eff, buffSum);
+      totalQual += qual;
+      durUsed += durCost;
+      note = `+${qual.toLocaleString()}`;
+    }
+
+    // 버프 턴 감소 (가공 스킬 사용시)
+    if (sk.type === 'qual' || sk.type === 'obs') {
+      if (innovBuff > 0) innovBuff--;
+      if (greatBuff > 0) greatBuff--;
+    }
+
+    cpUsed += sk.cp;
+
+    steps.push({ name, qual, cpUsed: sk.cp, note,
+      buffSum, innovLeft: innovBuff, greatLeft: greatBuff });
+  }
+
+  const cpRemain  = cp - cpUsed;
+  const durRemain = 60 - durUsed; // 표시용
+
+  // 결과 렌더링
+  const cpOk  = cpRemain >= 0;
+  const stepRows = steps.map(s => {
+    const sk = CQ_SKILLS[s.name];
+    const icon = sk ? `<img src="https://xivapi.com/i/${sk.icon}_hr1.png" alt="${s.name}" class="cq-step-icon">` : '';
+    const qualTxt = s.qual > 0 ? `<span class="cq-step-qual">+${s.qual.toLocaleString()}</span>` : '';
+    const buffTxt = (s.innovLeft > 0 || s.greatLeft > 0) 
+      ? `<span class="cq-step-buff">${s.innovLeft > 0 ? `혁신${s.innovLeft}` : ''}${s.innovLeft > 0 && s.greatLeft > 0 ? ' · ' : ''}${s.greatLeft > 0 ? `장족${s.greatLeft}` : ''}</span>` : '';
+    const cpTxt = s.cpUsed > 0 ? `<span class="cq-step-cp">-${s.cpUsed}CP</span>` : '';
+    return `<div class="cq-step-row">${icon}<span class="cq-step-name">${s.name}</span>${qualTxt}${cpTxt}${buffTxt}</div>`;
+  }).join('');
+
+  resultEl.innerHTML = `
+    <div class="cq-result-card">
+      <div class="cq-result-total">
+        <div class="cq-total-main">
+          <span class="cq-total-label">품질 합산</span>
+          <span class="cq-total-val">+${totalQual.toLocaleString()}</span>
+        </div>
+        <div class="cq-total-sub">
+          <span class="${cpOk ? 'cq-stat-ok' : 'cq-stat-over'}">CP ${cpUsed} 소모${cpOk ? ` (잔여 ${cpRemain})` : ' ← CP 부족!'}</span>
+          <span class="cq-stat-dim">내구 ${durUsed} 소모</span>
+        </div>
+      </div>
+      <div class="cq-step-list">${stepRows}</div>
+    </div>
+    <div class="cq-guide-box">
+      <div class="cq-guide-title">💡 품질 로테이션 가이드</div>
+      <div class="cq-guide-row"><span class="cq-guide-tag cp-low">CP 부족</span><span class="cq-guide-seq">혁신 → 성급한 손길 · 대담한 손길 반복</span></div>
+      <div class="cq-guide-row"><span class="cq-guide-tag cp-mid">CP 적당</span><span class="cq-guide-seq">장족 → 혁신 → 경과 관찰 → 상급 가공 반복</span></div>
+      <div class="cq-guide-row"><span class="cq-guide-tag cp-full">CP 풍부</span><span class="cq-guide-seq">장족 → 혁신 → 밑가공 → 가공 → 중급 → 상급</span></div>
+    </div>
+  `;
+}
