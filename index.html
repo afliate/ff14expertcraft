@@ -1540,8 +1540,26 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- 품질 탭 -->
-         <h3>선택한 로테이션</h3>
+         <!-- 품질 탭 -->
+  <div id="calc-tab-customqual"
+       class="calc-tab-panel"
+       style="display:none;">
+
+    <h3>스킬 선택</h3>
+
+    <div id="skill-pool" class="skill-pool">
+      <button onclick="addSkill('혁신')">혁신</button>
+      <button onclick="addSkill('장족')">장족</button>
+      <button onclick="addSkill('밑가공')">밑가공</button>
+      <button onclick="addSkill('가공')">가공</button>
+      <button onclick="addSkill('중급가공')">중급</button>
+      <button onclick="addSkill('상급가공')">상급</button>
+      <button onclick="addSkill('성급한손길')">성급</button>
+      <button onclick="addSkill('대담한손길')">대담</button>
+      <button onclick="addSkill('경과관찰')">경과관찰</button>
+    </div>
+
+    <h3>선택한 로테이션</h3>
 
     <div id="selected-skills"
          class="selected-skills">
@@ -1552,10 +1570,14 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="guide-note" style="margin-top:20px">
       <strong>CP 부족</strong><br>
       혁신 → 성급한손길 / 대담한손길 반복
+
       <hr>
+
       <strong>CP 보통</strong><br>
       장족 → 혁신 → 경과관찰 → 상급가공
+
       <hr>
+
       <strong>CP 풍부</strong><br>
       장족 → 혁신 → 밑가공 → 가공 → 중급 → 상급
     </div>
@@ -1764,6 +1786,7 @@ function filterRegion(region) {
 function addSkill(skill){
   customSkills.push(skill);
   renderCustomSkills();
+  calcCustomQuality();
 }
 
 function renderCustomSkills(){
@@ -1781,13 +1804,48 @@ function renderCustomSkills(){
     btn.textContent = skill + ' ✕';
 
     btn.onclick = () => {
-      customSkills.splice(idx,1);
-      renderCustomSkills();
-    };
+  customSkills.splice(idx,1);
+  renderCustomSkills();
+  calcCustomQuality();
+};
 
     wrap.appendChild(btn);
   });
 }
+function calcCustomQuality(){
+
+  const result =
+    document.getElementById('custom-qual-result');
+
+  if(!result) return;
+
+  const cons =
+    parseInt(document.getElementById('q-cons')?.value) || 0;
+
+  if(!cons){
+    result.innerHTML =
+      '가공 숙련도를 먼저 입력해주세요.';
+    return;
+  }
+
+  let totalCp = 0;
+  let totalDur = 0;
+
+  customSkills.forEach(skill => {
+    totalCp += SKILL_CP[skill] || 0;
+  });
+
+  totalDur = calcRotationDur(customSkills);
+
+  result.innerHTML = `
+    <div class="recipe-info-card">
+      <div>선택 스킬 수 : <b>${customSkills.length}</b></div>
+      <div>CP 소모 : <b>${totalCp}</b></div>
+      <div>내구 소모 : <b>${totalDur}</b></div>
+    </div>
+  `;
+}
+
 }
 </script>
 </body>
