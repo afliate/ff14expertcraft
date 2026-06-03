@@ -1799,7 +1799,7 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   margin-top:2px;
 
   font-size:10px;
-  color:inherit;
+  color:var(--text-color);
 
   white-space:nowrap;
   text-align:center;
