@@ -1486,7 +1486,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- 결과 탭 버튼 -->
       <div class="calc-tab-bar">
         <button class="calc-tab-btn active" onclick="switchCalcTab('work',this)">작업량</button>
-        <button class="calc-tab-btn" onclick="switchCalcTab('qual',this)">품질 마무리</button>
+        <button class="calc-tab-btn" onclick="switchCalcTab('customqual',this)">품질</button>
+        <button class="calc-tab-btn" onclick="switchCalcTab('qual',this)">마무리</button>
       </div>
 
       <!-- 품질 탭 전용: 마무리 시작 시점 입력 (탭 바로 아래) -->
@@ -1539,7 +1540,30 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- 품질 마무리 탭 -->
+        <!-- 품질 탭 -->
+         <h3>선택한 로테이션</h3>
+
+    <div id="selected-skills"
+         class="selected-skills">
+    </div>
+
+    <div id="custom-qual-result"></div>
+
+    <div class="guide-note" style="margin-top:20px">
+      <strong>CP 부족</strong><br>
+      혁신 → 성급한손길 / 대담한손길 반복
+      <hr>
+      <strong>CP 보통</strong><br>
+      장족 → 혁신 → 경과관찰 → 상급가공
+      <hr>
+      <strong>CP 풍부</strong><br>
+      장족 → 혁신 → 밑가공 → 가공 → 중급 → 상급
+    </div>
+
+  </div>
+</div>
+
+        <!-- 마무리 탭 -->
         <div id="calc-tab-qual" class="calc-tab-panel" style="display:none;">
           <div class="c-empty-state">
             <div class="c-empty-icon">✨</div>
@@ -1734,6 +1758,36 @@ function filterRegion(region) {
       sec.classList.toggle('hidden', sec.dataset.region !== region);
     }
   });
+
+  let customSkills = [];
+
+function addSkill(skill){
+  customSkills.push(skill);
+  renderCustomSkills();
+}
+
+function renderCustomSkills(){
+  const wrap = document.getElementById('selected-skills');
+  if(!wrap) return;
+
+  wrap.innerHTML = '';
+
+  customSkills.forEach((skill, idx) => {
+
+    const btn = document.createElement('button');
+
+    btn.className = 'selected-skill';
+
+    btn.textContent = skill + ' ✕';
+
+    btn.onclick = () => {
+      customSkills.splice(idx,1);
+      renderCustomSkills();
+    };
+
+    wrap.appendChild(btn);
+  });
+}
 }
 </script>
 </body>
