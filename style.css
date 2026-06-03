@@ -1796,6 +1796,20 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   text-align:center;
 }
 
+.rotation-box{
+  min-height:48px;
+
+  margin-top:12px;
+  margin-bottom:12px;
+
+  padding:8px;
+
+  border:1px solid var(--border-color);
+  border-radius:10px;
+
+  background:rgba(255,255,255,.03);
+}
+
 .selected-skills{
   display:flex;
   flex-wrap:wrap;
@@ -1814,4 +1828,9 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
   width:32px;
   height:32px;
   display:block;
+}
+
+.guide-note{
+  font-size:12px;
+  line-height:1.5;
 }
