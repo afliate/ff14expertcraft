@@ -1797,8 +1797,8 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 }
 
 .selected-skill{
-  border:none;
   background:none;
+  border:none;
   padding:0;
   cursor:pointer;
 }
@@ -1806,13 +1806,4 @@ body.light .chip       { color: #18283a; border-color: #8aabbd; }
 .selected-skill img{
   width:32px;
   height:32px;
-}
-
-.selected-skill span{
-  font-size:12px;
-}
-
-.remove-skill{
-  margin-left:4px;
-  opacity:.7;
 }

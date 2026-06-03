@@ -1805,7 +1805,7 @@ function renderCustomSkills(){
    
    btn.innerHTML = `
    <img src="https://xivapi.com/i/001000/${SKILL_ICONS[skill]?.id}_hr1.png"
-       title="${skill}">
+        onerror="this.src='https://xivapi.com/i/001000/000000_hr1.png'">
 `;
 
     btn.onclick = () => {
