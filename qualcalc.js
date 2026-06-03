@@ -1241,8 +1241,8 @@ const QUALITY_ROTATIONS = [
 let calcRegionVal = '', calcCategoryVal = '', calcGroupVal = '', calcVariantIdx = 0;
 
 // category 매핑
-const CAT_DISPLAY = { 'A': 'A등급', 'A-EX': 'A등급 EX', '시간제': '시간제', '날씨제': '날씨제', '기타': '기타' };
-const CAT_ORDER   = ['A', 'A-EX', '시간제', '날씨제', '기타'];
+const CAT_DISPLAY = { 'A': 'A등급', 'A-EX': 'A등급 EX', 'A-EX+': 'A등급 EX+', 'A-MASTER': 'A-MASTER', '시간제': '시간제', '날씨제': '날씨제', '기타': '기타' };
+const CAT_ORDER   = ['A', 'A-EX', 'A-EX+', 'A-MASTER', '시간제', '날씨제', '기타'];
 
 function onRegionChange() {
   calcRegionVal   = document.getElementById('sel-region').value;
