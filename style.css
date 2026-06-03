@@ -2024,3 +2024,13 @@ body.light .cq-skill-btn:hover { border-color: var(--accent); background: rgba(0
 body.light .cq-seq-item { background: rgba(0,140,100,.08); border-color: rgba(0,140,100,.3); }
 body.light .cq-result-card { background: #fff; }
 body.light .cq-result-total { background: rgba(0,140,100,.04); }
+
+/* 드래그앤드롭 */
+.cq-seq-item[draggable="true"] { cursor: grab; }
+.cq-seq-item[draggable="true"]:active { cursor: grabbing; }
+.cq-seq-item.cq-drag-over {
+  border-color: var(--accent);
+  background: rgba(62,207,170,.2);
+  transform: scale(1.05);
+  transition: transform .1s;
+}
