@@ -1764,7 +1764,7 @@ const CQ_SKILLS = {
   '집중 가공':   { cp: 18, dur: 20, eff: 300, type: 'qual',  icon: '001000/001524' },
   '성급한 손길': { cp: 0,  dur: 10, eff: 100, type: 'qual',  icon: '001000/001989' },
   '대담한 손길': { cp: 0,  dur: 30, eff: 150, type: 'qual',  icon: '001000/001998' },
-  '황금손':      { cp: 88, dur: 0,  eff: 0,   type: 'repair',icon: '001000/001982' },
+  '황금손':      { cp: 88, dur: 0,  eff: 0,   type: 'repair',icon: '001000/001997' },
 };
 
 let cqSequence = []; // 현재 시퀀스
@@ -1822,7 +1822,7 @@ function cqRender() {
         ondragover="cqDragOver(event,${i})"
         ondrop="cqDrop(${i})"
         ondragend="cqDragEnd()"
-        title="드래그로 순서 변경 · 클릭하면 제거">${icon}<span>${name}</span></button>`;
+        title="${name} · 드래그로 순서 변경 · 클릭하면 제거">${icon}</button>`;
     }).join('');
   }
 
