@@ -726,8 +726,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="sk-sub">CP 32</div>
           </div>
           <div>
-            <div class="sk-desc">다음 가공 스킬 1회 품질 100% 증가. 비레고 직전에 써서 최대 효과를 뽑아요.</div>
-            <div class="sk-stats"><span class="sp-pill">다음 1회</span><span class="sp-pill">품질 +100%</span></div>
+            <div class="sk-desc">이후 3회 중 1회 품질 100% 증가. 비레고 직전에 써서 최대 효과를 뽑아요.</div>
+            <div class="sk-stats"><span class="sp-pill">3회 중 1회</span><span class="sp-pill">품질 +100%</span></div>
           </div>
         </div>
         <div class="skill-card sp2">
@@ -1737,7 +1737,7 @@ function switchTab(id) {
   if (id === 'qualcalc') id = 'calc';
   tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
   tabPanels.forEach(p => p.classList.toggle('active', p.id === 'tab-' + id));
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({top:0, behavior:'instant'});
   try { history.replaceState(null, '', '#' + id); } catch(e) {}
   closeSidebar();
 }
