@@ -91,11 +91,13 @@ function applyPreset() {
   setVal('q-cons', s.cons);
   setVal('q-cp', s.cp);
   onStatsChange();
+  if (typeof cqCalcAndShow === 'function') cqCalcAndShow();
 }
 
 function onStatsChange() {
   onCraftsChange();
   onQualityChange();
+  if (typeof cqCalcAndShow === 'function') cqCalcAndShow();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
