@@ -1880,7 +1880,7 @@ function cqCalcAndShow() {
 
     if (sk.type === 'buff') {
       if (name === '혁신')        { innovBuff = 4; note = '혁신 4턴'; }
-      if (name === '장족의 발전') { greatBuff = 4; note = '장족 4턴'; }
+      if (name === '장족의 발전') { greatBuff = 1; note = '장족 (다음 가공 1회)'; }
     } else if (sk.type === 'obs') {
       obsNext = true; note = '다음 스킬 효율 2배 + 내구-5';
     } else if (sk.type === 'repair') {
@@ -1893,12 +1893,13 @@ function cqCalcAndShow() {
       totalQual += qual;
       durUsed += durCost;
       note = `+${qual.toLocaleString()}`;
+      // 장족은 가공 1회 사용 후 즉시 소멸
+      if (greatBuff > 0) greatBuff = 0;
     }
 
-    // 버프 턴 감소 (가공 스킬 사용시)
+    // 버프 턴 감소 (가공/경관 사용시) — 혁신만 턴 카운트, 장족은 위에서 처리
     if (sk.type === 'qual' || sk.type === 'obs') {
       if (innovBuff > 0) innovBuff--;
-      if (greatBuff > 0) greatBuff--;
     }
 
     cpUsed += sk.cp;
