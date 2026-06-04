@@ -2096,3 +2096,7 @@ body.light .cq-result-total { background: rgba(0,140,100,.04); }
 .cq-accordion.open .cq-accordion-arrow { transform: rotate(180deg); }
 .cq-accordion-body { display: none; }
 .cq-accordion.open .cq-accordion-body { display: block; }
+
+/* 시퀀스 아이콘 전용 (이름 없음) */
+.cq-seq-item { padding: 4px; }
+.cq-seq-icon { width: 28px; height: 28px; border-radius: 4px; display: block; }
