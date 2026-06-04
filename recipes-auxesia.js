@@ -43,6 +43,34 @@ const RECIPES_AUXESIA = [
   },
   {
     "region": "auxesia",
+    "missionId": 1392,
+    "missionName": "EX+: 휴대 전천후 자재 개발",
+    "job": "CRP",
+    "rlvl": 771,
+    "work": 7600,
+    "quality": 21100,
+    "durability": 55,
+    "tag": "시간제 1",
+    "group": "시간제 1",
+    "category": "시간제",
+    "isSub": false
+  },
+  {
+    "region": "auxesia",
+    "missionId": 1393,
+    "missionName": "EX+: 고순도 바이오 연료 개발",
+    "job": "CRP",
+    "rlvl": 771,
+    "work": 7800,
+    "quality": 19600,
+    "durability": 75,
+    "tag": "날씨제 1",
+    "group": "날씨제 1",
+    "category": "날씨제",
+    "isSub": true
+  },
+  {
+    "region": "auxesia",
     "missionId": 1393,
     "missionName": "EX+: 고순도 바이오 연료 개발",
     "job": "CRP",
@@ -50,9 +78,23 @@ const RECIPES_AUXESIA = [
     "work": 7700,
     "quality": 26000,
     "durability": 50,
-    "tag": "A-EX+ 2",
-    "group": "A-EX+ 2",
+    "tag": "날씨제 1",
+    "group": "날씨제 1",
     "category": "날씨제",
+    "isSub": false
+  },
+  {
+    "region": "auxesia",
+    "missionId": 1394,
+    "missionName": "EX+: 선구자 문명 자원 연구",
+    "job": "CRP",
+    "rlvl": 771,
+    "work": 7200,
+    "quality": 24100,
+    "durability": 80,
+    "tag": "미확인",
+    "group": "미확인",
+    "category": "기타",
     "isSub": false
   },
   {
@@ -64,8 +106,8 @@ const RECIPES_AUXESIA = [
     "work": 7800,
     "quality": 25100,
     "durability": 60,
-    "tag": "A-MASTER",
-    "group": "A-MASTER",
+    "tag": "명인 1",
+    "group": "명인 1",
     "category": "명인",
     "isSub": false
   },
@@ -78,8 +120,8 @@ const RECIPES_AUXESIA = [
     "work": 6900,
     "quality": 22100,
     "durability": 45,
-    "tag": "A-MASTER 2",
-    "group": "A-MASTER 2",
+    "tag": "명인 2",
+    "group": "명인 2",
     "category": "명인",
     "isSub": false
   },
@@ -92,8 +134,8 @@ const RECIPES_AUXESIA = [
     "work": 7400,
     "quality": 26300,
     "durability": 80,
-    "tag": "A-MASTER 3",
-    "group": "A-MASTER 3",
+    "tag": "명인 3",
+    "group": "명인 3",
     "category": "명인",
     "isSub": false
   }
