@@ -2034,3 +2034,65 @@ body.light .cq-result-total { background: rgba(0,140,100,.04); }
   transform: scale(1.05);
   transition: transform .1s;
 }
+
+/* ── 팔레트 2열 그리드 ── */
+.cq-palette {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 16px;
+  margin-bottom: 16px;
+  align-items: start;
+}
+/* 버튼 세로형 (아이콘 + 이름 아래) */
+.cq-skill-btn {
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 8px;
+  min-width: 44px;
+}
+.cq-skill-btn img { width: 32px; height: 32px; border-radius: 4px; }
+.cq-skill-btn span { font-size: 10px; color: var(--text-dim); line-height: 1.2; text-align: center; }
+.cq-skill-btn:hover span { color: var(--text); }
+
+/* ── 가이드 아이콘 ── */
+.cq-guide-box { margin-bottom: 14px; }
+.cq-guide-icons {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.cq-guide-icons img {
+  width: 22px; height: 22px; border-radius: 3px;
+  filter: saturate(.8);
+}
+.cq-guide-arrow { font-size: 11px; color: var(--text-dim); margin: 0 1px; }
+.cq-guide-repeat {
+  font-size: 10px; color: var(--text-dim);
+  background: var(--surface2); border-radius: 3px;
+  padding: 1px 5px; margin-left: 2px;
+}
+.cq-guide-seq { display: none; } /* 아이콘으로 대체 */
+
+/* ── 아코디언 ── */
+.cq-accordion { border-top: 1px solid var(--border); }
+.cq-accordion-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 9px 16px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color .15s;
+}
+.cq-accordion-btn:hover { color: var(--text); }
+.cq-accordion-arrow { transition: transform .2s; font-size: 10px; }
+.cq-accordion.open .cq-accordion-arrow { transform: rotate(180deg); }
+.cq-accordion-body { display: none; }
+.cq-accordion.open .cq-accordion-body { display: block; }
