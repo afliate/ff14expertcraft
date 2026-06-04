@@ -1760,7 +1760,7 @@ const CQ_SKILLS = {
   '상급 가공':   { cp: 18, dur: 20, eff: 150, type: 'qual',  icon: '001000/001519' },
   '중급 가공':   { cp: 12, dur: 20, eff: 125, type: 'qual',  icon: '001000/001516' },
   '가공':        { cp: 0,  dur: 10, eff: 100, type: 'qual',  icon: '001000/001502' },
-  '절약 가공':   { cp: 24, dur: 10, eff: 100, type: 'qual',  icon: '001000/001510' },
+  '절약 가공':   { cp: 24, dur: 10, eff: 100, type: 'qual',  icon: '001000/001535' },
   '집중 가공':   { cp: 18, dur: 20, eff: 300, type: 'qual',  icon: '001000/001524' },
   '성급한 손길': { cp: 0,  dur: 10, eff: 100, type: 'qual',  icon: '001000/001989' },
   '대담한 손길': { cp: 0,  dur: 30, eff: 150, type: 'qual',  icon: '001000/001998' },
@@ -1934,13 +1934,15 @@ function cqCalcAndShow() {
           <span class="cq-stat-dim">내구 ${durUsed} 소모</span>
         </div>
       </div>
-      <div class="cq-step-list">${stepRows}</div>
-    </div>
-    <div class="cq-guide-box">
-      <div class="cq-guide-title">💡 품질 로테이션 가이드</div>
-      <div class="cq-guide-row"><span class="cq-guide-tag cp-low">CP 부족</span><span class="cq-guide-seq">혁신 → 성급한 손길 · 대담한 손길 반복</span></div>
-      <div class="cq-guide-row"><span class="cq-guide-tag cp-mid">CP 적당</span><span class="cq-guide-seq">장족 → 혁신 → 경과 관찰 → 상급 가공 반복</span></div>
-      <div class="cq-guide-row"><span class="cq-guide-tag cp-full">CP 풍부</span><span class="cq-guide-seq">장족 → 혁신 → 밑가공 → 가공 → 중급 → 상급</span></div>
+      <div class="cq-accordion">
+        <button class="cq-accordion-btn" onclick="this.parentElement.classList.toggle('open')">
+          <span>스텝별 내역 (${steps.length})</span>
+          <span class="cq-accordion-arrow">▼</span>
+        </button>
+        <div class="cq-accordion-body">
+          <div class="cq-step-list">${stepRows}</div>
+        </div>
+      </div>
     </div>
   `;
 }
