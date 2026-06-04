@@ -39,7 +39,7 @@ const POT_BUFFS = {
   '거장약액': { crafts: 0,  cons: 63, cp: 0  },
 };
 
-let curGear = '엔드', curFood = '알이페브레', curPot = '명인약액';
+let curGear = null, curFood = null, curPot = null;
 
 function setActiveBtnGroup(groupId, activeBtn) {
   document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
@@ -726,8 +726,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="sk-sub">CP 32</div>
           </div>
           <div>
-            <div class="sk-desc">이후 3회 중 1회 품질 100% 증가. 비레고 직전에 써서 최대 효과를 뽑아요.</div>
-            <div class="sk-stats"><span class="sp-pill">3회 중 1회</span><span class="sp-pill">품질 +100%</span></div>
+            <div class="sk-desc">다음 가공 스킬 1회 품질 100% 증가. 비레고 직전에 써서 최대 효과를 뽑아요.</div>
+            <div class="sk-stats"><span class="sp-pill">다음 1회</span><span class="sp-pill">품질 +100%</span></div>
           </div>
         </div>
         <div class="skill-card sp2">
@@ -1442,11 +1442,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="stats-grid-2">
           <div class="c-field">
             <label>작업 숙련도</label>
-            <input type="number" id="crafts-input" oninput="onStatsChange()">
+            <input type="number" id="crafts-input" class="filled" oninput="onStatsChange()">
           </div>
           <div class="c-field">
             <label>가공 숙련도</label>
-            <input type="number" id="q-cons" oninput="onStatsChange()">
+            <input type="number" id="q-cons" class="filled" oninput="onStatsChange()">
           </div>
         </div>
         <label class="check-label">
@@ -1591,7 +1591,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <span>가공</span>
           </button>
           <button class="cq-skill-btn" data-skill="절약 가공" onclick="cqAddSkill('절약 가공',this)">
-            <img src="https://xivapi.com/i/001000/001535_hr1.png" alt="절약 가공">
+            <img src="https://xivapi.com/i/001000/001510_hr1.png" alt="절약 가공">
             <span>절약 가공</span>
           </button>
           <button class="cq-skill-btn" data-skill="집중 가공" onclick="cqAddSkill('집중 가공',this)">
