@@ -654,8 +654,7 @@ body.light .st-low   { color: #505050; }
   padding: 10px 14px 8px;
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-bottom: none;
-  border-radius: 4px 4px 0 0;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -1455,8 +1454,7 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
 .calc-result-body {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 4px 4px;
+  border-radius: 4px;
   padding: 14px;
   min-height: 140px;
 }
