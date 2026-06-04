@@ -52,7 +52,7 @@ const RECIPES_AUXESIA = [
     "durability": 50,
     "tag": "A-EX+ 2",
     "group": "A-EX+ 2",
-    "category": "A-EX+",
+    "category": "날씨제",
     "isSub": false
   },
   {
@@ -66,7 +66,7 @@ const RECIPES_AUXESIA = [
     "durability": 60,
     "tag": "A-MASTER",
     "group": "A-MASTER",
-    "category": "A-MASTER",
+    "category": "명인",
     "isSub": false
   },
   {
@@ -80,7 +80,7 @@ const RECIPES_AUXESIA = [
     "durability": 45,
     "tag": "A-MASTER 2",
     "group": "A-MASTER 2",
-    "category": "A-MASTER",
+    "category": "명인",
     "isSub": false
   },
   {
@@ -94,7 +94,7 @@ const RECIPES_AUXESIA = [
     "durability": 80,
     "tag": "A-MASTER 3",
     "group": "A-MASTER 3",
-    "category": "A-MASTER",
+    "category": "명인",
     "isSub": false
   }
 ];
