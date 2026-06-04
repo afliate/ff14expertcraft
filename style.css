@@ -1456,7 +1456,6 @@ body.light .mode-btn + .mode-btn { border-color: #7a9eb4; }
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 14px;
-  min-height: 140px;
 }
 
 /* 예시 아코디언 설명 */
