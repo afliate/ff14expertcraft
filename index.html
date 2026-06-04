@@ -39,7 +39,7 @@ const POT_BUFFS = {
   '거장약액': { crafts: 0,  cons: 63, cp: 0  },
 };
 
-let curGear = null, curFood = null, curPot = null;
+let curGear = '엔드', curFood = '알이페브레', curPot = '명인약액';
 
 function setActiveBtnGroup(groupId, activeBtn) {
   document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
