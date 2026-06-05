@@ -22,7 +22,7 @@ const GEAR_PRESETS = {
   '미드':     { crafts: 5812, cons: 5083, cp: 649 },
   '엔드':     { crafts: 5811, cons: 5461, cp: 649 },
   '엔드(고작숙)': { crafts: 6012, cons: 5320, cp: 649 },
-  '엔드+우주': { crafts: 5953, cons: 5490, cp: 664 },
+  '엔드+우주': { crafts: 5933, cons: 5470, cp: 649 },
   '우주전용':   { crafts: 5812, cons: 5464, cp: 649 },
 };
 const FOOD_BUFFS = {
@@ -207,11 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="update-label">업데이트 내역</div>
     <div class="update-rows">
       <div class="update-row">
-        <span class="u-date">2025.05.30</span>
+        <span class="u-date">2025.05</span>
         <span class="u-text done">사이트 최초 공개 — 시작가이드 / 스킬 / 상태 / 요약 / 예시 / 작업계산기</span>
       </div>
       <div class="update-row">
-        <span class="u-date">2025.06.02</span>
+        <span class="u-date">2025.06</span>
         <span class="u-text done">계산기 — 작업, 품질 통합 + 지역별 레시피 설정 + 마무리 로테이션 추천</span>
       </div>
       <div class="update-row">
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="update-row">
         <span class="u-date">예정</span>
-        <span class="u-text">예시 추가 — 동경의만 / 각 지역별 공정 예시  </span>
+        <span class="u-text">예시 추가 — 동경의만 / 각 지역별 공정 예시 / 아욱세시아 업데이트 예정 </span>
       </div>
     </div>
   </div>
@@ -1416,7 +1416,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="work-gear-btns" class="preset-btn-group">
           <button class="preset-btn" onclick="selectGear('버젯',this)">버젯</button>
           <button class="preset-btn" onclick="selectGear('미드',this)">미드</button>
-          <button class="preset-btn active" onclick="selectGear('엔드',this)">엔드</button>
+          <button class="preset-btn" onclick="selectGear('엔드',this)">엔드</button>
           <button class="preset-btn" onclick="selectGear('엔드(고작숙)',this)">엔드 (고작숙)</button>
           <button class="preset-btn" onclick="selectGear('엔드+우주',this)">엔드+우주</button>
           <button class="preset-btn" onclick="selectGear('우주전용',this)">우주전용</button>
@@ -1426,7 +1426,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="preset-sub-label">음식 HQ</div>
             <div id="work-food-btns" class="preset-btn-group">
               <button class="preset-btn" onclick="selectFood('없음',this)">없음</button>
-              <button class="preset-btn active" onclick="selectFood('알이페브레',this)">알이페브레</button>
+              <button class="preset-btn" onclick="selectFood('알이페브레',this)">알이페브레</button>
               <button class="preset-btn" onclick="selectFood('세비체',this)">세비체</button>
               <button class="preset-btn" onclick="selectFood('로네크',this)">로네크</button>
             </div>
@@ -1435,7 +1435,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="preset-sub-label">도핑 HQ</div>
             <div id="work-pot-btns" class="preset-btn-group">
               <button class="preset-btn" onclick="selectPot('없음',this)">없음</button>
-              <button class="preset-btn active" onclick="selectPot('명인약액',this)">명인 약액</button>
+              <button class="preset-btn" onclick="selectPot('명인약액',this)">명인 약액</button>
               <button class="preset-btn" onclick="selectPot('명인약주',this)">명인 약주</button>
               <button class="preset-btn" onclick="selectPot('장인약액',this)">장인 약액</button>
               <button class="preset-btn" onclick="selectPot('거장약액',this)">거장 약액</button>
