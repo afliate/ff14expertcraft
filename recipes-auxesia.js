@@ -92,9 +92,9 @@ const RECIPES_AUXESIA = [
     "work": 7200,
     "quality": 24100,
     "durability": 80,
-    "tag": "미확인",
-    "group": "미확인",
-    "category": "기타",
+    "tag": "날씨제 2",
+    "group": "날씨제 2",
+    "category": "날씨제",
     "isSub": false
   },
   {
