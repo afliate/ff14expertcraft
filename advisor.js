@@ -294,7 +294,9 @@
 
     // ③ 마무리: 품질을 채웠거나 자원이 바닥났으면 작업량을 끝낸다
     const reserve = 7 + 6;
-    const noMoreQuality = qDone || s.cp < 18 + reserve || s.dur < 20;
+    // 내구가 낮아도 땜질/교묘한 손놀림으로 복구할 CP가 있으면 품질을 계속 쌓는다
+    const canRepair = U('mend') && s.cp >= 88 + 40 + reserve;
+    const noMoreQuality = qDone || s.cp < 18 + reserve || (s.dur < 20 && !canRepair && !(U('manip') && !s.manip && s.cp >= 96 + 40));
     if (R > 0 && noMoreQuality) {
       if (U('intensive') && progGainOf(s, 'intensive', ctx, cond) >= R) return 'intensive';
       if (U('basicS') && gBasic >= R) return 'basicS';
@@ -324,6 +326,13 @@
 
     // ② 품질
     if (s.steps === 0 && U('reflect')) return 'reflect';
+    if (!qDone && v.style && s.steps >= 1) {
+      // 내구 유지(영상·시트 기록 스타일): 근검절약/장기 절약으로 소모를 줄이고, 교묘한 손놀림과 땜질로 회복
+      if (s.dur <= 15 && !s.manip && U('manip') && s.cp >= 96 + 60) return 'manip';
+      if (s.dur <= 10 && U('mend') && s.cp >= 88 + 40 + reserve) return 'mend';
+      if (!s.wn && s.dur <= 45 && s.iq < 10 && s.cp >= 98 + 120 && U('wn2')) return 'wn2';
+      if (!s.wn && s.dur <= 45 && s.iq < 10 && s.cp >= 56 + 100 && U('wn')) return 'wn';
+    }
     if (!qDone) {
       const canByregot = U('byregot');
       const qLeft = ctx.targetQuality - s.quality;
