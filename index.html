@@ -5,23 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>파판14 고난도 제작 가이드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261110-6">
+<link rel="stylesheet" href="style.css?v=20261110-7">
 <link rel="stylesheet" href="rec-styles.css">
 <script src="recipes-sinus-ardorum.js"></script>
 <script src="recipes-phaenna.js"></script>
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261110-6"></script>
-<script src="qualcalc.js?v=20261110-6"></script>
-<script src="advisor.js?v=20261110-6"></script>
-<script src="advisor-ui.js?v=20261110-6" defer></script>
-<script src="macro.js?v=20261110-6"></script>
-<script src="macro-ui.js?v=20261110-6" defer></script>
-<script src="shared-stats.js?v=20261110-6" defer></script>
-<script src="item-icons.js?v=20261110-6" defer></script>
-<script src="tabnav.js?v=20261110-6" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261110-6">
+<script src="engine.js?v=20261110-7"></script>
+<script src="qualcalc.js?v=20261110-7"></script>
+<script src="advisor.js?v=20261110-7"></script>
+<script src="advisor-ui.js?v=20261110-7" defer></script>
+<script src="macro.js?v=20261110-7"></script>
+<script src="macro-ui.js?v=20261110-7" defer></script>
+<script src="shared-stats.js?v=20261110-7" defer></script>
+<script src="item-icons.js?v=20261110-7" defer></script>
+<script src="tabnav.js?v=20261110-7" defer></script>
+<script src="example-ui.js?v=20261110-7" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261110-7">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1241,26 +1242,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg class="ac-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="accordion-body">
-          <div class="accordion-desc">스펙이 충분한 과거 레시피 — 그냥 매크로 한 번이면 끝. 상태가 어떻게 뜨든 결과가 같은 확정 스킬만 써요.</div>
-          <div style="overflow-x:auto"><table class="tbl">
-<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">진가</td><td></td><td class="cmt">오프너. 첫 턴 한정 품질 +, 쌓이는 정신집중 2스택부터 시작</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">정밀 작업</td><td></td><td class="cmt">정밀 작업 — 작업량과 품질을 동시에 올림</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">정밀 작업</td><td></td><td class="cmt">정밀 작업 — 작업량과 품질을 동시에 올림</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">정밀 작업</td><td></td><td class="cmt">정밀 작업 — 작업량과 품질을 동시에 올림</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">정밀 작업</td><td></td><td class="cmt">정밀 작업 — 작업량과 품질을 동시에 올림</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 2,548 / 3,856 · 품질 3,821 / 12,323 · 내구 10/60 · 남은 CP 515</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">완벽한 땜질</td><td></td><td class="cmt">완벽한 땜질 — 내구 회복</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">장족의 발전</td><td></td><td class="cmt">장족의 발전 — 다음 품질 스킬 효율 2배, 비레고 직전에 사용</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">비레고의 축복</td><td></td><td class="cmt">비레고의 축복 — 정신집중 10스택이라 효율 +200%, 품질 마무리</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 2,548 / 3,856 · 품질 12,375 / 12,323 · 내구 10/60 · 남은 CP 267</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">절약 작업</td><td></td><td class="cmt">절약 작업 — 내구 5만 소모하는 작업량</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">모범 작업</td><td></td><td class="cmt">모범 작업 — 작업량 (CP 7)</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 3,856 / 3,856 · 품질 12,375 / 12,323 · 남은 CP 242</td></tr>
-</table></div>
-          <div class="review-box"><strong>매크로:</strong><pre style="white-space:pre-wrap;margin:6px 0 0">/ac "진가" &lt;wait.3>
+          <div class="accordion-desc">스펙이 충분한 과거 레시피 — 그냥 매크로 한 번이면 끝.</div>
+          <div class="mx-grid">
+            <div class="mx-side">
+              
+              <div class="mx-h">로테이션</div>
+              <div class="mx-rot"><span class="mx-step" title="진가"><span class="mx-ico" data-sk="reflect"></span><i>1</i></span><span class="mx-arr">›</span><span class="mx-step" title="정밀 작업"><span class="mx-ico" data-sk="delicate"></span><i>2</i></span><span class="mx-arr">›</span><span class="mx-step" title="정밀 작업"><span class="mx-ico" data-sk="delicate"></span><i>3</i></span><span class="mx-arr">›</span><span class="mx-step" title="정밀 작업"><span class="mx-ico" data-sk="delicate"></span><i>4</i></span><span class="mx-arr">›</span><span class="mx-step" title="정밀 작업"><span class="mx-ico" data-sk="delicate"></span><i>5</i></span><span class="mx-arr">›</span><span class="mx-step" title="완벽한 땜질"><span class="mx-ico" data-sk="immac"></span><i>6</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>7</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>8</i></span><span class="mx-arr">›</span><span class="mx-step" title="장족의 발전"><span class="mx-ico" data-sk="gs"></span><i>9</i></span><span class="mx-arr">›</span><span class="mx-step" title="비레고의 축복"><span class="mx-ico" data-sk="byregot"></span><i>10</i></span><span class="mx-arr">›</span><span class="mx-step" title="절약 작업"><span class="mx-ico" data-sk="prudentS"></span><i>11</i></span><span class="mx-arr">›</span><span class="mx-step" title="모범 작업"><span class="mx-ico" data-sk="careful"></span><i>12</i></span></div>
+              <div class="mx-h">오프너</div>
+              <div class="mx-box">오프너는 <b>진가</b>. 첫 턴에만 쓸 수 있고, 품질을 크게 올리면서 정신집중 2스택을 깔아줘요. 작업량은 뒤로 미뤄요 — 중간에 빠른 진행 같은 게 떠도 작업량이 먼저 차서 끝나버리는 사고를 막아요.</div>
+              <div class="mx-h">총평</div>
+              <div class="mx-box">총 <b>12공정</b>, 완성 후 CP <b>242</b> 남음. 품질은 목표 12,323에 12,375까지 올라가요. 쓴 버프: 장족의 발전. 상태(보통/고품질 등)에 따라 바뀌는 스킬은 쓰지 않아서 <b>매크로 그대로 눌러도 같은 결과</b>가 나와요.</div>
+              <details class="mx-det"><summary>매크로 텍스트 (복사해서 쓰기)</summary><div class="mx-mac"><div class="mx-mac-h">매크로 <button type="button" class="mx-copy">복사</button></div><pre>/ac "진가" &lt;wait.3>
 /ac "정밀 작업" &lt;wait.3>
 /ac "정밀 작업" &lt;wait.3>
 /ac "정밀 작업" &lt;wait.3>
@@ -1271,7 +1263,29 @@ document.addEventListener('DOMContentLoaded', () => {
 /ac "장족의 발전" &lt;wait.2>
 /ac "비레고의 축복" &lt;wait.3>
 /ac "절약 작업" &lt;wait.3>
-/ac "모범 작업" &lt;wait.3></pre></div>
+/ac "모범 작업" &lt;wait.3></pre></div></details>
+            </div>
+            <div class="mx-main">
+              <div style="overflow-x:auto"><table class="tbl">
+<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="reflect"></span>진가</td><td></td><td class="cmt">오프너. 첫 턴 한정 품질 +, 쌓이는 정신집중 2스택부터 시작</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="delicate"></span>정밀 작업</td><td></td><td class="cmt">정밀 작업 — 작업량과 품질을 동시에 올림</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="delicate"></span>정밀 작업</td><td></td><td class="cmt">정밀 작업 — 작업량과 품질을 동시에 올림</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="delicate"></span>정밀 작업</td><td></td><td class="cmt">정밀 작업 — 작업량과 품질을 동시에 올림</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="delicate"></span>정밀 작업</td><td></td><td class="cmt">정밀 작업 — 작업량과 품질을 동시에 올림</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 2,548 / 3,856 · 품질 3,821 / 12,323 · 내구 10/60 · 남은 CP 515</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="immac"></span>완벽한 땜질</td><td></td><td class="cmt">완벽한 땜질 — 내구 회복</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="gs"></span>장족의 발전</td><td></td><td class="cmt">장족의 발전 — 다음 품질 스킬 효율 2배, 비레고 직전에 사용</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="byregot"></span>비레고의 축복</td><td></td><td class="cmt">비레고의 축복 — 정신집중 10스택이라 효율 +200%, 품질 마무리</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 2,548 / 3,856 · 품질 12,375 / 12,323 · 내구 10/60 · 남은 CP 267</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prudentS"></span>절약 작업</td><td></td><td class="cmt">절약 작업 — 내구 5만 소모하는 작업량</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="careful"></span>모범 작업</td><td></td><td class="cmt">모범 작업 — 작업량 (CP 7)</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 3,856 / 3,856 · 품질 12,375 / 12,323 · 남은 CP 242</td></tr>
+</table></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1291,32 +1305,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg class="ac-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="accordion-body">
-          <div class="accordion-desc">빠른 진행(작업량 대박)이 떠도 안 끝나게 진가로 품질부터. 상태가 어떻게 뜨든 결과가 같은 확정 스킬만 써요.</div>
-          <div style="overflow-x:auto"><table class="tbl">
-<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">진가</td><td></td><td class="cmt">오프너. 첫 턴 한정 품질 +, 쌓이는 정신집중 2스택부터 시작</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">장기 절약</td><td></td><td class="cmt">장기 절약 — 내구 소모 절반이 오래 감 (CP 98)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">혁신</td><td></td><td class="cmt">혁신 — 품질 증가 +50% (4턴), 이 사이에 가공을 몰아 넣기</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 0 / 5,059 · 품질 4,914 / 15,474 · 내구 25/55 · 남은 CP 447</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">혁신</td><td></td><td class="cmt">혁신 — 품질 증가 +50% (4턴), 이 사이에 가공을 몰아 넣기</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">완벽한 땜질</td><td></td><td class="cmt">완벽한 땜질 — 내구 회복</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 0 / 5,059 · 품질 12,285 / 15,474 · 내구 45/55 · 남은 CP 197</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">중급 가공</td><td></td><td class="cmt">중급 가공 — 품질 125%</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">상급 가공</td><td></td><td class="cmt">상급 가공 — 연계로 CP 절약</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">장인의 초절 기술</td><td></td><td class="cmt">초절 기술 — 다음 스킬 내구 소모 0</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">공경</td><td></td><td class="cmt">공경 — 작업량 +50%, 일찍 켤수록 많은 작업 스킬에 적용</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑작업</td><td></td><td class="cmt">밑작업 — 작업량 360%, 내구 20 소모</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 2,295 / 5,059 · 품질 16,038 / 15,474 · 내구 25/55 · 남은 CP 111</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">절약 작업</td><td></td><td class="cmt">절약 작업 — 내구 5만 소모하는 작업량</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑작업</td><td></td><td class="cmt">밑작업 — 작업량 360%, 내구 20 소모</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 5,059 / 5,059 · 품질 16,038 / 15,474 · 남은 CP 75</td></tr>
-</table></div>
-          <div class="review-box"><strong>매크로:</strong><pre style="white-space:pre-wrap;margin:6px 0 0">/ac "진가" &lt;wait.3>
+          <div class="accordion-desc">빠른 진행(작업량 대박)이 떠도 안 끝나게 진가로 품질부터.</div>
+          <div class="mx-grid">
+            <div class="mx-side">
+              
+              <div class="mx-h">로테이션</div>
+              <div class="mx-rot"><span class="mx-step" title="진가"><span class="mx-ico" data-sk="reflect"></span><i>1</i></span><span class="mx-arr">›</span><span class="mx-step" title="장기 절약"><span class="mx-ico" data-sk="wn2"></span><i>2</i></span><span class="mx-arr">›</span><span class="mx-step" title="혁신"><span class="mx-ico" data-sk="inno"></span><i>3</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>4</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>5</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>6</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>7</i></span><span class="mx-arr">›</span><span class="mx-step" title="혁신"><span class="mx-ico" data-sk="inno"></span><i>8</i></span><span class="mx-arr">›</span><span class="mx-step" title="완벽한 땜질"><span class="mx-ico" data-sk="immac"></span><i>9</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>10</i></span><span class="mx-arr">›</span><span class="mx-step" title="중급 가공"><span class="mx-ico" data-sk="standard"></span><i>11</i></span><span class="mx-arr">›</span><span class="mx-step" title="상급 가공"><span class="mx-ico" data-sk="advanced"></span><i>12</i></span><span class="mx-arr">›</span><span class="mx-step" title="장인의 초절 기술"><span class="mx-ico" data-sk="tp"></span><i>13</i></span><span class="mx-arr">›</span><span class="mx-step" title="공경"><span class="mx-ico" data-sk="ven"></span><i>14</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑작업"><span class="mx-ico" data-sk="groundwork"></span><i>15</i></span><span class="mx-arr">›</span><span class="mx-step" title="절약 작업"><span class="mx-ico" data-sk="prudentS"></span><i>16</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑작업"><span class="mx-ico" data-sk="groundwork"></span><i>17</i></span></div>
+              <div class="mx-h">오프너</div>
+              <div class="mx-box">오프너는 <b>진가</b>. 첫 턴에만 쓸 수 있고, 품질을 크게 올리면서 정신집중 2스택을 깔아줘요. 작업량은 뒤로 미뤄요 — 중간에 빠른 진행 같은 게 떠도 작업량이 먼저 차서 끝나버리는 사고를 막아요.</div>
+              <div class="mx-h">총평</div>
+              <div class="mx-box">총 <b>17공정</b>, 완성 후 CP <b>75</b> 남음. 품질은 목표 15,474에 16,038까지 올라가요. 쓴 버프: 장기 절약, 혁신, 장인의 초절 기술, 공경. 상태(보통/고품질 등)에 따라 바뀌는 스킬은 쓰지 않아서 <b>매크로 그대로 눌러도 같은 결과</b>가 나와요.</div>
+              <details class="mx-det"><summary>매크로 텍스트 (복사해서 쓰기)</summary><div class="mx-mac"><div class="mx-mac-h">매크로 1<button type="button" class="mx-copy">복사</button></div><pre>/ac "진가" &lt;wait.3>
 /ac "장기 절약" &lt;wait.2>
 /ac "혁신" &lt;wait.2>
 /ac "밑가공" &lt;wait.3>
@@ -1330,12 +1329,38 @@ document.addEventListener('DOMContentLoaded', () => {
 /ac "상급 가공" &lt;wait.3>
 /ac "장인의 초절 기술" &lt;wait.2>
 /ac "공경" &lt;wait.2>
-/echo 매크로 #1 완료 &lt;se.1>
-
-/ac "밑작업" &lt;wait.3>
+/echo 매크로 #1 완료 &lt;se.1></pre></div><div class="mx-mac"><div class="mx-mac-h">매크로 2<button type="button" class="mx-copy">복사</button></div><pre>/ac "밑작업" &lt;wait.3>
 /ac "절약 작업" &lt;wait.3>
 /ac "밑작업" &lt;wait.3>
-/echo 매크로 #2 완료 &lt;se.1></pre></div>
+/echo 매크로 #2 완료 &lt;se.1></pre></div></details>
+            </div>
+            <div class="mx-main">
+              <div style="overflow-x:auto"><table class="tbl">
+<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="reflect"></span>진가</td><td></td><td class="cmt">오프너. 첫 턴 한정 품질 +, 쌓이는 정신집중 2스택부터 시작</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="wn2"></span>장기 절약</td><td></td><td class="cmt">장기 절약 — 내구 소모 절반이 오래 감 (CP 98)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="inno"></span>혁신</td><td></td><td class="cmt">혁신 — 품질 증가 +50% (4턴), 이 사이에 가공을 몰아 넣기</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 0 / 5,059 · 품질 4,914 / 15,474 · 내구 25/55 · 남은 CP 447</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="inno"></span>혁신</td><td></td><td class="cmt">혁신 — 품질 증가 +50% (4턴), 이 사이에 가공을 몰아 넣기</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="immac"></span>완벽한 땜질</td><td></td><td class="cmt">완벽한 땜질 — 내구 회복</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 0 / 5,059 · 품질 12,285 / 15,474 · 내구 45/55 · 남은 CP 197</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="standard"></span>중급 가공</td><td></td><td class="cmt">중급 가공 — 품질 125%</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="advanced"></span>상급 가공</td><td></td><td class="cmt">상급 가공 — 연계로 CP 절약</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="tp"></span>장인의 초절 기술</td><td></td><td class="cmt">초절 기술 — 다음 스킬 내구 소모 0</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="ven"></span>공경</td><td></td><td class="cmt">공경 — 작업량 +50%, 일찍 켤수록 많은 작업 스킬에 적용</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="groundwork"></span>밑작업</td><td></td><td class="cmt">밑작업 — 작업량 360%, 내구 20 소모</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 2,295 / 5,059 · 품질 16,038 / 15,474 · 내구 25/55 · 남은 CP 111</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prudentS"></span>절약 작업</td><td></td><td class="cmt">절약 작업 — 내구 5만 소모하는 작업량</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="groundwork"></span>밑작업</td><td></td><td class="cmt">밑작업 — 작업량 360%, 내구 20 소모</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 5,059 / 5,059 · 품질 16,038 / 15,474 · 남은 CP 75</td></tr>
+</table></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1355,29 +1380,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg class="ac-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="accordion-body">
-          <div class="accordion-desc">15공정 원버튼 — 품질 먼저, 작업량은 마지막. 상태가 어떻게 뜨든 결과가 같은 확정 스킬만 써요.</div>
-          <div style="overflow-x:auto"><table class="tbl">
-<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">진가</td><td></td><td class="cmt">오프너. 첫 턴 한정 품질 +, 쌓이는 정신집중 2스택부터 시작</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">장기 절약</td><td></td><td class="cmt">장기 절약 — 내구 소모 절반이 오래 감 (CP 98)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">혁신</td><td></td><td class="cmt">혁신 — 품질 증가 +50% (4턴), 이 사이에 가공을 몰아 넣기</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 0 / 5,470 · 품질 5,010 / 16,156 · 내구 30/60 · 남은 CP 574</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">혁신</td><td></td><td class="cmt">혁신 — 품질 증가 +50% (4턴), 이 사이에 가공을 몰아 넣기</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">장족의 발전</td><td></td><td class="cmt">장족의 발전 — 다음 품질 스킬 효율 2배, 비레고 직전에 사용</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">비레고의 축복</td><td></td><td class="cmt">비레고의 축복 — 정신집중 10스택이라 효율 +200%, 품질 마무리</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 0 / 5,470 · 품질 16,702 / 16,156 · 내구 5/60 · 남은 CP 420</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">완벽한 땜질</td><td></td><td class="cmt">완벽한 땜질 — 내구 회복</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">공경</td><td></td><td class="cmt">공경 — 작업량 +50%, 일찍 켤수록 많은 작업 스킬에 적용</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">모범 작업</td><td></td><td class="cmt">모범 작업 — 작업량 (CP 7)</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑작업</td><td></td><td class="cmt">밑작업 — 작업량 360%, 내구 20 소모</td></tr>
-<tr><td class="st-normal">보통</td><td class="sk-used">밑작업</td><td></td><td class="cmt">밑작업 — 작업량 360%, 내구 20 소모</td></tr>
-<tr><td colspan="4" class="stat-line">📊 작업량 5,470 / 5,470 · 품질 16,702 / 16,156 · 남은 CP 247</td></tr>
-</table></div>
-          <div class="review-box"><strong>매크로:</strong><pre style="white-space:pre-wrap;margin:6px 0 0">/ac "진가" &lt;wait.3>
+          <div class="accordion-desc">15공정 원버튼 — 품질 먼저, 작업량은 마지막.</div>
+          <div class="mx-grid">
+            <div class="mx-side">
+              
+              <div class="mx-h">로테이션</div>
+              <div class="mx-rot"><span class="mx-step" title="진가"><span class="mx-ico" data-sk="reflect"></span><i>1</i></span><span class="mx-arr">›</span><span class="mx-step" title="장기 절약"><span class="mx-ico" data-sk="wn2"></span><i>2</i></span><span class="mx-arr">›</span><span class="mx-step" title="혁신"><span class="mx-ico" data-sk="inno"></span><i>3</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>4</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>5</i></span><span class="mx-arr">›</span><span class="mx-step" title="혁신"><span class="mx-ico" data-sk="inno"></span><i>6</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>7</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑가공"><span class="mx-ico" data-sk="prep"></span><i>8</i></span><span class="mx-arr">›</span><span class="mx-step" title="장족의 발전"><span class="mx-ico" data-sk="gs"></span><i>9</i></span><span class="mx-arr">›</span><span class="mx-step" title="비레고의 축복"><span class="mx-ico" data-sk="byregot"></span><i>10</i></span><span class="mx-arr">›</span><span class="mx-step" title="완벽한 땜질"><span class="mx-ico" data-sk="immac"></span><i>11</i></span><span class="mx-arr">›</span><span class="mx-step" title="공경"><span class="mx-ico" data-sk="ven"></span><i>12</i></span><span class="mx-arr">›</span><span class="mx-step" title="모범 작업"><span class="mx-ico" data-sk="careful"></span><i>13</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑작업"><span class="mx-ico" data-sk="groundwork"></span><i>14</i></span><span class="mx-arr">›</span><span class="mx-step" title="밑작업"><span class="mx-ico" data-sk="groundwork"></span><i>15</i></span></div>
+              <div class="mx-h">오프너</div>
+              <div class="mx-box">오프너는 <b>진가</b>. 첫 턴에만 쓸 수 있고, 품질을 크게 올리면서 정신집중 2스택을 깔아줘요. 작업량은 뒤로 미뤄요 — 중간에 빠른 진행 같은 게 떠도 작업량이 먼저 차서 끝나버리는 사고를 막아요.</div>
+              <div class="mx-h">총평</div>
+              <div class="mx-box">총 <b>15공정</b>, 완성 후 CP <b>247</b> 남음. 품질은 목표 16,156에 16,702까지 올라가요. 쓴 버프: 장기 절약, 혁신, 장족의 발전, 공경. 상태(보통/고품질 등)에 따라 바뀌는 스킬은 쓰지 않아서 <b>매크로 그대로 눌러도 같은 결과</b>가 나와요.</div>
+              <details class="mx-det"><summary>매크로 텍스트 (복사해서 쓰기)</summary><div class="mx-mac"><div class="mx-mac-h">매크로 <button type="button" class="mx-copy">복사</button></div><pre>/ac "진가" &lt;wait.3>
 /ac "장기 절약" &lt;wait.2>
 /ac "혁신" &lt;wait.2>
 /ac "밑가공" &lt;wait.3>
@@ -1391,7 +1404,32 @@ document.addEventListener('DOMContentLoaded', () => {
 /ac "공경" &lt;wait.2>
 /ac "모범 작업" &lt;wait.3>
 /ac "밑작업" &lt;wait.3>
-/ac "밑작업" &lt;wait.3></pre></div>
+/ac "밑작업" &lt;wait.3></pre></div></details>
+            </div>
+            <div class="mx-main">
+              <div style="overflow-x:auto"><table class="tbl">
+<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="reflect"></span>진가</td><td></td><td class="cmt">오프너. 첫 턴 한정 품질 +, 쌓이는 정신집중 2스택부터 시작</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="wn2"></span>장기 절약</td><td></td><td class="cmt">장기 절약 — 내구 소모 절반이 오래 감 (CP 98)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="inno"></span>혁신</td><td></td><td class="cmt">혁신 — 품질 증가 +50% (4턴), 이 사이에 가공을 몰아 넣기</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 0 / 5,470 · 품질 5,010 / 16,156 · 내구 30/60 · 남은 CP 574</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="inno"></span>혁신</td><td></td><td class="cmt">혁신 — 품질 증가 +50% (4턴), 이 사이에 가공을 몰아 넣기</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="prep"></span>밑가공</td><td></td><td class="cmt">밑가공 — 효율 200% + 정신집중 2스택 (내구 20 소모 주의)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="gs"></span>장족의 발전</td><td></td><td class="cmt">장족의 발전 — 다음 품질 스킬 효율 2배, 비레고 직전에 사용</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="byregot"></span>비레고의 축복</td><td></td><td class="cmt">비레고의 축복 — 정신집중 10스택이라 효율 +200%, 품질 마무리</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 0 / 5,470 · 품질 16,702 / 16,156 · 내구 5/60 · 남은 CP 420</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="immac"></span>완벽한 땜질</td><td></td><td class="cmt">완벽한 땜질 — 내구 회복</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="ven"></span>공경</td><td></td><td class="cmt">공경 — 작업량 +50%, 일찍 켤수록 많은 작업 스킬에 적용</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="careful"></span>모범 작업</td><td></td><td class="cmt">모범 작업 — 작업량 (CP 7)</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="groundwork"></span>밑작업</td><td></td><td class="cmt">밑작업 — 작업량 360%, 내구 20 소모</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="groundwork"></span>밑작업</td><td></td><td class="cmt">밑작업 — 작업량 360%, 내구 20 소모</td></tr>
+<tr><td colspan="4" class="stat-line">📊 작업량 5,470 / 5,470 · 품질 16,702 / 16,156 · 남은 CP 247</td></tr>
+</table></div>
+            </div>
+          </div>
         </div>
       </div>
       <!--MACRO-EX-END-->

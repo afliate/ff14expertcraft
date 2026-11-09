@@ -49,7 +49,7 @@ function why(k, ctx, s0, s1, i, path) {
 function row(k, ctx, s0, s1, i, path) {
   const a = Adv.ACTIONS[k];
   const t = why(k, ctx, s0, s1, i, path);
-  return `<tr><td class="st-normal">보통</td><td class="sk-used">${a.ko}</td><td></td><td class="cmt">${t}</td></tr>`;
+  return `<tr><td class="st-normal">보통</td><td class="sk-used"><span class="mx-ico" data-sk="${k}"></span>${a.ko}</td><td></td><td class="cmt">${t}</td></tr>`;
 }
 function build(c) {
   const r = rec.find((x) => x.rlvl === c.rlvl && x.job === c.job);
@@ -71,10 +71,23 @@ function build(c) {
   rows.push(`<tr><td colspan="4" class="stat-line">📊 작업량 ${N(Math.min(s.progress, ctx.target))} / ${N(ctx.target)} · 품질 ${N(s.quality)} / ${N(ctx.targetQuality)} · 남은 CP ${s.cp}</td></tr>`);
   return { r, ctx, p, rows, pq: res.plans[0].risk && res.plans[0].risk.pQuality };
 }
+const OPENER = {
+  reflect: '오프너는 <b>진가</b>. 첫 턴에만 쓸 수 있고, 품질을 크게 올리면서 정신집중 2스택을 깔아줘요. 작업량은 뒤로 미뤄요 — 중간에 빠른 진행 같은 게 떠도 작업량이 먼저 차서 끝나버리는 사고를 막아요.',
+  mm: '오프너는 <b>확신</b>. 첫 턴에만 쓸 수 있고, 바로 다음 작업 스킬의 효율을 크게 올려줘요.',
+};
+const NAME = (k) => Adv.ACTIONS[k].ko;
 function accordion(c, i) {
   const b = build(c);
   const id = 'ac-macro-' + (i + 1);
-  const macros = M.toText(b.p.path).map((x) => x.replace(/</g, '&lt;')).join('\n\n');
+  const path = b.p.path;
+  const macros = M.toText(path);
+  const end = M.trace(path, b.ctx).pop();
+  const buffs = [...new Set(path.filter((k) => Adv.ACTIONS[k].kind === 'buff'))].map(NAME).join(', ');
+  const img = fs.existsSync(require('path').join(__dirname, `../img/examples/${c.rlvl}.png`))
+    ? `<img class="mx-shot" src="img/examples/${c.rlvl}.png" alt="${b.r.name} 제작 화면" loading="lazy">` : '';
+  const rot = path.map((k, j) => `<span class="mx-step" title="${NAME(k)}"><span class="mx-ico" data-sk="${k}"></span><i>${j + 1}</i></span>`).join('<span class="mx-arr">›</span>');
+  const total = `총 <b>${b.p.steps}공정</b>, 완성 후 CP <b>${end.cp}</b> 남음. 품질은 목표 ${N(b.r.quality)}에 ${N(end.quality)}까지 올라가요. 쓴 버프: ${buffs || '없음'}. 상태(보통/고품질 등)에 따라 바뀌는 스킬은 쓰지 않아서 <b>매크로 그대로 눌러도 같은 결과</b>가 나와요.`;
+  const mtext = macros.map((x, j) => `<div class="mx-mac"><div class="mx-mac-h">매크로 ${macros.length > 1 ? j + 1 : ''}<button type="button" class="mx-copy">복사</button></div><pre>${x.replace(/</g, '&lt;')}</pre></div>`).join('');
   return `
       <div class="accordion" id="${id}">
         <button class="accordion-btn" onclick="toggleAc('${id}')">
@@ -92,12 +105,25 @@ function accordion(c, i) {
           <svg class="ac-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="accordion-body">
-          <div class="accordion-desc">${c.note}. 상태가 어떻게 뜨든 결과가 같은 확정 스킬만 써요.</div>
-          <div style="overflow-x:auto"><table class="tbl">
+          <div class="accordion-desc">${c.note}.</div>
+          <div class="mx-grid">
+            <div class="mx-side">
+              ${img}
+              <div class="mx-h">로테이션</div>
+              <div class="mx-rot">${rot}</div>
+              <div class="mx-h">오프너</div>
+              <div class="mx-box">${OPENER[path[0]] || ''}</div>
+              <div class="mx-h">총평</div>
+              <div class="mx-box">${total}</div>
+              <details class="mx-det"><summary>매크로 텍스트 (복사해서 쓰기)</summary>${mtext}</details>
+            </div>
+            <div class="mx-main">
+              <div style="overflow-x:auto"><table class="tbl">
 <tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
 ${b.rows.join('\n')}
 </table></div>
-          <div class="review-box"><strong>매크로:</strong><pre style="white-space:pre-wrap;margin:6px 0 0">${macros}</pre></div>
+            </div>
+          </div>
         </div>
       </div>`;
 }
