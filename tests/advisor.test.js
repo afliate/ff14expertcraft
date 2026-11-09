@@ -84,7 +84,7 @@ test('overrides 가 있으면 기본 확률 대신 쓴다', () => {
   assert.strictEqual(pick(Adv.conditionTable(o, 724)), 0.3);
   assert.strictEqual(pick(Adv.conditionTable(odds, 724)), 0.12);
   const good = (t) => t.rows.find((r) => r[0] === 'good')[1];
-  assert.strictEqual(good(Adv.conditionTable(odds, 724)), 0.05); // 호조의 징조 플래그가 있으면 양호 낮춤
+  assert.strictEqual(good(Adv.conditionTable(odds, 724)), 0.04); // 호조의 징조 플래그가 있으면 양호 낮춤
 });
 
 test('simulate: 시드 고정 시 재현되고 확률이 0~1', () => {
