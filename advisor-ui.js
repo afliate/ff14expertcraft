@@ -134,7 +134,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-24'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-25'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -217,7 +217,7 @@
     const CN = Object.fromEntries(CONDS);
     $('adv-hist').innerHTML = hist.length ? hist.map((h, i) => {
       const risky = FFAdvisor.ACTIONS[h.k].rate !== undefined;
-      return `<span class="adv-h${h.ok === false ? ' fail' : ''}${risky ? ' risky' : ''}" data-i="${i}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}${risky ? ' (눌러서 성공/실패 전환)' : ''}">${ico(h.k)}<i style="color:${COND_COLOR[h.cond] || ''}">${CN[h.cond] && h.cond !== 'normal' ? CN[h.cond] : ''}</i></span>`;
+      return `<span class="adv-h${h.ok === false ? ' fail' : ''}${risky ? ' risky' : ''}" style="--cc:${COND_COLOR[h.cond] || 'transparent'}" data-i="${i}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}${risky ? ' (눌러서 성공/실패 전환)' : ''}">${ico(h.k)}<i style="color:${COND_COLOR[h.cond] || ''}">${CN[h.cond] && h.cond !== 'normal' ? CN[h.cond] : ''}</i></span>`;
     }).join('') : '<span class="calc-sub">아직 기록이 없어요. 쓴 스킬을 아래에서 눌러 주세요.</span>';
     $('adv-hist').querySelectorAll('.risky').forEach((el) => el.addEventListener('click', () => {
       const h = hist[Number(el.dataset.i)]; h.ok = h.ok === false ? undefined : false; replay();
@@ -263,7 +263,7 @@
         <div class="adv-head"><span class="adv-rank">${i + 1}</span><span class="adv-name">${skill(x.key, false)}</span>
           <span class="adv-pill">완료 ${pct(x.risk.pDone)}</span><span class="adv-pill">목표 품질 ${pct(x.risk.pQuality)}</span>
           <span class="adv-pill">평균 품질 ${Math.round(x.risk.avgQuality)}</span>${x.mode ? `<span class="adv-pill">${x.mode === '계획' ? '고정 계획 기준' : '상태 반응 기준'}</span>` : ''}</div>
-        <div class="adv-plan">${seq(x.plan.slice(0, 8), 0)}${x.plan.length > 8 ? `<details class="adv-rest"><summary>이후 ${x.plan.length - 8}공정 예상 (상태에 따라 달라져요)</summary>${seq(x.plan.slice(8), 8)}</details>` : ''}</div>
+        <div class="adv-plan">${seq(x.plan.slice(0, 8), 0)}${x.plan.length > 8 ? `<details class="adv-rest"><summary>이후 ${x.plan.length - 8}공정 예상 (상태에 따라 달라져요)</summary><div class="adv-rest-body">${seq(x.plan.slice(8), 8)}</div></details>` : ''}</div>
       </div>`).join('') +
       '<div class="calc-sub adv-note">완료·품질 확률은 이 스킬로 시작해 끝까지 시뮬레이션한 값이에요. 「고품질일 때」 표시가 붙은 스킬은 그 시점에 상태가 고품질일 때만 쓸 수 있어요. 이후 상태 확률은 임시 기본값이라 실측과 다를 수 있어요.</div>';
   }

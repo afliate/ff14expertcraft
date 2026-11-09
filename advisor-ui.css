@@ -74,3 +74,16 @@ body.light .adv-hgrp,body.light .adv-hist{background:rgba(0,0,0,.05);}
 .adv-histhead .calc-btn{margin-left:4px;}
 .adv-h.risky{cursor:pointer;}
 .adv-h.risky .adv-ico{outline:1px dashed rgba(232,90,122,.5);}
+
+/* 추천 탭 아이콘 키우기 */
+.adv-ico{width:34px;height:34px;}
+.adv-name .adv-ico{width:38px;height:38px;}
+.adv-hbtn .adv-ico{width:42px;height:42px;}
+.adv-h .adv-ico{width:40px;height:40px;box-shadow:0 0 0 2px var(--cc,transparent);}
+.adv-h{font-size:11px;}
+.adv-plan{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px 2px;}
+.adv-plan .adv-sk{flex-direction:column;align-items:center;gap:2px;font-size:12px;text-align:center;max-width:68px;white-space:normal;line-height:1.2;}
+.adv-plan .adv-arrow{align-self:center;margin:0 2px;}
+.adv-plan .adv-rest{width:100%;}
+.adv-plan .adv-rest > summary{margin:6px 0;}
+.adv-rest-body{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px 2px;}
