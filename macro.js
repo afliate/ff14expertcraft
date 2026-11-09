@@ -175,6 +175,17 @@
     return res;
   }
 
+  /** 상태 '보통'으로 한 공정씩 돌린 결과 (화면의 공정별 표용) */
+  function trace(path, ctx) {
+    let s = Adv.newState({ cp: ctx.maxCP, dur: ctx.maxDur, steps: 0 });
+    const rows = [];
+    for (const k of path) {
+      s = Adv.apply(s, k, ctx, 'normal');
+      rows.push({ key: k, progress: Math.min(Math.floor(s.progress), ctx.target), quality: Math.floor(s.quality), cp: s.cp, dur: Math.max(0, s.dur), iq: Math.floor(s.iq) });
+    }
+    return rows;
+  }
+
   /** 인게임 매크로 텍스트. 15줄 제한 때문에 14공정마다 끊고 마지막 줄에 완료 알림을 붙인다. */
   function toText(path, per) {
     per = per || 14;
@@ -191,5 +202,5 @@
     return out;
   }
 
-  return { search, searchVariant, rank, solve, simulate, toText, KEYS, VARIANTS };
+  return { search, searchVariant, rank, solve, simulate, trace, toText, KEYS, VARIANTS };
 });

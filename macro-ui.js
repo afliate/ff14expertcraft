@@ -4,7 +4,7 @@
   const $ = (id) => document.getElementById(id);
   const num = (id) => Number($(id).value) || 0;
   const JOBS = { CRP: '목수', BSM: '대장장이', ARM: '갑주제작사', GSM: '보석공예가', LTW: '가죽공예가', WVR: '재봉사', ALC: '연금술사', CUL: '요리사' };
-  let recipes = [], odds = null, table = null, worker = null, reqId = 0;
+  let recipes = [], odds = null, table = null, worker = null, reqId = 0, lastCtx = null;
   const sel = { gear: null, food: null, pot: null };
 
   const isCosmic = (r) => !!r && r.rlvl >= 700 && r.rlvl <= 775;
@@ -73,6 +73,12 @@
     const a = FFAdvisor.ACTIONS[k], url = window.ffSkillIcon ? window.ffSkillIcon(k) : '';
     return `<span class="adv-sk">${url ? `<img class="adv-ico" src="${url}" alt="" onerror="this.style.display='none'">` : ''}<span>${a.ko}</span></span>`;
   }
+  function traceHTML(p) {
+    const ctx = lastCtx, rows = FFMacro.trace(p.path, ctx);
+    return `<details class="adv-details mc-trace"><summary>공정별 상태 보기 (상태 보통 기준)</summary><div class="mc-tracewrap"><table class="mc-table"><thead><tr><th>#</th><th>스킬</th><th>작업량</th><th>품질</th><th>CP</th><th>내구</th><th>정신</th></tr></thead><tbody>` +
+      rows.map((r, n) => `<tr><td>${n + 1}</td><td class="mc-sk">${skillChip(r.key)}</td><td>${r.progress}</td><td>${r.quality}</td><td>${r.cp}</td><td>${r.dur}</td><td>${r.iq}</td></tr>`).join('') +
+      `</tbody></table></div><div class="calc-sub">목표: 작업량 ${ctx.target} · 품질 ${ctx.targetQuality}</div></details>`;
+  }
   function planHTML(p, i, top) {
     const texts = FFMacro.toText(p.path);
     return `<div class="adv-card${top ? ' top' : ''}">
@@ -80,6 +86,7 @@
         <span class="adv-pill">목표 품질 달성 ${pct(p.risk.pQuality)}</span><span class="adv-pill">완료 ${pct(p.risk.pDone)}</span>
         <span class="adv-pill">남는 CP ${p.cp}</span></div>
       <div class="adv-plan">${p.path.map(skillChip).join('<span class="adv-arrow">→</span>')}</div>
+      ${traceHTML(p)}
       <div class="mc-texts">${texts.map((t, n) => `<div class="mc-text"><div class="mc-texthead"><span>매크로 ${texts.length > 1 ? n + 1 : ''}</span><button type="button" class="calc-btn mc-copy">복사</button></div><pre>${t}</pre></div>`).join('')}</div>
     </div>`;
   }
@@ -108,7 +115,7 @@
   }
   function run() {
     if (!cur() || !odds) return;
-    const ctx = buildCtx(), margin = Number($('mc-margin').value) || 0;
+    const ctx = buildCtx(); lastCtx = ctx; const margin = Number($('mc-margin').value) || 0;
     $('mc-msg').textContent = '찾는 중이에요… (10초 안팎 걸려요)'; $('mc-run').disabled = true; $('mc-out').innerHTML = '';
     const finish = (res, err) => {
       $('mc-run').disabled = false; $('mc-msg').textContent = err ? '계산 중 문제가 생겼어요: ' + err : '';
@@ -118,7 +125,7 @@
     const search = (c, m) => {
       // 시작 스킬 3가지를 워커 3개로 동시에 찾는다 (워커를 못 쓰면 순서대로)
       const jobs = FFMacro.VARIANTS.map((_, v) => new Promise((ok, no) => {
-        let w; try { w = new Worker('macro-worker.js?v=20261110-1'); } catch (e) { ok(FFMacro.searchVariant(c, { margin: m }, v)); return; }
+        let w; try { w = new Worker('macro-worker.js?v=20261110-3'); } catch (e) { ok(FFMacro.searchVariant(c, { margin: m }, v)); return; }
         w.onmessage = (e) => { w.terminate(); e.data.error ? no(new Error(e.data.error)) : ok(e.data.res); };
         w.onerror = (e) => { w.terminate(); no(new Error(e.message || '알 수 없는 오류')); };
         w.postMessage({ id, ctx: c, opts: { margin: m }, variant: v });
