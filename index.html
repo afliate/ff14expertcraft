@@ -12,11 +12,11 @@
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-14"></script>
+<script src="engine.js?v=20261109-15"></script>
 <script src="qualcalc.js?v=20261109-2"></script>
-<script src="advisor.js?v=20261109-14"></script>
-<script src="advisor-ui.js?v=20261109-14" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-14">
+<script src="advisor.js?v=20261109-15"></script>
+<script src="advisor-ui.js?v=20261109-15" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-15">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1431,6 +1431,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <label>작업 숙련도<input id="adv-craft" type="number" value="5933"></label><label>가공 정밀도<input id="adv-ctrl" type="number" value="5470"></label><label>최대 CP<input id="adv-maxcp" type="number" value="649"></label>
           <label class="chk"><input id="adv-relic" type="checkbox" checked>우주 도구 (고품질 ×1.75)<span id="adv-relic-note" class="calc-sub"></span></label>
         </div>
+      </div>
+      <div class="adv-panel">
+        <div class="input-section-label">진행 기록 — 쓴 스킬을 눌러 주세요 (아래 상태가 자동 계산돼요)</div>
+        <div id="adv-hist" class="adv-hist"></div>
+        <div id="adv-hist-sum" class="calc-sub"></div>
+        <div id="adv-hist-btns" class="adv-hbtns"></div>
+        <div class="adv-grid"><label class="chk"><input id="adv-fail" type="checkbox">다음 스킬 실패 (강행·손길류)</label>
+          <button type="button" class="calc-btn" id="adv-hist-undo">되돌리기</button><button type="button" class="calc-btn" id="adv-hist-reset">처음부터</button></div>
+        <div class="calc-sub">스킬을 쓸 때의 「이번 상태」(고품질 등)가 함께 기록돼요. 다음 공정 상태는 아래에서 바꿔 주세요.</div>
       </div>
       <div class="adv-panel">
         <div class="input-section-label">현재 제작 상태</div>
