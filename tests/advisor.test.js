@@ -173,3 +173,12 @@ test('전문장인 전용: 일심불란은 고품질이 아니어도 집중 가�
   assert.equal(t.hs, 0);
   assert.equal(Adv.canUse('hs', t, c, 'normal'), false); // 1회 한정
 });
+
+test('장인의 초절 기술: 다음 내구 소모 1회 면제, 공정 아님, 1회 한정', () => {
+  let s = Adv.newState({ cp: 400, dur: 55, steps: 1 });
+  s = Adv.apply(s, 'tp', ctx, 'normal');
+  assert.equal(s.steps, 1);
+  const t = Adv.apply(s, 'prep', ctx, 'normal');
+  assert.equal(t.dur, 55);
+  assert.equal(Adv.canUse('tp', t, ctx, 'normal'), false);
+});

@@ -57,3 +57,15 @@ body.light .adv-grid select option{background:#fff;color:var(--text-bright);}
 .adv-hbtn{position:relative;}
 .adv-hbtn em{position:absolute;right:0;bottom:0;font-style:normal;font-size:9px;font-weight:800;background:#e85a7a;color:#fff;border-radius:3px;padding:0 3px;}
 .adv-hbtns{flex-direction:column;}
+
+/* 진행 기록: 그룹을 가로로 나란히 (KimchiMaker식 아이콘 바) */
+.adv-hbtns{flex-direction:row;flex-wrap:wrap;gap:6px 10px;align-items:flex-start;}
+.adv-hgrp{width:auto;flex-direction:column;align-items:flex-start;gap:2px;padding:4px 6px;border:1px solid var(--border,rgba(120,160,190,.25));border-radius:8px;background:rgba(0,0,0,.12);}
+.adv-hlbl{min-width:0;font-size:10px;}
+.adv-hbtn .adv-ico{width:30px;height:30px;}
+.adv-hist{padding:6px;border:1px solid var(--border,rgba(120,160,190,.25));border-radius:8px;background:rgba(0,0,0,.2);}
+/* 입력칸을 살짝 짙게 */
+.adv-grid input[type=number],.adv-grid input[type=text],.adv-grid select{background:rgba(0,0,0,.35);border-color:rgba(120,160,190,.35);}
+body.light .adv-grid input[type=number],body.light .adv-grid input[type=text],body.light .adv-grid select{background:#e3eaf0;border-color:#8aabbd;}
+body.light .adv-hgrp,body.light .adv-hist{background:rgba(0,0,0,.05);}
+.adv-histpanel .calc-btn{white-space:nowrap;padding:6px 10px;}

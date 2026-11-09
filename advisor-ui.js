@@ -132,7 +132,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-19'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-20'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -152,7 +152,7 @@
     });
     // 공정 수는 입력받지 않고 상태에서 유추: 뭔가 진행됐으면 첫 공정이 아님
     const st = state;
-    if (histState) for (const k of ['ssh', 'hs', 'hsUsed', 'qiUsed', 'exp']) st[k] = histState[k] || 0;
+    if (histState) for (const k of ['ssh', 'hs', 'hsUsed', 'qiUsed', 'exp', 'tp', 'tpUsed', 'dcUsed']) st[k] = histState[k] || 0;
     if (st.progress > 0 || st.quality > 0 || st.iq > 0 || st.dur < ctx.maxDur || st.lastAction || st.ven || st.inno || st.gs || st.mm || st.wn || st.manip || st.fa || st.cp < ctx.maxCP) st.steps = 1;
     return { state, ctx, cond: $('adv-cond').value, opts: { samples: 200 }, odds: currentOdds() };
   }
@@ -195,9 +195,9 @@
     ['작업량', ['basicS', 'careful', 'prudentS', 'groundwork', 'intensive', 'rapid', 'delicate']],
     ['품질', ['basicT', 'standard', 'advanced', 'refined', 'prudentT', 'prep', 'precise', 'hasty', 'daring', 'finesse', 'byregot']],
     ['버프', ['ven', 'inno', 'gs', 'wn', 'wn2', 'manip', 'fa']],
-    ['전문장인 전용', ['hs', 'qi']],
+    ['전문장인 전용', ['hs', 'qi', 'dc']],
     ['우주개척 전용', ['ssh']],
-    ['수리·기타', ['mend', 'immac', 'observe', 'tricks']],
+    ['수리·기타', ['mend', 'immac', 'observe', 'tricks', 'tp']],
   ];
   function setIf(id, v) { const el = $(id); if (el) el.value = Math.round(v * 10) / 10; }
   function replay() {
@@ -238,7 +238,7 @@
   function pct(x) { return Math.round(x * 100) + '%'; }
   const ICON = { basicS: 1501, careful: 1986, prudentS: 1520, groundwork: 1518, intensive: 1514, rapid: 1988, mm: 1994,
     basicT: 1502, standard: 1516, advanced: 1519, refined: 1522, prudentT: 1535, prep: 1507, precise: 1524, reflect: 1982,
-    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, hs: 1996, qi: 1999, inno: 1987, gs: 1955, wn: 1992,
+    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, hs: 1996, qi: 1999, dc: 1984, tp: 1926, inno: 1987, gs: 1955, wn: 1992,
     wn2: 1993, manip: 1985, ssh: 1953, fa: 1983, mend: 1952, immac: 1950, observe: 1954, tricks: 1990 };
   function ico(k) { return `<img class="adv-ico" src="https://xivapi.com/i/001000/00${ICON[k]}_hr1.png" alt="${FFAdvisor.ACTIONS[k].ko}" onerror="this.style.display='none'">`; }
   function skill(k, mark) {
