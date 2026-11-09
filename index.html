@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>파판14 고난도 제작 가이드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261109-27">
+<link rel="stylesheet" href="style.css?v=20261109-28">
 <link rel="stylesheet" href="rec-styles.css">
 <script src="recipes-sinus-ardorum.js"></script>
 <script src="recipes-phaenna.js"></script>
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-27"></script>
-<script src="qualcalc.js?v=20261109-27"></script>
-<script src="advisor.js?v=20261109-27"></script>
-<script src="advisor-ui.js?v=20261109-27" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-27">
+<script src="engine.js?v=20261109-28"></script>
+<script src="qualcalc.js?v=20261109-28"></script>
+<script src="advisor.js?v=20261109-28"></script>
+<script src="advisor-ui.js?v=20261109-28" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-28">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1451,15 +1451,13 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
       <div class="adv-panel">
-        <div class="input-section-label">현재 제작 상태</div>
+        <div class="input-section-label">현재 제작 상태 <span class="calc-sub">— 진행 기록을 누르면 자동으로 채워져요</span></div>
         <div class="adv-grid">
           <label>작업량<input id="adv-curprog" type="number" value="0"></label><label>품질<input id="adv-curqual" type="number" value="0"></label><label>내구도<input id="adv-curdur" type="number" value=""></label><label>CP<input id="adv-curcp" type="number" value="649"></label><label>정신집중<input id="adv-iq" type="number" value="0"></label>
           <label title="가공→중급 가공→상급 가공 콤보(CP 18), 가공→세련 가공(정신집중 +1) 판정용">직전 스킬<select id="adv-last"><option value="">그 외/없음</option><option value="basicT">가공</option><option value="standard">중급 가공</option><option value="observe">경과 관찰</option></select></label>
-          <label>이번 상태<select id="adv-cond"></select></label>
+          <label class="adv-hide">이번 상태<select id="adv-cond"></select></label>
         </div>
-      </div>
-      <div class="adv-panel">
-        <div class="input-section-label">남은 버프 (공정 수)</div>
+        <div class="adv-sublbl">남은 버프 (공정 수)</div>
         <div class="adv-grid">
           <label>공경<input id="adv-ven" type="number" value="0"></label><label>혁신<input id="adv-inno" type="number" value="0"></label><label>장족의 발전<input id="adv-gs" type="number" value="0"></label><label>확신<input id="adv-mm" type="number" value="0"></label><label>근검/장기 절약<input id="adv-wn" type="number" value="0"></label><label>교묘한 손놀림<input id="adv-manip" type="number" value="0"></label><label>최종 확인<input id="adv-fa" type="number" value="0"></label>
         </div>
@@ -1474,7 +1472,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="adv-condbar" class="adv-condbar"></div>
         <div id="adv-hist-btns" class="adv-hbtns"></div>
         <label class="chk adv-autolog"><input id="adv-autolog" type="checkbox" checked>누른 상태를 조건 기록(실측)에도 같이 쌓기</label>
-        <div class="calc-sub">스킬을 쓸 때의 「이번 상태」(고품질 등)가 함께 기록돼요. 강행 작업·손길류가 실패했으면 위 기록의 아이콘을 눌러 실패로 바꿔 주세요. 기적의 물질은 사용 표시만 하고 효과는 계산에 넣지 않아요.</div>
+        <div class="calc-sub">스킬을 쓸 때의 「지금 상태」(고품질 등)가 함께 기록돼요. 강행 작업·손길류가 실패했으면 위 기록의 아이콘을 눌러 실패로 바꿔 주세요. 기적의 물질은 사용 표시만 하고 효과는 계산에 넣지 않아요.</div>
       </div>
     <button class="calc-btn" id="adv-run">추천 보기</button>
     <div id="adv-msg" class="calc-sub"></div>
