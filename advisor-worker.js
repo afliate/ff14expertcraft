@@ -1,5 +1,5 @@
 /* advisor-worker.js · 추천 계산을 화면과 분리해서 돌린다 */
-importScripts('engine.js?v=20261109-29', 'advisor.js?v=20261109-29');
+importScripts('engine.js?v=20261109-30', 'advisor.js?v=20261109-30');
 self.onmessage = function (e) {
   const m = e.data;
   try {
