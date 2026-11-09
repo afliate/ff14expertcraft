@@ -1,0 +1,11 @@
+.adv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:10px 0 14px;}
+.adv-grid label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--text-dim);}
+.adv-grid input,.adv-grid select{padding:7px 8px;background:var(--bg-card,transparent);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:inherit;font-size:14px;}
+.adv-card{border:1px solid var(--border);border-radius:3px;padding:12px 14px;margin:8px 0;}
+.adv-card.top{border-color:var(--accent);}
+.adv-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.adv-rank{font-weight:900;color:var(--accent);}
+.adv-name{font-weight:900;font-size:16px;color:var(--text-bright);}
+.adv-pill{font-size:12px;padding:2px 8px;border:1px solid var(--border);border-radius:10px;color:var(--text-dim);}
+.adv-plan{margin-top:8px;font-size:13px;color:var(--text-dim);line-height:1.7;}
+.adv-note{margin-top:12px;}
