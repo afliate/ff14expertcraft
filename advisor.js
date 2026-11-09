@@ -277,7 +277,7 @@
       out.push({
         risk, key: k, ko: A[k].ko, ok: best.s.done,
         quality: Math.floor(best.s.quality), finishCp: best.s.cp,
-        score: risk ? best.sc + risk.pDone * 200 : best.sc, plan: path,
+        score: risk ? risk.pQuality * 300 + risk.pDone * 100 + Math.min(1, risk.avgQuality / ctx.targetQuality) * 50 : best.sc, plan: path,
       });
     }
     return out.sort((a, b) => b.score - a.score);
