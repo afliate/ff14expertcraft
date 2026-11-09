@@ -12,11 +12,11 @@
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-15"></script>
+<script src="engine.js?v=20261109-16"></script>
 <script src="qualcalc.js?v=20261109-2"></script>
-<script src="advisor.js?v=20261109-15"></script>
-<script src="advisor-ui.js?v=20261109-15" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-15">
+<script src="advisor.js?v=20261109-16"></script>
+<script src="advisor-ui.js?v=20261109-16" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-16">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1433,19 +1433,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
       <div class="adv-panel">
-        <div class="input-section-label">진행 기록 — 쓴 스킬을 눌러 주세요 (아래 상태가 자동 계산돼요)</div>
-        <div id="adv-hist" class="adv-hist"></div>
-        <div id="adv-hist-sum" class="calc-sub"></div>
-        <div id="adv-hist-btns" class="adv-hbtns"></div>
-        <div class="adv-grid"><label class="chk"><input id="adv-fail" type="checkbox">다음 스킬 실패 (강행·손길류)</label>
-          <button type="button" class="calc-btn" id="adv-hist-undo">되돌리기</button><button type="button" class="calc-btn" id="adv-hist-reset">처음부터</button></div>
-        <div class="calc-sub">스킬을 쓸 때의 「이번 상태」(고품질 등)가 함께 기록돼요. 다음 공정 상태는 아래에서 바꿔 주세요.</div>
-      </div>
-      <div class="adv-panel">
         <div class="input-section-label">현재 제작 상태</div>
         <div class="adv-grid">
           <label>작업량<input id="adv-curprog" type="number" value="0"></label><label>품질<input id="adv-curqual" type="number" value="0"></label><label>내구도<input id="adv-curdur" type="number" value=""></label><label>CP<input id="adv-curcp" type="number" value="649"></label><label>정신집중<input id="adv-iq" type="number" value="0"></label>
-          <label>직전 스킬<select id="adv-last"><option value="">그 외/없음</option><option value="basicT">가공</option><option value="standard">중급 가공</option><option value="observe">경과 관찰</option></select></label>
+          <label title="가공→중급 가공→상급 가공 콤보(CP 18), 가공→세련 가공(정신집중 +1) 판정용">직전 스킬<select id="adv-last"><option value="">그 외/없음</option><option value="basicT">가공</option><option value="standard">중급 가공</option><option value="observe">경과 관찰</option></select></label>
           <label>이번 상태<select id="adv-cond"></select></label>
         </div>
       </div>
@@ -1456,6 +1447,15 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     </div>
+    <div class="adv-panel adv-histpanel">
+        <div class="input-section-label">진행 기록 — 쓴 스킬을 눌러 주세요 (아래 상태가 자동 계산돼요)</div>
+        <div id="adv-hist" class="adv-hist"></div>
+        <div id="adv-hist-sum" class="calc-sub"></div>
+        <div id="adv-hist-btns" class="adv-hbtns"></div>
+        <div class="adv-grid"><label class="chk"><input id="adv-fail" type="checkbox">다음 스킬 실패 (강행·손길류)</label>
+          <button type="button" class="calc-btn" id="adv-hist-undo">되돌리기</button><button type="button" class="calc-btn" id="adv-hist-reset">처음부터</button></div>
+        <div class="calc-sub">스킬을 쓸 때의 「이번 상태」(고품질 등)가 함께 기록돼요. 다음 공정 상태는 아래에서 바꿔 주세요.</div>
+      </div>
     <button class="calc-btn" id="adv-run">추천 보기</button>
     <div id="adv-msg" class="calc-sub"></div>
     <div id="adv-out"></div>

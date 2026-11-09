@@ -49,3 +49,5 @@ body.light .adv-grid select option{background:#fff;color:var(--text-bright);}
 .adv-hbtn{padding:2px;border:1px solid var(--border,#345);border-radius:6px;background:transparent;cursor:pointer;}
 .adv-hbtn .adv-ico{width:32px;height:32px;display:block;}
 .adv-hbtn:hover{border-color:#4fd1a5;}
+.adv-histpanel{margin-top:8px;}
+.adv-histpanel .adv-hist{min-height:40px;}
