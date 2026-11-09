@@ -422,7 +422,7 @@
           if (!sample) sample = r.path;
         }
         const stat = { pDone: ok / n, pQuality: qHit / n, avgQuality: ok ? qSum / ok : 0, avgCp: ok ? cpLeft / ok : 0, variant: v, sample };
-        stat.score = stat.pQuality * 300 + stat.pDone * 100 + Math.min(1, stat.avgQuality / ctx.targetQuality) * 50;
+        stat.score = stat.pQuality * 300 + stat.pDone * 100 + Math.min(1, stat.avgQuality / ctx.targetQuality) * 150;
         if (!best || stat.score > best.score) best = stat;
       }
       out.push({ key: k, ko: A[k].ko, risk: best, plan: best.sample, score: best.score, ok: best.pDone > 0, quality: Math.floor(best.avgQuality), finishCp: Math.round(best.avgCp) });
@@ -458,7 +458,7 @@
       out.push({
         risk, key: k, ko: A[k].ko, ok: best.s.done,
         quality: Math.floor(best.s.quality), finishCp: best.s.cp,
-        score: risk ? risk.pQuality * 300 + risk.pDone * 100 + Math.min(1, risk.avgQuality / ctx.targetQuality) * 50 : best.sc, plan: path,
+        score: risk ? risk.pQuality * 300 + risk.pDone * 100 + Math.min(1, risk.avgQuality / ctx.targetQuality) * 150 : best.sc, plan: path,
       });
     }
     return out.sort((a, b) => b.score - a.score);
