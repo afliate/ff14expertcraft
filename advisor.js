@@ -220,7 +220,13 @@
     for (const name of Object.keys(bits)) {
       if (name === 'normal' || name === 'excellent' || name === 'poor') continue;
       if (!(flag & bits[name])) continue;
-      const r = ov ? (ov[name] || 0) : (oddsJson.defaultRates[name] || 0);
+      let r = ov ? (ov[name] || 0) : (oddsJson.defaultRates[name] || 0);
+      if (!ov && oddsJson.flagAdjust) {
+        for (const other of Object.keys(oddsJson.flagAdjust)) {
+          const adj = oddsJson.flagAdjust[other][name];
+          if (adj !== undefined && (flag & bits[other])) r = adj;
+        }
+      }
       rows.push([name, r]); sum += r;
     }
     return { flag, rows, normal: Math.max(0, 1 - sum) };

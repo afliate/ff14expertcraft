@@ -1,9 +1,10 @@
 {
   "_meta": {
-    "description": "Expert-recipe condition data. flagBits: ConditionsFlag bit per condition (game data, RecipeLevelTable.ConditionsFlag via XIVAPI v2). rlvlFlags: flag per recipe-level-table id. defaultRates: Teamcraft simulator flat expert rates (MIT, (c) 2019 Flavien Normand) - provisional, NOT measured. overrides: per-flag measured odds, to be filled by own measurements.",
+    "description": "Expert-recipe condition data. flagBits: ConditionsFlag bit per condition (game data, RecipeLevelTable.ConditionsFlag via XIVAPI v2). rlvlFlags: flag per recipe-level-table id. defaultRates: provisional flat expert rates (Teamcraft model, MIT; goodOmen/robust/malleable follow the community-tool values), NOT measured. flagAdjust: rate changes when a bit is present in the flag. overrides: per-flag measured odds, to be filled by own measurements.",
     "sources": [
       "XIVAPI v2 RecipeLevelTable",
-      "ffxiv-teamcraft/simulator (MIT)"
+      "ffxiv-teamcraft/simulator (MIT)",
+      "community tool (Thal's expert) observed flat rates - reference only, no code copied"
     ]
   },
   "flagBits": {
@@ -24,10 +25,10 @@
     "centered": 0.15,
     "sturdy": 0.15,
     "pliant": 0.12,
-    "malleable": 0.12,
+    "malleable": 0.15,
     "primed": 0.12,
-    "goodOmen": 0.1,
-    "robust": 0.1
+    "goodOmen": 0.12,
+    "robust": 0.15
   },
   "rlvlFlags": {
     "481": 115,
@@ -75,5 +76,13 @@
     "775": 515,
     "776": 1523
   },
-  "overrides": {}
+  "overrides": {},
+  "flagAdjust": {
+    "goodOmen": {
+      "good": 0.05
+    },
+    "robust": {
+      "sturdy": 0.05
+    }
+  }
 }
