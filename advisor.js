@@ -350,6 +350,8 @@
     if (!qDone) {
       const canByregot = U('byregot');
       const qLeft = ctx.targetQuality - s.quality;
+      // 호조의 징조: 다음 공정이 고품질이므로 미리 장족의 발전 (장족+고품질+큰 품질 스킬)
+      if (v.style && cond === 'goodOmen' && !s.gs && s.iq >= 1 && s.cp >= 32 + 40 + reserve && s.dur >= 15 && U('gs')) return 'gs';
       // 비결: 고품질일 때 CP가 모자라면 회복
       if (v.tricks && (cond === 'good') && s.cp < 40 + reserve && U('tricks')) return 'tricks';
       // 공경 아래 정교한 작업: 작업량과 품질을 동시에 (마무리 몫은 남김)

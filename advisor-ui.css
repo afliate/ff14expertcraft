@@ -32,3 +32,4 @@ body.light .adv-grid select option{background:#fff;color:var(--text-bright);}
 .adv-note{margin-top:12px;}
 .adv-presets{display:flex;flex-direction:column;gap:2px;}
 .adv-presets .preset-sub-label{font-size:12px;color:var(--text-dim);margin-top:4px;}
+.adv-rest{margin-top:4px;}.adv-rest summary{cursor:pointer;color:var(--text-dim);font-size:12px;}

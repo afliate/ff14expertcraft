@@ -124,7 +124,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-12'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-13'); } catch (e) { worker = false; }
     return worker;
   }
   function collect() {
@@ -179,7 +179,7 @@
         <div class="adv-head"><span class="adv-rank">${i + 1}</span><span class="adv-name">${x.ko}</span>
           <span class="adv-pill">완료 ${pct(x.risk.pDone)}</span><span class="adv-pill">목표 품질 ${pct(x.risk.pQuality)}</span>
           <span class="adv-pill">평균 품질 ${Math.round(x.risk.avgQuality)}</span>${x.mode ? `<span class="adv-pill">${x.mode === '계획' ? '고정 계획 기준' : '상태 반응 기준'}</span>` : ''}</div>
-        <div class="adv-plan">${x.plan.map((k) => A[k].ko).join(' → ')}</div>
+        <div class="adv-plan">${x.plan.slice(0, 8).map((k) => A[k].ko).join(' → ')}${x.plan.length > 8 ? `<details class="adv-rest"><summary>이후 ${x.plan.length - 8}공정 예상 (상태에 따라 달라져요)</summary>${x.plan.slice(8).map((k) => A[k].ko).join(' → ')}</details>` : ''}</div>
       </div>`).join('') +
       '<div class="calc-sub adv-note">완료·품질 확률은 이 스킬로 시작해 끝까지 시뮬레이션한 값이에요 (고정 계획과 상태에 반응하는 방식 중 더 좋은 쪽). 이후 상태 확률은 임시 기본값이라 실측과 다를 수 있어요.</div>';
   }
