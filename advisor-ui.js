@@ -81,8 +81,8 @@
     $('adv-work').value = r.work; $('adv-qual').value = r.quality; $('adv-dur').value = r.durability;
     $('adv-curdur').value = r.durability;
     const cos = isCosmic(r), rc = $('adv-relic');
-    rc.disabled = !cos; rc.checked = cos;
-    $('adv-relic-note').textContent = cos ? '' : ' (일반 레시피 불가)';
+    rc.disabled = false; rc.checked = cos;
+    $('adv-relic-note').textContent = '';
   }
   const num = (id) => Number($(id).value) || 0;
 
@@ -135,13 +135,13 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-33'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-34'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
     const r = cur();
     const rp = FFEngine.paramsFromTable(r.rlvl, table[String(r.rlvl)]);
-    return { craftsmanship: num('adv-craft'), control: num('adv-ctrl'), rp, relic: isCosmic(r) && $('adv-relic').checked, cosmic: isCosmic(r), specialist: $('adv-spec').checked,
+    return { craftsmanship: num('adv-craft'), control: num('adv-ctrl'), rp, relic: $('adv-relic').checked, cosmic: isCosmic(r), specialist: $('adv-spec').checked,
       target: num('adv-work'), targetQuality: num('adv-qual'), maxDur: num('adv-dur'), maxCP: num('adv-maxcp') };
   }
   function collect() {
