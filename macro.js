@@ -1,0 +1,124 @@
+/* ============================================================
+ *  macro.js · 매크로(고정 순서) 로테이션 탐색 (UI 의존 없음)
+ *
+ *  상태를 '보통'으로 가정하고, 성공률 100%인 스킬만 써서
+ *  작업량·목표 품질을 채우는 가장 짧은 순서를 빔 서치로 찾는다.
+ *  찾은 후보는 실제 상태 확률(data/condition-odds.json)로 시뮬레이션해
+ *  "상태가 어떻게 나와도 이 매크로로 되는지"를 함께 돌려준다.
+ *  브라우저: window.FFMacro / Node: require('./macro.js')
+ * ============================================================ */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory(require('./advisor.js'));
+  else root.FFMacro = factory(root.FFAdvisor);
+})(typeof self !== 'undefined' ? self : this, function (Adv) {
+  'use strict';
+  const A = Adv.ACTIONS;
+  // 매크로에 쓰지 않는 스킬: 기록 전용/보조(설계 변경·기적의 물질), 비결
+  const SKIP = new Set(['dc', 'mmr', 'tricks']);
+  const KEYS = Object.keys(A).filter((k) => !SKIP.has(k));
+
+  // 성공률 100% 스킬만. 우주 안정된 솜씨가 켜져 있으면 확률 스킬도 확정 성공
+  function usable(k, s, ctx) {
+    if (A[k].rate !== undefined && !(s.ssh > 0)) return false;
+    return Adv.canUse(k, s, ctx, 'normal');
+  }
+
+  function keyOf(s) {
+    return [Math.round(s.progress), Math.round(s.quality), s.cp, s.dur, s.iq, s.ven, s.inno, s.gs, s.mm, s.wn, s.manip, s.fa, s.exp, s.ssh,
+      s.hs, s.hsUsed, s.qiUsed, s.tp, s.tpUsed,
+      s.lastAction === 'basicT' || s.lastAction === 'standard' || s.lastAction === 'observe' ? s.lastAction : '-'].join(',');
+  }
+  function heur(s, ctx) {
+    const pr = Math.min(1, s.progress / ctx.target);
+    const qr = Math.min(1, s.quality / ctx.targetQuality);
+    return pr * 60 + qr * 100 + s.cp * 0.02 + s.dur * 0.05 + s.iq * 0.5;
+  }
+
+  /**
+   * search(ctx, opts) → { plans: [{ path, quality, cp, steps, ok }], reachedQuality }
+   *  ctx : advisor.js 와 같은 ctx (craftsmanship, control, rp, relic, target, targetQuality, maxDur, maxCP, specialist, cosmic)
+   */
+  function search(ctx, opts) {
+    opts = opts || {};
+    const width = opts.width || 400, maxDepth = opts.depth || 34, keep = opts.keep || 24;
+    const start = Adv.newState({ cp: ctx.maxCP, dur: ctx.maxDur, steps: 0 });
+    let beam = [{ s: start, path: [] }];
+    const found = []; // 목표 품질까지 채운 완성 후보
+    let best = null;  // 목표에 못 닿았을 때 가장 좋은 완성 후보
+    let extra = 0;
+    for (let d = 0; d < maxDepth && beam.length; d++) {
+      const next = new Map();
+      for (const node of beam) {
+        for (const k of KEYS) {
+          if (!usable(k, node.s, ctx)) continue;
+          const ns = Adv.apply(node.s, k, ctx, 'normal');
+          if (ns.dead) continue;
+          const path = node.path.concat(k);
+          if (ns.done) {
+            const rec = { path, quality: ns.quality, cp: ns.cp, steps: path.length, ok: ns.quality >= ctx.targetQuality };
+            if (rec.ok) found.push(rec);
+            else if (!best || rec.quality > best.quality) best = rec;
+            continue;
+          }
+          const kk = keyOf(ns), h = heur(ns, ctx), ex = next.get(kk);
+          if (!ex || ex.h < h) next.set(kk, { s: ns, path, h });
+        }
+      }
+      beam = [...next.values()].sort((a, b) => b.h - a.h).slice(0, width);
+      if (found.length) { if (++extra > 3) break; } // 가장 짧은 해가 나온 뒤 몇 공정까지만 더 본다
+    }
+    found.sort((a, b) => a.steps - b.steps || b.cp - a.cp);
+    // 같은 순서 중복 제거
+    const seen = new Set(), plans = [];
+    for (const f of found) { const k = f.path.join(','); if (!seen.has(k)) { seen.add(k); plans.push(f); } if (plans.length >= keep) break; }
+    return { plans, best, reachedQuality: plans.length > 0 };
+  }
+
+  /** 정해진 순서를 상태 확률대로 n 번 돌린다. 못 쓰는 스킬이 나오면 매크로가 멈춘 것으로 본다. */
+  function simulate(path, ctx, odds, n, rnd) {
+    rnd = rnd || Math.random;
+    const table = Adv.conditionTable(odds, ctx.rp.rlvl);
+    const N = n || 400;
+    let done = 0, hit = 0, qSum = 0;
+    for (let i = 0; i < N; i++) {
+      let s = Adv.newState({ cp: ctx.maxCP, dur: ctx.maxDur, steps: 0 }), cond = 'normal';
+      for (let j = 0; j < path.length; j++) {
+        if (s.done || s.dead) break;
+        cond = j === 0 ? 'normal' : Adv.drawCondition(table, cond, rnd);
+        const k = path[j];
+        if (!Adv.canUse(k, s, ctx, cond)) break; // 매크로 중단
+        s = Adv.apply(s, k, ctx, cond, rnd() < (A[k].rate === undefined ? 1 : A[k].rate));
+      }
+      if (s.done) { done++; qSum += s.quality; if (s.quality >= ctx.targetQuality) hit++; }
+    }
+    return { pDone: done / N, pQuality: hit / N, avgQuality: done ? qSum / done : 0 };
+  }
+
+  /** 후보들을 시뮬레이션해 가장 안정적인 순서를 고른다 (성공률 우선, 같으면 짧은 쪽). */
+  function solve(ctx, odds, opts) {
+    opts = opts || {};
+    const r = search(ctx, opts);
+    if (!r.plans.length) return { ok: false, best: r.best, plans: [] };
+    const rnd = opts.rnd;
+    const ranked = r.plans.slice(0, opts.simTop || 16).map((p) => Object.assign({ risk: simulate(p.path, ctx, odds, opts.samples || 400, rnd) }, p));
+    ranked.sort((a, b) => b.risk.pQuality - a.risk.pQuality || a.steps - b.steps || b.cp - a.cp);
+    return { ok: true, plans: ranked, best: r.best };
+  }
+
+  /** 인게임 매크로 텍스트. 15줄 제한 때문에 14공정마다 끊고 마지막 줄에 완료 알림을 붙인다. */
+  function toText(path, per) {
+    per = per || 14;
+    const waitOf = (k) => (A[k].kind === 'buff' || k === 'observe' ? 2 : 3);
+    const lines = path.map((k) => `/ac "${A[k].ko}" <wait.${waitOf(k)}>`);
+    const out = [];
+    for (let i = 0; i < lines.length; i += per) {
+      const chunk = lines.slice(i, i + per);
+      const n = out.length + 1, total = Math.ceil(lines.length / per);
+      if (total > 1) chunk.push(`/echo 매크로 #${n} 완료 <se.1>`); else chunk.push('/echo 매크로 완료 <se.1>');
+      out.push(chunk.join('\n'));
+    }
+    return out;
+  }
+
+  return { search, simulate, solve, toText, KEYS };
+});

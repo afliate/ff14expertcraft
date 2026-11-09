@@ -293,6 +293,7 @@
     hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, hs: 1996, qi: 1999, dc: 1984, mmr: '061277', tp: 1926, inno: 1987, gs: 1955, wn: 1992,
     wn2: 1993, manip: 1985, ssh: 1953, fa: 1983, mend: 1952, immac: 1950, observe: 1954, tricks: 1990 };
   function iconUrl(k) { const id = String(ICON[k]); return id.length === 6 ? `https://xivapi.com/i/061000/${id}_hr1.png` : `https://xivapi.com/i/001000/00${id}_hr1.png`; }
+  window.ffSkillIcon = iconUrl;
   function ico(k) { return `<img class="adv-ico" src="${iconUrl(k)}" alt="${FFAdvisor.ACTIONS[k].ko}" onerror="this.style.display='none'">`; }
   function skill(k, mark) {
     const a = FFAdvisor.ACTIONS[k], id = ICON[k];

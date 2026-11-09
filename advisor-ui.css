@@ -125,3 +125,10 @@ body.light .adv-cbtn.off{background:#dde3e8;border-color:#a9b4bd;color:#8a96a0;}
 .adv-grid label{overflow:visible;}
 .adv-grid select{text-overflow:ellipsis;}
 .adv-row1 select{width:100%;max-width:none;}
+/* 매크로 탭 */
+.mc-texts{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:10px;}
+.mc-text{border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.25);padding:6px 8px;min-width:0;}
+body.light .mc-text{background:#eef3f6;}
+.mc-texthead{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text-dim);margin-bottom:4px;}
+.mc-texthead .calc-btn{padding:2px 10px;font-size:12.5px;}
+.mc-text pre{margin:0;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-all;color:var(--text-bright);font-family:ui-monospace,Menlo,Consolas,monospace;}
