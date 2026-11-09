@@ -93,13 +93,14 @@
 
   // ── 한 공정 진행 ──────────────────────────────────────────
   // 반환: 새 상태. 사망(내구 0, 작업량 미달)이면 dead=true.
-  function apply(s, key, ctx, cond) {
+  function apply(s, key, ctx, cond, succ) {
     const d = A[key];
     const st = Object.assign({}, s);
     const c = cost(d, s, cond);
     const dura = (n) => (cond === 'primed' ? n + 2 : n);
     let rate = d.rate === undefined ? 1 : d.rate;
     if (cond === 'centered' && rate < 1) rate = Math.min(1, rate + 0.25);
+    if (succ !== undefined && d.rate !== undefined) rate = succ ? 1 : 0; // 표본 모드: 성공/실패 확정
 
     st.cp -= c.cp;
     const was = { ven: s.ven, inno: s.inno, gs: s.gs, mm: s.mm, wn: s.wn, manip: s.manip, fa: s.fa, exp: s.exp };
@@ -208,6 +209,56 @@
     return best;
   }
 
+  // ── 확률 모델 ─────────────────────────────────────────────
+  // oddsJson = data/condition-odds.json 내용. overrides[flag] 가 있으면 그 표(실측값), 없으면 defaultRates.
+  function conditionTable(oddsJson, rlvl) {
+    const flag = oddsJson.rlvlFlags[String(rlvl)];
+    const bits = oddsJson.flagBits;
+    const ov = oddsJson.overrides && oddsJson.overrides[String(flag)];
+    const rows = [];
+    let sum = 0;
+    for (const name of Object.keys(bits)) {
+      if (name === 'normal' || name === 'excellent' || name === 'poor') continue;
+      if (!(flag & bits[name])) continue;
+      const r = ov ? (ov[name] || 0) : (oddsJson.defaultRates[name] || 0);
+      rows.push([name, r]); sum += r;
+    }
+    return { flag, rows, normal: Math.max(0, 1 - sum) };
+  }
+  function drawCondition(table, prev, rnd) {
+    if (prev === 'excellent') return 'poor';
+    if (prev === 'goodOmen') return 'good';
+    if (prev === 'robust') return 'sturdy';
+    let x = rnd();
+    for (const [n, r] of table.rows) { if ((x -= r) < 0) return n; }
+    return 'normal';
+  }
+
+  // 계획(스킬 배열)을 표본 공정(상태·성공 확률 포함)으로 n 번 돌려 완료율/평균 품질을 구한다.
+  // 계획대로 못 쓰는 스킬(CP 부족 등)은 건너뛰고, 끝나도 미완료면 모범 작업으로 마무리를 시도한다.
+  function simulate(planKeys, start, ctx, oddsJson, n, rnd) {
+    rnd = rnd || Math.random;
+    const table = conditionTable(oddsJson, ctx.rp.rlvl);
+    let ok = 0, qSum = 0, qOk = 0, qHit = 0;
+    for (let i = 0; i < (n || 300); i++) {
+      let s = start, cond = 'normal';
+      for (const k of planKeys.slice(1)) {
+        if (s.done || s.dead) break;
+        cond = drawCondition(table, cond, rnd);
+        if (!canUse(k, s, ctx, cond)) continue;
+        s = apply(s, k, ctx, cond, rnd() < (A[k].rate === undefined ? 1 : A[k].rate));
+      }
+      for (let g = 0; g < 40 && !s.done && !s.dead; g++) {
+        cond = drawCondition(table, cond, rnd);
+        const k = canUse('careful', s, ctx, cond) ? 'careful' : 'basicS';
+        s = apply(s, k, ctx, cond, true);
+      }
+      if (s.done) { ok++; qSum += s.quality; if (s.quality >= ctx.targetQuality) qHit++; }
+    }
+    const N = n || 300;
+    return { pDone: ok / N, pQuality: qHit / N, avgQuality: ok ? qSum / ok : 0 };
+  }
+
   /**
    * recommend(state, ctx, cond, opts) → [{ key, ko, ok, quality, finishCp, plan }] (점수 내림차순)
    *  state: newState({cp, dur, ...}) 로 만든 현재 상태
@@ -221,14 +272,16 @@
       const ns = apply(state, k, ctx, cond || 'normal');
       if (ns.dead) continue;
       const best = ns.done ? { s: ns, path: [], sc: score(ns, ctx) } : plan(ns, ctx, opts);
+      const path = [k].concat(best.path);
+      const risk = opts && opts.odds ? simulate(path, ns, ctx, opts.odds, opts.samples || 300, opts.rnd) : null;
       out.push({
-        key: k, ko: A[k].ko, ok: best.s.done,
+        risk, key: k, ko: A[k].ko, ok: best.s.done,
         quality: Math.floor(best.s.quality), finishCp: best.s.cp,
-        score: best.sc, plan: [k].concat(best.path),
+        score: risk ? best.sc + risk.pDone * 200 : best.sc, plan: path,
       });
     }
     return out.sort((a, b) => b.score - a.score);
   }
 
-  return { ACTIONS: A, newState, canUse, cost, apply, plan, recommend };
+  return { ACTIONS: A, newState, canUse, cost, apply, plan, recommend, conditionTable, drawCondition, simulate };
 });

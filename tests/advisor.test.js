@@ -59,3 +59,39 @@ test('recommend: 시작 상태에서 완료 가능한 계획을 찾는다', () =
   assert.ok(r[0].ok, '완료 가능한 계획이 있어야 함');
   assert.ok(r[0].quality > 0);
 });
+
+const odds = require('../data/condition-odds.json');
+function lcg(seed) { let x = seed >>> 0; return () => ((x = (Math.imul(x, 1664525) + 1013904223) >>> 0) / 4294967296); }
+
+test('조건 표: 724 는 보통/양호/호조의 징조만(플래그 515), 확률 합 1', () => {
+  const t = Adv.conditionTable(odds, 724);
+  assert.deepStrictEqual(t.rows.map((r) => r[0]).sort(), ['good', 'goodOmen']);
+  const sum = t.rows.reduce((a, r) => a + r[1], 0) + t.normal;
+  assert.ok(Math.abs(sum - 1) < 1e-9);
+});
+
+test('조건 전이: 호조의 징조 → 양호, 강건 → 견고, 극상 → 불량', () => {
+  const t = Adv.conditionTable(odds, 772);
+  assert.strictEqual(Adv.drawCondition(t, 'goodOmen', () => 0.5), 'good');
+  assert.strictEqual(Adv.drawCondition(t, 'robust', () => 0.5), 'sturdy');
+  assert.strictEqual(Adv.drawCondition(t, 'excellent', () => 0.5), 'poor');
+});
+
+test('overrides 가 있으면 기본 확률 대신 쓴다', () => {
+  const o = JSON.parse(JSON.stringify(odds));
+  o.overrides['515'] = { goodOmen: 0.3 };
+  const pick = (t) => t.rows.find((r) => r[0] === 'goodOmen')[1];
+  assert.strictEqual(pick(Adv.conditionTable(o, 724)), 0.3);
+  assert.strictEqual(pick(Adv.conditionTable(odds, 724)), 0.10);
+});
+
+test('simulate: 시드 고정 시 재현되고 확률이 0~1', () => {
+  const s0 = Adv.newState({ cp: 649, dur: 55 });
+  const r = Adv.recommend(s0, ctx, 'normal', { width: 60, depth: 24, odds, samples: 200, rnd: lcg(7) });
+  assert.ok(r[0].risk);
+  assert.ok(r[0].risk.pDone >= 0 && r[0].risk.pDone <= 1);
+  const st = Adv.apply(s0, r[0].plan[0], ctx, 'normal');
+  const a = Adv.simulate(r[0].plan, st, ctx, odds, 200, lcg(11));
+  const b = Adv.simulate(r[0].plan, st, ctx, odds, 200, lcg(11));
+  assert.deepStrictEqual(a, b);
+});
