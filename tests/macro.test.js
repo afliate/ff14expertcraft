@@ -30,3 +30,14 @@ test('매크로 텍스트: 15줄 이내로 나눈다', () => {
   t.forEach((x) => assert.ok(x.split('\n').length <= 15));
   assert.ok(t[0].includes('/ac "작업" <wait.3>'));
 });
+test('매크로 텍스트: 15공정 이하는 한 매크로, 완료 알림 없음', () => {
+  const t = M.toText(Array(15).fill('basicS'));
+  assert.equal(t.length, 1);
+  assert.equal(t[0].split('\n').length, 15);
+  assert.ok(!t[0].includes('/echo'));
+});
+test('매크로: 빠른 진행이 떠도 중간에 끝나지 않는다 (제4차 부흥)', () => {
+  const r = rec.find((x) => x.rlvl === 513 && x.job === 'CRP');
+  const res = M.solve(ctxOf(r, 5933, 5470, 649), odds, { samples: 600 });
+  assert.ok(res.ok && res.plans[0].risk.pQuality > 0.97);
+});

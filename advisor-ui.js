@@ -135,7 +135,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-34'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-35'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {

@@ -42,7 +42,7 @@
     opts = opts || {};
     const width = opts.width || 400, maxDepth = opts.depth || 34, keep = opts.keep || 24;
     const start = Adv.newState({ cp: ctx.maxCP, dur: ctx.maxDur, steps: 0 });
-    let beam = [{ s: start, path: [] }];
+    let beam = [{ s: start, sm: start, path: [] }]; // sm: 모든 공정이 '빠른 진행'이었을 때의 상태 (작업량이 가장 빨리 차는 경우)
     const found = []; // 목표 품질까지 채운 완성 후보
     let best = null;  // 목표에 못 닿았을 때 가장 좋은 완성 후보
     let extra = 0;
@@ -53,6 +53,9 @@
           if (!usable(k, node.s, ctx)) continue;
           const ns = Adv.apply(node.s, k, ctx, 'normal');
           if (ns.dead) continue;
+          const nm = Adv.apply(node.sm, k, ctx, 'malleable');
+          // 빠른 진행이 뜨면 작업량이 먼저 차서 제작이 일찍 끝날 수 있다 → 마지막 공정 전에 끝나는 순서는 버린다
+          if (!ns.done && nm.done) continue;
           const path = node.path.concat(k);
           if (ns.done) {
             const rec = { path, quality: ns.quality, cp: ns.cp, steps: path.length, ok: ns.quality >= ctx.targetQuality };
@@ -60,8 +63,8 @@
             else if (!best || rec.quality > best.quality) best = rec;
             continue;
           }
-          const kk = keyOf(ns), h = heur(ns, ctx), ex = next.get(kk);
-          if (!ex || ex.h < h) next.set(kk, { s: ns, path, h });
+          const kk = keyOf(ns) + '|' + Math.round(nm.progress), h = heur(ns, ctx), ex = next.get(kk);
+          if (!ex || ex.h < h) next.set(kk, { s: ns, sm: nm, path, h });
         }
       }
       beam = [...next.values()].sort((a, b) => b.h - a.h).slice(0, width);
@@ -97,12 +100,15 @@
   /** 후보들을 시뮬레이션해 가장 안정적인 순서를 고른다 (성공률 우선, 같으면 짧은 쪽). */
   function solve(ctx, odds, opts) {
     opts = opts || {};
-    const r = search(ctx, opts);
+    // 품질 여유: 목표보다 조금 더 쌓는 순서를 찾는다 (달성 확률은 원래 목표 기준으로 센다)
+    const sctx = opts.margin ? Object.assign({}, ctx, { targetQuality: Math.ceil(ctx.targetQuality * (1 + opts.margin)) }) : ctx;
+    let r = search(sctx, opts), marginFailed = false;
+    if (!r.plans.length && opts.margin) { r = search(ctx, opts); marginFailed = true; } // 여유를 못 채우면 원래 목표로
     if (!r.plans.length) return { ok: false, best: r.best, plans: [] };
     const rnd = opts.rnd;
     const ranked = r.plans.slice(0, opts.simTop || 16).map((p) => Object.assign({ risk: simulate(p.path, ctx, odds, opts.samples || 400, rnd) }, p));
     ranked.sort((a, b) => b.risk.pQuality - a.risk.pQuality || a.steps - b.steps || b.cp - a.cp);
-    return { ok: true, plans: ranked, best: r.best };
+    return { ok: true, plans: ranked, best: r.best, marginFailed };
   }
 
   /** 인게임 매크로 텍스트. 15줄 제한 때문에 14공정마다 끊고 마지막 줄에 완료 알림을 붙인다. */
@@ -110,6 +116,7 @@
     per = per || 14;
     const waitOf = (k) => (A[k].kind === 'buff' || k === 'observe' ? 2 : 3);
     const lines = path.map((k) => `/ac "${A[k].ko}" <wait.${waitOf(k)}>`);
+    if (lines.length <= 15) return [lines.join('\n')]; // 한 번에 들어가면 완료 알림 줄을 붙이지 않는다
     const out = [];
     for (let i = 0; i < lines.length; i += per) {
       const chunk = lines.slice(i, i + per);

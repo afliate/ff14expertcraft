@@ -64,7 +64,7 @@
 
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('macro-worker.js?v=20261109-34'); } catch (e) { worker = false; }
+    try { worker = new Worker('macro-worker.js?v=20261109-35'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -98,7 +98,7 @@
       return;
     }
     const [top, ...rest] = res.plans;
-    out.innerHTML = planHTML(top, 0, true) +
+    out.innerHTML = (res.marginFailed ? '<div class="calc-sub">고른 품질 여유까지는 채우지 못해서 원래 목표 품질 기준으로 찾았어요.</div>' : '') + planHTML(top, 0, true) +
       (rest.length ? `<details class="adv-details"><summary>다른 후보 ${Math.min(rest.length, 5)}개 보기</summary>${rest.slice(0, 5).map((p, i) => planHTML(p, i + 1, false)).join('')}</details>` : '') +
       '<div class="calc-sub adv-note">상태를 보통으로 가정해 찾은 순서예요. 달성 확률은 실제 상태 확률로 시뮬레이션한 값이고, 100%가 아니면 상태에 따라 목표 품질에 못 닿을 수 있어요. 상태 확률은 임시 기본값이라 실측과 다를 수 있어요.</div>';
     out.querySelectorAll('.mc-copy').forEach((b) => b.addEventListener('click', () => {
@@ -109,7 +109,7 @@
   }
   function run() {
     if (!cur() || !odds) return;
-    const ctx = buildCtx();
+    const ctx = buildCtx(), margin = Number($('mc-margin').value) || 0;
     $('mc-msg').textContent = '찾는 중이에요…'; $('mc-run').disabled = true; $('mc-out').innerHTML = '';
     const finish = (res, err) => {
       $('mc-run').disabled = false; $('mc-msg').textContent = err ? '계산 중 문제가 생겼어요: ' + err : '';
@@ -119,8 +119,8 @@
     if (w) {
       w.onmessage = (e) => { if (e.data.id === id) finish(e.data.res, e.data.error); };
       w.onerror = (e) => finish(null, e.message || '알 수 없는 오류');
-      w.postMessage({ id, ctx, odds });
-    } else setTimeout(() => { try { finish(FFMacro.solve(ctx, odds, {})); } catch (e) { finish(null, String(e.message || e)); } }, 20);
+      w.postMessage({ id, ctx, odds, opts: { margin } });
+    } else setTimeout(() => { try { finish(FFMacro.solve(ctx, odds, { margin })); } catch (e) { finish(null, String(e.message || e)); } }, 20);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
