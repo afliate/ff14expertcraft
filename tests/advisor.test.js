@@ -160,3 +160,16 @@ test('우주 안정된 솜씨는 우주개척 레시피 전용', () => {
   assert.equal(Adv.canUse('ssh', s, { cosmic: false }, 'normal'), false);
   assert.equal(Adv.canUse('ssh', s, { cosmic: true }, 'normal'), true);
 });
+
+test('전문장인 전용: 일심불란은 고품질이 아니어도 집중 가공 허용, 쓰면 종료', () => {
+  const c = Object.assign({}, ctx, { specialist: true });
+  let s = Adv.newState({ cp: 400, dur: 55, steps: 1 });
+  assert.equal(Adv.canUse('precise', s, c, 'normal'), false);
+  assert.equal(Adv.canUse('hs', s, Object.assign({}, ctx), 'normal'), false); // 비전문
+  s = Adv.apply(s, 'hs', c, 'normal');
+  assert.equal(s.steps, 1); // 공정 진행 아님
+  assert.equal(Adv.canUse('precise', s, c, 'normal'), true);
+  const t = Adv.apply(s, 'precise', c, 'normal');
+  assert.equal(t.hs, 0);
+  assert.equal(Adv.canUse('hs', t, c, 'normal'), false); // 1회 한정
+});

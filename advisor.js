@@ -50,6 +50,8 @@
     wn2:      { ko: '장기 절약',   kind: 'buff', buff: 'wn',   dur_: 8, cp: 98, dur: 0 },
     manip:    { ko: '교묘한 손놀림', kind: 'buff', buff: 'manip', dur_: 8, cp: 96, dur: 0 },
     ssh:      { ko: '우주 안정된 솜씨', kind: 'buff', buff: 'ssh', dur_: 3, cp: 0, dur: 0 },
+    hs:       { ko: '일심불란', kind: 'buff', buff: 'hs', cp: 0, dur: 0, spec: true, once: 'hsUsed' },
+    qi:       { ko: '신속한 혁신', kind: 'buff', buff: 'inno', dur_: 1, cp: 0, dur: 0, spec: true, once: 'qiUsed' },
     fa:       { ko: '최종 확인',   kind: 'buff', buff: 'fa',   dur_: 5, cp: 1,  dur: 0 },
 
     mend:     { ko: '능숙한 땜질', kind: 'repair', heal: 30, cp: 88,  dur: 0 },
@@ -65,7 +67,7 @@
 
   function newState(init) {
     const s = E.newState();
-    return Object.assign(s, { cp: 0, dur: 0, wn: 0, manip: 0, fa: 0, exp: 0, ssh: 0 }, init || {});
+    return Object.assign(s, { cp: 0, dur: 0, wn: 0, manip: 0, fa: 0, exp: 0, ssh: 0, hs: 0, hsUsed: 0, qiUsed: 0 }, init || {});
   }
 
   // ── 사용 가능 여부 ────────────────────────────────────────
@@ -84,7 +86,11 @@
     const c = cost(d, s, cond);
     if (c.cp > s.cp) return false;
     if (d.first && s.steps !== 0) return false;
-    if (d.good && cond !== 'good' && cond !== 'excellent') return false;
+    if (d.good && cond !== 'good' && cond !== 'excellent' && !(s.hs > 0)) return false; // 일심불란 중에는 상태 무관
+    if (d.spec && !ctx.specialist) return false; // 전문장인 전용
+    if (d.once && s[d.once]) return false;
+    if (key === 'hs' && s.hs > 0) return false;
+    if (key === 'qi' && s.inno > 0) return false;
     if (d.noWN && s.wn > 0) return false;
     if (d.needIq && s.iq < 1) return false;
     if (d.needIq10 && s.iq < 10) return false;
@@ -109,7 +115,7 @@
     st.cp -= c.cp;
     const was = { ven: s.ven, inno: s.inno, gs: s.gs, mm: s.mm, wn: s.wn, manip: s.manip, fa: s.fa, exp: s.exp, ssh: s.ssh };
     const fresh = {}; // 이번 공정에 새로 건 버프(틱에서 제외)
-    const skipTick = key === 'fa'; // 최종 확인: 제작 공정이 진행되지 않음
+    const skipTick = key === 'fa' || key === 'hs' || key === 'qi'; // 제작 공정이 진행되지 않는 스킬
     const heal0 = s.manip > 0 && !skipTick; // 교손은 건 다음 공정부터 회복
 
     if (d.kind === 'prog' || d.kind === 'both') {
@@ -141,7 +147,9 @@
       }
       if (d.setExp) { st.exp = 1 + 1; fresh.exp = true; } // 다음 한 공정만 (아래 틱 후 1)
     } else if (d.kind === 'buff') {
-      if (d.buff === 'wn') { st.wn = d.dur_; fresh.wn = true; }
+      if (key === 'hs') { st.hs = 1; st.hsUsed = 1; }
+      else if (key === 'qi') { st.inno = 1; fresh.inno = true; st.qiUsed = 1; }
+      else if (d.buff === 'wn') { st.wn = d.dur_; fresh.wn = true; }
       else if (d.buff === 'manip') { st.manip = d.dur_; fresh.manip = true; }
       else { st[d.buff] = dura(d.dur_); if (d.buff !== 'fa') fresh[d.buff] = true; else fresh.fa = true; }
     } else if (d.kind === 'repair') {
@@ -149,6 +157,8 @@
     } else if (d.kind === 'cp') {
       st.cp = Math.min(ctx.maxCP, st.cp + 20);
     }
+
+    if (d.good && s.hs > 0 && cond !== 'good' && cond !== 'excellent') st.hs = 0; // 일심불란: 고품질이 아닐 때 쓰면 종료
 
     // 내구 소모 (성공 여부와 무관)
     st.dur -= c.dur;
@@ -340,6 +350,12 @@
         if (U('daring')) return 'daring';
         if (U('hasty')) return 'hasty';
       }
+    }
+    if (!qDone && v.style && s.steps >= 1 && ctx.specialist) {
+      // 전문장인: 일심불란으로 고품질이 아닐 때도 집중 가공(정신 집중 +2)을 쓰고, CP가 모자라면 신속한 혁신으로 혁신 값을 아낀다
+      if (s.hs > 0 && s.iq < 10 && U('precise')) return 'precise';
+      if (!s.hs && s.iq <= 6 && cond !== 'good' && cond !== 'excellent' && s.cp >= 18 + 40 + reserve && U('hs')) return 'hs';
+      if (!s.inno && s.iq >= 2 && s.cp < 18 + 40 + reserve && s.cp >= 40 + reserve && U('qi')) return 'qi';
     }
     if (!qDone && v.style && s.steps >= 1) {
       // 내구 유지(영상·시트 기록 스타일): 근검절약/장기 절약으로 소모를 줄이고, 교묘한 손놀림과 땜질로 회복

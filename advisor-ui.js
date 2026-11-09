@@ -70,7 +70,7 @@
     const cos = list.filter(isCosmic), reg = list.filter((r) => !isCosmic(r));
     $('adv-recipe').innerHTML = (cos.length ? `<optgroup label="우주개척 레시피">${cos.map(opt).join('')}</optgroup>` : '') +
       (reg.length ? `<optgroup label="일반 고난도 레시피">${reg.map(opt).join('')}</optgroup>` : '');
-    showTargets(); hist = []; replay();
+    showTargets(); hist = []; replay(); if (document.querySelector('#adv-hist-btns .adv-hbtn')) syncHistBtns();
   }
   function cur() { return recipes.find((r) => String(r.id) === $('adv-recipe').value); }
   function showTargets() {
@@ -132,13 +132,13 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-18'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-19'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
     const r = cur();
     const rp = FFEngine.paramsFromTable(r.rlvl, table[String(r.rlvl)]);
-    return { craftsmanship: num('adv-craft'), control: num('adv-ctrl'), rp, relic: isCosmic(r) && $('adv-relic').checked, cosmic: isCosmic(r),
+    return { craftsmanship: num('adv-craft'), control: num('adv-ctrl'), rp, relic: isCosmic(r) && $('adv-relic').checked, cosmic: isCosmic(r), specialist: $('adv-spec').checked,
       target: num('adv-work'), targetQuality: num('adv-qual'), maxDur: num('adv-dur'), maxCP: num('adv-maxcp') };
   }
   function collect() {
@@ -152,6 +152,7 @@
     });
     // 공정 수는 입력받지 않고 상태에서 유추: 뭔가 진행됐으면 첫 공정이 아님
     const st = state;
+    if (histState) for (const k of ['ssh', 'hs', 'hsUsed', 'qiUsed', 'exp']) st[k] = histState[k] || 0;
     if (st.progress > 0 || st.quality > 0 || st.iq > 0 || st.dur < ctx.maxDur || st.lastAction || st.ven || st.inno || st.gs || st.mm || st.wn || st.manip || st.fa || st.cp < ctx.maxCP) st.steps = 1;
     return { state, ctx, cond: $('adv-cond').value, opts: { samples: 200 }, odds: currentOdds() };
   }
@@ -187,12 +188,15 @@
 
   // ── 스킬 기록: 쓴 스킬 아이콘을 누르면 현재 상태를 자동 계산해 입력칸에 채운다 ──
   let hist = []; // { k, cond, ok }
+  let histState = null; // 기록으로 계산한 상태(입력칸에 없는 값: 우주 안정된 솜씨·일심불란 등)
   // 공식 가이드 기준 분류
   const HIST_GROUPS = [
     ['첫 공정 (작업 전에만)', ['mm', 'reflect']],
     ['작업량', ['basicS', 'careful', 'prudentS', 'groundwork', 'intensive', 'rapid', 'delicate']],
     ['품질', ['basicT', 'standard', 'advanced', 'refined', 'prudentT', 'prep', 'precise', 'hasty', 'daring', 'finesse', 'byregot']],
-    ['버프', ['ven', 'inno', 'gs', 'wn', 'wn2', 'manip', 'ssh', 'fa']],
+    ['버프', ['ven', 'inno', 'gs', 'wn', 'wn2', 'manip', 'fa']],
+    ['전문장인 전용', ['hs', 'qi']],
+    ['우주개척 전용', ['ssh']],
     ['수리·기타', ['mend', 'immac', 'observe', 'tricks']],
   ];
   function setIf(id, v) { const el = $(id); if (el) el.value = Math.round(v * 10) / 10; }
@@ -201,6 +205,7 @@
     const ctx = buildCtx();
     let s = FFAdvisor.newState({ cp: ctx.maxCP, dur: ctx.maxDur });
     for (const h of hist) s = FFAdvisor.apply(s, h.k, ctx, h.cond, h.ok);
+    histState = hist.length ? s : null;
     setIf('adv-curprog', Math.floor(s.progress)); setIf('adv-curqual', Math.floor(s.quality)); setIf('adv-curdur', s.dur); setIf('adv-curcp', s.cp);
     setIf('adv-iq', Math.floor(s.iq));
     for (const [id, k] of [['ven', 'ven'], ['inno', 'inno'], ['gs', 'gs'], ['mm', 'mm'], ['fa', 'fa']]) setIf('adv-' + id, s[k]);
@@ -211,9 +216,17 @@
     $('adv-hist').innerHTML = hist.length ? hist.map((h, i) => `<span class="adv-h${h.ok === false ? ' fail' : ''}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}">${ico(h.k)}<i>${CN[h.cond] && h.cond !== 'normal' ? CN[h.cond] : ''}</i></span>`).join('') : '<span class="calc-sub">아직 기록이 없어요. 쓴 스킬을 아래에서 눌러 주세요.</span>';
     $('adv-hist-sum').textContent = hist.length ? `${hist.length}공정 진행 → 작업량 ${Math.floor(s.progress)}/${ctx.target} · 품질 ${Math.floor(s.quality)}/${ctx.targetQuality} · 내구 ${s.dur} · CP ${s.cp}` : '';
   }
+  function syncHistBtns() {
+    const r = cur(), spec = $('adv-spec').checked, cos = isCosmic(r);
+    document.querySelectorAll('#adv-hist-btns .adv-hbtn').forEach((b) => {
+      const k = b.dataset.k, off = (FFAdvisor.ACTIONS[k].spec && !spec) || (k === 'ssh' && !cos);
+      b.disabled = !!off; b.style.opacity = off ? '.3' : '';
+    });
+  }
   function fillHistBtns() {
     const A = FFAdvisor.ACTIONS;
     $('adv-hist-btns').innerHTML = HIST_GROUPS.map(([g, ks]) => `<div class="adv-hgrp"><span class="adv-hlbl">${g}</span><span class="adv-hrow">${ks.map((k) => `<button type="button" class="adv-hbtn" data-k="${k}" title="${A[k].ko}${A[k].good ? ' (고품질일 때만)' : ''}">${ico(k)}${A[k].good ? '<em>고</em>' : ''}</button>`).join('')}</span></div>`).join('');
+    syncHistBtns();
     $('adv-hist-btns').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
       const k = b.dataset.k, A2 = FFAdvisor.ACTIONS;
       if (A2[k].first && hist.length) return;
@@ -225,7 +238,7 @@
   function pct(x) { return Math.round(x * 100) + '%'; }
   const ICON = { basicS: 1501, careful: 1986, prudentS: 1520, groundwork: 1518, intensive: 1514, rapid: 1988, mm: 1994,
     basicT: 1502, standard: 1516, advanced: 1519, refined: 1522, prudentT: 1535, prep: 1507, precise: 1524, reflect: 1982,
-    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, inno: 1987, gs: 1955, wn: 1992,
+    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, hs: 1996, qi: 1999, inno: 1987, gs: 1955, wn: 1992,
     wn2: 1993, manip: 1985, ssh: 1953, fa: 1983, mend: 1952, immac: 1950, observe: 1954, tricks: 1990 };
   function ico(k) { return `<img class="adv-ico" src="https://xivapi.com/i/001000/00${ICON[k]}_hr1.png" alt="${FFAdvisor.ACTIONS[k].ko}" onerror="this.style.display='none'">`; }
   function skill(k, mark) {
@@ -252,7 +265,7 @@
     fillHistBtns();
     $('adv-hist-undo').addEventListener('click', () => { hist.pop(); replay(); });
     $('adv-hist-reset').addEventListener('click', () => { hist = []; replay(); });
-    $('adv-spec').addEventListener('change', applyGear);
+    $('adv-spec').addEventListener('change', () => { applyGear(); syncHistBtns(); });
     ['adv-craft', 'adv-ctrl', 'adv-maxcp'].forEach((id) => $(id).addEventListener('input', clearGearButtons));
     $('adv-job').addEventListener('change', () => { fillRecipes(); lastLogged = null; renderLog(); });
     $('adv-recipe').addEventListener('change', () => { showTargets(); hist = []; replay(); });
