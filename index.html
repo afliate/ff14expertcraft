@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>파판14 고난도 제작 가이드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261109-25">
+<link rel="stylesheet" href="style.css?v=20261109-26">
 <link rel="stylesheet" href="rec-styles.css">
 <script src="recipes-sinus-ardorum.js"></script>
 <script src="recipes-phaenna.js"></script>
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-25"></script>
-<script src="qualcalc.js?v=20261109-25"></script>
-<script src="advisor.js?v=20261109-25"></script>
-<script src="advisor-ui.js?v=20261109-25" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-25">
+<script src="engine.js?v=20261109-26"></script>
+<script src="qualcalc.js?v=20261109-26"></script>
+<script src="advisor.js?v=20261109-26"></script>
+<script src="advisor-ui.js?v=20261109-26" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-26">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1470,7 +1470,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <span><button type="button" class="calc-btn" id="adv-hist-undo">되돌리기</button><button type="button" class="calc-btn" id="adv-hist-reset">처음부터</button></span></div>
         <div id="adv-hist" class="adv-hist"></div>
         <div id="adv-hist-sum" class="calc-sub"></div>
+        <div class="adv-condlbl">지금 상태 <span class="calc-sub">— 게임에 보이는 상태를 먼저 고르고, 쓴 스킬을 누르세요</span></div>
+        <div id="adv-condbar" class="adv-condbar"></div>
         <div id="adv-hist-btns" class="adv-hbtns"></div>
+        <label class="chk adv-autolog"><input id="adv-autolog" type="checkbox" checked>누른 상태를 조건 기록(실측)에도 같이 쌓기</label>
         <div class="calc-sub">스킬을 쓸 때의 「이번 상태」(고품질 등)가 함께 기록돼요. 강행 작업·손길류가 실패했으면 위 기록의 아이콘을 눌러 실패로 바꿔 주세요. 기적의 물질은 사용 표시만 하고 효과는 계산에 넣지 않아요.</div>
       </div>
     <button class="calc-btn" id="adv-run">추천 보기</button>
@@ -1478,10 +1481,10 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="adv-out"></div>
     <details class="adv-details">
       <summary>조건 기록 (실측) — 제작하면서 나온 상태를 눌러 모으기</summary>
-      <div class="calc-sub">매 공정 나온 상태를 눌러 주세요. 선택한 레시피의 플래그별로 모아서 확률을 계산해요. 호조의 징조·강건·극상 다음 공정은 상태가 정해져 있어서 자동으로 표본에서 빼요. 새 제작을 시작할 때는 "제작 시작"을 눌러 주세요.</div>
-      <div id="adv-log-btns" class="adv-grid"></div>
+      <div class="calc-sub">진행 기록에서 스킬을 누를 때마다 그때의 상태가 여기 자동으로 쌓여요. 따로 쌓고 싶으면 아래 상태 버튼을 눌러도 돼요. 길조·완강·최고품질 다음 공정은 상태가 정해져 있어서 표본에서 자동으로 빼요. 새 제작을 시작할 때는 "제작 시작"을 눌러 주세요.</div>
+      <div id="adv-log-btns" class="adv-logbtns"></div>
       <div id="adv-log-sum" class="calc-sub"></div>
-      <div class="adv-grid">
+      <div class="adv-logbtns">
         <button class="calc-btn" id="adv-log-break" type="button">제작 시작(연결 끊기)</button>
         <button class="calc-btn" id="adv-log-export" type="button">결과 복사</button>
         <button class="calc-btn" id="adv-log-reset" type="button">기록 지우기</button>

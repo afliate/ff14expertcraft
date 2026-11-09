@@ -119,8 +119,9 @@
     const L = log[f] || { n: 0, c: {}, forced: 0 };
     $('adv-log-btns').innerHTML = names.map((n) => `<button class="calc-btn adv-logbtn" data-c="${n}" style="color:${COND_COLOR[n] || ''}">${ko[n] || n}</button>`).join('');
     $('adv-log-btns').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => logClick(b.dataset.c)));
-    $('adv-log-sum').textContent = `플래그 ${f} · 표본 ${L.n}공정 (강제 전이 ${L.forced || 0}공정 제외) — ` +
-      names.map((n) => `${ko[n] || n} ${L.n ? Math.round(((L.c[n] || 0) / L.n) * 1000) / 10 : 0}%`).join(' / ');
+    $('adv-log-sum').innerHTML = `<div class="adv-lognote">플래그 ${f} · 표본 ${L.n}공정 (강제 전이 ${L.forced || 0}공정 제외)</div>` +
+      names.map((n) => `<div class="adv-logrow"><span style="color:${COND_COLOR[n] || ''}">${ko[n] || n}</span><b>${L.n ? Math.round(((L.c[n] || 0) / L.n) * 1000) / 10 : 0}%</b><i>${L.c[n] || 0}회</i></div>`).join('');
+    renderCondBar();
   }
 
   function logExport() {
@@ -134,7 +135,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-25'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-26'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -188,6 +189,41 @@
   }
 
 
+  // ── 지금 상태 버튼줄 (레시피에 나오는 상태만) ──
+  function condNames() {
+    const f = flagOf(); if (!f || !odds) return ['normal'];
+    return ['normal'].concat(CONDS.map((c) => c[0]).filter((k) => k !== 'normal' && odds.flagBits[k] && (Number(f) & odds.flagBits[k])));
+  }
+  function setCond(k) {
+    $('adv-cond').value = k;
+    document.querySelectorAll('#adv-condbar .adv-cbtn').forEach((b) => b.classList.toggle('on', b.dataset.c === k));
+  }
+  function renderCondBar() {
+    const bar = $('adv-condbar'); if (!bar) return;
+    const ko = Object.fromEntries(CONDS), keep = $('adv-cond').value;
+    bar.innerHTML = condNames().map((k) => `<button type="button" class="adv-cbtn" data-c="${k}" style="--cc:${COND_COLOR[k] || '#8aa'}">${ko[k]}</button>`).join('');
+    bar.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => setCond(b.dataset.c)));
+    setCond(condNames().includes(keep) ? keep : 'normal');
+  }
+  // 진행 기록 한 칸 = 그 공정에서 본 상태 한 번의 실측. 기록 칸과 같이 쌓고, 되돌리기로 빼기
+  function autoLog(i, cond) {
+    if (!$('adv-autolog').checked || i === 0) return null; // 첫 공정은 항상 보통
+    const f = flagOf(); if (!f) return null;
+    const L = log[f] = log[f] || { n: 0, c: {}, forced: 0 };
+    const prev = hist[i - 1] && hist[i - 1].cond;
+    let d;
+    if (prev && FORCED[prev]) { L.forced++; d = { f, forced: true }; }
+    else { L.n++; L.c[cond] = (L.c[cond] || 0) + 1; d = { f, cond }; }
+    saveLog(); return d;
+  }
+  function unLog(d) {
+    if (!d) return; const L = log[d.f]; if (!L) return;
+    if (d.forced) L.forced = Math.max(0, (L.forced || 0) - 1);
+    else { L.n = Math.max(0, L.n - 1); L.c[d.cond] = Math.max(0, (L.c[d.cond] || 0) - 1); }
+    saveLog();
+  }
+  function undo() { const h = hist.pop(); if (h) unLog(h.lg); renderLog(); replay(); }
+
   // ── 스킬 기록: 쓴 스킬 아이콘을 누르면 현재 상태를 자동 계산해 입력칸에 채운다 ──
   let hist = []; // { k, cond, ok }
   let histState = null; // 기록으로 계산한 상태(입력칸에 없는 값: 우주 안정된 솜씨·일심불란 등)
@@ -215,10 +251,12 @@
     const last = ['basicT', 'standard', 'observe'].includes(s.lastAction) ? s.lastAction : '';
     $('adv-last').value = last;
     const CN = Object.fromEntries(CONDS);
-    $('adv-hist').innerHTML = hist.length ? hist.map((h, i) => {
+    $('adv-hist').innerHTML = (hist.length ? hist.map((h, i) => {
       const risky = FFAdvisor.ACTIONS[h.k].rate !== undefined;
-      return `<span class="adv-h${h.ok === false ? ' fail' : ''}${risky ? ' risky' : ''}" style="--cc:${COND_COLOR[h.cond] || 'transparent'}" data-i="${i}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}${risky ? ' (눌러서 성공/실패 전환)' : ''}">${ico(h.k)}<i style="color:${COND_COLOR[h.cond] || ''}">${CN[h.cond] && h.cond !== 'normal' ? CN[h.cond] : ''}</i></span>`;
-    }).join('') : '<span class="calc-sub">아직 기록이 없어요. 쓴 스킬을 아래에서 눌러 주세요.</span>';
+      const c = COND_COLOR[h.cond] || '';
+      return `<span class="adv-h${h.ok === false ? ' fail' : ''}${risky ? ' risky' : ''}" style="--cc:${c || 'transparent'}" data-i="${i}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}${risky ? ' (눌러서 성공/실패 전환)' : ''}">${ico(h.k)}<i style="${c ? `color:${c};border-color:${c}` : ''}">${CN[h.cond] || h.cond}</i>${h.ok === false ? '<b>실패</b>' : ''}</span>`;
+    }).join('') + '<button type="button" class="adv-undo" title="마지막 스킬 되돌리기">↶</button>' : '<span class="calc-sub">아직 기록이 없어요. 위에서 지금 상태를 고르고, 쓴 스킬을 눌러 주세요.</span>');
+    const ub = $('adv-hist').querySelector('.adv-undo'); if (ub) ub.addEventListener('click', undo);
     $('adv-hist').querySelectorAll('.risky').forEach((el) => el.addEventListener('click', () => {
       const h = hist[Number(el.dataset.i)]; h.ok = h.ok === false ? undefined : false; replay();
     }));
@@ -238,8 +276,11 @@
     $('adv-hist-btns').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
       const k = b.dataset.k, A2 = FFAdvisor.ACTIONS;
       if (A2[k].first && hist.length) return;
-      hist.push({ k, cond: $('adv-cond').value, ok: undefined });
-      replay();
+      const cond = $('adv-cond').value, i = hist.length;
+      const h = { k, cond, ok: undefined }; h.lg = autoLog(i, cond);
+      hist.push(h);
+      setCond(FORCED[cond] && condNames().includes(FORCED[cond]) ? FORCED[cond] : 'normal');
+      renderLog(); replay();
     }));
   }
 
@@ -272,7 +313,7 @@
     if (!$('adv-job')) return;
     fillGear();
     fillHistBtns();
-    $('adv-hist-undo').addEventListener('click', () => { hist.pop(); replay(); });
+    $('adv-hist-undo').addEventListener('click', undo);
     $('adv-hist-reset').addEventListener('click', () => { hist = []; replay(); });
     $('adv-spec').addEventListener('change', () => { applyGear(); syncHistBtns(); });
     ['adv-craft', 'adv-ctrl', 'adv-maxcp'].forEach((id) => $(id).addEventListener('input', clearGearButtons));

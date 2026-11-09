@@ -87,3 +87,24 @@ body.light .adv-hgrp,body.light .adv-hist{background:rgba(0,0,0,.05);}
 .adv-plan .adv-rest{width:100%;}
 .adv-plan .adv-rest > summary{margin:6px 0;}
 .adv-rest-body{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px 2px;}
+
+/* 지금 상태 버튼줄 */
+.adv-condlbl{font-size:13.5px;font-weight:700;margin-top:8px;}
+.adv-condbar{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;}
+.adv-cbtn{padding:6px 12px;border-radius:8px;border:2px solid var(--cc);background:transparent;color:var(--cc);font-weight:800;font-size:14.5px;white-space:nowrap;cursor:pointer;font-family:inherit;}
+.adv-cbtn.on{background:var(--cc);color:#0b1620;}
+.adv-autolog{margin-top:6px;font-size:13px;display:flex;align-items:center;gap:6px;}
+/* 기록 아이콘 아래 상태 알약 + 되돌리기 칩 */
+.adv-h i{font-size:11px;font-weight:700;border:1px solid rgba(150,170,190,.4);border-radius:999px;padding:0 6px;margin-top:2px;color:var(--text-dim);white-space:nowrap;}
+.adv-h b{font-size:10px;color:#e85a7a;}
+.adv-undo{width:40px;height:40px;border-radius:8px;border:1px dashed var(--text-dim);background:transparent;color:var(--text);font-size:20px;cursor:pointer;align-self:flex-start;}
+.adv-undo:hover{border-color:#4fd1a5;color:#4fd1a5;}
+/* 조건 기록 */
+.adv-logbtns{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;}
+.adv-logbtns .adv-logbtn{white-space:nowrap;padding:8px 14px;width:auto;}
+.adv-lognote{font-size:13px;color:var(--text-dim);margin-bottom:4px;}
+.adv-logrow{display:flex;align-items:baseline;gap:10px;padding:3px 0;border-bottom:1px solid rgba(150,170,190,.15);font-size:14.5px;}
+.adv-logrow span{min-width:84px;font-weight:700;white-space:nowrap;}
+.adv-logrow b{min-width:56px;}
+.adv-logrow i{font-style:normal;color:var(--text-dim);font-size:12.5px;}
+.adv-details .adv-grid .calc-btn{white-space:nowrap;}
