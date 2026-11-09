@@ -77,7 +77,17 @@
     "776": 1523,
     "751": 995
   },
-  "overrides": {},
+  "overrides": {
+    "1491": {
+      "good": 0.14,
+      "centered": 0.125,
+      "pliant": 0.11,
+      "malleable": 0.15,
+      "primed": 0.13,
+      "robust": 0.11,
+      "_note": "flag 1491 (rlvl 756 etc.). Observed in user's own logged plays (141 states, 3 plays, 8200/28300/70 recipe): good .16 centered .10 pliant .11 malleable .15 primed .14 robust .08; blended 50/50 with defaults because the sample is small."
+    }
+  },
   "flagAdjust": {
     "goodOmen": {
       "good": 0.05
