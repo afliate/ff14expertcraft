@@ -1342,6 +1342,12 @@ function renderBothResults() {
   if (!variants.length) return;
   const recipe = variants[Math.min(calcVariantIdx, variants.length - 1)];
   const crafts = parseInt(document.getElementById('crafts-input').value) || 0;
+  if (crafts <= 0) {
+    // 능력치를 아직 안 넣었으면 의미 없는 작은 숫자 대신 안내를 보여준다
+    document.getElementById('calc-tab-work').innerHTML = `<div class="c-empty-state"><div class="c-empty-icon">⚒</div><p>작업 숙련도를 입력하거나<br>장비 프리셋을 선택하면 작업량 계산 결과가 표시됩니다</p></div>`;
+    renderQuality();
+    return;
+  }
   const s0     = calcS0(crafts, recipe.rlvl);
   renderWorkHTML(s0, recipe, '');
   renderQuality();
