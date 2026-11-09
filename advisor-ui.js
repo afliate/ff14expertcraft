@@ -4,8 +4,10 @@
   const $ = (id) => document.getElementById(id);
   let recipes = [], odds = null, table = null, busy = false;
 
+  // 이름·색은 사이트의 상태 가이드와 동일
   const CONDS = [['normal', '보통'], ['good', '고품질'], ['centered', '안정'], ['sturdy', '견고'], ['pliant', '고효율'],
-    ['malleable', '작업 유연'], ['primed', '장기 지속'], ['goodOmen', '호조의 징조'], ['robust', '강건']];
+    ['malleable', '빠른 진행'], ['primed', '장기 지속'], ['goodOmen', '길조'], ['robust', '완강']];
+  const COND_COLOR = { normal: '', good: '#e85a7a', centered: '#d4b840', sturdy: '#7aaed4', pliant: '#4dc890', malleable: '#4a7fd4', primed: '#b87ae0', goodOmen: '#e8a030', robust: '#60c0e8' };
   const JOBS = { CRP: '목수', BSM: '대장장이', ARM: '갑주제작사', GSM: '보석공예가', LTW: '가죽공예가', WVR: '재봉사', ALC: '연금술사', CUL: '요리사' };
 
   async function load() {
@@ -58,7 +60,7 @@
 
   function fillJobs() {
     $('adv-job').innerHTML = Object.keys(JOBS).map((k) => `<option value="${k}">${JOBS[k]}</option>`).join('');
-    $('adv-cond').innerHTML = CONDS.map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
+    $('adv-cond').innerHTML = CONDS.map(([k, n]) => `<option value="${k}" style="color:${COND_COLOR[k] || ''}">${n}</option>`).join('');
     fillRecipes();
   }
   // 우주개척(코스믹 탐험) 레시피: rlvl 700~775. 그 밖(폐허 수도교 등)은 일반 고난도라 우주 도구·우주 안정된 솜씨를 쓸 수 없다
@@ -115,7 +117,7 @@
     const names = ['normal'].concat(Object.keys(bits).filter((k) => !['normal', 'excellent', 'poor'].includes(k) && (Number(f) & bits[k])));
     const ko = Object.fromEntries(CONDS);
     const L = log[f] || { n: 0, c: {}, forced: 0 };
-    $('adv-log-btns').innerHTML = names.map((n) => `<button class="calc-btn adv-logbtn" data-c="${n}">${ko[n] || n}</button>`).join('');
+    $('adv-log-btns').innerHTML = names.map((n) => `<button class="calc-btn adv-logbtn" data-c="${n}" style="color:${COND_COLOR[n] || ''}">${ko[n] || n}</button>`).join('');
     $('adv-log-btns').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => logClick(b.dataset.c)));
     $('adv-log-sum').textContent = `플래그 ${f} · 표본 ${L.n}공정 (강제 전이 ${L.forced || 0}공정 제외) — ` +
       names.map((n) => `${ko[n] || n} ${L.n ? Math.round(((L.c[n] || 0) / L.n) * 1000) / 10 : 0}%`).join(' / ');
@@ -132,7 +134,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-22'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-23'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -215,7 +217,7 @@
     const CN = Object.fromEntries(CONDS);
     $('adv-hist').innerHTML = hist.length ? hist.map((h, i) => {
       const risky = FFAdvisor.ACTIONS[h.k].rate !== undefined;
-      return `<span class="adv-h${h.ok === false ? ' fail' : ''}${risky ? ' risky' : ''}" data-i="${i}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}${risky ? ' (눌러서 성공/실패 전환)' : ''}">${ico(h.k)}<i>${CN[h.cond] && h.cond !== 'normal' ? CN[h.cond] : ''}</i></span>`;
+      return `<span class="adv-h${h.ok === false ? ' fail' : ''}${risky ? ' risky' : ''}" data-i="${i}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}${risky ? ' (눌러서 성공/실패 전환)' : ''}">${ico(h.k)}<i style="color:${COND_COLOR[h.cond] || ''}">${CN[h.cond] && h.cond !== 'normal' ? CN[h.cond] : ''}</i></span>`;
     }).join('') : '<span class="calc-sub">아직 기록이 없어요. 쓴 스킬을 아래에서 눌러 주세요.</span>';
     $('adv-hist').querySelectorAll('.risky').forEach((el) => el.addEventListener('click', () => {
       const h = hist[Number(el.dataset.i)]; h.ok = h.ok === false ? undefined : false; replay();
