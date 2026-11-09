@@ -21,8 +21,8 @@
   // kind: prog | qual | buff | repair | cp | other
   // p: 효율, cp, dur, rate(성공률 0~1), iq(정신집중 증가), first(첫 공정 한정)
   const A = {
-    basicS:   { ko: '모범 작업',   kind: 'prog', p: 120, cp: 0,  dur: 10 },
-    careful:  { ko: '신중 작업',   kind: 'prog', p: 180, cp: 7,  dur: 10 },
+    basicS:   { ko: '작업',        kind: 'prog', p: 120, cp: 0,  dur: 10 },
+    careful:  { ko: '모범 작업',   kind: 'prog', p: 180, cp: 7,  dur: 10 },
     prudentS: { ko: '절약 작업',   kind: 'prog', p: 180, cp: 18, dur: 5, noWN: true },
     groundwork: { ko: '밑작업',    kind: 'prog', p: 360, cp: 18, dur: 20, halfIfLowDur: true },
     intensive: { ko: '집중 작업',  kind: 'prog', p: 400, cp: 6,  dur: 10, good: true },
@@ -400,7 +400,7 @@
   }
 
   const VARIANTS = [{ opener: 'mm', byregotIq: 10 }, { opener: 'reflect', byregotIq: 10 }, { opener: 'mm', byregotIq: 8 }, { opener: 'reflect', byregotIq: 8 },
-    // 품질 먼저: 작업량은 절반 가까이만 채우고 품질을 쌓은 뒤 모범 작업/신중 작업으로 마무리
+    // 품질 먼저: 작업량은 절반 가까이만 채우고 품질을 쌓은 뒤 작업/모범 작업으로 마무리
     { opener: 'mm', byregotIq: 10, progFirst: false }, { opener: 'reflect', byregotIq: 10, progFirst: false },
     // 플레이 스타일(영상·시트 기록 기반): 확신 오프너 → 작업량 먼저(강행 중심), 진가 오프너 → 품질 먼저
     { opener: 'mm', byregotIq: 10, rapid: true, delicate: true, chain: true, tricks: true, style: true },

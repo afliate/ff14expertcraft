@@ -132,7 +132,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-17'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-18'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -187,9 +187,14 @@
 
   // ── 스킬 기록: 쓴 스킬 아이콘을 누르면 현재 상태를 자동 계산해 입력칸에 채운다 ──
   let hist = []; // { k, cond, ok }
-  const HIST_KEYS = ['mm', 'reflect', 'basicS', 'careful', 'prudentS', 'groundwork', 'intensive', 'rapid', 'basicT', 'standard', 'advanced', 'refined',
-    'prudentT', 'prep', 'precise', 'hasty', 'daring', 'delicate', 'finesse', 'byregot', 'ven', 'inno', 'gs', 'wn', 'wn2', 'manip', 'ssh', 'fa',
-    'mend', 'immac', 'observe', 'tricks'];
+  // 공식 가이드 기준 분류
+  const HIST_GROUPS = [
+    ['첫 공정 (작업 전에만)', ['mm', 'reflect']],
+    ['작업량', ['basicS', 'careful', 'prudentS', 'groundwork', 'intensive', 'rapid', 'delicate']],
+    ['품질', ['basicT', 'standard', 'advanced', 'refined', 'prudentT', 'prep', 'precise', 'hasty', 'daring', 'finesse', 'byregot']],
+    ['버프', ['ven', 'inno', 'gs', 'wn', 'wn2', 'manip', 'ssh', 'fa']],
+    ['수리·기타', ['mend', 'immac', 'observe', 'tricks']],
+  ];
   function setIf(id, v) { const el = $(id); if (el) el.value = Math.round(v * 10) / 10; }
   function replay() {
     if (!cur()) return;
@@ -208,7 +213,7 @@
   }
   function fillHistBtns() {
     const A = FFAdvisor.ACTIONS;
-    $('adv-hist-btns').innerHTML = HIST_KEYS.map((k) => `<button type="button" class="adv-hbtn" data-k="${k}" title="${A[k].ko}">${ico(k)}</button>`).join('');
+    $('adv-hist-btns').innerHTML = HIST_GROUPS.map(([g, ks]) => `<div class="adv-hgrp"><span class="adv-hlbl">${g}</span><span class="adv-hrow">${ks.map((k) => `<button type="button" class="adv-hbtn" data-k="${k}" title="${A[k].ko}${A[k].good ? ' (고품질일 때만)' : ''}">${ico(k)}${A[k].good ? '<em>고</em>' : ''}</button>`).join('')}</span></div>`).join('');
     $('adv-hist-btns').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
       const k = b.dataset.k, A2 = FFAdvisor.ACTIONS;
       if (A2[k].first && hist.length) return;
@@ -218,7 +223,7 @@
   }
 
   function pct(x) { return Math.round(x * 100) + '%'; }
-  const ICON = { basicS: 1986, careful: 1505, prudentS: 1520, groundwork: 1518, intensive: 1514, rapid: 1988, mm: 1994,
+  const ICON = { basicS: 1501, careful: 1986, prudentS: 1520, groundwork: 1518, intensive: 1514, rapid: 1988, mm: 1994,
     basicT: 1502, standard: 1516, advanced: 1519, refined: 1522, prudentT: 1535, prep: 1507, precise: 1524, reflect: 1982,
     hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, inno: 1987, gs: 1955, wn: 1992,
     wn2: 1993, manip: 1985, ssh: 1953, fa: 1983, mend: 1952, immac: 1950, observe: 1954, tricks: 1990 };
