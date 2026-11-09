@@ -95,7 +95,7 @@
     if (!res.ok) {
       const b = res.best, r = cur();
       out.innerHTML = `<div class="adv-card"><div class="adv-head"><span class="adv-pill">매크로로는 어려워요</span></div>
-        <div class="calc-sub">상태를 보통으로 가정하고 확정 성공 스킬만 써도 목표 품질에 닿는 순서를 못 찾았어요${b ? ` (가장 높게 채운 품질 ${Math.floor(b.quality)} / ${r.quality})` : ''}.
+        <div class="calc-sub">상태를 보통으로 가정하고 확정 성공 스킬만 써도 목표 품질에 닿는 순서를 못 찾았어요${b && b.quality >= r.quality * 0.5 ? ` (찾아본 순서 중 가장 높게 채운 품질 ${Math.floor(b.quality)} / ${r.quality})` : ''}.
         이 레시피는 스펙이 더 필요하거나 상태를 보고 판단해야 해요. <a href="#advisor" onclick="switchTab('advisor');return false;">추천 탭</a>에서 상태를 보며 진행해 보세요.</div></div>`;
       return;
     }
@@ -125,7 +125,7 @@
     const search = (c, m) => {
       // 시작 스킬 3가지를 워커 3개로 동시에 찾는다 (워커를 못 쓰면 순서대로)
       const jobs = FFMacro.VARIANTS.map((_, v) => new Promise((ok, no) => {
-        let w; try { w = new Worker('macro-worker.js?v=20261110-3'); } catch (e) { ok(FFMacro.searchVariant(c, { margin: m }, v)); return; }
+        let w; try { w = new Worker('macro-worker.js?v=20261110-4'); } catch (e) { ok(FFMacro.searchVariant(c, { margin: m }, v)); return; }
         w.onmessage = (e) => { w.terminate(); e.data.error ? no(new Error(e.data.error)) : ok(e.data.res); };
         w.onerror = (e) => { w.terminate(); no(new Error(e.message || '알 수 없는 오류')); };
         w.postMessage({ id, ctx: c, opts: { margin: m }, variant: v });
