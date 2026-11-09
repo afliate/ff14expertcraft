@@ -31,12 +31,16 @@ function getRlvlParams(rlvl) {
   return { pD: 160, pM: 100, qD: 160, qM: 100 };
 }
 
-// baseProgress = floor(crafts * 10/pD + 2)
-// ※ 팀크래프트/라파엘 공식: pM(progressModifier)은 레시피 required progress에
-//    이미 반영된 값이므로, 스킬 작업량 계산에는 base만 사용
+// 기본 작업량/품질은 engine.js(Teamcraft 기준, tests/golden.json 으로 검증)를 사용한다.
+// 게임 실측: rlvl 724, 작업숙련도 5933 → 작업(120%) 378, 확신(300%) 945 (pM=90 이 반영된 값)
+function _rlvlParams(rlvl) {
+  const { pD, pM, qD, qM } = getRlvlParams(rlvl);
+  return { rlvl: Number(rlvl), pd: pD, pm: pM, qd: qD, qm: qM };
+}
+
+// baseProgress = floor((crafts*10/pD + 2) × pM/100)
 function calcS0(crafts, rlvl) {
-  const { pD } = getRlvlParams(rlvl);
-  return Math.floor(crafts * 10 / pD + 2);
+  return FFEngine.baseProgress(crafts, _rlvlParams(rlvl));
 }
 
 // 작업량 = floor(s0 × 효율/100 × 버프배율)
@@ -44,21 +48,15 @@ function calcWork(s0, efficiency, buffMult) {
   return Math.floor(s0 * efficiency / 100 * buffMult);
 }
 
-// c0 = floor(cons × 10/qD + 35) × qM/100
+// c0 = floor((cons×10/qD + 35) × qM/100)
 function calcC0(cons, rlvl) {
-  const { qD, qM } = getRlvlParams(rlvl);
-  const base = Math.floor(cons * 10 / qD + 35);
-  return Math.floor(base * qM / 100);
+  return FFEngine.baseQuality(cons, _rlvlParams(rlvl));
 }
 
 // 통합 품질 계산
-// 품질 = floor(c0 × IQ배율 × 효율/100 × (1 + 버프합))
+// 품질 = floor(c0 × 효율 × (1 + 버프합) × (100 + IQ×10)/100 / 100)
 function calcQuality(cons, rlvl, iqStacks, efficiency, buffSum) {
-  const { qD, qM } = getRlvlParams(rlvl);
-  const base = Math.floor(cons * 10 / qD + 35);
-  const c0   = base * qM / 100;
-  const iqMult = 1 + iqStacks * 0.1;
-  return Math.floor(c0 * iqMult * efficiency / 100 * (1 + buffSum));
+  return FFEngine.qualityGain(calcC0(cons, rlvl), efficiency, { iq: iqStacks, buffSum: buffSum });
 }
 
 // ── 확신 오프너 조합 데이터 (상단 표) ──

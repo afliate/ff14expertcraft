@@ -53,7 +53,7 @@
     return Math.floor((base * cond * (potency * buff)) / 100);
   }
 
-  // opts: { cond:'normal'|'good'|'excellent'|'poor', relic, iq, gs, inno }
+  // opts: { cond:'normal'|'good'|'excellent'|'poor', relic, iq, gs, inno } 또는 buffSum(gs/inno 대신)
   function qualityGain(base, potency, opts) {
     const o = opts || {};
     let cond = 1;
@@ -62,8 +62,11 @@
     else if (o.cond === 'good') cond = o.relic ? 1.75 : 1.5;
     const iq = o.iq || 0;
     let mult = 1;
-    if (o.gs) mult += 1;
-    if (o.inno) mult += 0.5;
+    if (o.buffSum !== undefined) mult += o.buffSum; // 혁신 0.5 + 장족 1.0 같은 합산값
+    else {
+      if (o.gs) mult += 1;
+      if (o.inno) mult += 0.5;
+    }
     const buffMod = (1 * mult * (100 + iq * 10)) / 100;
     const eff = f32(potency * buffMod);
     return Math.floor((base * cond * eff) / 100);
