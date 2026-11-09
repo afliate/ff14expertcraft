@@ -40,7 +40,7 @@
     hasty:    { ko: '성급한 손길', kind: 'qual', p: 100, cp: 0,  dur: 10, iq: 1, rate: 0.6, setExp: true },
     daring:   { ko: '대담한 손길', kind: 'qual', p: 150, cp: 0,  dur: 10, iq: 1, rate: 0.6, needExp: true },
     finesse:  { ko: '장인의 황금손', kind: 'qual', p: 100, cp: 32, dur: 0, iq: 0, needIq10: true },
-    delicate: { ko: '정교한 작업', kind: 'both', pp: 150, p: 100, cp: 32, dur: 10, iq: 1 },
+    delicate: { ko: '정밀 작업', kind: 'both', pp: 150, p: 100, cp: 32, dur: 10, iq: 1 },
     byregot:  { ko: '비레고의 축복', kind: 'qual', p: null, cp: 24, dur: 10, iq: 0, needIq: true, resetIq: true },
 
     ven:      { ko: '공경',        kind: 'buff', buff: 'ven',  dur_: 4, cp: 18, dur: 0 },

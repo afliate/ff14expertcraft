@@ -132,7 +132,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-16'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-17'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -218,9 +218,9 @@
   }
 
   function pct(x) { return Math.round(x * 100) + '%'; }
-  const ICON = { basicS: 1986, careful: 1503, prudentS: 1520, groundwork: 1518, intensive: 1514, rapid: 1988, mm: 1994,
+  const ICON = { basicS: 1986, careful: 1505, prudentS: 1520, groundwork: 1518, intensive: 1514, rapid: 1988, mm: 1994,
     basicT: 1502, standard: 1516, advanced: 1519, refined: 1522, prudentT: 1535, prep: 1507, precise: 1524, reflect: 1982,
-    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1505, byregot: 1975, ven: 1995, inno: 1987, gs: 1955, wn: 1992,
+    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, inno: 1987, gs: 1955, wn: 1992,
     wn2: 1993, manip: 1985, ssh: 1953, fa: 1983, mend: 1952, immac: 1950, observe: 1954, tricks: 1990 };
   function ico(k) { return `<img class="adv-ico" src="https://xivapi.com/i/001000/00${ICON[k]}_hr1.png" alt="${FFAdvisor.ACTIONS[k].ko}" onerror="this.style.display='none'">`; }
   function skill(k, mark) {
