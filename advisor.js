@@ -156,8 +156,8 @@
       if (key === 'hs') { st.hs = 1; st.hsUsed = 1; }
       else if (key === 'tp') { st.tp = 1; st.tpUsed = 1; }
       else if (key === 'qi') { st.inno = 1; fresh.inno = true; st.qiUsed = 1; }
-      else if (d.buff === 'wn') { st.wn = d.dur_; fresh.wn = true; }
-      else if (d.buff === 'manip') { st.manip = d.dur_; fresh.manip = true; }
+      else if (d.buff === 'wn') { st.wn = dura(d.dur_); fresh.wn = true; }
+      else if (d.buff === 'manip') { st.manip = dura(d.dur_); fresh.manip = true; }
       else { st[d.buff] = dura(d.dur_); if (d.buff !== 'fa') fresh[d.buff] = true; else fresh.fa = true; }
     } else if (key === 'mmr') { st.mmrUsed = 1;
     } else if (key === 'dc') { st.dcUsed = (s.dcUsed || 0) + 1;

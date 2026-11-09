@@ -182,3 +182,12 @@ test('장인의 초절 기술: 다음 내구 소모 1회 면제, 공정 아님, 
   assert.equal(t.dur, 55);
   assert.equal(Adv.canUse('tp', t, ctx, 'normal'), false);
 });
+
+test('장기 지속(primed): 절약·교손도 지속 +2', () => {
+  const A = require('../advisor.js');
+  const ctx = { maxDur: 80, maxCP: 700, cosmic: false };
+  const s = Object.assign({}, A.newState(ctx), { cp: 700 });
+  assert.equal(A.apply(s, 'wn2', ctx, 'normal').wn, 8);
+  assert.equal(A.apply(s, 'wn2', ctx, 'primed').wn, 10);
+  assert.equal(A.apply(s, 'manip', ctx, 'primed').manip, 10);
+});
