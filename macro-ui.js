@@ -62,11 +62,6 @@
     $('mc-maxcp').value = g.cp + f.cp + p.cp + e.cp;
   }
 
-  function getWorker() {
-    if (worker) return worker;
-    try { worker = new Worker('macro-worker.js?v=20261109-35'); } catch (e) { worker = false; }
-    return worker;
-  }
   function buildCtx() {
     const r = cur();
     return { craftsmanship: num('mc-craft'), control: num('mc-ctrl'), rp: FFEngine.paramsFromTable(r.rlvl, table[String(r.rlvl)]),
@@ -81,7 +76,7 @@
   function planHTML(p, i, top) {
     const texts = FFMacro.toText(p.path);
     return `<div class="adv-card${top ? ' top' : ''}">
-      <div class="adv-head"><span class="adv-rank">${i + 1}</span><span class="adv-pill">${p.steps}공정</span>
+      <div class="adv-head"><span class="adv-rank">${i + 1}</span><span class="adv-pill">${p.steps}공정</span><span class="adv-pill">${FFAdvisor.ACTIONS[p.path[0]].ko} 시작</span>
         <span class="adv-pill">목표 품질 달성 ${pct(p.risk.pQuality)}</span><span class="adv-pill">완료 ${pct(p.risk.pDone)}</span>
         <span class="adv-pill">남는 CP ${p.cp}</span></div>
       <div class="adv-plan">${p.path.map(skillChip).join('<span class="adv-arrow">→</span>')}</div>
@@ -97,7 +92,11 @@
         이 레시피는 스펙이 더 필요하거나 상태를 보고 판단해야 해요. <a href="#advisor" onclick="switchTab('advisor');return false;">추천 탭</a>에서 상태를 보며 진행해 보세요.</div></div>`;
       return;
     }
-    const [top, ...rest] = res.plans;
+    const top = res.plans[0];
+    // 다른 후보: 시작 스킬이 다른 것을 먼저 하나씩 보여준다
+    const seenOpen = new Set([top.path[0]]), diff = [], same = [];
+    res.plans.slice(1).forEach((p) => { if (!seenOpen.has(p.path[0])) { seenOpen.add(p.path[0]); diff.push(p); } else same.push(p); });
+    const rest = diff.concat(same);
     out.innerHTML = (res.marginFailed ? '<div class="calc-sub">고른 품질 여유까지는 채우지 못해서 원래 목표 품질 기준으로 찾았어요.</div>' : '') + planHTML(top, 0, true) +
       (rest.length ? `<details class="adv-details"><summary>다른 후보 ${Math.min(rest.length, 5)}개 보기</summary>${rest.slice(0, 5).map((p, i) => planHTML(p, i + 1, false)).join('')}</details>` : '') +
       '<div class="calc-sub adv-note">상태를 보통으로 가정해 찾은 순서예요. 달성 확률은 실제 상태 확률로 시뮬레이션한 값이고, 100%가 아니면 상태에 따라 목표 품질에 못 닿을 수 있어요. 상태 확률은 임시 기본값이라 실측과 다를 수 있어요.</div>';
@@ -110,17 +109,29 @@
   function run() {
     if (!cur() || !odds) return;
     const ctx = buildCtx(), margin = Number($('mc-margin').value) || 0;
-    $('mc-msg').textContent = '찾는 중이에요…'; $('mc-run').disabled = true; $('mc-out').innerHTML = '';
+    $('mc-msg').textContent = '찾는 중이에요… (몇 초 걸려요)'; $('mc-run').disabled = true; $('mc-out').innerHTML = '';
     const finish = (res, err) => {
       $('mc-run').disabled = false; $('mc-msg').textContent = err ? '계산 중 문제가 생겼어요: ' + err : '';
       if (res) render(res);
     };
-    const w = getWorker(), id = ++reqId;
-    if (w) {
-      w.onmessage = (e) => { if (e.data.id === id) finish(e.data.res, e.data.error); };
-      w.onerror = (e) => finish(null, e.message || '알 수 없는 오류');
-      w.postMessage({ id, ctx, odds, opts: { margin } });
-    } else setTimeout(() => { try { finish(FFMacro.solve(ctx, odds, { margin })); } catch (e) { finish(null, String(e.message || e)); } }, 20);
+    const id = ++reqId;
+    const search = (c, m) => {
+      // 시작 스킬 3가지를 워커 3개로 동시에 찾는다 (워커를 못 쓰면 순서대로)
+      const jobs = FFMacro.VARIANTS.map((_, v) => new Promise((ok, no) => {
+        let w; try { w = new Worker('macro-worker.js?v=20261109-37'); } catch (e) { ok(FFMacro.searchVariant(c, { margin: m }, v)); return; }
+        w.onmessage = (e) => { w.terminate(); e.data.error ? no(new Error(e.data.error)) : ok(e.data.res); };
+        w.onerror = (e) => { w.terminate(); no(new Error(e.message || '알 수 없는 오류')); };
+        w.postMessage({ id, ctx: c, opts: { margin: m }, variant: v });
+      }));
+      return Promise.all(jobs);
+    };
+    (async () => {
+      try {
+        let res = FFMacro.rank(ctx, odds, await search(ctx, margin), {});
+        if (!res.ok && margin) { res = FFMacro.rank(ctx, odds, await search(ctx, 0), {}); res.marginFailed = true; }
+        if (id === reqId) finish(res);
+      } catch (e) { if (id === reqId) finish(null, String(e.message || e)); }
+    })();
   }
 
   document.addEventListener('DOMContentLoaded', () => {

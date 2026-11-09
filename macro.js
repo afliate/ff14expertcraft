@@ -41,6 +41,7 @@
   function search(ctx, opts) {
     opts = opts || {};
     const width = opts.width || 400, maxDepth = opts.depth || 34, keep = opts.keep || 24;
+    const keys = opts.ban ? KEYS.filter((k) => !opts.ban.includes(k)) : KEYS;
     const start = Adv.newState({ cp: ctx.maxCP, dur: ctx.maxDur, steps: 0 });
     let beam = [{ s: start, sm: start, path: [] }]; // sm: 모든 공정이 '빠른 진행'이었을 때의 상태 (작업량이 가장 빨리 차는 경우)
     const found = []; // 목표 품질까지 채운 완성 후보
@@ -49,7 +50,7 @@
     for (let d = 0; d < maxDepth && beam.length; d++) {
       const next = new Map();
       for (const node of beam) {
-        for (const k of KEYS) {
+        for (const k of keys) {
           if (!usable(k, node.s, ctx)) continue;
           const ns = Adv.apply(node.s, k, ctx, 'normal');
           if (ns.dead) continue;
@@ -97,18 +98,31 @@
     return { pDone: done / N, pQuality: hit / N, avgQuality: done ? qSum / done : 0 };
   }
 
-  /** 후보들을 시뮬레이션해 가장 안정적인 순서를 고른다 (성공률 우선, 같으면 짧은 쪽). */
+  // 시작 스킬(확신 / 진가 / 그 밖)마다 따로 찾아 합친다. 한 번에 찾으면 빔이 한쪽으로 쏠려 다른 시작이 더 좋은 경우를 놓친다
+  const VARIANTS = [['reflect'], ['mm'], ['mm', 'reflect']];
+  const sctxOf = (ctx, opts) => (opts && opts.margin ? Object.assign({}, ctx, { targetQuality: Math.ceil(ctx.targetQuality * (1 + opts.margin)) }) : ctx);
+  function searchVariant(ctx, opts, v) { opts = opts || {}; return search(sctxOf(ctx, opts), Object.assign({}, opts, { ban: VARIANTS[v] })); }
+  function merge(parts) {
+    const seen = new Set(), plans = [];
+    for (const p of parts) for (const q of p.plans) { const k = q.path.join(','); if (!seen.has(k)) { seen.add(k); plans.push(q); } }
+    plans.sort((a, b) => a.steps - b.steps || b.cp - a.cp);
+    let best = null; for (const p of parts) if (p.best && (!best || p.best.quality > best.quality)) best = p.best;
+    return { plans, best };
+  }
+  /** 후보들을 시뮬레이션해 가장 안정적인 순서를 고른다 (성공률 우선, 같으면 짧은 쪽). parts: searchVariant 결과들 */
+  function rank(ctx, odds, parts, opts) {
+    opts = opts || {};
+    const r = merge(parts);
+    if (!r.plans.length) return { ok: false, best: r.best, plans: [] };
+    const ranked = r.plans.slice(0, opts.simTop || 30).map((p) => Object.assign({ risk: simulate(p.path, ctx, odds, opts.samples || 400, opts.rnd) }, p));
+    ranked.sort((a, b) => b.risk.pQuality - a.risk.pQuality || a.steps - b.steps || b.cp - a.cp);
+    return { ok: true, plans: ranked, best: r.best };
+  }
   function solve(ctx, odds, opts) {
     opts = opts || {};
-    // 품질 여유: 목표보다 조금 더 쌓는 순서를 찾는다 (달성 확률은 원래 목표 기준으로 센다)
-    const sctx = opts.margin ? Object.assign({}, ctx, { targetQuality: Math.ceil(ctx.targetQuality * (1 + opts.margin)) }) : ctx;
-    let r = search(sctx, opts), marginFailed = false;
-    if (!r.plans.length && opts.margin) { r = search(ctx, opts); marginFailed = true; } // 여유를 못 채우면 원래 목표로
-    if (!r.plans.length) return { ok: false, best: r.best, plans: [] };
-    const rnd = opts.rnd;
-    const ranked = r.plans.slice(0, opts.simTop || 16).map((p) => Object.assign({ risk: simulate(p.path, ctx, odds, opts.samples || 400, rnd) }, p));
-    ranked.sort((a, b) => b.risk.pQuality - a.risk.pQuality || a.steps - b.steps || b.cp - a.cp);
-    return { ok: true, plans: ranked, best: r.best, marginFailed };
+    let res = rank(ctx, odds, VARIANTS.map((_, i) => searchVariant(ctx, opts, i)), opts);
+    if (!res.ok && opts.margin) { res = rank(ctx, odds, VARIANTS.map((_, i) => searchVariant(ctx, Object.assign({}, opts, { margin: 0 }), i)), opts); res.marginFailed = true; }
+    return res;
   }
 
   /** 인게임 매크로 텍스트. 15줄 제한 때문에 14공정마다 끊고 마지막 줄에 완료 알림을 붙인다. */
@@ -127,5 +141,5 @@
     return out;
   }
 
-  return { search, simulate, solve, toText, KEYS };
+  return { search, searchVariant, rank, solve, simulate, toText, KEYS, VARIANTS };
 });
