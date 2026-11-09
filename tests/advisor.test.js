@@ -97,3 +97,19 @@ test('simulate: 시드 고정 시 재현되고 확률이 0~1', () => {
   const b = Adv.simulate(r[0].plan, st, ctx, odds, 200, lcg(11));
   assert.deepStrictEqual(a, b);
 });
+
+test('recommendPolicy: 후보별 확률/모드 반환, 시드 고정 시 재현', () => {
+  const s0 = Adv.newState({ cp: 649, dur: 55 });
+  const a = Adv.recommendPolicy(s0, ctx, 'normal', { odds, samples: 40, width: 40, depth: 20, rnd: lcg(3) });
+  const b = Adv.recommendPolicy(s0, ctx, 'normal', { odds, samples: 40, width: 40, depth: 20, rnd: lcg(3) });
+  assert.ok(a.length > 3);
+  assert.ok(a.every((x) => x.risk && x.risk.pDone >= 0 && x.risk.pDone <= 1 && x.risk.pQuality <= x.risk.pDone + 1e-9));
+  assert.deepStrictEqual(a.map((x) => x.key), b.map((x) => x.key));
+});
+
+test('정책: 첫 공정은 확신/진가, 내구가 바닥이면 땜질', () => {
+  const s0 = Adv.newState({ cp: 649, dur: 55 });
+  assert.ok(['mm', 'reflect'].includes(Adv.policy(s0, ctx, 'normal', { opener: 'mm' })));
+  const low = Adv.newState({ cp: 649, dur: 8, steps: 5, progress: 3000, quality: 1000, iq: 3 });
+  assert.ok(['immac', 'mend'].includes(Adv.policy(low, ctx, 'normal', { opener: 'mm' })));
+});

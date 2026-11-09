@@ -265,6 +265,131 @@
     return { pDone: ok / N, pQuality: qHit / N, avgQuality: ok ? qSum / ok : 0 };
   }
 
+  // ── 반응형 정책 (조건을 보고 매 공정 고른다) ───────────────
+  // 작업 흐름: ① 작업량을 마무리 1~2회 몫만 남기고 채움 → ② 품질 → ③ 남은 작업량으로 마무리.
+  // variant: { opener:'auto', byregotIq:10, manipAt:… } — 여러 변형을 돌려 가장 좋은 쪽을 고른다.
+  function progGainOf(s, key, ctx, cond) {
+    const d = A[key]; let p = d.p;
+    if (d.halfIfLowDur && s.dur < cost(d, s, cond).dur) p /= 2;
+    return E.progressGain(E.baseProgress(ctx.craftsmanship, ctx.rp), p, { malleable: cond === 'malleable', mm: s.mm > 0, ven: s.ven > 0 });
+  }
+  function policy(s, ctx, cond, v) {
+    const U = (k) => canUse(k, s, ctx, cond);
+    const R = ctx.target - s.progress;
+    const qDone = s.quality >= ctx.targetQuality;
+    const gCareful = progGainOf(s, 'careful', ctx, cond), gBasic = progGainOf(s, 'basicS', ctx, cond);
+    const finGain = Math.max(gBasic, U('careful') ? gCareful : 0);
+
+    // 내구 관리 (진행 중 내구가 10 이하면 위험)
+    if (s.dur <= 10 && R > finGain * 0.9) {
+      if (U('immac') && s.cp >= 112 + 7) return 'immac';
+      if (U('mend') && s.cp >= 88 + 7) return 'mend';
+    }
+    if (!s.manip && !s.wn && s.steps >= 2 && s.dur <= ctx.maxDur * 0.55 && U('manip') && s.cp >= 96 + 120 && !qDone) return 'manip';
+
+    // ③ 마무리: 품질을 채웠거나 자원이 바닥났으면 작업량을 끝낸다
+    const reserve = 7 + 6;
+    const noMoreQuality = qDone || s.cp < 18 + reserve || s.dur < 20;
+    if (R > 0 && noMoreQuality) {
+      if (U('intensive') && progGainOf(s, 'intensive', ctx, cond) >= R) return 'intensive';
+      if (U('basicS') && gBasic >= R) return 'basicS';
+      if (U('careful') && gCareful >= R) return 'careful';
+      if (U('groundwork') && progGainOf(s, 'groundwork', ctx, cond) >= R && s.dur >= cost(A.groundwork, s, cond).dur) return 'groundwork';
+      if (U('intensive')) return 'intensive';
+      if (U('groundwork') && s.dur >= cost(A.groundwork, s, cond).dur) return 'groundwork';
+      if (U('careful')) return 'careful';
+      return 'basicS';
+    }
+
+    // ① 작업량 채우기: 마무리 몫(finGain)을 남기고 끝내지 않는 범위에서 가장 큰 스킬
+    if (R > finGain * 1.05 && (s.steps === 0 || R > ctx.target * (v.progFirst === false ? 0.45 : 0.15))) {
+      if (s.steps === 0) return v.opener === 'reflect' && U('reflect') ? 'reflect' : (U('mm') ? 'mm' : 'basicS');
+      if (!s.ven && s.cp >= 18 + 60 && R > ctx.target * 0.35 && U('ven')) return 'ven';
+      const order = ['intensive', 'groundwork', 'careful', 'rapid', 'basicS'];
+      for (const k of order) {
+        if (!U(k)) continue;
+        if (k === 'groundwork' && s.dur < cost(A.groundwork, s, cond).dur) continue;
+        if (k === 'rapid' && (s.cp >= 40 || R < ctx.target * 0.2)) continue;
+        if (progGainOf(s, k, ctx, cond) < R - finGain * 0.9) return k;
+      }
+    }
+
+    // ② 품질
+    if (s.steps === 0 && U('reflect')) return 'reflect';
+    if (!qDone) {
+      const canByregot = U('byregot');
+      const comboReady = s.cp >= 24 + 32 + (s.inno ? 0 : 18) + reserve;
+      if (s.iq >= (v.byregotIq || 10) && canByregot) {
+        if (!s.inno && s.cp >= 18 + 24 + reserve + (s.gs ? 0 : 32) && U('inno')) return 'inno';
+        if (!s.gs && s.cp >= 32 + 24 + reserve && U('gs')) return 'gs';
+        return 'byregot';
+      }
+      if (cond === 'good' || cond === 'excellent') { if (U('precise') && s.iq < 10) return 'precise'; }
+      if ((cond === 'sturdy' || cond === 'robust') && s.dur >= 25 && s.cp >= 40 + reserve && s.iq <= 8 && U('prep')) return 'prep';
+      if (!s.inno && s.iq < 10 && s.cp >= 18 + 40 + reserve && U('inno')) return 'inno';
+      if (s.iq >= 10 && U('finesse') && s.cp >= 32 + reserve) return 'finesse';
+      if (s.lastAction === 'standard' && U('advanced') && s.cp >= 18 + reserve) return 'advanced';
+      if (s.lastAction === 'basicT' && U('standard') && s.cp >= 18 + reserve) return 'standard';
+      if (s.cp >= 18 + reserve && U('basicT')) return 'basicT';
+      if (U('daring')) return 'daring';
+      if (U('hasty')) return 'hasty';
+      if (canByregot && s.cp >= 24 + reserve) return 'byregot';
+    }
+    return U('basicS') ? 'basicS' : 'observe';
+  }
+
+  function rollout(start, ctx, first, cond0, table, rnd, v) {
+    let s = apply(start, first, ctx, cond0, A[first].rate === undefined ? undefined : rnd() < A[first].rate);
+    let cond = cond0, path = [first];
+    for (let g = 0; g < 70 && !s.done && !s.dead; g++) {
+      cond = drawCondition(table, cond, rnd);
+      let k = policy(s, ctx, cond, v);
+      if (!canUse(k, s, ctx, cond)) k = canUse('basicS', s, ctx, cond) ? 'basicS' : 'observe';
+      s = apply(s, k, ctx, cond, A[k].rate === undefined ? undefined : rnd() < A[k].rate);
+      path.push(k);
+    }
+    return { s, path };
+  }
+
+  const VARIANTS = [{ opener: 'mm', byregotIq: 10 }, { opener: 'reflect', byregotIq: 10 }, { opener: 'mm', byregotIq: 8 }, { opener: 'reflect', byregotIq: 8 }];
+
+  /** recommendPolicy: 후보 첫 스킬마다 반응형 정책으로 n 번 시뮬레이션해 완료/목표 품질 달성 확률을 구한다. */
+  function recommendPolicy(state, ctx, cond, opts) {
+    const o = opts || {};
+    const table = conditionTable(o.odds, ctx.rp.rlvl);
+    const n = o.samples || 200;
+    const rnd = o.rnd || Math.random;
+    const out = [];
+    for (const k of KEYS) {
+      if (!canUse(k, state, ctx, cond || 'normal')) continue;
+      if (k === 'tricks' && state.cp >= ctx.maxCP - 20) continue;
+      let best = null;
+      for (const v of VARIANTS) {
+        let ok = 0, qHit = 0, qSum = 0, cpLeft = 0, sample = null;
+        for (let i = 0; i < n; i++) {
+          const r = rollout(state, ctx, k, cond || 'normal', table, rnd, v);
+          if (r.s.done) { ok++; qSum += r.s.quality; cpLeft += r.s.cp; if (r.s.quality >= ctx.targetQuality) qHit++; }
+          if (!sample) sample = r.path;
+        }
+        const stat = { pDone: ok / n, pQuality: qHit / n, avgQuality: ok ? qSum / ok : 0, avgCp: ok ? cpLeft / ok : 0, variant: v, sample };
+        stat.score = stat.pQuality * 300 + stat.pDone * 100 + Math.min(1, stat.avgQuality / ctx.targetQuality) * 50;
+        if (!best || stat.score > best.score) best = stat;
+      }
+      out.push({ key: k, ko: A[k].ko, risk: best, plan: best.sample, score: best.score, ok: best.pDone > 0, quality: Math.floor(best.avgQuality), finishCp: Math.round(best.avgCp) });
+    }
+    if (o.hybrid !== false) {
+      // 고정 계획(빔 서치)과 반응형 정책 중 후보마다 더 좋은 쪽을 쓴다
+      const fixed = recommend(state, ctx, cond, { width: o.width || 160, depth: o.depth || 28, odds: o.odds, samples: n, rnd });
+      for (const f of fixed) {
+        const i = out.findIndex((x) => x.key === f.key);
+        if (i < 0) out.push(Object.assign({ mode: '계획' }, f));
+        else if (f.score > out[i].score) out[i] = Object.assign({ mode: '계획' }, f);
+        else out[i].mode = '반응';
+      }
+    }
+    return out.sort((a, b) => b.score - a.score);
+  }
+
   /**
    * recommend(state, ctx, cond, opts) → [{ key, ko, ok, quality, finishCp, plan }] (점수 내림차순)
    *  state: newState({cp, dur, ...}) 로 만든 현재 상태
@@ -289,5 +414,5 @@
     return out.sort((a, b) => b.score - a.score);
   }
 
-  return { ACTIONS: A, newState, canUse, cost, apply, plan, recommend, conditionTable, drawCondition, simulate };
+  return { ACTIONS: A, newState, canUse, cost, apply, plan, recommend, recommendPolicy, policy, conditionTable, drawCondition, simulate };
 });

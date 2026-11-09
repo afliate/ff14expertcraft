@@ -90,7 +90,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-2'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-3'); } catch (e) { worker = false; }
     return worker;
   }
   function collect() {
@@ -105,7 +105,7 @@
       wn: num('adv-wn'), manip: num('adv-manip'), fa: num('adv-fa'), steps: num('adv-steps'),
       lastAction: lastMap[$('adv-last').value],
     });
-    return { state, ctx, cond: $('adv-cond').value, opts: { width: 60, depth: 26, samples: 300 }, odds: currentOdds() };
+    return { state, ctx, cond: $('adv-cond').value, opts: { samples: 200 }, odds: currentOdds() };
   }
   function run() {
     if (busy) return;
@@ -129,7 +129,7 @@
       w.postMessage(Object.assign({ id }, msg));
     } else {
       setTimeout(() => { // 워커를 못 쓰는 환경: 화면 멈춤을 감수하고 직접 계산
-        try { render(FFAdvisor.recommend(msg.state, msg.ctx, msg.cond, Object.assign({}, msg.opts, { odds: msg.odds }))); }
+        try { render(FFAdvisor.recommendPolicy(msg.state, msg.ctx, msg.cond, Object.assign({}, msg.opts, { odds: msg.odds }))); }
         catch (e) { $('adv-out').innerHTML = '<div class="calc-sub">오류: ' + e.message + '</div>'; }
         done();
       }, 30);
@@ -144,10 +144,10 @@
       <div class="adv-card${i === 0 ? ' top' : ''}">
         <div class="adv-head"><span class="adv-rank">${i + 1}</span><span class="adv-name">${x.ko}</span>
           <span class="adv-pill">완료 ${pct(x.risk.pDone)}</span><span class="adv-pill">목표 품질 ${pct(x.risk.pQuality)}</span>
-          <span class="adv-pill">평균 품질 ${Math.round(x.risk.avgQuality)}</span></div>
+          <span class="adv-pill">평균 품질 ${Math.round(x.risk.avgQuality)}</span>${x.mode ? `<span class="adv-pill">${x.mode === '계획' ? '고정 계획 기준' : '상태 반응 기준'}</span>` : ''}</div>
         <div class="adv-plan">${x.plan.map((k) => A[k].ko).join(' → ')}</div>
       </div>`).join('') +
-      '<div class="calc-sub adv-note">완료·품질 확률은 이 스킬로 시작해 이후 같은 계획을 따라갈 때의 값이에요. 이후 상태 확률은 임시 기본값이라 실측과 다를 수 있어요.</div>';
+      '<div class="calc-sub adv-note">완료·품질 확률은 이 스킬로 시작해 끝까지 시뮬레이션한 값이에요 (고정 계획과 상태에 반응하는 방식 중 더 좋은 쪽). 이후 상태 확률은 임시 기본값이라 실측과 다를 수 있어요.</div>';
   }
 
   document.addEventListener('DOMContentLoaded', () => {
