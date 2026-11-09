@@ -12,11 +12,11 @@
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-7"></script>
-<script src="qualcalc.js?v=20261109-7"></script>
-<script src="advisor.js?v=20261109-7"></script>
-<script src="advisor-ui.js?v=20261109-7" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-7">
+<script src="engine.js?v=20261109-8"></script>
+<script src="qualcalc.js?v=20261109-8"></script>
+<script src="advisor.js?v=20261109-8"></script>
+<script src="advisor-ui.js?v=20261109-8" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-8">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1410,42 +1410,54 @@ document.addEventListener('DOMContentLoaded', () => {
     <p>지금 제작 상태를 넣으면 다음에 쓸 스킬과 완료·목표 품질 달성 확률을 보여줘요 (베타)</p>
   </div>
   <div class="calc-body">
-    <div class="input-section-label">레시피</div>
-    <div class="adv-grid">
-      <label>직업<select id="adv-job"></select></label>
-      <label>이름 검색<input id="adv-filter" type="text" placeholder="예: 오이지스"></label>
-      <label>레시피<select id="adv-recipe"></select></label>
-      <label>목표 작업량<input id="adv-work" type="number" value=""></label><label>목표 품질<input id="adv-qual" type="number" value=""></label><label>최대 내구도<input id="adv-dur" type="number" value=""></label>
+    <div class="adv-panels">
+      <div class="adv-panel">
+        <div class="input-section-label">레시피</div>
+        <div class="adv-grid">
+          <label>직업<select id="adv-job"></select></label>
+          <label>이름 검색<input id="adv-filter" type="text" placeholder="예: 오이지스"></label>
+          <label class="wide">레시피<select id="adv-recipe"></select></label>
+          <label>목표 작업량<input id="adv-work" type="number" value=""></label><label>목표 품질<input id="adv-qual" type="number" value=""></label><label>최대 내구도<input id="adv-dur" type="number" value=""></label>
+        </div>
+      </div>
+      <div class="adv-panel">
+        <div class="input-section-label">내 능력치</div>
+        <div class="adv-grid">
+          <label>작업 숙련도<input id="adv-craft" type="number" value="5933"></label><label>가공 정밀도<input id="adv-ctrl" type="number" value="5470"></label><label>최대 CP<input id="adv-maxcp" type="number" value="649"></label>
+          <label class="chk"><input id="adv-relic" type="checkbox" checked>우주 도구 (고품질 ×1.75)</label>
+        </div>
+      </div>
+      <div class="adv-panel">
+        <div class="input-section-label">현재 제작 상태</div>
+        <div class="adv-grid">
+          <label>작업량<input id="adv-curprog" type="number" value="0"></label><label>품질<input id="adv-curqual" type="number" value="0"></label><label>내구도<input id="adv-curdur" type="number" value=""></label><label>CP<input id="adv-curcp" type="number" value="649"></label><label>정신집중<input id="adv-iq" type="number" value="0"></label><label>공정 수<input id="adv-steps" type="number" value="0" title="진행한 공정 수 (0 = 첫 공정)"></label>
+          <label>직전 스킬<select id="adv-last"><option value="">그 외/없음</option><option value="basicT">가공</option><option value="standard">중급 가공</option><option value="observe">경과 관찰</option></select></label>
+          <label>이번 상태<select id="adv-cond"></select></label>
+        </div>
+      </div>
+      <div class="adv-panel">
+        <div class="input-section-label">남은 버프 (공정 수)</div>
+        <div class="adv-grid">
+          <label>공경<input id="adv-ven" type="number" value="0"></label><label>혁신<input id="adv-inno" type="number" value="0"></label><label>장족의 발전<input id="adv-gs" type="number" value="0"></label><label>확신<input id="adv-mm" type="number" value="0"></label><label>근검/장기 절약<input id="adv-wn" type="number" value="0"></label><label>교묘한 손놀림<input id="adv-manip" type="number" value="0"></label><label>최종 확인<input id="adv-fa" type="number" value="0"></label>
+        </div>
+      </div>
     </div>
-    <div class="input-section-label">내 능력치</div>
-    <div class="adv-grid">
-      <label>작업 숙련도<input id="adv-craft" type="number" value="5933"></label><label>가공 정밀도<input id="adv-ctrl" type="number" value="5470"></label><label>최대 CP<input id="adv-maxcp" type="number" value="649"></label>
-      <label>우주 도구 (고품질 1.75배)<input id="adv-relic" type="checkbox" checked></label>
-    </div>
-    <div class="input-section-label">현재 제작 상태</div>
-    <div class="adv-grid">
-      <label>현재 작업량<input id="adv-curprog" type="number" value="0"></label><label>현재 품질<input id="adv-curqual" type="number" value="0"></label><label>현재 내구도<input id="adv-curdur" type="number" value=""></label><label>현재 CP<input id="adv-curcp" type="number" value="649"></label><label>정신집중 스택<input id="adv-iq" type="number" value="0"></label><label>진행한 공정 수 (0=첫 공정)<input id="adv-steps" type="number" value="0"></label>
-      <label>직전 스킬<select id="adv-last"><option value="">그 외/없음</option><option value="basicT">가공</option><option value="standard">중급 가공</option><option value="observe">경과 관찰</option></select></label>
-      <label>이번 공정 상태<select id="adv-cond"></select></label>
-    </div>
-    <div class="input-section-label">남은 버프 (공정 수)</div>
-    <div class="adv-grid">
-      <label>공경<input id="adv-ven" type="number" value="0"></label><label>혁신<input id="adv-inno" type="number" value="0"></label><label>장족의 발전<input id="adv-gs" type="number" value="0"></label><label>확신<input id="adv-mm" type="number" value="0"></label><label>근검/장기 절약<input id="adv-wn" type="number" value="0"></label><label>교묘한 손놀림<input id="adv-manip" type="number" value="0"></label><label>최종 확인<input id="adv-fa" type="number" value="0"></label>
-    </div>
-    <div class="input-section-label">조건 기록 (실측)</div>
-    <div class="calc-sub">제작하면서 매 공정 나온 상태를 눌러 주세요. 선택한 레시피의 플래그별로 모아서 확률을 계산해요. 호조의 징조·강건·극상 다음 공정은 상태가 정해져 있어서 자동으로 표본에서 빼요. 새 제작을 시작할 때는 "제작 시작"을 눌러 주세요.</div>
-    <div id="adv-log-btns" class="adv-grid"></div>
-    <div id="adv-log-sum" class="calc-sub"></div>
-    <div class="adv-grid">
-      <button class="calc-btn" id="adv-log-break" type="button">제작 시작(연결 끊기)</button>
-      <button class="calc-btn" id="adv-log-export" type="button">결과 복사</button>
-      <button class="calc-btn" id="adv-log-reset" type="button">기록 지우기</button>
-      <label>추천에 내 기록 쓰기<input id="adv-uselog" type="checkbox"></label>
-    </div>
-    <textarea id="adv-log-out" rows="5" style="width:100%;" readonly></textarea>
     <button class="calc-btn" id="adv-run">추천 보기</button>
     <div id="adv-msg" class="calc-sub"></div>
     <div id="adv-out"></div>
+    <details class="adv-details">
+      <summary>조건 기록 (실측) — 제작하면서 나온 상태를 눌러 모으기</summary>
+      <div class="calc-sub">매 공정 나온 상태를 눌러 주세요. 선택한 레시피의 플래그별로 모아서 확률을 계산해요. 호조의 징조·강건·극상 다음 공정은 상태가 정해져 있어서 자동으로 표본에서 빼요. 새 제작을 시작할 때는 "제작 시작"을 눌러 주세요.</div>
+      <div id="adv-log-btns" class="adv-grid"></div>
+      <div id="adv-log-sum" class="calc-sub"></div>
+      <div class="adv-grid">
+        <button class="calc-btn" id="adv-log-break" type="button">제작 시작(연결 끊기)</button>
+        <button class="calc-btn" id="adv-log-export" type="button">결과 복사</button>
+        <button class="calc-btn" id="adv-log-reset" type="button">기록 지우기</button>
+        <label class="chk"><input id="adv-uselog" type="checkbox">추천에 내 기록 쓰기</label>
+      </div>
+      <textarea id="adv-log-out" rows="4" style="width:100%;" readonly></textarea>
+    </details>
   </div>
 </div>
 

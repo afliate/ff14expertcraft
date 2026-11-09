@@ -1,11 +1,32 @@
-.adv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:10px 0 14px;}
-.adv-grid label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--text-dim);}
-.adv-grid input,.adv-grid select{padding:7px 8px;background:var(--bg-card,transparent);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:inherit;font-size:14px;}
-.adv-card{border:1px solid var(--border);border-radius:3px;padding:12px 14px;margin:8px 0;}
+/* 추천 탭: 컴팩트 패널 레이아웃 + 다크/라이트 공용 입력 스타일 */
+.adv-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin:6px 0 12px;}
+.adv-panel{border:1px solid var(--border);border-radius:3px;padding:8px 12px 12px;background:var(--surface);}
+.adv-panel .input-section-label{margin:0 0 8px;}
+.adv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:6px 8px;margin:0;}
+.adv-grid label{display:flex;flex-direction:column;gap:2px;font-size:12px;line-height:1.3;color:var(--text-dim);min-width:0;}
+.adv-grid label.wide{grid-column:1/-1;}
+.adv-grid label.chk{grid-column:1/-1;flex-direction:row;align-items:center;gap:6px;}
+.adv-grid input[type=number],.adv-grid input[type=text],.adv-grid select{
+  width:100%;padding:4px 7px;background:var(--surface2);border:1px solid var(--border);border-radius:3px;
+  color:var(--text-bright);font-family:inherit;font-size:13px;outline:none;}
+.adv-grid input:focus,.adv-grid select:focus{border-color:var(--accent-dim);}
+/* 선택 목록(드롭다운) 글자색: 다크모드에서 흰 배경+흰 글씨로 안 보이던 문제 */
+.adv-grid select{color-scheme:dark;}
+body.light .adv-grid select{color-scheme:light;}
+.adv-grid select option{background:var(--surface2);color:var(--text-bright);}
+body.light .adv-grid input[type=number],body.light .adv-grid input[type=text],body.light .adv-grid select{background:#fff;border-color:#8aabbd;}
+body.light .adv-grid select option{background:#fff;color:var(--text-bright);}
+.adv-details{margin-top:16px;border:1px solid var(--border);border-radius:3px;padding:6px 12px 10px;}
+.adv-details summary{cursor:pointer;font-size:13px;color:var(--text-dim);padding:4px 0;}
+.adv-details[open] summary{margin-bottom:6px;}
+.adv-details .adv-grid{margin:8px 0;}
+.adv-details textarea{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:3px;font-size:12px;}
+#adv-run{margin-top:4px;}
+.adv-card{border:1px solid var(--border);border-radius:3px;padding:10px 12px;margin:8px 0;}
 .adv-card.top{border-color:var(--accent);}
-.adv-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.adv-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
 .adv-rank{font-weight:900;color:var(--accent);}
-.adv-name{font-weight:900;font-size:16px;color:var(--text-bright);}
-.adv-pill{font-size:12px;padding:2px 8px;border:1px solid var(--border);border-radius:10px;color:var(--text-dim);}
-.adv-plan{margin-top:8px;font-size:13px;color:var(--text-dim);line-height:1.7;}
+.adv-name{font-weight:900;font-size:15px;color:var(--text-bright);}
+.adv-pill{font-size:12px;padding:1px 8px;border:1px solid var(--border);border-radius:10px;color:var(--text-dim);}
+.adv-plan{margin-top:6px;font-size:12.5px;color:var(--text-dim);line-height:1.65;}
 .adv-note{margin-top:12px;}
