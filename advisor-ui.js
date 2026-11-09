@@ -135,7 +135,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-30'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-33'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -204,9 +204,9 @@
     const bar = $('adv-condbar'); if (!bar) return;
     const ko = Object.fromEntries(CONDS), keep = $('adv-cond').value;
     const pos = condPossible();
-    bar.innerHTML = condNames().map((k) => `<button type="button" class="adv-cbtn${pos.includes(k) ? '' : ' off'}" data-c="${k}" title="${pos.includes(k) ? '' : '이 레시피 데이터에는 없는 상태예요'}" style="--cc:${COND_COLOR[k] || '#8aa'}">${ko[k]}</button>`).join('');
-    bar.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => setCond(b.dataset.c)));
-    setCond(keep || 'normal');
+    bar.innerHTML = condNames().map((k) => `<button type="button" class="adv-cbtn${pos.includes(k) ? '' : ' off'}" data-c="${k}"${pos.includes(k) ? '' : ' disabled'} title="${pos.includes(k) ? '' : '이 레시피에는 나오지 않는 상태예요'}" style="--cc:${COND_COLOR[k] || '#8aa'}">${ko[k]}</button>`).join('');
+    bar.querySelectorAll('button:not([disabled])').forEach((b) => b.addEventListener('click', () => setCond(b.dataset.c)));
+    setCond(pos.includes(keep) ? keep : 'normal');
   }
   // 진행 기록 한 칸 = 그 공정에서 본 상태 한 번의 실측. 기록 칸과 같이 쌓고, 되돌리기로 빼기
   function autoLog(i, cond) {
