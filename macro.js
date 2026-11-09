@@ -28,8 +28,8 @@
       s.hs, s.hsUsed, s.qiUsed, s.tp, s.tpUsed,
       s.lastAction === 'basicT' || s.lastAction === 'standard' || s.lastAction === 'observe' ? s.lastAction : '-'].join(',');
   }
-  function heur(s, ctx) {
-    const pr = Math.min(1, s.progress / ctx.target);
+  function heur(s, ctx, late) {
+    const pr = Math.min(1, s.progress / ctx.target) * (late ? 0.05 : 1);
     const qr = Math.min(1, s.quality / ctx.targetQuality);
     return pr * 60 + qr * 100 + s.cp * 0.02 + s.dur * 0.05 + s.iq * 0.5;
   }
@@ -52,11 +52,13 @@
       for (const node of beam) {
         for (const k of (d === 0 && opts.first ? [opts.first] : keys)) {
           if (!usable(k, node.s, ctx)) continue;
+          if (opts.late && (A[k].kind === 'prog' || A[k].kind === 'both') && node.s.quality < ctx.targetQuality) continue; // 작업량은 품질을 다 채운 뒤에
           const ns = Adv.apply(node.s, k, ctx, 'normal');
           if (ns.dead) continue;
           const nm = Adv.apply(node.sm, k, ctx, 'malleable');
-          // 빠른 진행이 뜨면 작업량이 먼저 차서 제작이 일찍 끝날 수 있다 → 마지막 공정 전에 끝나는 순서는 버린다
-          if (!ns.done && nm.done) continue;
+          // 빠른 진행이 뜨면 작업량이 먼저 차서 제작이 일찍 끝날 수 있다. 그때까지 품질을 못 채웠다면 위험하니 그 순서는 버린다
+          // (품질을 이미 채운 뒤에 끝나는 건 괜찮다)
+          if (!ns.done && nm.done && ns.quality < ctx.targetQuality) continue;
           const path = node.path.concat(k);
           if (ns.done) {
             const rec = { path, quality: ns.quality, cp: ns.cp, steps: path.length, ok: ns.quality >= ctx.targetQuality };
@@ -64,7 +66,7 @@
             else if (!best || rec.quality > best.quality) best = rec;
             continue;
           }
-          const kk = keyOf(ns) + '|' + Math.round(nm.progress), h = heur(ns, ctx), ex = next.get(kk);
+          const kk = keyOf(ns) + '|' + Math.round(nm.progress), h = heur(ns, ctx, opts.late), ex = next.get(kk);
           if (!ex || ex.h < h) next.set(kk, { s: ns, sm: nm, path, h });
         }
       }
@@ -76,6 +78,51 @@
     const seen = new Set(), plans = [];
     for (const f of found) { const k = f.path.join(','); if (!seen.has(k)) { seen.add(k); plans.push(f); } if (plans.length >= keep) break; }
     return { plans, best, reachedQuality: plans.length > 0 };
+  }
+
+  // 작업량을 나중에 채우는 순서를 층(공정 수)별로 빠짐없이 찾는다.
+  // 같은 버프·정신집중 상태에서 CP·내구·품질·작업량이 모두 더 나쁜 것은 버리는 방식(파레토)이라, 빔 서치와 달리 짧은 순서를 놓치지 않는다.
+  function searchExact(ctx, opts) {
+    opts = opts || {};
+    const maxDepth = opts.depth || 26, keep = opts.keep || 24, perKey = opts.perKey || 12, cap = opts.cap || 3500;
+    const ban = opts.ban || ['basicT', 'refined', 'mend', 'observe']; // 거의 안 쓰이는 스킬은 빼서 탐색을 줄인다
+    const keys = KEYS.filter((k) => !ban.includes(k));
+    const tq = ctx.targetQuality;
+    const start = Adv.newState({ cp: ctx.maxCP, dur: ctx.maxDur, steps: 0 });
+    const fkey = (s) => [s.iq, s.ven, s.inno, s.gs, s.mm, s.wn, s.manip, s.fa, s.exp, s.ssh, s.hs, s.hsUsed, s.qiUsed, s.tp, s.tpUsed, s.steps === 0 ? 0 : 1,
+      s.lastAction === 'basicT' || s.lastAction === 'standard' || s.lastAction === 'observe' ? s.lastAction : '-'].join(',');
+    const dom = (a, b) => a.cp >= b.cp && a.dur >= b.dur && Math.min(a.quality, tq) >= Math.min(b.quality, tq) && a.progress >= b.progress;
+    let layer = [{ s: start, prev: null, k: null }];
+    const found = []; let extra = 0;
+    const build = (n, k) => { const p = [k]; for (; n && n.k; n = n.prev) p.unshift(n.k); return p; };
+    for (let d = 0; d < maxDepth && layer.length; d++) {
+      const map = new Map();
+      for (const node of layer) {
+        for (const k of (d === 0 && opts.first ? [opts.first] : keys)) {
+          if (!usable(k, node.s, ctx)) continue;
+          if (opts.late && (A[k].kind === 'prog' || A[k].kind === 'both') && node.s.quality < tq) continue;
+          const ns = Adv.apply(node.s, k, ctx, 'normal');
+          if (ns.dead) continue;
+          if (ns.done) {
+            if (ns.quality >= tq) found.push({ path: build(node, k), quality: ns.quality, cp: ns.cp, steps: d + 1, ok: true });
+            continue;
+          }
+          const kk = fkey(ns); let arr = map.get(kk);
+          if (!arr) { arr = []; map.set(kk, arr); }
+          if (arr.some((o) => dom(o.s, ns))) continue;
+          for (let i = arr.length - 1; i >= 0; i--) if (dom(ns, arr[i].s)) arr.splice(i, 1);
+          arr.push({ s: ns, prev: node, k });
+          if (arr.length > perKey) { arr.sort((a, b) => heur(b.s, ctx, true) - heur(a.s, ctx, true)); arr.length = perKey; }
+        }
+      }
+      layer = [].concat(...map.values());
+      if (layer.length > cap) { layer.sort((a, b) => heur(b.s, ctx, true) - heur(a.s, ctx, true)); layer.length = cap; }
+      if (found.length) { if (++extra > 1) break; }
+    }
+    found.sort((a, b) => a.steps - b.steps || b.cp - a.cp);
+    const seen = new Set(), plans = [];
+    for (const f of found) { const k = f.path.join(','); if (!seen.has(k)) { seen.add(k); plans.push(f); } if (plans.length >= keep) break; }
+    return { plans, best: null, reachedQuality: plans.length > 0 };
   }
 
   /** 정해진 순서를 상태 확률대로 n 번 돌린다. 못 쓰는 스킬이 나오면 매크로가 멈춘 것으로 본다. */
@@ -99,9 +146,9 @@
   }
 
   // 시작 스킬(확신 / 진가 / 그 밖)마다 따로 찾아 합친다. 한 번에 찾으면 빔이 한쪽으로 쏠려 다른 시작이 더 좋은 경우를 놓친다
-  const VARIANTS = [{ first: 'reflect' }, { first: 'mm' }, { ban: ['mm', 'reflect'] }]; // 진가 시작 / 확신 시작 / 시작 스킬 없이
+  const VARIANTS = [{ first: 'reflect', late: true, exact: true }, { first: 'reflect' }, { first: 'mm' }, { ban: ['mm', 'reflect'] }]; // 진가+작업량 나중에(빠짐없이 탐색) / 진가 / 확신 / 시작 스킬 없이(빔)
   const sctxOf = (ctx, opts) => (opts && opts.margin ? Object.assign({}, ctx, { targetQuality: Math.ceil(ctx.targetQuality * (1 + opts.margin)) }) : ctx);
-  function searchVariant(ctx, opts, v) { opts = opts || {}; return search(sctxOf(ctx, opts), Object.assign({}, opts, VARIANTS[v])); }
+  function searchVariant(ctx, opts, v) { opts = opts || {}; const o = Object.assign({}, opts, VARIANTS[v]); return (o.exact ? searchExact : search)(sctxOf(ctx, opts), o); }
   function merge(parts) {
     const seen = new Set(), plans = [];
     for (const p of parts) for (const q of p.plans) { const k = q.path.join(','); if (!seen.has(k)) { seen.add(k); plans.push(q); } }

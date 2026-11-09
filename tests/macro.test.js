@@ -41,3 +41,9 @@ test('매크로: 빠른 진행이 떠도 중간에 끝나지 않는다 (제4차 
   const res = M.solve(ctxOf(r, 5933, 5470, 649), odds, { samples: 600 });
   assert.ok(res.ok && res.plans[0].risk.pQuality > 0.97);
 });
+test('매크로: 진가+작업량 나중에 순서로 15공정을 찾는다 (찬란한 도구 3차, 5933/5585/CP776)', () => {
+  const r = rec.find((x) => x.rlvl === 516 && x.job === 'CRP');
+  const ctx = ctxOf(r, 5933, 5585, 776);
+  const v = M.searchVariant(ctx, {}, 0);
+  assert.ok(v.plans.length && v.plans[0].steps <= 15);
+});

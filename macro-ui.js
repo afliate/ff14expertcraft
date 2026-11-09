@@ -109,7 +109,7 @@
   function run() {
     if (!cur() || !odds) return;
     const ctx = buildCtx(), margin = Number($('mc-margin').value) || 0;
-    $('mc-msg').textContent = '찾는 중이에요… (몇 초 걸려요)'; $('mc-run').disabled = true; $('mc-out').innerHTML = '';
+    $('mc-msg').textContent = '찾는 중이에요… (10초 안팎 걸려요)'; $('mc-run').disabled = true; $('mc-out').innerHTML = '';
     const finish = (res, err) => {
       $('mc-run').disabled = false; $('mc-msg').textContent = err ? '계산 중 문제가 생겼어요: ' + err : '';
       if (res) render(res);
@@ -118,7 +118,7 @@
     const search = (c, m) => {
       // 시작 스킬 3가지를 워커 3개로 동시에 찾는다 (워커를 못 쓰면 순서대로)
       const jobs = FFMacro.VARIANTS.map((_, v) => new Promise((ok, no) => {
-        let w; try { w = new Worker('macro-worker.js?v=20261109-38'); } catch (e) { ok(FFMacro.searchVariant(c, { margin: m }, v)); return; }
+        let w; try { w = new Worker('macro-worker.js?v=20261109-39'); } catch (e) { ok(FFMacro.searchVariant(c, { margin: m }, v)); return; }
         w.onmessage = (e) => { w.terminate(); e.data.error ? no(new Error(e.data.error)) : ok(e.data.res); };
         w.onerror = (e) => { w.terminate(); no(new Error(e.message || '알 수 없는 오류')); };
         w.postMessage({ id, ctx: c, opts: { margin: m }, variant: v });
