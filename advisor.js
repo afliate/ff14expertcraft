@@ -351,7 +351,9 @@
     return { s, path };
   }
 
-  const VARIANTS = [{ opener: 'mm', byregotIq: 10 }, { opener: 'reflect', byregotIq: 10 }, { opener: 'mm', byregotIq: 8 }, { opener: 'reflect', byregotIq: 8 }];
+  const VARIANTS = [{ opener: 'mm', byregotIq: 10 }, { opener: 'reflect', byregotIq: 10 }, { opener: 'mm', byregotIq: 8 }, { opener: 'reflect', byregotIq: 8 },
+    // 품질 먼저: 작업량은 절반 가까이만 채우고 품질을 쌓은 뒤 모범 작업/신중 작업으로 마무리
+    { opener: 'mm', byregotIq: 10, progFirst: false }, { opener: 'reflect', byregotIq: 10, progFirst: false }];
 
   /** recommendPolicy: 후보 첫 스킬마다 반응형 정책으로 n 번 시뮬레이션해 완료/목표 품질 달성 확률을 구한다. */
   function recommendPolicy(state, ctx, cond, opts) {
