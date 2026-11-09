@@ -2117,3 +2117,5 @@ body.light .cq-result-total { background: rgba(0,140,100,.04); }
 .cq-seq-icon{width:36px;height:36px;}
 .cq-step-icon{width:30px;height:30px;}
 .rotation-table .chip-icon{width:34px;height:34px;margin:0;}
+/* 음식·도핑 버튼 아이콘 */
+.preset-btn .pi-ico{width:22px;height:22px;vertical-align:middle;margin:-3px 6px -3px -2px;object-fit:contain;}
