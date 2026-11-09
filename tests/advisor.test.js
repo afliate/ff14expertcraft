@@ -113,3 +113,22 @@ test('정책: 첫 공정은 확신/진가, 내구가 바닥이면 땜질', () =>
   const low = Adv.newState({ cp: 649, dur: 8, steps: 5, progress: 3000, quality: 1000, iq: 3 });
   assert.ok(['immac', 'mend'].includes(Adv.policy(low, ctx, 'normal', { opener: 'mm' })));
 });
+
+test('정교한 작업: 작업량 150% + 품질 100%, 공경 적용, IQ +1, 32CP', () => {
+  const c = Object.assign({}, ctx, { rp: E.paramsFromTable(757, table['757']), craftsmanship: 5900, control: 5550, target: 7500, targetQuality: 21000, maxDur: 35, maxCP: 791 });
+  let s = Adv.newState({ cp: 791, dur: 35 });
+  s = Adv.apply(s, 'ven', c, 'normal');
+  const before = s.cp;
+  s = Adv.apply(s, 'delicate', c, 'normal');
+  assert.equal(before - s.cp, 32);
+  assert.ok(s.progress > 0 && s.quality > 0);
+  assert.equal(s.iq, 1);
+  assert.equal(s.dur, 25);
+});
+
+test('우주 안정된 솜씨: 3공정 동안 확률 행동 100% 성공', () => {
+  let s = Adv.newState({ cp: 500, dur: 35 });
+  s = Adv.apply(s, 'ssh', ctx, 'normal');
+  const hit = Adv.apply(s, 'rapid', ctx, 'normal', false);
+  assert.ok(hit.progress > 0);
+});

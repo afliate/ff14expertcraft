@@ -40,6 +40,7 @@
     hasty:    { ko: '성급한 손길', kind: 'qual', p: 100, cp: 0,  dur: 10, iq: 1, rate: 0.6, setExp: true },
     daring:   { ko: '대담한 손길', kind: 'qual', p: 150, cp: 0,  dur: 10, iq: 1, rate: 0.6, needExp: true },
     finesse:  { ko: '장인의 황금손', kind: 'qual', p: 100, cp: 32, dur: 0, iq: 0, needIq10: true },
+    delicate: { ko: '정교한 작업', kind: 'both', pp: 150, p: 100, cp: 32, dur: 10, iq: 1 },
     byregot:  { ko: '비레고의 축복', kind: 'qual', p: null, cp: 24, dur: 10, iq: 0, needIq: true, resetIq: true },
 
     ven:      { ko: '공경',        kind: 'buff', buff: 'ven',  dur_: 4, cp: 18, dur: 0 },
@@ -48,6 +49,7 @@
     wn:       { ko: '근검절약',    kind: 'buff', buff: 'wn',   dur_: 4, cp: 56, dur: 0 },
     wn2:      { ko: '장기 절약',   kind: 'buff', buff: 'wn',   dur_: 8, cp: 98, dur: 0 },
     manip:    { ko: '교묘한 손놀림', kind: 'buff', buff: 'manip', dur_: 8, cp: 96, dur: 0 },
+    ssh:      { ko: '우주 안정된 솜씨', kind: 'buff', buff: 'ssh', dur_: 3, cp: 0, dur: 0 },
     fa:       { ko: '최종 확인',   kind: 'buff', buff: 'fa',   dur_: 5, cp: 1,  dur: 0 },
 
     mend:     { ko: '능숙한 땜질', kind: 'repair', heal: 30, cp: 88,  dur: 0 },
@@ -63,7 +65,7 @@
 
   function newState(init) {
     const s = E.newState();
-    return Object.assign(s, { cp: 0, dur: 0, wn: 0, manip: 0, fa: 0, exp: 0 }, init || {});
+    return Object.assign(s, { cp: 0, dur: 0, wn: 0, manip: 0, fa: 0, exp: 0, ssh: 0 }, init || {});
   }
 
   // ── 사용 가능 여부 ────────────────────────────────────────
@@ -88,6 +90,7 @@
     if (d.needIq10 && s.iq < 10) return false;
     if (d.needExp && !(s.exp > 0)) return false;
     if (key === 'fa' && s.fa > 0) return false;
+    if (key === 'ssh' && s.ssh > 0) return false;
     return true;
   }
 
@@ -101,15 +104,16 @@
     let rate = d.rate === undefined ? 1 : d.rate;
     if (cond === 'centered' && rate < 1) rate = Math.min(1, rate + 0.25);
     if (succ !== undefined && d.rate !== undefined) rate = succ ? 1 : 0; // 표본 모드: 성공/실패 확정
+    if (s.ssh > 0 && d.rate !== undefined) rate = 1; // 우주 안정된 솜씨: 3공정 확정 성공
 
     st.cp -= c.cp;
-    const was = { ven: s.ven, inno: s.inno, gs: s.gs, mm: s.mm, wn: s.wn, manip: s.manip, fa: s.fa, exp: s.exp };
+    const was = { ven: s.ven, inno: s.inno, gs: s.gs, mm: s.mm, wn: s.wn, manip: s.manip, fa: s.fa, exp: s.exp, ssh: s.ssh };
     const fresh = {}; // 이번 공정에 새로 건 버프(틱에서 제외)
     const heal0 = s.manip > 0; // 교손은 건 다음 공정부터 회복
 
-    if (d.kind === 'prog') {
+    if (d.kind === 'prog' || d.kind === 'both') {
       const base = E.baseProgress(ctx.craftsmanship, ctx.rp);
-      let p = d.p;
+      let p = d.kind === 'both' ? d.pp : d.p;
       if (d.halfIfLowDur && s.dur < c.dur) p = p / 2;
       let g = E.progressGain(base, p, { malleable: cond === 'malleable', mm: s.mm > 0, ven: s.ven > 0 });
       g = g * rate;
@@ -118,7 +122,8 @@
       let prog = st.progress + g;
       if (s.fa > 0 && prog >= ctx.target) { prog = ctx.target - 1; st.fa = 0; }
       st.progress = prog;
-    } else if (d.kind === 'qual') {
+    }
+    if (d.kind === 'qual' || d.kind === 'both') {
       const base = E.baseQuality(ctx.control, ctx.rp);
       const potency = key === 'byregot' ? Math.min(100 + s.iq * 20, 300) : d.p;
       let g = E.qualityGain(base, potency, {
@@ -151,7 +156,7 @@
     if (heal0) st.dur = Math.min(ctx.maxDur, st.dur + 5);
 
     // 틱: 이번 공정에 새로 건 것은 줄이지 않는다.
-    for (const k of ['ven', 'inno', 'gs', 'mm', 'wn', 'manip', 'fa']) {
+    for (const k of ['ven', 'inno', 'gs', 'mm', 'wn', 'manip', 'fa', 'ssh']) {
       if (fresh[k]) continue;
       if (was[k] > 0 && st[k] > 0) st[k] = st[k] - 1;
     }
