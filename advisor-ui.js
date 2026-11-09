@@ -132,7 +132,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-20'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-21'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -152,7 +152,7 @@
     });
     // 공정 수는 입력받지 않고 상태에서 유추: 뭔가 진행됐으면 첫 공정이 아님
     const st = state;
-    if (histState) for (const k of ['ssh', 'hs', 'hsUsed', 'qiUsed', 'exp', 'tp', 'tpUsed', 'dcUsed']) st[k] = histState[k] || 0;
+    if (histState) for (const k of ['ssh', 'hs', 'hsUsed', 'qiUsed', 'exp', 'tp', 'tpUsed', 'dcUsed', 'mmrUsed']) st[k] = histState[k] || 0;
     if (st.progress > 0 || st.quality > 0 || st.iq > 0 || st.dur < ctx.maxDur || st.lastAction || st.ven || st.inno || st.gs || st.mm || st.wn || st.manip || st.fa || st.cp < ctx.maxCP) st.steps = 1;
     return { state, ctx, cond: $('adv-cond').value, opts: { samples: 200 }, odds: currentOdds() };
   }
@@ -196,7 +196,7 @@
     ['품질', ['basicT', 'standard', 'advanced', 'refined', 'prudentT', 'prep', 'precise', 'hasty', 'daring', 'finesse', 'byregot']],
     ['버프', ['ven', 'inno', 'gs', 'wn', 'wn2', 'manip', 'fa']],
     ['전문장인 전용', ['hs', 'qi', 'dc']],
-    ['우주개척 전용', ['ssh']],
+    ['우주개척 전용', ['ssh', 'mmr']],
     ['수리·기타', ['mend', 'immac', 'observe', 'tricks', 'tp']],
   ];
   function setIf(id, v) { const el = $(id); if (el) el.value = Math.round(v * 10) / 10; }
@@ -213,13 +213,19 @@
     const last = ['basicT', 'standard', 'observe'].includes(s.lastAction) ? s.lastAction : '';
     $('adv-last').value = last;
     const CN = Object.fromEntries(CONDS);
-    $('adv-hist').innerHTML = hist.length ? hist.map((h, i) => `<span class="adv-h${h.ok === false ? ' fail' : ''}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}">${ico(h.k)}<i>${CN[h.cond] && h.cond !== 'normal' ? CN[h.cond] : ''}</i></span>`).join('') : '<span class="calc-sub">아직 기록이 없어요. 쓴 스킬을 아래에서 눌러 주세요.</span>';
-    $('adv-hist-sum').textContent = hist.length ? `${hist.length}공정 진행 → 작업량 ${Math.floor(s.progress)}/${ctx.target} · 품질 ${Math.floor(s.quality)}/${ctx.targetQuality} · 내구 ${s.dur} · CP ${s.cp}` : '';
+    $('adv-hist').innerHTML = hist.length ? hist.map((h, i) => {
+      const risky = FFAdvisor.ACTIONS[h.k].rate !== undefined;
+      return `<span class="adv-h${h.ok === false ? ' fail' : ''}${risky ? ' risky' : ''}" data-i="${i}" title="${i + 1}공정 · ${CN[h.cond] || h.cond}${h.ok === false ? ' · 실패' : ''}${risky ? ' (눌러서 성공/실패 전환)' : ''}">${ico(h.k)}<i>${CN[h.cond] && h.cond !== 'normal' ? CN[h.cond] : ''}</i></span>`;
+    }).join('') : '<span class="calc-sub">아직 기록이 없어요. 쓴 스킬을 아래에서 눌러 주세요.</span>';
+    $('adv-hist').querySelectorAll('.risky').forEach((el) => el.addEventListener('click', () => {
+      const h = hist[Number(el.dataset.i)]; h.ok = h.ok === false ? undefined : false; replay();
+    }));
+    $('adv-hist-sum').textContent = hist.length ? `${s.steps}공정 진행 → 작업량 ${Math.floor(s.progress)}/${ctx.target} · 품질 ${Math.floor(s.quality)}/${ctx.targetQuality} · 내구 ${s.dur} · CP ${s.cp}` : '';
   }
   function syncHistBtns() {
     const r = cur(), spec = $('adv-spec').checked, cos = isCosmic(r);
     document.querySelectorAll('#adv-hist-btns .adv-hbtn').forEach((b) => {
-      const k = b.dataset.k, off = (FFAdvisor.ACTIONS[k].spec && !spec) || (k === 'ssh' && !cos);
+      const k = b.dataset.k, off = (FFAdvisor.ACTIONS[k].spec && !spec) || (FFAdvisor.ACTIONS[k].cosmic && !cos) || (k === 'ssh' && !cos);
       b.disabled = !!off; b.style.opacity = off ? '.3' : '';
     });
   }
@@ -230,20 +236,21 @@
     $('adv-hist-btns').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
       const k = b.dataset.k, A2 = FFAdvisor.ACTIONS;
       if (A2[k].first && hist.length) return;
-      hist.push({ k, cond: $('adv-cond').value, ok: A2[k].rate !== undefined && $('adv-fail').checked ? false : undefined });
-      $('adv-fail').checked = false; replay();
+      hist.push({ k, cond: $('adv-cond').value, ok: undefined });
+      replay();
     }));
   }
 
   function pct(x) { return Math.round(x * 100) + '%'; }
   const ICON = { basicS: 1501, careful: 1986, prudentS: 1520, groundwork: 1518, intensive: 1514, rapid: 1988, mm: 1994,
     basicT: 1502, standard: 1516, advanced: 1519, refined: 1522, prudentT: 1535, prep: 1507, precise: 1524, reflect: 1982,
-    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, hs: 1996, qi: 1999, dc: 1984, tp: 1926, inno: 1987, gs: 1955, wn: 1992,
+    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1503, byregot: 1975, ven: 1995, hs: 1996, qi: 1999, dc: 1984, mmr: '061277', tp: 1926, inno: 1987, gs: 1955, wn: 1992,
     wn2: 1993, manip: 1985, ssh: 1953, fa: 1983, mend: 1952, immac: 1950, observe: 1954, tricks: 1990 };
-  function ico(k) { return `<img class="adv-ico" src="https://xivapi.com/i/001000/00${ICON[k]}_hr1.png" alt="${FFAdvisor.ACTIONS[k].ko}" onerror="this.style.display='none'">`; }
+  function iconUrl(k) { const id = String(ICON[k]); return id.length === 6 ? `https://xivapi.com/i/061000/${id}_hr1.png` : `https://xivapi.com/i/001000/00${id}_hr1.png`; }
+  function ico(k) { return `<img class="adv-ico" src="${iconUrl(k)}" alt="${FFAdvisor.ACTIONS[k].ko}" onerror="this.style.display='none'">`; }
   function skill(k, mark) {
     const a = FFAdvisor.ACTIONS[k], id = ICON[k];
-    const img = id ? `<img class="adv-ico" src="https://xivapi.com/i/001000/00${id}_hr1.png" alt="" onerror="this.style.display='none'">` : '';
+    const img = id ? `<img class="adv-ico" src="${iconUrl(k)}" alt="" onerror="this.style.display='none'">` : '';
     return `<span class="adv-sk">${img}<span>${a.ko}</span>${mark && a.good ? '<em class="adv-good">고품질일 때</em>' : ''}</span>`;
   }
   function render(res) {

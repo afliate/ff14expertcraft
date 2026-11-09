@@ -69,3 +69,8 @@ body.light .adv-grid select option{background:#fff;color:var(--text-bright);}
 body.light .adv-grid input[type=number],body.light .adv-grid input[type=text],body.light .adv-grid select{background:#e3eaf0;border-color:#8aabbd;}
 body.light .adv-hgrp,body.light .adv-hist{background:rgba(0,0,0,.05);}
 .adv-histpanel .calc-btn{white-space:nowrap;padding:6px 10px;}
+.adv-histhead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.adv-histhead .input-section-label{flex:1;min-width:200px;}
+.adv-histhead .calc-btn{margin-left:4px;}
+.adv-h.risky{cursor:pointer;}
+.adv-h.risky .adv-ico{outline:1px dashed rgba(232,90,122,.5);}

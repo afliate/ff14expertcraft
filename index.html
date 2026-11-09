@@ -12,11 +12,11 @@
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-20"></script>
+<script src="engine.js?v=20261109-21"></script>
 <script src="qualcalc.js?v=20261109-2"></script>
-<script src="advisor.js?v=20261109-20"></script>
-<script src="advisor-ui.js?v=20261109-20" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-20">
+<script src="advisor.js?v=20261109-21"></script>
+<script src="advisor-ui.js?v=20261109-21" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-21">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1448,13 +1448,12 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
     <div class="adv-panel adv-histpanel">
-        <div class="input-section-label">진행 기록 — 쓴 스킬을 눌러 주세요 (아래 상태가 자동 계산돼요)</div>
+        <div class="adv-histhead"><div class="input-section-label">진행 기록 — 쓴 스킬을 눌러 주세요 (아래 상태가 자동 계산돼요)</div>
+          <span><button type="button" class="calc-btn" id="adv-hist-undo">되돌리기</button><button type="button" class="calc-btn" id="adv-hist-reset">처음부터</button></span></div>
         <div id="adv-hist" class="adv-hist"></div>
         <div id="adv-hist-sum" class="calc-sub"></div>
         <div id="adv-hist-btns" class="adv-hbtns"></div>
-        <div class="adv-grid"><label class="chk"><input id="adv-fail" type="checkbox">다음 스킬 실패 (강행·손길류)</label>
-          <button type="button" class="calc-btn" id="adv-hist-undo">되돌리기</button><button type="button" class="calc-btn" id="adv-hist-reset">처음부터</button></div>
-        <div class="calc-sub">스킬을 쓸 때의 「이번 상태」(고품질 등)가 함께 기록돼요. 다음 공정 상태는 아래에서 바꿔 주세요.</div>
+        <div class="calc-sub">스킬을 쓸 때의 「이번 상태」(고품질 등)가 함께 기록돼요. 강행 작업·손길류가 실패했으면 위 기록의 아이콘을 눌러 실패로 바꿔 주세요. 기적의 물질은 사용 표시만 하고 효과는 계산에 넣지 않아요.</div>
       </div>
     <button class="calc-btn" id="adv-run">추천 보기</button>
     <div id="adv-msg" class="calc-sub"></div>

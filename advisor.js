@@ -54,6 +54,7 @@
     qi:       { ko: '신속한 혁신', kind: 'buff', buff: 'inno', dur_: 1, cp: 0, dur: 0, spec: true, once: 'qiUsed' },
     dc:       { ko: '설계 변경', kind: 'other', cp: 0, dur: 0, spec: true, count: ['dcUsed', 3] },
     tp:       { ko: '장인의 초절 기술', kind: 'buff', buff: 'tp', cp: 0, dur: 0, once: 'tpUsed' },
+    mmr:      { ko: '기적의 물질', kind: 'other', cp: 0, dur: 0, cosmic: true, once: 'mmrUsed', noRec: true },
     fa:       { ko: '최종 확인',   kind: 'buff', buff: 'fa',   dur_: 5, cp: 1,  dur: 0 },
 
     mend:     { ko: '능숙한 땜질', kind: 'repair', heal: 30, cp: 88,  dur: 0 },
@@ -61,7 +62,7 @@
     observe:  { ko: '경과 관찰',   kind: 'other', cp: 7, dur: 0 },
     tricks:   { ko: '비결',        kind: 'cp', cp: 0, dur: 0, good: true },
   };
-  const KEYS = Object.keys(A);
+  const KEYS = Object.keys(A).filter((k) => !A[k].noRec && k !== 'dc'); // 추천 후보 (기록 전용 스킬 제외)
 
   // 상태 효과: pliant = CP 비용 절반, sturdy/robust = 내구 소모 절반, primed = 버프 +2,
   // malleable = 작업량 ×1.5, centered = 성공률 +25%p, good/excellent/poor = 품질 배율(엔진).
@@ -69,7 +70,7 @@
 
   function newState(init) {
     const s = E.newState();
-    return Object.assign(s, { cp: 0, dur: 0, wn: 0, manip: 0, fa: 0, exp: 0, ssh: 0, hs: 0, hsUsed: 0, qiUsed: 0, tp: 0, tpUsed: 0, dcUsed: 0 }, init || {});
+    return Object.assign(s, { cp: 0, dur: 0, wn: 0, manip: 0, fa: 0, exp: 0, ssh: 0, hs: 0, hsUsed: 0, qiUsed: 0, tp: 0, tpUsed: 0, dcUsed: 0, mmrUsed: 0 }, init || {});
   }
 
   // ── 사용 가능 여부 ────────────────────────────────────────
@@ -90,6 +91,7 @@
     if (d.first && s.steps !== 0) return false;
     if (d.good && cond !== 'good' && cond !== 'excellent' && !(s.hs > 0)) return false; // 일심불란 중에는 상태 무관
     if (d.spec && !ctx.specialist) return false; // 전문장인 전용
+    if (d.cosmic && ctx.cosmic === false) return false; // 우주개척 전용
     if (d.once && s[d.once]) return false;
     if (d.count && s[d.count[0]] >= d.count[1]) return false;
     if (key === 'tp' && s.tp > 0) return false;
@@ -119,7 +121,7 @@
     st.cp -= c.cp;
     const was = { ven: s.ven, inno: s.inno, gs: s.gs, mm: s.mm, wn: s.wn, manip: s.manip, fa: s.fa, exp: s.exp, ssh: s.ssh };
     const fresh = {}; // 이번 공정에 새로 건 버프(틱에서 제외)
-    const skipTick = key === 'fa' || key === 'hs' || key === 'qi' || key === 'tp' || key === 'dc'; // 제작 공정이 진행되지 않는 스킬
+    const skipTick = key === 'fa' || key === 'hs' || key === 'qi' || key === 'tp' || key === 'dc' || key === 'mmr'; // 제작 공정이 진행되지 않는 스킬
     const heal0 = s.manip > 0 && !skipTick; // 교손은 건 다음 공정부터 회복
 
     if (d.kind === 'prog' || d.kind === 'both') {
@@ -157,6 +159,7 @@
       else if (d.buff === 'wn') { st.wn = d.dur_; fresh.wn = true; }
       else if (d.buff === 'manip') { st.manip = d.dur_; fresh.manip = true; }
       else { st[d.buff] = dura(d.dur_); if (d.buff !== 'fa') fresh[d.buff] = true; else fresh.fa = true; }
+    } else if (key === 'mmr') { st.mmrUsed = 1;
     } else if (key === 'dc') { st.dcUsed = (s.dcUsed || 0) + 1;
     } else if (d.kind === 'repair') {
       st.dur = Math.min(ctx.maxDur, st.dur + d.heal);
