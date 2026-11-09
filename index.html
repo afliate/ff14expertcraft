@@ -12,11 +12,11 @@
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-11"></script>
+<script src="engine.js?v=20261109-12"></script>
 <script src="qualcalc.js?v=20261109-2"></script>
-<script src="advisor.js?v=20261109-11"></script>
-<script src="advisor-ui.js?v=20261109-11" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-11">
+<script src="advisor.js?v=20261109-12"></script>
+<script src="advisor-ui.js?v=20261109-12" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-12">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1415,7 +1415,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="input-section-label">레시피</div>
         <div class="adv-grid">
           <label>직업<select id="adv-job"></select></label>
-          <label>이름 검색<input id="adv-filter" type="text" placeholder="예: 오이지스"></label>
           <label class="wide">레시피<select id="adv-recipe"></select></label>
           <label>목표 작업량<input id="adv-work" type="number" value=""></label><label>목표 품질<input id="adv-qual" type="number" value=""></label><label>최대 내구도<input id="adv-dur" type="number" value=""></label>
         </div>
@@ -1423,7 +1422,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="adv-panel">
         <div class="input-section-label">내 능력치</div>
         <div class="adv-grid">
-          <label>장비<select id="adv-gear"></select></label><label>음식 HQ<select id="adv-food"></select></label><label>도핑 HQ<select id="adv-pot"></select></label>
+          <div class="wide adv-presets">
+            <div class="preset-sub-label">장비</div><div id="adv-gear-btns" class="preset-btn-group"></div>
+            <div class="preset-sub-label">음식 HQ</div><div id="adv-food-btns" class="preset-btn-group"></div>
+            <div class="preset-sub-label">도핑 HQ</div><div id="adv-pot-btns" class="preset-btn-group"></div>
+          </div>
           <label class="chk"><input id="adv-spec" type="checkbox">전문장인 보유 (작숙+20 가숙+20 CP+15)</label>
           <label>작업 숙련도<input id="adv-craft" type="number" value="5933"></label><label>가공 정밀도<input id="adv-ctrl" type="number" value="5470"></label><label>최대 CP<input id="adv-maxcp" type="number" value="649"></label>
           <label class="chk"><input id="adv-relic" type="checkbox" checked>우주 도구 (고품질 ×1.75)</label>

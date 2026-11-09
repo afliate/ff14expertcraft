@@ -99,7 +99,7 @@ test('simulate: 시드 고정 시 재현되고 확률이 0~1', () => {
 });
 
 test('recommendPolicy: 후보별 확률/모드 반환, 시드 고정 시 재현', () => {
-  const s0 = Adv.newState({ cp: 649, dur: 55 });
+  const s0 = Adv.newState({ cp: 600, dur: 45, steps: 3, progress: 2000, quality: 1500, iq: 3 });
   const a = Adv.recommendPolicy(s0, ctx, 'normal', { odds, samples: 40, width: 40, depth: 20, rnd: lcg(3) });
   const b = Adv.recommendPolicy(s0, ctx, 'normal', { odds, samples: 40, width: 40, depth: 20, rnd: lcg(3) });
   assert.ok(a.length > 3);
@@ -143,4 +143,13 @@ test('최종 확인은 공정이 아님: 다른 버프 지속시간·내구 회�
   assert.equal(t.steps, 0);
   assert.equal(t.fa, 5);
   assert.equal(s.cp - t.cp, 1);
+});
+
+test('첫 공정(공정 수 0)에는 확신/진가만 추천한다 (최종 확인 포함 다른 스킬 제외)', () => {
+  const s0 = Adv.newState({ cp: 649, dur: 55 });
+  const a = Adv.recommendPolicy(s0, ctx, 'normal', { odds, samples: 20, width: 30, depth: 16, rnd: lcg(5) });
+  assert.ok(a.length >= 1);
+  assert.ok(a.every((x) => x.key === 'mm' || x.key === 'reflect'));
+  const f = Adv.recommend(s0, ctx, 'normal', { width: 30, depth: 16 });
+  assert.ok(f.every((x) => x.key === 'mm' || x.key === 'reflect'));
 });

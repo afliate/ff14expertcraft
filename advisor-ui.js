@@ -22,20 +22,34 @@
     }
   }
 
-  // 장비/음식/도핑 프리셋 (계산기 탭과 같은 값: index.html 의 GEAR_PRESETS 등)
+  // 장비/음식/도핑 프리셋 (계산기 탭과 같은 값: index.html 의 GEAR_PRESETS 등) — 버튼 클릭 방식
+  const sel = { gear: null, food: null, pot: null };
   function fillGear() {
     if (typeof GEAR_PRESETS === 'undefined') return;
-    const opt = (o, first) => `<option value="">${first}</option>` + Object.keys(o).map((k) => `<option>${k}</option>`).join('');
-    $('adv-gear').innerHTML = opt(GEAR_PRESETS, '직접 입력');
-    $('adv-food').innerHTML = opt(FOOD_BUFFS, '없음').replace('<option>없음</option>', '');
-    $('adv-pot').innerHTML = opt(POT_BUFFS, '없음').replace('<option>없음</option>', '');
+    const groups = [['gear', GEAR_PRESETS, 'adv-gear-btns'], ['food', FOOD_BUFFS, 'adv-food-btns'], ['pot', POT_BUFFS, 'adv-pot-btns']];
+    groups.forEach(([key, data, id]) => {
+      const box = $(id);
+      box.innerHTML = Object.keys(data).filter((k) => !(key !== 'gear' && k === '없음'))
+        .map((k) => `<button type="button" class="preset-btn" data-k="${k}">${k}</button>`).join('');
+      box.querySelectorAll('.preset-btn').forEach((b) => b.addEventListener('click', () => {
+        const on = b.classList.contains('active');
+        box.querySelectorAll('.preset-btn').forEach((x) => x.classList.remove('active'));
+        sel[key] = on ? null : b.dataset.k;
+        if (!on) b.classList.add('active');
+        applyGear();
+      }));
+    });
+  }
+  function clearGearButtons() {
+    sel.gear = sel.food = sel.pot = null;
+    document.querySelectorAll('#adv-gear-btns .preset-btn, #adv-food-btns .preset-btn, #adv-pot-btns .preset-btn').forEach((b) => b.classList.remove('active'));
   }
   function applyGear() {
-    const g = GEAR_PRESETS[$('adv-gear').value];
+    const g = GEAR_PRESETS[sel.gear];
     if (!g) return;
-    const f = FOOD_BUFFS[$('adv-food').value] || { crafts: 0, cons: 0, cp: 0 };
-    const p = POT_BUFFS[$('adv-pot').value] || { crafts: 0, cons: 0, cp: 0 };
-    const e = $('adv-spec').checked ? { crafts: 20, cons: 20, cp: 15 } : { crafts: 0, cons: 0, cp: 0 };
+    const z = { crafts: 0, cons: 0, cp: 0 };
+    const f = FOOD_BUFFS[sel.food] || z, p = POT_BUFFS[sel.pot] || z;
+    const e = $('adv-spec').checked ? { crafts: 20, cons: 20, cp: 15 } : z;
     $('adv-craft').value = g.crafts + f.crafts + p.crafts + e.crafts;
     $('adv-ctrl').value = g.cons + f.cons + p.cons + e.cons;
     $('adv-maxcp').value = g.cp + f.cp + p.cp + e.cp;
@@ -48,7 +62,7 @@
     fillRecipes();
   }
   function fillRecipes() {
-    const job = $('adv-job').value, q = $('adv-filter').value.trim();
+    const job = $('adv-job').value, q = '';
     const list = recipes.filter((r) => r.job === job && (!q || (r.name || '').includes(q))).sort((a, b) => b.rlvl - a.rlvl || a.id - b.id);
     $('adv-recipe').innerHTML = list.map((r) => `<option value="${r.id}">${r.name} (rlvl ${r.rlvl})</option>`).join('');
     showTargets();
@@ -110,7 +124,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-11'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-12'); } catch (e) { worker = false; }
     return worker;
   }
   function collect() {
@@ -173,10 +187,9 @@
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('adv-job')) return;
     fillGear();
-    ['adv-gear', 'adv-food', 'adv-pot', 'adv-spec'].forEach((id) => $(id).addEventListener('change', applyGear));
-    ['adv-craft', 'adv-ctrl', 'adv-maxcp'].forEach((id) => $(id).addEventListener('input', () => { $('adv-gear').value = ''; }));
+    $('adv-spec').addEventListener('change', applyGear);
+    ['adv-craft', 'adv-ctrl', 'adv-maxcp'].forEach((id) => $(id).addEventListener('input', clearGearButtons));
     $('adv-job').addEventListener('change', () => { fillRecipes(); lastLogged = null; renderLog(); });
-    $('adv-filter').addEventListener('input', fillRecipes);
     $('adv-recipe').addEventListener('change', showTargets);
     $('adv-run').addEventListener('click', run);
     loadLog();

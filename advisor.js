@@ -412,6 +412,8 @@
     const out = [];
     for (const k of KEYS) {
       if (!canUse(k, state, ctx, cond || 'normal')) continue;
+      if (state.steps === 0 && k !== 'mm' && k !== 'reflect') continue; // 첫 공정은 확신/진가만 (다른 스킬은 오프너를 날린다)
+      if (k === 'fa') continue; // 최종 확인은 정책이 쓰지 않아 순위에 의미가 없다
       if (k === 'tricks' && state.cp >= ctx.maxCP - 20) continue;
       let best = null;
       for (const v of VARIANTS) {
@@ -450,6 +452,7 @@
     const out = [];
     for (const k of KEYS) {
       if (!canUse(k, state, ctx, cond || 'normal')) continue;
+      if (state.steps === 0 && k !== 'mm' && k !== 'reflect') continue;
       const ns = apply(state, k, ctx, cond || 'normal');
       if (ns.dead) continue;
       const best = ns.done ? { s: ns, path: [], sc: score(ns, ctx) } : plan(ns, ctx, opts);
