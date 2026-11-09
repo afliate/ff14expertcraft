@@ -50,7 +50,7 @@
     for (let d = 0; d < maxDepth && beam.length; d++) {
       const next = new Map();
       for (const node of beam) {
-        for (const k of keys) {
+        for (const k of (d === 0 && opts.first ? [opts.first] : keys)) {
           if (!usable(k, node.s, ctx)) continue;
           const ns = Adv.apply(node.s, k, ctx, 'normal');
           if (ns.dead) continue;
@@ -99,9 +99,9 @@
   }
 
   // 시작 스킬(확신 / 진가 / 그 밖)마다 따로 찾아 합친다. 한 번에 찾으면 빔이 한쪽으로 쏠려 다른 시작이 더 좋은 경우를 놓친다
-  const VARIANTS = [['reflect'], ['mm'], ['mm', 'reflect']];
+  const VARIANTS = [{ first: 'reflect' }, { first: 'mm' }, { ban: ['mm', 'reflect'] }]; // 진가 시작 / 확신 시작 / 시작 스킬 없이
   const sctxOf = (ctx, opts) => (opts && opts.margin ? Object.assign({}, ctx, { targetQuality: Math.ceil(ctx.targetQuality * (1 + opts.margin)) }) : ctx);
-  function searchVariant(ctx, opts, v) { opts = opts || {}; return search(sctxOf(ctx, opts), Object.assign({}, opts, { ban: VARIANTS[v] })); }
+  function searchVariant(ctx, opts, v) { opts = opts || {}; return search(sctxOf(ctx, opts), Object.assign({}, opts, VARIANTS[v])); }
   function merge(parts) {
     const seen = new Set(), plans = [];
     for (const p of parts) for (const q of p.plans) { const k = q.path.join(','); if (!seen.has(k)) { seen.add(k); plans.push(q); } }
@@ -113,9 +113,12 @@
   function rank(ctx, odds, parts, opts) {
     opts = opts || {};
     const r = merge(parts);
+    const OPEN = ['reflect', 'mm']; // 시작 스킬(진가·확신)을 쓴 순서가 있으면 그것만 쓴다. 없을 때만 시작 스킬 없는 순서
+    if (r.plans.some((q) => OPEN.includes(q.path[0]))) r.plans = r.plans.filter((q) => OPEN.includes(q.path[0]));
     if (!r.plans.length) return { ok: false, best: r.best, plans: [] };
     const ranked = r.plans.slice(0, opts.simTop || 30).map((p) => Object.assign({ risk: simulate(p.path, ctx, odds, opts.samples || 400, opts.rnd) }, p));
-    ranked.sort((a, b) => b.risk.pQuality - a.risk.pQuality || a.steps - b.steps || b.cp - a.cp);
+    const pen = (p) => (p.path[0] === 'reflect' ? 0 : 1); // 달성 확률이 같으면 진가 시작을 먼저
+    ranked.sort((a, b) => b.risk.pQuality - a.risk.pQuality || pen(a) - pen(b) || a.steps - b.steps || b.cp - a.cp);
     return { ok: true, plans: ranked, best: r.best };
   }
   function solve(ctx, odds, opts) {

@@ -1,5 +1,5 @@
 /* macro-worker.js · 매크로 탐색을 화면과 분리해서 돌린다 */
-importScripts('engine.js?v=20261109-37', 'advisor.js?v=20261109-37', 'macro.js?v=20261109-37');
+importScripts('engine.js?v=20261109-38', 'advisor.js?v=20261109-38', 'macro.js?v=20261109-38');
 self.onmessage = function (e) {
   const m = e.data;
   try {
