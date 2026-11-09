@@ -16,7 +16,7 @@
         fetch('recipe-level-table.json').then((x) => x.json()),
       ]);
       recipes = r.recipes; odds = o; table = t;
-      fillJobs();
+      fillJobs(); renderLog();
     } catch (e) {
       $('adv-msg').textContent = '데이터를 불러오지 못했어요 (파일로 직접 열면 안 되고 웹 주소로 열어야 해요).';
     }
@@ -42,31 +42,98 @@
   }
   const num = (id) => Number($(id).value) || 0;
 
+  // ── 조건 기록 (실측) ─────────────────────────────────────
+  const LOG_KEY = 'ffec-cond-log-v1';
+  const FORCED = { goodOmen: 'good', robust: 'sturdy', excellent: 'poor' };
+  let log = {}, useLog = false, lastLogged = null;
+  function loadLog() { try { log = JSON.parse(localStorage.getItem(LOG_KEY) || '{}'); } catch (e) { log = {}; } }
+  function saveLog() { try { localStorage.setItem(LOG_KEY, JSON.stringify(log)); } catch (e) {} }
+  function flagOf() { const r = cur(); return r ? String(odds.rlvlFlags[String(r.rlvl)]) : null; }
+  function logRates(flag) {
+    const L = log[flag]; if (!L || !L.n) return null;
+    const out = {}; for (const k in L.c) out[k] = L.c[k] / L.n; return out;
+  }
+  function currentOdds() {
+    if (!useLog) return odds;
+    const o = JSON.parse(JSON.stringify(odds)); const f = flagOf(); const rates = f && logRates(f);
+    if (rates) o.overrides[f] = rates;
+    return o;
+  }
+  function logClick(name) {
+    const f = flagOf(); if (!f) return;
+    const L = log[f] = log[f] || { n: 0, c: {}, forced: 0 };
+    // 직전이 호조의 징조/강건/극상이면 이번 상태는 정해져 있으므로 표본에서 제외
+    if (lastLogged && FORCED[lastLogged]) L.forced++;
+    else { L.n++; L.c[name] = (L.c[name] || 0) + 1; }
+    lastLogged = name; saveLog(); renderLog();
+  }
+  function renderLog() {
+    const f = flagOf(); if (!f || !odds) return;
+    const bits = odds.flagBits;
+    const names = ['normal'].concat(Object.keys(bits).filter((k) => !['normal', 'excellent', 'poor'].includes(k) && (Number(f) & bits[k])));
+    const ko = Object.fromEntries(CONDS);
+    const L = log[f] || { n: 0, c: {}, forced: 0 };
+    $('adv-log-btns').innerHTML = names.map((n) => `<button class="calc-btn adv-logbtn" data-c="${n}">${ko[n] || n}</button>`).join('');
+    $('adv-log-btns').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => logClick(b.dataset.c)));
+    $('adv-log-sum').textContent = `플래그 ${f} · 표본 ${L.n}공정 (강제 전이 ${L.forced || 0}공정 제외) — ` +
+      names.map((n) => `${ko[n] || n} ${L.n ? Math.round(((L.c[n] || 0) / L.n) * 1000) / 10 : 0}%`).join(' / ');
+  }
+
+  function logExport() {
+    const f = flagOf(); const r = f && logRates(f); if (!r) return;
+    const txt = JSON.stringify({ [f]: Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'normal').map(([k, v]) => [k, Math.round(v * 1000) / 1000])), n: log[f].n }, null, 2);
+    $('adv-log-out').value = txt; $('adv-log-out').select();
+    try { document.execCommand('copy'); } catch (e) {}
+  }
+
+
+  let worker = null, reqId = 0;
+  function getWorker() {
+    if (worker) return worker;
+    try { worker = new Worker('advisor-worker.js?v=20261109-2'); } catch (e) { worker = false; }
+    return worker;
+  }
+  function collect() {
+    const r = cur();
+    const rp = FFEngine.paramsFromTable(r.rlvl, table[String(r.rlvl)]);
+    const ctx = { craftsmanship: num('adv-craft'), control: num('adv-ctrl'), rp, relic: $('adv-relic').checked,
+      target: num('adv-work'), targetQuality: num('adv-qual'), maxDur: num('adv-dur'), maxCP: num('adv-maxcp') };
+    const lastMap = { '': null, basicT: 'basicT', standard: 'standard', observe: 'observe' };
+    const state = FFAdvisor.newState({
+      cp: num('adv-curcp'), dur: num('adv-curdur'), progress: num('adv-curprog'), quality: num('adv-curqual'),
+      iq: num('adv-iq'), ven: num('adv-ven'), inno: num('adv-inno'), gs: num('adv-gs'), mm: num('adv-mm'),
+      wn: num('adv-wn'), manip: num('adv-manip'), fa: num('adv-fa'), steps: num('adv-steps'),
+      lastAction: lastMap[$('adv-last').value],
+    });
+    return { state, ctx, cond: $('adv-cond').value, opts: { width: 60, depth: 26, samples: 300 }, odds: currentOdds() };
+  }
   function run() {
     if (busy) return;
-    const r = cur();
-    if (!r) return;
+    if (!cur()) return;
     busy = true;
-    $('adv-out').innerHTML = '<div class="calc-sub">계산 중… (몇 초 걸려요)</div>';
-    setTimeout(() => {
-      try {
-        const rp = FFEngine.paramsFromTable(r.rlvl, table[String(r.rlvl)]);
-        const ctx = { craftsmanship: num('adv-craft'), control: num('adv-ctrl'), rp, relic: $('adv-relic').checked,
-          target: num('adv-work'), targetQuality: num('adv-qual'), maxDur: num('adv-dur'), maxCP: num('adv-maxcp') };
-        const lastMap = { '': null, basicT: 'basicT', standard: 'standard', observe: 'observe' };
-        const s = FFAdvisor.newState({
-          cp: num('adv-curcp'), dur: num('adv-curdur'), progress: num('adv-curprog'), quality: num('adv-curqual'),
-          iq: num('adv-iq'), ven: num('adv-ven'), inno: num('adv-inno'), gs: num('adv-gs'), mm: num('adv-mm'),
-          wn: num('adv-wn'), manip: num('adv-manip'), fa: num('adv-fa'), steps: num('adv-steps'),
-          lastAction: lastMap[$('adv-last').value],
-        });
-        const res = FFAdvisor.recommend(s, ctx, $('adv-cond').value, { width: 60, depth: 26, odds, samples: 300 });
-        render(res);
-      } catch (e) {
-        $('adv-out').innerHTML = '<div class="calc-sub">오류: ' + e.message + '</div>';
-      }
-      busy = false;
-    }, 30);
+    $('adv-run').disabled = true;
+    $('adv-out').innerHTML = '<div class="calc-sub">계산 중…</div>';
+    const done = () => { busy = false; $('adv-run').disabled = false; };
+    let msg;
+    try { msg = collect(); } catch (e) { $('adv-out').innerHTML = '<div class="calc-sub">오류: ' + e.message + '</div>'; done(); return; }
+    const w = getWorker();
+    if (w) {
+      const id = ++reqId;
+      w.onmessage = (ev) => {
+        if (ev.data.id !== id) return;
+        if (ev.data.error) $('adv-out').innerHTML = '<div class="calc-sub">오류: ' + ev.data.error + '</div>';
+        else render(ev.data.res);
+        done();
+      };
+      w.onerror = (ev) => { $('adv-out').innerHTML = '<div class="calc-sub">오류: ' + (ev.message || '계산 실패') + '</div>'; worker = null; done(); };
+      w.postMessage(Object.assign({ id }, msg));
+    } else {
+      setTimeout(() => { // 워커를 못 쓰는 환경: 화면 멈춤을 감수하고 직접 계산
+        try { render(FFAdvisor.recommend(msg.state, msg.ctx, msg.cond, Object.assign({}, msg.opts, { odds: msg.odds }))); }
+        catch (e) { $('adv-out').innerHTML = '<div class="calc-sub">오류: ' + e.message + '</div>'; }
+        done();
+      }, 30);
+    }
   }
 
   function pct(x) { return Math.round(x * 100) + '%'; }
@@ -85,10 +152,16 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('adv-job')) return;
-    $('adv-job').addEventListener('change', fillRecipes);
+    $('adv-job').addEventListener('change', () => { fillRecipes(); lastLogged = null; renderLog(); });
     $('adv-filter').addEventListener('input', fillRecipes);
     $('adv-recipe').addEventListener('change', showTargets);
     $('adv-run').addEventListener('click', run);
+    loadLog();
+    $('adv-recipe').addEventListener('change', () => { lastLogged = null; renderLog(); });
+    $('adv-uselog').addEventListener('change', (e) => { useLog = e.target.checked; });
+    $('adv-log-reset').addEventListener('click', () => { const f = flagOf(); if (f && confirm('이 플래그의 기록을 모두 지울까요?')) { delete log[f]; lastLogged = null; saveLog(); renderLog(); } });
+    $('adv-log-export').addEventListener('click', logExport);
+    $('adv-log-break').addEventListener('click', () => { lastLogged = null; });
     load();
   });
 })();
