@@ -14,3 +14,8 @@ Copyright (c) 2019 Flavien Normand — MIT License
 
 게임 규칙(수치·효율)은 게임 자체의 사실이며, 구현은 이 저장소에서 직접 작성했다.
 FINAL FANTASY XIV © SQUARE ENIX CO., LTD. 이 프로젝트는 비공식 팬 사이트다.
+
+## advisor.js
+
+스킬별 CP·내구·효율·지속 수치는 ffxiv-teamcraft/simulator (MIT, © 2019 Flavien Normand) 의
+액션 정의를 확인해 직접 작성했습니다 (코드 복사 아님). 탐색(빔 서치) 로직은 자체 작성입니다.
