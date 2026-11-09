@@ -278,6 +278,7 @@
     if (d.halfIfLowDur && s.dur < cost(d, s, cond).dur) p /= 2;
     return E.progressGain(E.baseProgress(ctx.craftsmanship, ctx.rp), p, { malleable: cond === 'malleable', mm: s.mm > 0, ven: s.ven > 0 });
   }
+  function qLeftOf(s, ctx) { return ctx.targetQuality - s.quality; }
   function policy(s, ctx, cond, v) {
     const U = (k) => canUse(k, s, ctx, cond);
     const R = ctx.target - s.progress;
@@ -326,6 +327,19 @@
 
     // ② 품질
     if (s.steps === 0 && U('reflect')) return 'reflect';
+    if (!qDone && v.sustain && s.steps >= 1 && R <= ctx.target * 0.97) {
+      // CP 0 품질 순환: 근검절약(내구 절반) + 교묘한 손놀림(회복)을 유지하며 성급한/대담한 손길을 반복
+      const lowDur = s.dur <= Math.max(25, ctx.maxDur * 0.4);
+      if (lowDur && !s.manip && s.cp >= 96 + 100 && U('manip')) return 'manip';
+      if (lowDur && !s.wn && s.cp >= 56 + 100 && U('wn')) return 'wn';
+      if (s.dur <= 10 && U('mend') && s.cp >= 88 + 40 + reserve) return 'mend';
+      if ((cond === 'good' || cond === 'excellent') && U('precise') && s.iq < 10) return 'precise';
+      if ((s.manip > 0 || s.wn > 0) && s.dur >= 15 && !(s.iq >= 10 && s.inno > 0 && s.gs === 0 && s.cp >= 24 + 32 + 18 + reserve && qLeftOf(s, ctx) < ctx.targetQuality * 0.2)) {
+        if (!s.inno && s.cp >= 18 + 40 && U('inno')) return 'inno';
+        if (U('daring')) return 'daring';
+        if (U('hasty')) return 'hasty';
+      }
+    }
     if (!qDone && v.style && s.steps >= 1) {
       // 내구 유지(영상·시트 기록 스타일): 근검절약/장기 절약으로 소모를 줄이고, 교묘한 손놀림과 땜질로 회복
       if (s.dur <= 15 && !s.manip && U('manip') && s.cp >= 96 + 60) return 'manip';
@@ -343,7 +357,12 @@
       // 정신집중 10스택 이후 고품질이면 밑가공 연속 (내구 여유가 있을 때)
       if (v.chain && s.iq >= 10 && cond === 'good' && qLeft > ctx.targetQuality * 0.25 && s.cp >= 40 + reserve && s.dur >= cost(A.prep, s, cond).dur + 10 && U('prep')) return 'prep';
       const comboReady = s.cp >= 24 + 32 + (s.inno ? 0 : 18) + reserve;
-      if (s.iq >= (v.byregotIq || 10) && canByregot) {
+      let holdByregot = false;
+      if (v.sustain && canByregot && s.iq >= 10) {
+        const bg = E.qualityGain(E.baseQuality(ctx.control, ctx.rp), Math.min(100 + s.iq * 20, 300), { cond: 'normal', relic: ctx.relic, iq: s.iq, gs: true, inno: true });
+        holdByregot = qLeft > bg * 1.05 && s.cp >= 60 && s.dur >= 15;
+      }
+      if (s.iq >= (v.byregotIq || 10) && canByregot && !holdByregot) {
         if (!s.inno && s.cp >= 18 + 24 + reserve + (s.gs ? 0 : 32) && U('inno')) return 'inno';
         if (!s.gs && s.cp >= 32 + 24 + reserve && U('gs')) return 'gs';
         return 'byregot';
@@ -351,7 +370,9 @@
       if (cond === 'good' || cond === 'excellent') { if (U('precise') && s.iq < 10) return 'precise'; }
       if ((cond === 'sturdy' || cond === 'robust') && s.dur >= 25 && s.cp >= 40 + reserve && s.iq <= 8 && U('prep')) return 'prep';
       if (!s.inno && s.iq < 10 && s.cp >= 18 + 40 + reserve && U('inno')) return 'inno';
-      if (s.iq >= 10 && U('finesse') && s.cp >= 32 + reserve) return 'finesse';
+      if (s.iq >= 10 && !v.sustain && U('finesse') && s.cp >= 32 + reserve) return 'finesse';
+      // 성급한 손길/대담한 손길: CP 0 품질 (내구 여유 있을 때 CP 절약용)
+      if (v.filler && s.dur >= 25 && s.iq >= 4) { if (U('daring')) return 'daring'; if (U('hasty')) return 'hasty'; }
       if (s.lastAction === 'standard' && U('advanced') && s.cp >= 18 + reserve) return 'advanced';
       if (s.lastAction === 'basicT' && U('standard') && s.cp >= 18 + reserve) return 'standard';
       if (s.cp >= 18 + reserve && U('basicT')) return 'basicT';
