@@ -310,11 +310,14 @@
     if (R > finGain * 1.05 && (s.steps === 0 || R > ctx.target * (v.progFirst === false ? 0.45 : 0.15))) {
       if (s.steps === 0) return v.opener === 'reflect' && U('reflect') ? 'reflect' : (U('mm') ? 'mm' : 'basicS');
       if (!s.ven && s.cp >= 18 + 60 && R > ctx.target * 0.35 && U('ven')) return 'ven';
-      const order = ['intensive', 'groundwork', 'careful', 'rapid', 'basicS'];
+      const gRapid = progGainOf(s, 'rapid', ctx, cond);
+      // 강행 작업 중심: 공경(또는 빠른 진행) 아래에서 강행을 적극 사용, 우주 안정된 솜씨로 확정 성공
+      if (v.rapid && s.ven > 0 && !s.ssh && U('ssh') && R > gRapid * 2) return 'ssh';
+      const order = v.rapid ? ['intensive', 'rapid', 'groundwork', 'careful', 'basicS'] : ['intensive', 'groundwork', 'careful', 'rapid', 'basicS'];
       for (const k of order) {
         if (!U(k)) continue;
         if (k === 'groundwork' && s.dur < cost(A.groundwork, s, cond).dur) continue;
-        if (k === 'rapid' && (s.cp >= 40 || R < ctx.target * 0.2)) continue;
+        if (k === 'rapid' && !(v.rapid && (s.ven > 0 || s.ssh > 0 || cond === 'malleable')) && (s.cp >= 40 || R < ctx.target * 0.2)) continue;
         if (progGainOf(s, k, ctx, cond) < R - finGain * 0.9) return k;
       }
     }
@@ -323,6 +326,13 @@
     if (s.steps === 0 && U('reflect')) return 'reflect';
     if (!qDone) {
       const canByregot = U('byregot');
+      const qLeft = ctx.targetQuality - s.quality;
+      // 비결: 고품질일 때 CP가 모자라면 회복
+      if (v.tricks && (cond === 'good') && s.cp < 40 + reserve && U('tricks')) return 'tricks';
+      // 공경 아래 정교한 작업: 작업량과 품질을 동시에 (마무리 몫은 남김)
+      if (v.delicate && s.ven > 0 && s.iq < 10 && R > finGain * 1.3 && s.cp >= 32 + reserve && s.dur > 10 && U('delicate')) return 'delicate';
+      // 정신집중 10스택 이후 고품질이면 밑가공 연속 (내구 여유가 있을 때)
+      if (v.chain && s.iq >= 10 && cond === 'good' && qLeft > ctx.targetQuality * 0.25 && s.cp >= 40 + reserve && s.dur >= cost(A.prep, s, cond).dur + 10 && U('prep')) return 'prep';
       const comboReady = s.cp >= 24 + 32 + (s.inno ? 0 : 18) + reserve;
       if (s.iq >= (v.byregotIq || 10) && canByregot) {
         if (!s.inno && s.cp >= 18 + 24 + reserve + (s.gs ? 0 : 32) && U('inno')) return 'inno';
@@ -358,7 +368,10 @@
 
   const VARIANTS = [{ opener: 'mm', byregotIq: 10 }, { opener: 'reflect', byregotIq: 10 }, { opener: 'mm', byregotIq: 8 }, { opener: 'reflect', byregotIq: 8 },
     // 품질 먼저: 작업량은 절반 가까이만 채우고 품질을 쌓은 뒤 모범 작업/신중 작업으로 마무리
-    { opener: 'mm', byregotIq: 10, progFirst: false }, { opener: 'reflect', byregotIq: 10, progFirst: false }];
+    { opener: 'mm', byregotIq: 10, progFirst: false }, { opener: 'reflect', byregotIq: 10, progFirst: false },
+    // 플레이 스타일(영상·시트 기록 기반): 확신 오프너 → 작업량 먼저(강행 중심), 진가 오프너 → 품질 먼저
+    { opener: 'mm', byregotIq: 10, rapid: true, delicate: true, chain: true, tricks: true, style: true },
+    { opener: 'reflect', byregotIq: 10, progFirst: false, rapid: true, delicate: true, chain: true, tricks: true, style: true }];
 
   /** recommendPolicy: 후보 첫 스킬마다 반응형 정책으로 n 번 시뮬레이션해 완료/목표 품질 달성 확률을 구한다. */
   function recommendPolicy(state, ctx, cond, opts) {
