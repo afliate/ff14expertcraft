@@ -12,11 +12,11 @@
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-13"></script>
+<script src="engine.js?v=20261109-14"></script>
 <script src="qualcalc.js?v=20261109-2"></script>
-<script src="advisor.js?v=20261109-13"></script>
-<script src="advisor-ui.js?v=20261109-13" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-13">
+<script src="advisor.js?v=20261109-14"></script>
+<script src="advisor-ui.js?v=20261109-14" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-14">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1429,13 +1429,13 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <label class="chk"><input id="adv-spec" type="checkbox">전문장인 보유 (작숙+20 가숙+20 CP+15)</label>
           <label>작업 숙련도<input id="adv-craft" type="number" value="5933"></label><label>가공 정밀도<input id="adv-ctrl" type="number" value="5470"></label><label>최대 CP<input id="adv-maxcp" type="number" value="649"></label>
-          <label class="chk"><input id="adv-relic" type="checkbox" checked>우주 도구 (고품질 ×1.75)</label>
+          <label class="chk"><input id="adv-relic" type="checkbox" checked>우주 도구 (고품질 ×1.75)<span id="adv-relic-note" class="calc-sub"></span></label>
         </div>
       </div>
       <div class="adv-panel">
         <div class="input-section-label">현재 제작 상태</div>
         <div class="adv-grid">
-          <label>작업량<input id="adv-curprog" type="number" value="0"></label><label>품질<input id="adv-curqual" type="number" value="0"></label><label>내구도<input id="adv-curdur" type="number" value=""></label><label>CP<input id="adv-curcp" type="number" value="649"></label><label>정신집중<input id="adv-iq" type="number" value="0"></label><label>공정 수<input id="adv-steps" type="number" value="0" title="진행한 공정 수 (0 = 첫 공정)"></label>
+          <label>작업량<input id="adv-curprog" type="number" value="0"></label><label>품질<input id="adv-curqual" type="number" value="0"></label><label>내구도<input id="adv-curdur" type="number" value=""></label><label>CP<input id="adv-curcp" type="number" value="649"></label><label>정신집중<input id="adv-iq" type="number" value="0"></label>
           <label>직전 스킬<select id="adv-last"><option value="">그 외/없음</option><option value="basicT">가공</option><option value="standard">중급 가공</option><option value="observe">경과 관찰</option></select></label>
           <label>이번 상태<select id="adv-cond"></select></label>
         </div>

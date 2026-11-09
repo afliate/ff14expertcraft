@@ -153,3 +153,10 @@ test('첫 공정(공정 수 0)에는 확신/진가만 추천한다 (최종 확�
   const f = Adv.recommend(s0, ctx, 'normal', { width: 30, depth: 16 });
   assert.ok(f.every((x) => x.key === 'mm' || x.key === 'reflect'));
 });
+
+test('우주 안정된 솜씨는 우주개척 레시피 전용', () => {
+  const Adv = require('../advisor.js');
+  const s = Adv.newState({ cp: 500, dur: 60, steps: 1 });
+  assert.equal(Adv.canUse('ssh', s, { cosmic: false }, 'normal'), false);
+  assert.equal(Adv.canUse('ssh', s, { cosmic: true }, 'normal'), true);
+});

@@ -90,7 +90,7 @@
     if (d.needIq10 && s.iq < 10) return false;
     if (d.needExp && !(s.exp > 0)) return false;
     if (key === 'fa' && s.fa > 0) return false;
-    if (key === 'ssh' && s.ssh > 0) return false;
+    if (key === 'ssh' && (s.ssh > 0 || ctx.cosmic === false)) return false; // 우주개척 레시피 전용
     return true;
   }
 
@@ -316,7 +316,8 @@
       const gRapid = progGainOf(s, 'rapid', ctx, cond);
       // 강행 작업 중심: 공경(또는 빠른 진행) 아래에서 강행을 적극 사용, 우주 안정된 솜씨로 확정 성공
       if (v.rapid && s.ven > 0 && !s.ssh && U('ssh') && R > gRapid * 2) return 'ssh';
-      const order = v.rapid ? ['intensive', 'rapid', 'groundwork', 'careful', 'basicS'] : ['intensive', 'groundwork', 'careful', 'rapid', 'basicS'];
+      // 우주 안정된 솜씨 중에는 강행 작업이 100% 성공이라 가장 효율적(500%, CP 0)
+      const order = s.ssh > 0 ? ['rapid', 'intensive', 'groundwork', 'careful', 'basicS'] : v.rapid ? ['intensive', 'rapid', 'groundwork', 'careful', 'basicS'] : ['intensive', 'groundwork', 'careful', 'rapid', 'basicS'];
       for (const k of order) {
         if (!U(k)) continue;
         if (k === 'groundwork' && s.dur < cost(A.groundwork, s, cond).dur) continue;

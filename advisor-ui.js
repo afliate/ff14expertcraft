@@ -61,10 +61,15 @@
     $('adv-cond').innerHTML = CONDS.map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
     fillRecipes();
   }
+  // 우주개척(코스믹 탐험) 레시피: rlvl 700~775. 그 밖(폐허 수도교 등)은 일반 고난도라 우주 도구·우주 안정된 솜씨를 쓸 수 없다
+  const isCosmic = (r) => !!r && r.rlvl >= 700 && r.rlvl <= 775;
   function fillRecipes() {
-    const job = $('adv-job').value, q = '';
-    const list = recipes.filter((r) => r.job === job && (!q || (r.name || '').includes(q))).sort((a, b) => b.rlvl - a.rlvl || a.id - b.id);
-    $('adv-recipe').innerHTML = list.map((r) => `<option value="${r.id}">${r.name} (rlvl ${r.rlvl})</option>`).join('');
+    const job = $('adv-job').value;
+    const list = recipes.filter((r) => r.job === job).sort((a, b) => b.rlvl - a.rlvl || a.id - b.id);
+    const opt = (r) => `<option value="${r.id}">${r.name} (rlvl ${r.rlvl})</option>`;
+    const cos = list.filter(isCosmic), reg = list.filter((r) => !isCosmic(r));
+    $('adv-recipe').innerHTML = (cos.length ? `<optgroup label="우주개척 레시피">${cos.map(opt).join('')}</optgroup>` : '') +
+      (reg.length ? `<optgroup label="일반 고난도 레시피">${reg.map(opt).join('')}</optgroup>` : '');
     showTargets();
   }
   function cur() { return recipes.find((r) => String(r.id) === $('adv-recipe').value); }
@@ -73,6 +78,9 @@
     if (!r) return;
     $('adv-work').value = r.work; $('adv-qual').value = r.quality; $('adv-dur').value = r.durability;
     $('adv-curdur').value = r.durability;
+    const cos = isCosmic(r), rc = $('adv-relic');
+    rc.disabled = !cos; rc.checked = cos;
+    $('adv-relic-note').textContent = cos ? '' : ' (일반 레시피 불가)';
   }
   const num = (id) => Number($(id).value) || 0;
 
@@ -124,21 +132,24 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-13'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-14'); } catch (e) { worker = false; }
     return worker;
   }
   function collect() {
     const r = cur();
     const rp = FFEngine.paramsFromTable(r.rlvl, table[String(r.rlvl)]);
-    const ctx = { craftsmanship: num('adv-craft'), control: num('adv-ctrl'), rp, relic: $('adv-relic').checked,
+    const ctx = { craftsmanship: num('adv-craft'), control: num('adv-ctrl'), rp, relic: isCosmic(r) && $('adv-relic').checked, cosmic: isCosmic(r),
       target: num('adv-work'), targetQuality: num('adv-qual'), maxDur: num('adv-dur'), maxCP: num('adv-maxcp') };
     const lastMap = { '': null, basicT: 'basicT', standard: 'standard', observe: 'observe' };
     const state = FFAdvisor.newState({
       cp: num('adv-curcp'), dur: num('adv-curdur'), progress: num('adv-curprog'), quality: num('adv-curqual'),
       iq: num('adv-iq'), ven: num('adv-ven'), inno: num('adv-inno'), gs: num('adv-gs'), mm: num('adv-mm'),
-      wn: num('adv-wn'), manip: num('adv-manip'), fa: num('adv-fa'), steps: num('adv-steps'),
+      wn: num('adv-wn'), manip: num('adv-manip'), fa: num('adv-fa'), steps: 0,
       lastAction: lastMap[$('adv-last').value],
     });
+    // 공정 수는 입력받지 않고 상태에서 유추: 뭔가 진행됐으면 첫 공정이 아님
+    const st = state;
+    if (st.progress > 0 || st.quality > 0 || st.iq > 0 || st.dur < ctx.maxDur || st.lastAction || st.ven || st.inno || st.gs || st.mm || st.wn || st.manip || st.fa || st.cp < ctx.maxCP) st.steps = 1;
     return { state, ctx, cond: $('adv-cond').value, opts: { samples: 200 }, odds: currentOdds() };
   }
   function run() {
@@ -171,17 +182,26 @@
   }
 
   function pct(x) { return Math.round(x * 100) + '%'; }
+  const ICON = { basicS: 1986, careful: 1503, prudentS: 1520, groundwork: 1518, intensive: 1514, rapid: 1988, mm: 1994,
+    basicT: 1502, standard: 1516, advanced: 1519, refined: 1522, prudentT: 1535, prep: 1507, precise: 1524, reflect: 1982,
+    hasty: 1989, daring: 1998, finesse: 1997, delicate: 1505, byregot: 1975, ven: 1995, inno: 1987, gs: 1955, wn: 1992,
+    wn2: 1993, manip: 1985, ssh: 1953, fa: 1983, mend: 1952, immac: 1950, observe: 1954, tricks: 1990 };
+  function skill(k, mark) {
+    const a = FFAdvisor.ACTIONS[k], id = ICON[k];
+    const img = id ? `<img class="adv-ico" src="https://xivapi.com/i/001000/00${id}_hr1.png" alt="" onerror="this.style.display='none'">` : '';
+    return `<span class="adv-sk">${img}<span>${a.ko}</span>${mark && a.good ? '<em class="adv-good">고품질일 때</em>' : ''}</span>`;
+  }
   function render(res) {
     if (!res.length) { $('adv-out').innerHTML = '<div class="calc-sub">쓸 수 있는 스킬이 없어요. 입력을 확인해 주세요.</div>'; return; }
-    const A = FFAdvisor.ACTIONS;
+    const seq = (arr, off) => arr.map((k, i) => skill(k, off + i > 0)).join('<span class="adv-arrow">→</span>');
     $('adv-out').innerHTML = res.slice(0, 6).map((x, i) => `
       <div class="adv-card${i === 0 ? ' top' : ''}">
-        <div class="adv-head"><span class="adv-rank">${i + 1}</span><span class="adv-name">${x.ko}</span>
+        <div class="adv-head"><span class="adv-rank">${i + 1}</span><span class="adv-name">${skill(x.key, false)}</span>
           <span class="adv-pill">완료 ${pct(x.risk.pDone)}</span><span class="adv-pill">목표 품질 ${pct(x.risk.pQuality)}</span>
           <span class="adv-pill">평균 품질 ${Math.round(x.risk.avgQuality)}</span>${x.mode ? `<span class="adv-pill">${x.mode === '계획' ? '고정 계획 기준' : '상태 반응 기준'}</span>` : ''}</div>
-        <div class="adv-plan">${x.plan.slice(0, 8).map((k) => A[k].ko).join(' → ')}${x.plan.length > 8 ? `<details class="adv-rest"><summary>이후 ${x.plan.length - 8}공정 예상 (상태에 따라 달라져요)</summary>${x.plan.slice(8).map((k) => A[k].ko).join(' → ')}</details>` : ''}</div>
+        <div class="adv-plan">${seq(x.plan.slice(0, 8), 0)}${x.plan.length > 8 ? `<details class="adv-rest"><summary>이후 ${x.plan.length - 8}공정 예상 (상태에 따라 달라져요)</summary>${seq(x.plan.slice(8), 8)}</details>` : ''}</div>
       </div>`).join('') +
-      '<div class="calc-sub adv-note">완료·품질 확률은 이 스킬로 시작해 끝까지 시뮬레이션한 값이에요 (고정 계획과 상태에 반응하는 방식 중 더 좋은 쪽). 이후 상태 확률은 임시 기본값이라 실측과 다를 수 있어요.</div>';
+      '<div class="calc-sub adv-note">완료·품질 확률은 이 스킬로 시작해 끝까지 시뮬레이션한 값이에요. 「고품질일 때」 표시가 붙은 스킬은 그 시점에 상태가 고품질일 때만 쓸 수 있어요. 이후 상태 확률은 임시 기본값이라 실측과 다를 수 있어요.</div>';
   }
 
   document.addEventListener('DOMContentLoaded', () => {
