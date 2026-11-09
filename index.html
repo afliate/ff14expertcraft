@@ -186,6 +186,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="hl-title">상태</div>
       <div class="hl-desc">상태별 대응법</div>
     </div>
+    <div class="home-link" onclick="switchTab('summary')">
+      <div class="hl-num">SUMMARY</div>
+      <div class="hl-title">요약</div>
+      <div class="hl-desc">단계·상태별 치트시트</div>
+    </div>
     <div class="home-link" onclick="switchTab('example')">
       <div class="hl-num">EXAMPLE</div>
       <div class="hl-title">예시</div>
@@ -194,7 +199,12 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="home-link" onclick="switchTab('calc')">
       <div class="hl-num">CALC</div>
       <div class="hl-title">계산기</div>
-      <div class="hl-desc">작업량 · 품질 마무리</div>
+      <div class="hl-desc">작업량 · 품질 · 마무리</div>
+    </div>
+    <div class="home-link" onclick="switchTab('advisor')">
+      <div class="hl-num">ADVISOR</div>
+      <div class="hl-title">추천</div>
+      <div class="hl-desc">다음 스킬 추천 · 진행 기록</div>
     </div>
     <div class="home-link" onclick="switchTab('gear')">
       <div class="hl-num">GEAR</div>
@@ -226,6 +236,14 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="update-row">
         <span class="u-date">2026.06.05</span>
         <span class="u-text done">계산기 : 품질 탭 개선</span>
+      </div>
+      <div class="update-row">
+        <span class="u-date">2026.11.09</span>
+        <span class="u-text done">추천 탭 추가 — 지금 상태에서 다음에 쓸 스킬 추천 · 쓴 스킬을 눌러 기록하면 상태 자동 계산 · 우주개척/일반 레시피, 전문장인 전용 스킬 구분</span>
+      </div>
+      <div class="update-row">
+        <span class="u-date">2026.11.09</span>
+        <span class="u-text done">계산기 장비·음식·도핑 프리셋 오류 수정 · 절약 가공 아이콘 수정 · 상태 이름과 색 정리</span>
       </div>
       <div class="update-row">
         <span class="u-date">예정</span>
