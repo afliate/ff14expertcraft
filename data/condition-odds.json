@@ -1,89 +1,90 @@
 {
-  "_meta": {
-    "description": "Expert-recipe condition data. flagBits: ConditionsFlag bit per condition (game data, RecipeLevelTable.ConditionsFlag via XIVAPI v2). rlvlFlags: flag per recipe-level-table id. defaultRates: provisional flat expert rates (Teamcraft model, MIT; goodOmen/robust/malleable follow the community-tool values), NOT measured. flagAdjust: rate changes when a bit is present in the flag. overrides: per-flag measured odds, to be filled by own measurements.",
-    "sources": [
-      "XIVAPI v2 RecipeLevelTable",
-      "ffxiv-teamcraft/simulator (MIT)",
-      "community tool (Thal's expert) observed flat rates - reference only, no code copied"
-    ]
+ "_meta": {
+  "description": "Expert-recipe condition data. flagBits: ConditionsFlag bit per condition (game data, RecipeLevelTable.ConditionsFlag via XIVAPI v2). rlvlFlags: flag per recipe-level-table id. defaultRates: provisional flat expert rates (Teamcraft model, MIT; goodOmen/robust/malleable follow the community-tool values), NOT measured. flagAdjust: rate changes when a bit is present in the flag. overrides: per-flag measured odds, to be filled by own measurements.",
+  "sources": [
+   "XIVAPI v2 RecipeLevelTable",
+   "ffxiv-teamcraft/simulator (MIT)",
+   "community tool (Thal's expert) observed flat rates - reference only, no code copied",
+   "community tool patch note v4.1.1 (good 12% / good with good omen 4% / malleable 13% / pliant 10% / primed 15% / good omen 12% / sturdy 15%) - numbers only, still not self-measured"
+  ]
+ },
+ "flagBits": {
+  "normal": 1,
+  "good": 2,
+  "excellent": 4,
+  "poor": 8,
+  "centered": 16,
+  "sturdy": 32,
+  "pliant": 64,
+  "malleable": 128,
+  "primed": 256,
+  "goodOmen": 512,
+  "robust": 1024
+ },
+ "defaultRates": {
+  "good": 0.12,
+  "centered": 0.15,
+  "sturdy": 0.15,
+  "pliant": 0.1,
+  "malleable": 0.13,
+  "primed": 0.15,
+  "goodOmen": 0.12,
+  "robust": 0.15
+ },
+ "rlvlFlags": {
+  "481": 115,
+  "511": 115,
+  "512": 115,
+  "513": 483,
+  "514": 115,
+  "515": 483,
+  "516": 499,
+  "611": 435,
+  "621": 499,
+  "641": 995,
+  "642": 627,
+  "643": 995,
+  "644": 1011,
+  "702": 115,
+  "703": 115,
+  "704": 19,
+  "705": 67,
+  "706": 35,
+  "722": 627,
+  "723": 627,
+  "724": 515,
+  "725": 259,
+  "726": 131,
+  "727": 1363,
+  "728": 499,
+  "729": 1491,
+  "742": 995,
+  "743": 995,
+  "744": 995,
+  "746": 243,
+  "747": 435,
+  "748": 1011,
+  "753": 243,
+  "754": 435,
+  "755": 1011,
+  "756": 1491,
+  "757": 1459,
+  "758": 1011,
+  "759": 1523,
+  "772": 1491,
+  "773": 1523,
+  "774": 995,
+  "775": 515,
+  "776": 1523,
+  "751": 995
+ },
+ "overrides": {},
+ "flagAdjust": {
+  "goodOmen": {
+   "good": 0.04
   },
-  "flagBits": {
-    "normal": 1,
-    "good": 2,
-    "excellent": 4,
-    "poor": 8,
-    "centered": 16,
-    "sturdy": 32,
-    "pliant": 64,
-    "malleable": 128,
-    "primed": 256,
-    "goodOmen": 512,
-    "robust": 1024
-  },
-  "defaultRates": {
-    "good": 0.12,
-    "centered": 0.15,
-    "sturdy": 0.15,
-    "pliant": 0.12,
-    "malleable": 0.15,
-    "primed": 0.12,
-    "goodOmen": 0.12,
-    "robust": 0.15
-  },
-  "rlvlFlags": {
-    "481": 115,
-    "511": 115,
-    "512": 115,
-    "513": 483,
-    "514": 115,
-    "515": 483,
-    "516": 499,
-    "611": 435,
-    "621": 499,
-    "641": 995,
-    "642": 627,
-    "643": 995,
-    "644": 1011,
-    "702": 115,
-    "703": 115,
-    "704": 19,
-    "705": 67,
-    "706": 35,
-    "722": 627,
-    "723": 627,
-    "724": 515,
-    "725": 259,
-    "726": 131,
-    "727": 1363,
-    "728": 499,
-    "729": 1491,
-    "742": 995,
-    "743": 995,
-    "744": 995,
-    "746": 243,
-    "747": 435,
-    "748": 1011,
-    "753": 243,
-    "754": 435,
-    "755": 1011,
-    "756": 1491,
-    "757": 1459,
-    "758": 1011,
-    "759": 1523,
-    "772": 1491,
-    "773": 1523,
-    "774": 995,
-    "775": 515,
-    "776": 1523,
-    "751": 995
-  },
-  "overrides": {},
-  "flagAdjust": {
-    "goodOmen": {
-      "good": 0.05
-    },
-    "robust": {
-      "sturdy": 0.05
-    }
+  "robust": {
+   "sturdy": 0.05
   }
+ }
 }
