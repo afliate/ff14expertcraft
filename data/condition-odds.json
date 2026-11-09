@@ -1,21 +1,79 @@
 {
   "_meta": {
     "description": "Expert-recipe condition data. flagBits: ConditionsFlag bit per condition (game data, RecipeLevelTable.ConditionsFlag via XIVAPI v2). rlvlFlags: flag per recipe-level-table id. defaultRates: Teamcraft simulator flat expert rates (MIT, (c) 2019 Flavien Normand) - provisional, NOT measured. overrides: per-flag measured odds, to be filled by own measurements.",
-    "sources": ["XIVAPI v2 RecipeLevelTable", "ffxiv-teamcraft/simulator (MIT)"]
+    "sources": [
+      "XIVAPI v2 RecipeLevelTable",
+      "ffxiv-teamcraft/simulator (MIT)"
+    ]
   },
   "flagBits": {
-    "normal": 1, "good": 2, "excellent": 4, "poor": 8,
-    "centered": 16, "sturdy": 32, "pliant": 64, "malleable": 128,
-    "primed": 256, "goodOmen": 512, "robust": 1024
+    "normal": 1,
+    "good": 2,
+    "excellent": 4,
+    "poor": 8,
+    "centered": 16,
+    "sturdy": 32,
+    "pliant": 64,
+    "malleable": 128,
+    "primed": 256,
+    "goodOmen": 512,
+    "robust": 1024
   },
   "defaultRates": {
-    "good": 0.12, "centered": 0.15, "sturdy": 0.15, "pliant": 0.12,
-    "malleable": 0.12, "primed": 0.12, "goodOmen": 0.10, "robust": 0.10
+    "good": 0.12,
+    "centered": 0.15,
+    "sturdy": 0.15,
+    "pliant": 0.12,
+    "malleable": 0.12,
+    "primed": 0.12,
+    "goodOmen": 0.1,
+    "robust": 0.1
   },
   "rlvlFlags": {
-    "701": 15, "721": 15, "722": 627, "723": 627, "724": 515, "725": 259,
-    "726": 131, "727": 1363, "741": 15, "751": 995, "771": 15, "772": 1491,
-    "774": 995, "775": 515
+    "481": 115,
+    "511": 115,
+    "512": 115,
+    "513": 483,
+    "514": 115,
+    "515": 483,
+    "516": 499,
+    "611": 435,
+    "621": 499,
+    "641": 995,
+    "642": 627,
+    "643": 995,
+    "644": 1011,
+    "702": 115,
+    "703": 115,
+    "704": 19,
+    "705": 67,
+    "706": 35,
+    "722": 627,
+    "723": 627,
+    "724": 515,
+    "725": 259,
+    "726": 131,
+    "727": 1363,
+    "728": 499,
+    "729": 1491,
+    "742": 995,
+    "743": 995,
+    "744": 995,
+    "746": 243,
+    "747": 435,
+    "748": 1011,
+    "753": 243,
+    "754": 435,
+    "755": 1011,
+    "756": 1491,
+    "757": 1459,
+    "758": 1011,
+    "759": 1523,
+    "772": 1491,
+    "773": 1523,
+    "774": 995,
+    "775": 515,
+    "776": 1523
   },
   "overrides": {}
 }
