@@ -2168,3 +2168,6 @@ td.sk-used .mx-ico{width:24px;height:24px;margin-right:6px;}
 .mx-mac-h{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text-dim);margin:6px 0;}
 .mx-copy{padding:3px 12px;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:3px;font-family:inherit;font-size:13px;cursor:pointer;}
 .mx-mac pre{margin:0;padding:8px 10px;background:var(--surface2);border-radius:4px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-all;}
+
+/* 본문 폭 고정: 아코디언을 펼쳐도 폭이 변하지 않게 (flex 안에서 내용 폭으로 줄어드는 문제) */
+.main-wrap{flex:1 1 0;width:auto;max-width:1180px;}

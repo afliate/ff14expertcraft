@@ -6,7 +6,7 @@
       if (el.firstChild || !window.ffSkillIcon) return;
       try {
         const img = new Image(); img.alt = ''; img.src = window.ffSkillIcon(el.dataset.sk);
-        img.onerror = () => img.remove(); el.appendChild(img);
+        let tried = 0; img.onerror = () => { if (!tried++) img.src = img.src.replace('_hr1', ''); else img.remove(); }; el.appendChild(img);
       } catch (e) {}
     });
   }
