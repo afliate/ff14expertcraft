@@ -135,7 +135,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-26'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-27'); } catch (e) { worker = false; }
     return worker;
   }
   function buildCtx() {
@@ -190,10 +190,12 @@
 
 
   // ── 지금 상태 버튼줄 (레시피에 나오는 상태만) ──
-  function condNames() {
+  // 레시피 데이터상 나오는 상태 (데이터가 틀릴 수 있어 나머지도 흐리게 남겨 눌러볼 수 있게 한다)
+  function condPossible() {
     const f = flagOf(); if (!f || !odds) return ['normal'];
     return ['normal'].concat(CONDS.map((c) => c[0]).filter((k) => k !== 'normal' && odds.flagBits[k] && (Number(f) & odds.flagBits[k])));
   }
+  function condNames() { return CONDS.map((c) => c[0]); }
   function setCond(k) {
     $('adv-cond').value = k;
     document.querySelectorAll('#adv-condbar .adv-cbtn').forEach((b) => b.classList.toggle('on', b.dataset.c === k));
@@ -201,9 +203,10 @@
   function renderCondBar() {
     const bar = $('adv-condbar'); if (!bar) return;
     const ko = Object.fromEntries(CONDS), keep = $('adv-cond').value;
-    bar.innerHTML = condNames().map((k) => `<button type="button" class="adv-cbtn" data-c="${k}" style="--cc:${COND_COLOR[k] || '#8aa'}">${ko[k]}</button>`).join('');
+    const pos = condPossible();
+    bar.innerHTML = condNames().map((k) => `<button type="button" class="adv-cbtn${pos.includes(k) ? '' : ' off'}" data-c="${k}" title="${pos.includes(k) ? '' : '이 레시피 데이터에는 없는 상태예요'}" style="--cc:${COND_COLOR[k] || '#8aa'}">${ko[k]}</button>`).join('');
     bar.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => setCond(b.dataset.c)));
-    setCond(condNames().includes(keep) ? keep : 'normal');
+    setCond(keep || 'normal');
   }
   // 진행 기록 한 칸 = 그 공정에서 본 상태 한 번의 실측. 기록 칸과 같이 쌓고, 되돌리기로 빼기
   function autoLog(i, cond) {
@@ -279,7 +282,7 @@
       const cond = $('adv-cond').value, i = hist.length;
       const h = { k, cond, ok: undefined }; h.lg = autoLog(i, cond);
       hist.push(h);
-      setCond(FORCED[cond] && condNames().includes(FORCED[cond]) ? FORCED[cond] : 'normal');
+      setCond(FORCED[cond] || 'normal');
       renderLog(); replay();
     }));
   }

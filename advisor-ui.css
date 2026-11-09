@@ -108,3 +108,4 @@ body.light .adv-hgrp,body.light .adv-hist{background:rgba(0,0,0,.05);}
 .adv-logrow b{min-width:56px;}
 .adv-logrow i{font-style:normal;color:var(--text-dim);font-size:12.5px;}
 .adv-details .adv-grid .calc-btn{white-space:nowrap;}
+.adv-cbtn.off{opacity:.45;border-style:dashed;}
