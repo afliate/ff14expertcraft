@@ -12,11 +12,11 @@
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261109-10"></script>
-<script src="qualcalc.js?v=20261109-10"></script>
-<script src="advisor.js?v=20261109-10"></script>
-<script src="advisor-ui.js?v=20261109-10" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261109-10">
+<script src="engine.js?v=20261109-11"></script>
+<script src="qualcalc.js?v=20261109-11"></script>
+<script src="advisor.js?v=20261109-11"></script>
+<script src="advisor-ui.js?v=20261109-11" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261109-11">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -86,7 +86,7 @@ function applyPreset() {
   }
   const g = GEAR_PRESETS[curGear];
   const f = FOOD_BUFFS[curFood] || { crafts:0, cons:0, cp:0 };
-  const p = POT_BUFFS[curPot]   || { cp:0 };
+  const p = POT_BUFFS[curPot]   || { crafts:0, cons:0, cp:0 };
   const isExpert = document.getElementById('q-expert')?.checked || false;
   const e = isExpert ? { crafts:20, cons:20, cp:15 } : { crafts:0, cons:0, cp:0 };
   const s = { crafts: g.crafts + f.crafts + p.crafts + e.crafts, cons: g.cons + f.cons + p.cons + e.cons, cp: g.cp + f.cp + p.cp + e.cp };
