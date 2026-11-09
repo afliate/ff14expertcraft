@@ -109,7 +109,8 @@
     st.cp -= c.cp;
     const was = { ven: s.ven, inno: s.inno, gs: s.gs, mm: s.mm, wn: s.wn, manip: s.manip, fa: s.fa, exp: s.exp, ssh: s.ssh };
     const fresh = {}; // 이번 공정에 새로 건 버프(틱에서 제외)
-    const heal0 = s.manip > 0; // 교손은 건 다음 공정부터 회복
+    const skipTick = key === 'fa'; // 최종 확인: 제작 공정이 진행되지 않음
+    const heal0 = s.manip > 0 && !skipTick; // 교손은 건 다음 공정부터 회복
 
     if (d.kind === 'prog' || d.kind === 'both') {
       const base = E.baseProgress(ctx.craftsmanship, ctx.rp);
@@ -155,15 +156,14 @@
     // 교묘한 손놀림 회복
     if (heal0) st.dur = Math.min(ctx.maxDur, st.dur + 5);
 
-    // 틱: 이번 공정에 새로 건 것은 줄이지 않는다.
+    // 틱: 이번 공정에 새로 건 것은 줄이지 않는다. 최종 확인은 공정으로 치지 않아 다른 버프도 줄이지 않는다.
     for (const k of ['ven', 'inno', 'gs', 'mm', 'wn', 'manip', 'fa', 'ssh']) {
-      if (fresh[k]) continue;
+      if (fresh[k] || skipTick) continue;
       if (was[k] > 0 && st[k] > 0) st[k] = st[k] - 1;
     }
-    if (fresh.exp) st.exp = 1; else if (was.exp > 0) st.exp = 0;
+    if (fresh.exp) st.exp = 1; else if (was.exp > 0 && !skipTick) st.exp = 0;
 
-    st.steps = s.steps + 1;
-    st.lastAction = key;
+    if (!skipTick) { st.steps = s.steps + 1; st.lastAction = key; }
     st.dead = st.progress < ctx.target && st.dur <= 0;
     st.done = st.progress >= ctx.target;
     return st;

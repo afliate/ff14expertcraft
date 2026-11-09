@@ -132,3 +132,15 @@ test('우주 안정된 솜씨: 3공정 동안 확률 행동 100% 성공', () => 
   const hit = Adv.apply(s, 'rapid', ctx, 'normal', false);
   assert.ok(hit.progress > 0);
 });
+
+test('최종 확인은 공정이 아님: 다른 버프 지속시간·내구 회복·공정 수가 그대로', () => {
+  let s = Adv.newState({ cp: 500, dur: 30, ven: 4, manip: 5, wn: 3 });
+  const t = Adv.apply(s, 'fa', ctx, 'normal');
+  assert.equal(t.ven, 4);
+  assert.equal(t.manip, 5);
+  assert.equal(t.wn, 3);
+  assert.equal(t.dur, 30);
+  assert.equal(t.steps, 0);
+  assert.equal(t.fa, 5);
+  assert.equal(s.cp - t.cp, 1);
+});
