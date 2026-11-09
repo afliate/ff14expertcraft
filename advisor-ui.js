@@ -22,6 +22,26 @@
     }
   }
 
+  // 장비/음식/도핑 프리셋 (계산기 탭과 같은 값: index.html 의 GEAR_PRESETS 등)
+  function fillGear() {
+    if (typeof GEAR_PRESETS === 'undefined') return;
+    const opt = (o, first) => `<option value="">${first}</option>` + Object.keys(o).map((k) => `<option>${k}</option>`).join('');
+    $('adv-gear').innerHTML = opt(GEAR_PRESETS, '직접 입력');
+    $('adv-food').innerHTML = opt(FOOD_BUFFS, '없음').replace('<option>없음</option>', '');
+    $('adv-pot').innerHTML = opt(POT_BUFFS, '없음').replace('<option>없음</option>', '');
+  }
+  function applyGear() {
+    const g = GEAR_PRESETS[$('adv-gear').value];
+    if (!g) return;
+    const f = FOOD_BUFFS[$('adv-food').value] || { crafts: 0, cons: 0, cp: 0 };
+    const p = POT_BUFFS[$('adv-pot').value] || { crafts: 0, cons: 0, cp: 0 };
+    const e = $('adv-spec').checked ? { crafts: 20, cons: 20, cp: 15 } : { crafts: 0, cons: 0, cp: 0 };
+    $('adv-craft').value = g.crafts + f.crafts + p.crafts + e.crafts;
+    $('adv-ctrl').value = g.cons + f.cons + p.cons + e.cons;
+    $('adv-maxcp').value = g.cp + f.cp + p.cp + e.cp;
+    $('adv-curcp').value = $('adv-maxcp').value;
+  }
+
   function fillJobs() {
     $('adv-job').innerHTML = Object.keys(JOBS).map((k) => `<option value="${k}">${JOBS[k]}</option>`).join('');
     $('adv-cond').innerHTML = CONDS.map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
@@ -90,7 +110,7 @@
   let worker = null, reqId = 0;
   function getWorker() {
     if (worker) return worker;
-    try { worker = new Worker('advisor-worker.js?v=20261109-8'); } catch (e) { worker = false; }
+    try { worker = new Worker('advisor-worker.js?v=20261109-9'); } catch (e) { worker = false; }
     return worker;
   }
   function collect() {
@@ -152,6 +172,9 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('adv-job')) return;
+    fillGear();
+    ['adv-gear', 'adv-food', 'adv-pot', 'adv-spec'].forEach((id) => $(id).addEventListener('change', applyGear));
+    ['adv-craft', 'adv-ctrl', 'adv-maxcp'].forEach((id) => $(id).addEventListener('input', () => { $('adv-gear').value = ''; }));
     $('adv-job').addEventListener('change', () => { fillRecipes(); lastLogged = null; renderLog(); });
     $('adv-filter').addEventListener('input', fillRecipes);
     $('adv-recipe').addEventListener('change', showTargets);
