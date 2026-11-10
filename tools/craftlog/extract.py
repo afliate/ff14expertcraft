@@ -5,7 +5,7 @@
   python extract.py 영상.mp4 --out 기록.csv --numbers  # + 작업량/품질/내구도 (느림, Tesseract 필요)
 
 필요: pip install opencv-python numpy pytesseract   (--numbers 일 때만 Tesseract OCR 프로그램, 영어 팩이면 충분)
-가정: 제작 창이 화면 왼쪽 위(1280x620 영상 기준 x150,y10)에 있다. 다르면 --roi x,y,w,h 로 창 전체를 지정.
+가정: 제작 창이 화면 왼쪽 위(1280x620 영상 기준 x150,y10)에 있다. 영상이 더 커도 화면 비율이 같으면 자동으로 맞춰요. 다르면 --roi x,y,w,h 로 창 전체를 지정.
 상태는 아이콘 모양/색을 templates 와 비교해서 읽는다. 처음 보는 아이콘(길조 등)은 '?' 로 나오고
 --dump-unknown 폴더에 그림이 저장되니, 이름을 붙여 cond_templates 에 추가하면 된다(README 참고)."""
 import argparse, collections, csv, os, re
@@ -56,10 +56,13 @@ def main():
     ap.add_argument('--unk-max', type=float, default=70.0, help='이 거리보다 멀면 제작 창이 아닌 화면으로 보고 버림')
     ap.add_argument('--dump-unknown', help='모르는 아이콘 그림을 저장할 폴더')
     a = ap.parse_args()
-    win = tuple(int(v) for v in a.roi.split(',')) if a.roi else DEFAULT_WIN
+    cap = cv2.VideoCapture(a.video)
+    vw = cap.get(cv2.CAP_PROP_FRAME_WIDTH) or 1280
+    k = vw / 1280.0                      # 영상이 커도 같은 화면 비율이면 자동으로 비례 확대
+    win = tuple(int(v) for v in a.roi.split(',')) if a.roi else tuple(int(v * k) for v in DEFAULT_WIN)
     T, N = load_templates()
     if a.dump_unknown: os.makedirs(a.dump_unknown, exist_ok=True)
-    cap = cv2.VideoCapture(a.video); vfps = cap.get(cv2.CAP_PROP_FPS) or 30
+    vfps = cap.get(cv2.CAP_PROP_FPS) or 30
     every = max(1, int(round(vfps / a.fps)))
     if a.start: cap.set(cv2.CAP_PROP_POS_MSEC, a.start * 1000)
     obs = []; i = 0; unk = 0
