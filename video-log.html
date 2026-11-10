@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영상 분석 · 파판14 고난도 제작</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#131920;--surface:#0f1a24;--surface2:#131e2a;--border:#1c2d3e;--accent:#3ecfaa;--text:#deeaf4;--text-dim:#9bbccc;--red:#e05060;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;line-height:1.7}
+.wrap{max-width:980px;margin:0 auto;padding:22px 16px 80px}
+a{color:var(--accent)}
+h1{font-size:24px;margin:6px 0 4px}
+h1 em{color:var(--accent);font-style:normal}
+.sub{color:var(--text-dim);margin:0 0 16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;margin:14px 0}
+.card h2{font-size:13px;letter-spacing:.1em;color:var(--accent);margin:0 0 10px;font-weight:700}
+.drop{border:2px dashed var(--border);border-radius:6px;padding:26px 12px;text-align:center;color:var(--text-dim);cursor:pointer}
+.drop.on{border-color:var(--accent);color:var(--text)}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:8px 0}
+label{color:var(--text-dim);font-size:14px}
+input[type=number],input[type=text]{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:3px;padding:5px 8px;font-family:inherit;font-size:14px;width:84px}
+input[type=text]{width:170px}
+input[type=range]{width:180px;vertical-align:middle}
+button{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:7px 16px;border-radius:3px;font-family:inherit;font-size:14px;cursor:pointer}
+button.main{background:var(--accent);color:#06241c;font-weight:700}
+button:disabled{opacity:.4;cursor:default}
+canvas#pv{max-width:100%;border:1px solid var(--border);border-radius:4px;background:#000}
+.bar{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;width:0;background:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--border);padding:5px 8px;text-align:left}
+th{color:var(--text-dim);font-weight:500}
+.note{color:var(--text-dim);font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.chip{padding:1px 7px;border-radius:3px;font-size:12.5px;background:var(--surface2);border:1px solid var(--border)}
+.c-normal{color:#cfd8e0}.c-good{color:#ff7d90}.c-excellent{color:#7fe3d0}.c-centered{color:#e3e07a}.c-sturdy{color:#5ec8ff}
+.c-pliant{color:#6bdc7e}.c-malleable{color:#7a97ff}.c-primed{color:#b27aff}.c-robust{color:#8fd0ff}.c-goodOmen{color:#ffd277}.c-poor{color:#999}.c-unk{color:var(--red)}
+details{margin-top:8px}
+summary{cursor:pointer;color:var(--text-dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html">← 가이드로 돌아가기</a>
+  <h1><em>영상 분석</em> — 제작 기록 뽑기</h1>
+  <p class="sub">게임 화면 녹화 영상에서 제작 창을 읽어, 공정마다 <b>상태</b>를 표로 만들어 줘요. 영상은 <b>내 컴퓨터 안에서만</b> 처리되고 어디에도 올라가지 않아요.</p>
+
+  <div class="card">
+    <h2>1. 영상 고르기</h2>
+    <div class="drop" id="drop">여기에 영상 파일을 끌어다 놓거나 눌러서 고르세요 (mp4 등)</div>
+    <input type="file" id="file" accept="video/*" hidden>
+    <div class="note" id="info" style="margin-top:8px"></div>
+  </div>
+
+  <div class="card" id="pvCard" hidden>
+    <h2>2. 제작 창 위치 확인</h2>
+    <div class="note">초록 상자가 <b>공정 번호</b>와 <b>상태 아이콘</b> 위에 오도록 맞춰 주세요. 제작 창이 보이는 장면으로 슬라이더를 움직여 확인하세요.</div>
+    <div class="row"><label>미리보기 위치 <input type="range" id="seek" min="0" max="1000" value="0"></label><span id="seekT" class="note"></span></div>
+    <canvas id="pv"></canvas>
+    <div class="row">
+      <label>가로 이동 <input type="range" id="ox" min="-60" max="60" value="0"></label>
+      <label>세로 이동 <input type="range" id="oy" min="-60" max="60" value="0"></label>
+      <label>크기 <input type="range" id="os" min="70" max="140" value="100"></label>
+      <button id="reset">기본값</button>
+    </div>
+    <div class="note" id="pvRead"></div>
+  </div>
+
+  <div class="card" id="runCard" hidden>
+    <h2>3. 분석하기</h2>
+    <div class="row">
+      <label>읽는 간격 <input type="number" id="iv" value="1" min="0.5" max="5" step="0.5">초</label>
+      <label>재생 배속 <input type="number" id="rate" value="8" min="1" max="16" step="1">배</label>
+      <label>시작 <input type="number" id="t0" value="0" min="0">초</label>
+      <label>끝 <input type="number" id="t1" value="0" min="0">초 (0=끝까지)</label>
+    </div>
+    <div class="note">배속이 높을수록 빨리 끝나지만 컴퓨터가 못 따라가면 느려져요. 6시간짜리는 8~16배로 두고 켜 놓으면 돼요. 분석 중에는 이 탭을 닫지 말고, 다른 창으로 가려 있어도 괜찮아요.</div>
+    <div class="row"><button class="main" id="go">분석 시작</button><button id="stop" disabled>멈추기 (지금까지 결과 보기)</button><span id="prog" class="note"></span></div>
+    <div class="bar"><i id="pbar"></i></div>
+  </div>
+
+  <div class="card" id="outCard" hidden>
+    <h2>결과</h2>
+    <div class="row"><button id="csv" class="main">CSV 내려받기</button><button id="copy">표 복사</button><span class="note" id="sum"></span></div>
+    <div id="stats"></div>
+    <div id="crafts"></div>
+  </div>
+</div>
+<script src="video-log-data.js"></script>
+<script src="video-log.js"></script>
+</body>
+</html>
