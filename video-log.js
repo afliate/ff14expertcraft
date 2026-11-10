@@ -112,7 +112,13 @@
     ix.drawImage(video, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]);
     const step = readStep(); if (step == null) return null;
     const c = readCond(); if (c.cond === '?' && c.d > 70) return null;
-    return { t, step, cond: c.cond };
+    return { t, step, cond: c.cond, p: readNum('prog'), q: readNum('qual') };
+  }
+  // 작업량/품질 숫자 (현재/최대). 못 읽거나 앞뒤가 안 맞으면 null
+  function readNum(f) {
+    if (!window.VLNUM) return null;
+    const g = geom(), r = VLNUM.read(video, g.x, g.y, g.sc, f);
+    return r && r.cur <= r.max && r.d < 6 ? { c: r.cur, m: r.max } : null;
   }
 
 
@@ -181,7 +187,8 @@
   function findWindow() {                      // 지금 화면에서 창 찾기 → {x,y,sc,d,v} 또는 null
     let best = null;
     for (const c of candidates()) { const r = tuneCand(c); if (r.d < 1e8 && (!best || r.d < best.d)) best = r; }
-    return best && best.d < 18 ? best : null;
+    // 상태 아이콘도 어느 정도 맞아야 진짜 제작 창으로 본다 (엉뚱한 곳에서 1공정처럼 읽히는 오탐 방지)
+    return best && best.d < 18 && iconDistAt(fc, best.x, best.y, best.sc) <= 50 ? best : null;
   }
   async function autoFind(quiet) {
     if (!video.videoWidth || running) return false;
@@ -211,7 +218,8 @@
     pctx.strokeStyle = '#3ecfaa'; for (const r of [STEP, ICON]) { const q = rect(g, r); pctx.strokeRect(q[0], q[1], q[2], q[3]); }
     pctx.strokeStyle = 'rgba(62,207,170,.4)'; const w = rect(g, [0, 0, 316, 260]); pctx.strokeRect(w[0], w[1], w[2], w[3]);
     const s = sample(video.currentTime);
-    $('pvRead').innerHTML = s ? `지금 장면에서 읽은 값: <b>${s.step}공정</b>, 상태 <b>${KO[s.cond] || '모르는 아이콘'}</b>` : '이 장면에서는 제작 창을 못 찾았어요 (제작 중인 장면으로 옮기거나 상자 위치를 맞춰 주세요).';
+    const nm = (x) => (x ? `${x.c}/${x.m}` : '못 읽음');
+    $('pvRead').innerHTML = s ? `지금 장면에서 읽은 값: <b>${s.step}공정</b>, 상태 <b>${KO[s.cond] || '모르는 아이콘'}</b>, 작업량 <b>${nm(s.p)}</b>, 품질 <b>${nm(s.q)}</b>` : '이 장면에서는 제작 창을 못 찾았어요 (제작 중인 장면으로 옮기거나 상자 위치를 맞춰 주세요).';
   }
   function seekTo(t) { return new Promise((res) => { const f = () => { video.removeEventListener('seeked', f); res(); }; video.addEventListener('seeked', f); video.currentTime = Math.max(0, Math.min(duration - 0.1, t)); }); }
   const fmt = (s) => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + '시간 ' : '') + m + '분 ' + (s % 60) + '초'; };
@@ -283,16 +291,44 @@
       cur.push(r);
     }
     if (cur.length) runs.push(cur);
+    const mode = (arr) => { const c = new Map(); arr.forEach((v) => c.set(v, (c.get(v) || 0) + 1)); let b = null, bn = 0; for (const [v, n] of c) if (n > bn) { b = v; bn = n; } return b; };
     return runs.filter((r) => r.length >= 6).map((run) => {
       const by = new Map();
       for (const r of run) { if (!by.has(r.step)) by.set(r.step, []); by.get(r.step).push(r); }
-      return [...by.keys()].sort((a, b) => a - b).map((s) => {
+      // 최대값은 제작 내내 같으니 제작 단위 다수결, 현재값은 그 최대값과 같게 읽힌 장면들 중 공정별 다수결
+      const mx = { p: mode(run.filter((r) => r.p).map((r) => r.p.m)), q: mode(run.filter((r) => r.q).map((r) => r.q.m)) };
+      const keys = [...by.keys()].sort((a, b) => a - b);
+      // 공정별로 읽힌 값 후보(개수 포함) 중 '줄어들지 않는' 흐름에서 가장 많이 읽힌 조합을 고른다 (작업량·품질은 줄지 않는다)
+      const chain = (f) => {
+        const cand = keys.map((k) => { const m = new Map(); by.get(k).forEach((r) => { if (r[f] && r[f].m === mx[f]) m.set(r[f].c, (m.get(r[f].c) || 0) + 1); }); return [...m.entries()]; });
+        // 앞 공정 어느 것에서든 이어질 수 있다(못 읽은 공정은 건너뜀). 값이 줄어드는 연결만 막는다.
+        const nodes = [];
+        cand.forEach((cs, i) => cs.forEach(([v, n]) => {
+          let best = 0, from = null;
+          for (const o of nodes) if (o.i < i && o.v <= v && o.sc > best) { best = o.sc; from = o; }
+          nodes.push({ i, v, sc: n + best, from });
+        }));
+        const out = keys.map(() => null);
+        let end = null; for (const o of nodes) if (!end || o.sc > end.sc) end = o;
+        for (let o = end; o; o = o.from) out[o.i] = o.v;
+        return out;
+      };
+      const P = chain('p'), Q = chain('q');
+      const steps = keys.map((s, i) => {
         const rs = by.get(s), cnt = {}; rs.forEach((r) => { cnt[r.cond] = (cnt[r.cond] || 0) + 1; });
         const c = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0];
-        return { step: s, cond: c, n: rs.length, t: rs[0].t };
+        return { step: s, cond: c, n: rs.length, t: rs[0].t, p: P[i], q: Q[i] };
       });
+      steps.max = mx;
+      return steps;
     });
   }
+  // 한 제작의 스킬 추정 (작업량/품질 숫자가 충분히 읽혔을 때만)
+  function skillsOf(c) {
+    if (!window.VLSkills || c.filter((r) => r.p != null && r.q != null).length < Math.max(4, c.length * 0.6)) return null;
+    try { return VLSkills.solve(c.map((r) => ({ step: r.step, cond: r.cond === '?' ? 'normal' : r.cond, p: r.step === 1 ? 0 : r.p, q: r.q }))); } catch (e) { return null; }   // 1공정의 작업량은 항상 0
+  }
+  function skName(a) { const n = (k) => VLSkills.ko(k); return a.alts.length > 1 ? `${n(a.key)} <span class="alt">(또는 ${a.alts.filter((k) => k !== a.key).map(n).join(', ')})</span>` : n(a.key); }
   const FORCED = { goodOmen: 'good', excellent: 'poor' };      // 직전 상태가 이거면 다음 상태가 정해져 있어 확률 표본에서 뺀다
   function show() {
     const crafts = summarize(obs); lastResult = crafts;
@@ -308,13 +344,24 @@
     $('stats').innerHTML = all.length ? `<table><tr><th>상태</th><th>횟수</th><th>비율</th><th>확률 표본(첫 공정·정해진 상태 제외)</th><th>비율</th></tr>${
       keys.map((k) => `<tr><td class="c-${k === '?' ? 'unk' : k}">${KO[k] || '모르는 아이콘'}</td><td>${cnt[k]}</td><td>${(cnt[k] / all.length * 100).toFixed(1)}%</td><td>${fc[k] || 0}</td><td>${free ? ((fc[k] || 0) / free * 100).toFixed(1) : '-'}%</td></tr>`).join('')
     }</table><div class="note" style="margin-top:6px">상태 확률은 <b>레시피마다 다르니</b> 같은 레시피끼리 모아서 봐야 해요. 아래 표에서 제작마다 레시피 이름을 적어 두면 CSV에 같이 들어가요.</div>` : '<div class="note">읽힌 제작이 없어요. 2단계에서 상자 위치를 다시 맞춰 보세요.</div>';
-    $('crafts').innerHTML = crafts.map((c, i) => `<details${i < 3 ? ' open' : ''}><summary>제작 ${i + 1} · ${c.length}공정 · ${fmt(c[0].t)} 부근 <input type="text" class="rn" data-i="${i}" placeholder="레시피 이름(메모)" onclick="event.stopPropagation()"></summary>
-      <div class="chips">${c.map((r) => `<span class="chip c-${r.cond === '?' ? 'unk' : r.cond}">${r.step} ${KO[r.cond] || '?'}</span>`).join('')}</div></details>`).join('');
+    crafts.forEach((c) => { c.sk = skillsOf(c); });
+    $('crafts').innerHTML = crafts.map((c, i) => {
+      const mx = c.max, sk = c.sk, act = (r) => (sk && sk.acts.find((a) => a.step === r.step)) || null;
+      const info = mx && (mx.p || mx.q) ? ` · 작업량 최대 ${mx.p || '?'} · 품질 최대 ${mx.q || '?'}` : '';
+      const tbl = sk ? `<table class="sk"><tr><th>공정</th><th>상태</th><th>작업량</th><th>품질</th><th>스킬(추정)</th></tr>${c.map((r) => { const a = act(r); return `<tr><td>${r.step}</td><td class="c-${r.cond === '?' ? 'unk' : r.cond}">${KO[r.cond] || '?'}</td><td>${r.p ?? '?'}</td><td>${r.q ?? '?'}</td><td>${a ? skName(a) : '<span class="alt">-</span>'}</td></tr>`; }).join('')}</table>
+        <div class="note">기본 작업량 ${sk.bp} · 기본 품질 ${sk.bq} 로 맞춰 본 결과예요 (어긋난 정도 ${sk.cost.toFixed(1)}, 0에 가까울수록 확실). 같은 수치를 내는 스킬은 구분이 안 돼서 '또는'으로 같이 적어요.</div>`
+        : `<div class="chips">${c.map((r) => `<span class="chip c-${r.cond === '?' ? 'unk' : r.cond}">${r.step} ${KO[r.cond] || '?'}</span>`).join('')}</div>`;
+      return `<details${i < 3 ? ' open' : ''}><summary>제작 ${i + 1} · ${c.length}공정 · ${fmt(c[0].t)} 부근${info} <input type="text" class="rn" data-i="${i}" placeholder="레시피 이름(메모)" onclick="event.stopPropagation()"></summary>${tbl}</details>`;
+    }).join('');
   }
   function rows() {
     const names = [...document.querySelectorAll('.rn')].map((e) => e.value.trim());
-    const out = [['파일', '제작', '레시피(메모)', '공정', '상태', '상태(영문)', '표본수', '시작(초)']];
-    (lastResult || []).forEach((c, i) => c.forEach((r) => out.push([fileName, i + 1, names[i] || '', r.step, KO[r.cond] || '?', r.cond, r.n, r.t.toFixed(1)])));
+    const out = [['파일', '제작', '레시피(메모)', '공정', '상태', '상태(영문)', '표본수', '시작(초)', '작업량', '품질', '작업량 최대', '품질 최대', '스킬(추정)', '스킬 후보']];
+    const nm = (k) => VLSkills.ko(k);
+    (lastResult || []).forEach((c, i) => c.forEach((r) => {
+      const a = c.sk && c.sk.acts.find((x) => x.step === r.step);
+      out.push([fileName, i + 1, names[i] || '', r.step, KO[r.cond] || '?', r.cond, r.n, r.t.toFixed(1), r.p ?? '', r.q ?? '', c.max && c.max.p || '', c.max && c.max.q || '', a ? nm(a.key) : '', a ? a.alts.map(nm).join(' / ') : '']);
+    }));
     return out;
   }
   $('csv').onclick = () => {
