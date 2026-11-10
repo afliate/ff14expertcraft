@@ -5,24 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>파판14 고난도 제작 가이드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261110-8">
+<link rel="stylesheet" href="style.css?v=20261110-9">
 <link rel="stylesheet" href="rec-styles.css">
 <script src="recipes-sinus-ardorum.js"></script>
 <script src="recipes-phaenna.js"></script>
 <script src="recipes-oizys.js"></script>
 <script src="recipes-auxesia.js"></script>
 <script src="recipes.js"></script>
-<script src="engine.js?v=20261110-8"></script>
-<script src="qualcalc.js?v=20261110-8"></script>
-<script src="advisor.js?v=20261110-8"></script>
-<script src="advisor-ui.js?v=20261110-8" defer></script>
-<script src="macro.js?v=20261110-8"></script>
-<script src="macro-ui.js?v=20261110-8" defer></script>
-<script src="shared-stats.js?v=20261110-8" defer></script>
-<script src="item-icons.js?v=20261110-8" defer></script>
-<script src="tabnav.js?v=20261110-8" defer></script>
-<script src="example-ui.js?v=20261110-8" defer></script>
-<link rel="stylesheet" href="advisor-ui.css?v=20261110-8">
+<script src="engine.js?v=20261110-9"></script>
+<script src="qualcalc.js?v=20261110-9"></script>
+<script src="advisor.js?v=20261110-9"></script>
+<script src="advisor-ui.js?v=20261110-9" defer></script>
+<script src="macro.js?v=20261110-9"></script>
+<script src="macro-ui.js?v=20261110-9" defer></script>
+<script src="shared-stats.js?v=20261110-9" defer></script>
+<script src="item-icons.js?v=20261110-9" defer></script>
+<script src="tabnav.js?v=20261110-9" defer></script>
+<script src="example-ui.js?v=20261110-9" defer></script>
+<link rel="stylesheet" href="advisor-ui.css?v=20261110-9">
 <script>
 /* =============================================
    스탯 프리셋 데이터 & 로직
@@ -1650,7 +1650,86 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="region-section" data-region="auksesia">
     <div class="section">
       <div class="section-title"><div class="num">아욱세시아</div>7.51 패치</div>
-      <div class="guide-note tip">아욱세시아 예시는 업데이트 예정이에요.</div>
+      <!--AX-START-->
+      <div class="accordion open" id="ac-auxesia-1">
+        <button class="accordion-btn" onclick="toggleAc('ac-auxesia-1')">
+          <div class="ac-left">
+            <div class="ac-label">아욱세시아 · 명인 2</div>
+            <div class="ac-title">MASTER: 특제 연금 구체 개발</div>
+            <div class="ac-meta">
+              <span class="ac-pill">작업량 6,900</span>
+              <span class="ac-pill">품질 22,100</span>
+              <span class="ac-pill">내구 45</span>
+              <span class="ac-pill">작업 5933 / 가공 5585 / CP 764</span>
+              <span class="ac-pill">엔드 + 우주 + 알이페브레 + 명인 + 전문</span>
+              <span class="ac-pill">손제작 약 1분 10초~30초</span>
+            </div>
+          </div>
+          <svg class="ac-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-desc">다른 두 명인 레시피보다 품질이 낮고, 상태에 <strong>길조</strong>가 나와 고품질이 잘 떠서 빠르게 제작하기 좋은 레시피예요. (매크로 가능)</div>
+          <div class="phase-tabs">
+            <button class="ptab pon" onclick="switchPhase('ax1-p1',this,'ax1')">① 오프너 + 10스택</button>
+            <button class="ptab" onclick="switchPhase('ax1-p2',this,'ax1')">② 품질 콤보</button>
+            <button class="ptab" onclick="switchPhase('ax1-p3',this,'ax1')">③ 품질 마무리</button>
+            <button class="ptab" onclick="switchPhase('ax1-p4',this,'ax1')">④ 작업량 마무리</button>
+          </div>
+          <div id="ax1-p1" class="phase-panel pon"><div style="overflow-x:auto"><table class="tbl">
+<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
+<tr class="phase-row"><td colspan="4">── 목표: 정신집중 10스택을 최대한 빨리</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used">진가</td><td></td><td class="cmt">오프너.</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used">교묘한 손놀림</td><td></td><td class="cmt">내구도 관리 위해 바로 사용.</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used">절약 가공</td><td></td><td class="cmt"></td></tr>
+<tr><td class="st-high">고품질</td><td class="sk-used">집중 가공</td><td></td><td class="cmt">정신집중 +2</td></tr>
+<tr><td class="st-good">길조</td><td class="sk-used">근검절약</td><td></td><td class="cmt">CP 절약</td></tr>
+<tr><td class="st-high">고품질</td><td class="sk-used">집중 가공</td><td></td><td class="cmt">스택 +2</td></tr>
+<tr><td class="st-fast">빠른 진행</td><td class="sk-used">강행 작업</td><td class="ok">성공</td><td class="cmt">작업량 확보</td></tr>
+<tr><td class="st-efficient">고효율</td><td class="sk-used">밑가공</td><td></td><td class="cmt">+2스택 위해 사용. 고효율이라 CP 20으로 무난</td></tr>
+<tr><td class="st-fast">빠른 진행</td><td class="sk-used">강행 작업</td><td class="ok">성공</td><td class="cmt"></td></tr>
+<tr><td class="st-good">길조</td><td class="sk-used">성급한 손길</td><td class="ok">성공</td><td class="cmt">다음이 어차피 고품질이라, 실패하면 집중 가공 / 성공하면 CP 회복용으로 쓸 예정</td></tr>
+<tr><td class="st-high">고품질</td><td class="sk-used">비결</td><td></td><td class="cmt">손길이 성공 — 10스택 달성</td></tr>
+<tr><td colspan="4" class="stat-line">📊 정신집중 10스택 · 내구 25/45 · 작업량 4,740 · 품질 5,156 · 남은 CP 212</td></tr>
+</table></div>
+<div class="mx-box" style="margin-top:10px">① 10스택을 빨리 쌓는 게 목적이라 상태 상관없이 교묘한 손놀림을 우선. 내구 45라서 근검절약은 취향 차이 — 작성자는 성급한 손길까지 써서 올릴 생각으로 근검을 썼어요.<br>② 10스택을 절대 우선순위로 두고, 근검절약 1스택이 남은 상태에서 고효율이 떠서 CP -20으로 +2스택을 챙겼어요.</div></div>
+          <div id="ax1-p2" class="phase-panel"><div style="overflow-x:auto"><table class="tbl">
+<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
+<tr class="phase-row"><td colspan="4">── 10스택 완료 후, 마무리 로테이션 전까지 (CP 소모 212)</td></tr>
+<tr><td class="st-fast">빠른 진행</td><td class="sk-used">교묘한 손놀림</td><td></td><td class="cmt">내구도 확보</td></tr>
+<tr><td class="st-good">길조</td><td class="sk-used">장족의 발전</td><td></td><td class="cmt">품질 콤보 시작 — 다음이 고품질이라 [장족+고품질+밑가공]이 [장족+혁신+밑가공]보다 높아요</td></tr>
+<tr><td class="st-high">고품질</td><td class="sk-used">밑가공</td><td></td><td class="cmt">품질 상승 + CP 절약</td></tr>
+<tr><td class="st-solid">견고</td><td class="sk-used">절약 가공</td><td></td><td class="cmt">CP 절약</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used">장족의 발전</td><td></td><td class="cmt">콤보 연계</td></tr>
+<tr><td class="st-efficient">고효율</td><td class="sk-used">혁신</td><td></td><td class="cmt">내구도 + 작업량 + 확신</td></tr>
+<tr><td class="st-efficient">고효율</td><td class="sk-used">밑가공</td><td></td><td class="cmt">품질 상승</td></tr>
+<tr><td class="st-solid">견고</td><td class="sk-used">장족의 발전</td><td></td><td class="cmt">콤보 연계</td></tr>
+<tr><td class="st-good">길조</td><td class="sk-used">경과 관찰</td><td></td><td class="cmt">초절기술로 상태를 띄우거나 부족한 내구도를 한 번 회복 (교묘가 켜진 상태에서만)</td></tr>
+<tr><td class="st-high">고품질</td><td class="sk-used">밑가공</td><td></td><td class="cmt"></td></tr>
+<tr><td colspan="4" class="stat-line">📊 정신집중 10스택 · 내구 2/45 · 작업량 4,740 · 품질 18,456</td></tr>
+</table></div>
+<div class="mx-box" style="margin-top:10px">TIP) 기본 품질 로테이션: 장족 → 혁신 → 밑가공 → 장족 → 경과 관찰 → 상급 가공. 상태를 안 보겠다면 장족 → 혁신 → 밑가공만 반복해도 돼요.<br>상태를 띄워 보겠다면: 장족 + 혁신 + 밑가공 + 장족 + 초절기술 + 밑가공 / 장족 + 혁신 + 초절기술 + 밑가공 + 장족 + 밑가공<br>① 길조 타이밍에 장족 시작 — [장족+고품질+밑가공]이 [장족+혁신+밑가공]보다 품질 수치가 높아요.<br>② 내구도가 5/0으로 갈라지지 않아 절약 가공으로 끊었어요 — 가공 버프가 없는 상태이므로. (가공 버프가 없으니 내구도가 확보되면 절약 가공으로 자름)<br>※ 다른 명인 레시피보다 품질 수치가 낮은 편이라 품질 콤보는 가장 높은 밑가공으로 빠르게 가요. 마무리 콤보(장족+혁신+비레고)가 약 4천 품질이라, 여기서 올려야 할 수치는 약 18,000이에요.</div></div>
+          <div id="ax1-p3" class="phase-panel"><div style="overflow-x:auto"><table class="tbl">
+<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
+<tr class="phase-row"><td colspan="4">── 기본 마무리 로테이션 (장족 + 혁신 + 비레고) / CP 소모 74</td></tr>
+<tr><td class="st-solid">견고</td><td class="sk-used">장인의 초절 기술</td><td></td><td class="cmt">내구도가 없어 초절 기술로 마무리 진입</td></tr>
+<tr><td class="st-good">길조</td><td class="sk-used">장족의 발전</td><td></td><td class="cmt">길조라 장족 사용 — 장족+고품질+비레고가 기본 콤보보다 수치가 커서 혁신 생략</td></tr>
+<tr><td class="st-high">고품질</td><td class="sk-used">비레고의 축복</td><td></td><td class="cmt">고품질 비레고는 최고의 선택 — 품질 극대화</td></tr>
+<tr><td colspan="4" class="stat-line">📊 내구 2/45 · 작업량 4,740 · 품질 22,100 · 남은 CP 0~20</td></tr>
+</table></div>
+<div class="mx-box" style="margin-top:10px">① 내구도가 없어 초절 기술로 마무리 진입.<br>② 길조라 장족 사용. 고품질+비레고가 최고 선택이므로 혁신 생략.</div></div>
+          <div id="ax1-p4" class="phase-panel"><div style="overflow-x:auto"><table class="tbl">
+<tr><th>상태</th><th>시전 스킬</th><th>결과</th><th>코멘트</th></tr>
+<tr class="phase-row"><td colspan="4">── CP 100 이상 남겨 두기</td></tr>
+<tr><td class="st-long">장기 지속</td><td class="sk-used">공경</td><td></td><td class="cmt">버프 +2 리필</td></tr>
+<tr><td class="st-efficient">고효율</td><td class="sk-used">능숙한 땜질</td><td></td><td class="cmt">완땜(112) 대신 35만 채우는 능숙한 땜질 사용 (3번째라서)</td></tr>
+<tr><td class="st-solid">견고</td><td class="sk-used">우주 안정된 솜씨</td><td></td><td class="cmt">안정적인 작업량 확보</td></tr>
+<tr><td class="st-normal">보통</td><td class="sk-used">강행 작업</td><td></td><td class="cmt">잔량 마무리 — 작업량 2,370, 완성</td></tr>
+<tr><td colspan="4" class="stat-line">📊 내구 2→0 · 작업량 2,370 · 품질 유지 — 완성!</td></tr>
+</table></div>
+<div class="mx-box" style="margin-top:10px">① 3번째 땜질이라 완땜(112) 대신 35만 채우는 능숙한 땜질을 썼어요.</div></div>
+        </div>
+      </div>
+      <!--AX-END-->
     </div>
   </div>
 </div>
