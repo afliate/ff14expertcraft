@@ -190,6 +190,25 @@
     // 상태 아이콘도 어느 정도 맞아야 진짜 제작 창으로 본다 (엉뚱한 곳에서 1공정처럼 읽히는 오탐 방지)
     return best && best.d < 18 && iconDistAt(fc, best.x, best.y, best.sc) <= 50 ? best : null;
   }
+  // 숫자(작업량/품질)가 가장 또렷하게 읽히는 위치·크기로 미세 조정 (±3% 크기, ±몇 픽셀)
+  async function refineByNumbers(t0, spots) {
+    if (!window.VLNUM || !auto) return;
+    const times = [t0].concat(spots.filter((t) => Math.abs(t - t0) > 5).slice(0, 1)), frames = [];
+    for (const t of times) { await seekTo(t); await new Promise((r) => setTimeout(r, 30)); const f = document.createElement('canvas'); f.width = video.videoWidth; f.height = video.videoHeight; f.getContext('2d').drawImage(video, 0, 0); if (findWindow()) frames.push(f); }
+    if (!frames.length) return;
+    const cost = (x, y, k) => { let tot = 0; for (const f of frames) {
+      for (const fl of ['prog', 'qual']) { const r = VLNUM.read(f, x, y, k, fl, { shifts: [-1, 0, 1] }); tot += r && r.cur <= r.max ? Math.min(r.d, 12) : 12; }
+      const st = stepAt(f, x, y, k);                         // 공정 번호·상태 아이콘도 같이 맞아야 한다 (숫자만 맞추다 아이콘이 어긋나는 것 방지)
+      tot += 0.12 * ((st ? Math.min(st.d, 30) : 30) + Math.min(iconDistAt(f, x, y, k), 80));
+    } return tot; };
+    let best = { c: cost(auto.x, auto.y, auto.sc), x: auto.x, y: auto.y, k: auto.sc };
+    const base = { ...best };
+    const scan = (dks, ds, dd) => { const c0 = { ...best }; for (const dk of dks) for (let dx = -ds; dx <= ds + 1e-9; dx += dd) for (let dy = -ds; dy <= ds + 1e-9; dy += dd) { const k = c0.k * (1 + dk), c = cost(c0.x + dx * k, c0.y + dy * k, k); if (c < best.c) best = { c, x: c0.x + dx * k, y: c0.y + dy * k, k }; } };
+    scan([-0.03, -0.015, 0, 0.015, 0.03], 4, 2);
+    scan([-0.007, 0, 0.007], 1.5, 0.75);
+    if (best.c < base.c) auto = { x: best.x, y: best.y, sc: best.k };
+    await seekTo(t0);
+  }
   async function autoFind(quiet) {
     if (!video.videoWidth || running) return false;
     $('findMsg').textContent = '제작 창을 찾는 중…';
@@ -200,6 +219,9 @@
       if (r) {
         auto = { x: r.x, y: r.y, sc: r.sc }; $('ox').value = $('oy').value = 0; $('os').value = 100;
         $('seek').value = Math.round(t / duration * 1000); $('seekT').textContent = fmt(t);
+        $('findMsg').textContent = `제작 창을 찾았어요 (${fmt(t)} 장면, ${r.v}공정으로 확인). 상자가 맞는지 보고, 틀리면 슬라이더로 고쳐 주세요.`;
+        $('findMsg').textContent = '제작 창을 찾았어요. 숫자 위치를 미세 조정하는 중…';
+        await refineByNumbers(t, spots);
         $('findMsg').textContent = `제작 창을 찾았어요 (${fmt(t)} 장면, ${r.v}공정으로 확인). 상자가 맞는지 보고, 틀리면 슬라이더로 고쳐 주세요.`;
         drawPreview(); return true;
       }
@@ -221,7 +243,7 @@
     const nm = (x) => (x ? `${x.c}/${x.m}` : '못 읽음');
     $('pvRead').innerHTML = s ? `지금 장면에서 읽은 값: <b>${s.step}공정</b>, 상태 <b>${KO[s.cond] || '모르는 아이콘'}</b>, 작업량 <b>${nm(s.p)}</b>, 품질 <b>${nm(s.q)}</b>` : '이 장면에서는 제작 창을 못 찾았어요 (제작 중인 장면으로 옮기거나 상자 위치를 맞춰 주세요).';
   }
-  function seekTo(t) { return new Promise((res) => { const f = () => { video.removeEventListener('seeked', f); res(); }; video.addEventListener('seeked', f); video.currentTime = Math.max(0, Math.min(duration - 0.1, t)); }); }
+  function seekTo(t) { return new Promise((res) => { if (Math.abs(video.currentTime - Math.max(0, Math.min(duration - 0.1, t))) < 0.01) return res(); const f = () => { video.removeEventListener('seeked', f); res(); }; video.addEventListener('seeked', f); video.currentTime = Math.max(0, Math.min(duration - 0.1, t)); }); }
   const fmt = (s) => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + '시간 ' : '') + m + '분 ' + (s % 60) + '초'; };
 
   /* ── 파일 선택 ── */
@@ -370,5 +392,5 @@
     a.download = (fileName.replace(/\.[^.]+$/, '') || 'craftlog') + '_기록.csv'; a.click();
   };
   $('copy').onclick = () => { navigator.clipboard.writeText(rows().map((r) => r.join('\t')).join('\n')).then(() => { $('copy').textContent = '복사됨'; setTimeout(() => { $('copy').textContent = '표 복사'; }, 1200); }); };
-  window.__vl = { dbg: (x, y, k) => { fcx.drawImage(video,0,0); const b = rect({ x, y, sc: k }, ICON); ix.drawImage(fc, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]); const v = iconVec(); return TPL.map((t) => [t.n, +Math.sqrt(dist2(t.t, v) / v.length).toFixed(1)]).sort((a, b) => a[1] - b[1]).slice(0, 4); }, candidates, tuneCand, sample, summarize, readStep, findWindow, autoFind, obsRef: () => obs, getAuto: () => auto };   // 테스트용
+  window.__vl = { video, dbg: (x, y, k) => { fcx.drawImage(video,0,0); const b = rect({ x, y, sc: k }, ICON); ix.drawImage(fc, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]); const v = iconVec(); return TPL.map((t) => [t.n, +Math.sqrt(dist2(t.t, v) / v.length).toFixed(1)]).sort((a, b) => a[1] - b[1]).slice(0, 4); }, candidates, tuneCand, sample, summarize, readStep, findWindow, autoFind, obsRef: () => obs, getAuto: () => auto };   // 테스트용
 })();
