@@ -106,13 +106,67 @@
     for (const t of TPL) { const e = Math.sqrt(dist2(t.t, v) / v.length); if (e < bd) { bd = e; bn = t.n; } }
     return { cond: bd <= 38 ? bn : '?', d: bd };
   }
+  /* ── 상태(보통/고품질…) 읽기 ──
+   * 상태 칸 = 색 점 + 글자. 글자 길이(2·3·4·5글자)로 먼저 나누고, 같은 길이 안에서는 점 색으로 가른다.
+   *  2글자: 보통(흰색) 안정(노랑) 길조(주황) 견고·완강(파랑, 완강은 점에 반짝이 별이 있음)
+   *  3글자: 고품질(분홍) 고효율(초록) 저품질(검정)   4글자: 최고품질(무지개라 색은 안 봄)
+   *  5글자: 빠른 진행(파랑) 장기 지속(보라)
+   * 글자색(주황/검정)은 레시피 난이도에 따라 달라서 쓰지 않는다. */
+  const CR = [12, 122, 120, 30], CZ = 2;
+  const cc = document.createElement('canvas'); cc.width = CR[2] * CZ; cc.height = CR[3] * CZ;
+  const ccx = cc.getContext('2d', { willReadFrequently: true });
+  function hsv(r, g, b) { const mx = Math.max(r, g, b), mn = Math.min(r, g, b), dd = mx - mn; let h = 0; if (dd) { if (mx === r) h = ((g - b) / dd + 6) % 6; else if (mx === g) h = (b - r) / dd + 2; else h = (r - g) / dd + 4; h *= 60; } return [h, mx ? dd / mx : 0, mx / 255]; }
+  function readCond2(g) {
+    const k = g.sc; ccx.imageSmoothingQuality = 'high';
+    ccx.drawImage(video, g.x + CR[0] * k, g.y + CR[1] * k, CR[2] * k, CR[3] * k, 0, 0, cc.width, cc.height);
+    const W = cc.width, H = cc.height, d = ccx.getImageData(0, 0, W, H).data;
+    const med = [0, 1, 2].map((ch) => { const t = []; for (let i = 0; i < W * H; i++) t.push(d[i * 4 + ch]); t.sort((p, q) => p - q); return t[t.length >> 1]; });
+    // 점 찾기: 예상 자리(14,16) 근처에서 배경색과 가장 다른 작은 원판
+    let best = null;
+    for (let dy = -2.5; dy <= 3.5; dy += 0.5) for (let dx = -4; dx <= 2.5; dx += 0.5) {
+      const cx = (14 + dx) * CZ, cy = (16 + dy) * CZ, r = 1.75 * CZ; let s = [0, 0, 0], n = 0;
+      for (let yy = Math.floor(cy - r); yy <= cy + r; yy++) for (let xx = Math.floor(cx - r); xx <= cx + r; xx++) { if ((xx - cx) ** 2 + (yy - cy) ** 2 > r * r) continue; const i = (yy * W + xx) * 4; s[0] += d[i]; s[1] += d[i + 1]; s[2] += d[i + 2]; n++; }
+      const m = s.map((z) => z / n), dist = Math.hypot(m[0] - med[0], m[1] - med[1], m[2] - med[2]);
+      if (!best || dist > best.dist) best = { dist, cx, cy, m };
+    }
+    if (!best || best.dist < 18) { readCond2.dbg = { why: 'dist', dist: best && best.dist }; return '?'; }
+    const [h, sat, val] = hsv(...best.m);
+    // 별(흰 십자): 점 둘레의 거의 흰 픽셀 비율
+    let wh = 0, tot = 0; const R2 = 4.5 * CZ;
+    for (let yy = Math.floor(best.cy - R2); yy <= best.cy + R2; yy++) for (let xx = Math.floor(best.cx - R2); xx <= best.cx + R2; xx++) { if ((xx - best.cx) ** 2 + (yy - best.cy) ** 2 > R2 * R2) continue; const i = (yy * W + xx) * 4, q = hsv(d[i], d[i + 1], d[i + 2]); tot++; if (q[2] > 0.93 && q[1] < 0.18) wh++; }
+    // 글자 길이: 점 오른쪽에서 어둡거나 주황인 열
+    const x0 = Math.round(best.cx + 6 * CZ), y0 = Math.round(best.cy - 7 * CZ), y1 = Math.round(best.cy + 7 * CZ), cols = [];
+    for (let xx = x0; xx < Math.min(W, 72 * CZ); xx++) { let ink = 0; for (let yy = Math.max(0, y0); yy < Math.min(H, y1); yy++) { const i = (yy * W + xx) * 4, q = hsv(d[i], d[i + 1], d[i + 2]); if (q[2] < 0.5 || (q[1] > 0.55 && q[2] > 0.6 && q[0] < 45)) ink++; } cols.push(ink >= 2 ? 1 : 0); }
+    const f = cols.indexOf(1), l = cols.lastIndexOf(1); if (f < 0) return '?';
+    let run = 0, mg = 0; for (let i = f; i <= l; i++) { if (!cols[i]) { run++; mg = Math.max(mg, run); } else run = 0; }
+    const w = (l - f + 1) / CZ, gap = mg / CZ;
+    readCond2.dbg = { h, sat, val, w, gap, wh: wh / tot, dist: best.dist };
+    if (w < 12) return '?';
+    if (w <= 19.5) {                                           // 2글자
+      if (sat < 0.2 && val > 0.55) return 'normal';
+      if (h >= 180 && h <= 240 && sat > 0.45) return wh / tot >= 0.012 ? 'robust' : 'sturdy';
+      if (h >= 35 && h <= 75) return 'centered';
+      if (h < 35 || h > 340) return 'goodOmen';
+      return '?';
+    }
+    if (w <= 28.5) {                                           // 3글자
+      if (val < 0.4 && sat < 0.35) return 'poor';
+      if (h >= 80 && h <= 170) return 'pliant';
+      if (h >= 320 || h < 15) return 'good';
+      return '?';
+    }
+    if (w <= 34.5 && gap < 3) return 'excellent';              // 4글자
+    if (w >= 33 && w <= 41 && gap >= 3) return h >= 250 && h <= 320 ? 'primed' : (h >= 190 && h < 250 ? 'malleable' : '?');   // 5글자
+    return '?';
+  }
   function sample(t) {
     const g = geom(), a = rect(g, STEP), b = rect(g, ICON);
     sx.drawImage(video, a[0], a[1], a[2], a[3], 0, 0, STEP[2], STEP[3]);
     ix.drawImage(video, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]);
     const step = readStep(); if (step == null) return null;
     const c = readCond(); if (c.cond === '?' && c.d > 70) return null;
-    return { t, step, cond: c.cond, p: readNum('prog'), q: readNum('qual') };
+    const cond2 = readCond2(g);
+    return { t, step, cond: cond2 !== '?' ? cond2 : c.cond, p: readNum('prog'), q: readNum('qual') };
   }
   // 작업량/품질 숫자 (현재/최대). 못 읽거나 앞뒤가 안 맞으면 null
   function readNum(f) {
@@ -392,5 +446,5 @@
     a.download = (fileName.replace(/\.[^.]+$/, '') || 'craftlog') + '_기록.csv'; a.click();
   };
   $('copy').onclick = () => { navigator.clipboard.writeText(rows().map((r) => r.join('\t')).join('\n')).then(() => { $('copy').textContent = '복사됨'; setTimeout(() => { $('copy').textContent = '표 복사'; }, 1200); }); };
-  window.__vl = { video, dbg: (x, y, k) => { fcx.drawImage(video,0,0); const b = rect({ x, y, sc: k }, ICON); ix.drawImage(fc, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]); const v = iconVec(); return TPL.map((t) => [t.n, +Math.sqrt(dist2(t.t, v) / v.length).toFixed(1)]).sort((a, b) => a[1] - b[1]).slice(0, 4); }, candidates, tuneCand, sample, summarize, readStep, findWindow, autoFind, obsRef: () => obs, getAuto: () => auto };   // 테스트용
+  window.__vl = { video, cond2: (g) => readCond2(g), dbg2: () => readCond2.dbg, dbg: (x, y, k) => { fcx.drawImage(video,0,0); const b = rect({ x, y, sc: k }, ICON); ix.drawImage(fc, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]); const v = iconVec(); return TPL.map((t) => [t.n, +Math.sqrt(dist2(t.t, v) / v.length).toFixed(1)]).sort((a, b) => a[1] - b[1]).slice(0, 4); }, candidates, tuneCand, sample, summarize, readStep, findWindow, autoFind, obsRef: () => obs, getAuto: () => auto };   // 테스트용
 })();
