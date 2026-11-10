@@ -22,6 +22,7 @@ h1 em{color:var(--accent);font-style:normal}
 label{color:var(--text-dim);font-size:14px}
 input[type=number],input[type=text]{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:3px;padding:5px 8px;font-family:inherit;font-size:14px;width:84px}
 input[type=text]{width:170px}
+select{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:3px;padding:5px 8px;font-family:inherit}
 input[type=range]{width:180px;vertical-align:middle}
 button{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:7px 16px;border-radius:3px;font-family:inherit;font-size:14px;cursor:pointer}
 button.main{background:var(--accent);color:#06241c;font-weight:700}
@@ -66,6 +67,12 @@ summary{cursor:pointer;color:var(--text-dim)}
       <button id="reset">기본값</button>
     </div>
     <div class="note" id="pvRead"></div>
+    <div class="row">
+      <label>이 장면의 상태는
+        <select id="learnSel"><option value="goodOmen">길조</option><option value="poor">최악</option><option value="excellent">최고품질</option><option value="good">고품질</option><option value="normal">보통</option><option value="centered">안정</option><option value="sturdy">견고</option><option value="pliant">고효율</option><option value="malleable">빠른 진행</option><option value="primed">장기 지속</option><option value="robust">완강</option></select></label>
+      <button id="learn">이 아이콘 기억시키기</button><button id="unlearn">기억한 것 지우기</button><span class="note" id="learnN"></span>
+    </div>
+    <div class="note">상태를 잘못 읽거나 "모르는 아이콘"으로 나오면, 그 상태가 떠 있는 장면에서 위 버튼을 눌러 알려 주세요. 이 브라우저에 저장돼서 다음에도 써요.</div>
   </div>
 
   <div class="card" id="runCard" hidden>

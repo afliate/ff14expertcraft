@@ -8,6 +8,14 @@
   const STEP = [272, 46, 34, 20], ICON = [18, 128, 20, 18];   // 창 기준 (x,y,w,h)
   const KO = { normal: '보통', good: '고품질', excellent: '최고품질', poor: '최악', centered: '안정', sturdy: '견고', pliant: '고효율', malleable: '빠른 진행', primed: '장기 지속', goodOmen: '길조', robust: '완강' };
   const TPL = D.cond.map((c) => ({ n: c.n, t: Float32Array.from(c.t) }));
+  const LS = 'vl_learned_v1';
+  function loadLearned() { try { return JSON.parse(localStorage.getItem(LS) || '[]'); } catch (e) { return []; } }
+  function applyLearned() {
+    for (let i = TPL.length - 1; i >= 0; i--) if (TPL[i].learned) TPL.splice(i, 1);
+    const L = loadLearned(); L.forEach((c) => TPL.push({ n: c.n, t: Float32Array.from(c.t), learned: true }));
+    const el = document.getElementById('learnN'); if (el) el.textContent = L.length ? `기억한 아이콘 ${L.length}개` : '';
+  }
+  applyLearned();
   const DIG = Object.keys(D.digits).map((k) => ({ k, v: Float32Array.from(D.digits[k]) }));
   const TW = 10, TH = 14, P = 11, CX = 16.5;
 
@@ -77,9 +85,13 @@
     if (!(v >= 1 && v <= 99) || best.d > 14) return null;
     return v;
   }
-  function readCond() {
+  function iconVec() {
     const d = ix.getImageData(0, 0, ICON[2], ICON[3]).data, n = ICON[2] * ICON[3], v = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) { v[i * 3] = d[i * 4]; v[i * 3 + 1] = d[i * 4 + 1]; v[i * 3 + 2] = d[i * 4 + 2]; }
+    return v;
+  }
+  function readCond() {
+    const v = iconVec();
     let bn = '?', bd = 1e18;
     for (const t of TPL) { const e = Math.sqrt(dist2(t.t, v) / v.length); if (e < bd) { bd = e; bn = t.n; } }
     return { cond: bd <= 38 ? bn : '?', d: bd };
@@ -127,6 +139,14 @@
   $('drop').addEventListener('drop', (e) => load(e.dataTransfer.files[0]));
   $('seek').oninput = () => { if (running) return; const t = $('seek').value / 1000 * duration; $('seekT').textContent = fmt(t); seekTo(t).then(drawPreview); };
   ['ox', 'oy', 'os'].forEach((id) => { $(id).oninput = () => { if (!running) drawPreview(); }; });
+  $('learn').onclick = () => {
+    if (!video.videoWidth) return;
+    const g = geom(), b = rect(g, ICON); ix.drawImage(video, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]);
+    const L = loadLearned(); L.push({ n: $('learnSel').value, t: Array.from(iconVec()).map(Math.round) });
+    try { localStorage.setItem(LS, JSON.stringify(L.slice(-60))); } catch (e) { alert('이 브라우저에서는 저장할 수 없어요.'); }
+    applyLearned(); drawPreview();
+  };
+  $('unlearn').onclick = () => { try { localStorage.removeItem(LS); } catch (e) {} applyLearned(); drawPreview(); };
   $('reset').onclick = () => { $('ox').value = 0; $('oy').value = 0; $('os').value = 100; drawPreview(); };
 
   /* ── 분석 ── */
