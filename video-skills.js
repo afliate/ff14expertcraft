@@ -159,9 +159,24 @@
   }
   // 버프 줄로 스킬을 바로잡는다: 숫자가 안 변하는 스킬(버프·땜질)은 '다음 공정에 새로 생긴 버프'로 정체를 확정한다.
   const BUFF_KEY = { '확신': 'mm', '공경': 'ven', '혁신': 'inno', '장족의 발전': 'gs', '근검절약': 'wn', '장기 절약': 'wn2', '교묘한 손놀림': 'manip', '일심불란': 'hs', '장인의 초절 기술': 'tp' };
+  // CP 소모량으로 스킬 후보를 거른다 (고효율은 절반, 가공→중급→상급 연계는 싸짐)
+  function cpCost(k, cond, prev) {
+    let c = A[k].cp || 0;
+    if (k === 'standard' && prev === 'basicT') c = 18;
+    if (k === 'advanced' && (prev === 'standard' || prev === 'observe')) c = prev === 'observe' ? 12 : 18;
+    return cond === 'pliant' ? Math.floor(c / 2) : c;
+  }
   function refine(res, rows) {
     if (!res || !rows) return res;
-    const by = new Map(); rows.forEach((r) => by.set(r.step, r.buffs || null));
+    const by = new Map(), cpBy = new Map(), condBy = new Map(); rows.forEach((r) => { by.set(r.step, r.buffs || null); cpBy.set(r.step, r.cp == null ? null : r.cp); condBy.set(r.step, r.cond); });
+    res.acts.forEach((a, i) => {
+      const c0 = cpBy.get(a.step), c1 = cpBy.get(a.step + 1);
+      if (c0 == null || c1 == null || a.byBuff) return;
+      const d = c0 - c1; if (d < 0 || d > 200) return;
+      const prev = i > 0 ? res.acts[i - 1].key : null, cond = condBy.get(a.step);
+      const ok = a.alts.filter((k) => k === NONE || Math.abs(cpCost(k, cond, prev) - d) <= 1);
+      if (ok.some((k) => k !== NONE) && ok.length < a.alts.length) { a.alts = ok; if (!ok.includes(a.key)) a.key = ok[0]; a.byCp = true; }
+    });
     res.acts.forEach((a) => {
       const cur = by.get(a.step), nxt = by.get(a.step + 1);
       if (cur && !cur.includes('최종 확인') && nxt && nxt.includes('최종 확인')) a.pre = ['fa'];   // 같은 공정 안에서 최종 확인(공정 번호가 안 올라감)
