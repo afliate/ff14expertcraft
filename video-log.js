@@ -34,8 +34,9 @@
   function geom() {
     const k = video.videoWidth / 1280, s = $('os').value / 100;
     const b = auto || { x: WIN.x * k, y: WIN.y * k, sc: k };
-    return { x: b.x + +$('ox').value * b.sc, y: b.y + +$('oy').value * b.sc, sc: b.sc * s };
+    return { x: b.x + (+$('ox').value + off.x) * b.sc, y: b.y + (+$('oy').value + off.y) * b.sc, sc: b.sc * s };
   }
+  const off = { x: 0, y: 0 };                         // 프레임 단위 미세 보정 (낮은 해상도에서 1~2픽셀 어긋나도 공정 번호가 안 읽히는 것 대비)
   function rect(g, r) { return [g.x + r[0] * g.sc, g.y + r[1] * g.sc, r[2] * g.sc, r[3] * g.sc]; }
 
   /* ── 인식 ── */
@@ -161,19 +162,33 @@
     return '?';
   }
   function sample(t) {
-    const g = geom(), a = rect(g, STEP), b = rect(g, ICON);
-    sx.drawImage(video, a[0], a[1], a[2], a[3], 0, 0, STEP[2], STEP[3]);
-    ix.drawImage(video, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]);
-    const step = readStep(); if (step == null) return null;
-    const c = readCond(); if (c.cond === '?' && c.d > 70) return null;
-    const cond2 = readCond2(g);
+    let g, step;
+    const grab = () => { g = geom(); const a = rect(g, STEP), b = rect(g, ICON);
+      sx.drawImage(video, a[0], a[1], a[2], a[3], 0, 0, STEP[2], STEP[3]);
+      ix.drawImage(video, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]); step = readStep(); };
+    grab();
+    if (step == null) {                                       // 자리 보정 값 주변을 훑어 가장 잘 읽히는 곳을 쓴다
+      const o0 = { ...off }; let best = null;
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+        off.x = o0.x + dx; off.y = o0.y + dy; const gg = geom(), r = stepAt(video, gg.x, gg.y, gg.sc);
+        if (r && r.d <= 18 && (!best || r.d < best.d)) best = { d: r.d, x: off.x, y: off.y };
+      }
+      if (best) { off.x = best.x; off.y = best.y; } else { off.x = o0.x; off.y = o0.y; }
+      grab();
+    }
+    if (step == null) return null;
+    const c = readCond(), cond2 = readCond2(g);
+    if (c.cond === '?' && c.d > 70 && cond2 === '?') return null;
     return { t, step, cond: cond2 !== '?' ? cond2 : c.cond, p: readNum('prog'), q: readNum('qual') };
   }
   // 작업량/품질 숫자 (현재/최대). 못 읽거나 앞뒤가 안 맞으면 null
   function readNum(f) {
     if (!window.VLNUM) return null;
-    const g = geom(), r = VLNUM.read(video, g.x, g.y, g.sc, f);
-    return r && r.cur <= r.max && r.d < 6 ? { c: r.cur, m: r.max } : null;
+    const g = geom(); let best = null;
+    const tryAt = (x, y) => { const r = VLNUM.read(video, x, y, g.sc, f); if (r && r.cur <= r.max && r.d < 6 && (!best || r.d < best.d)) best = r; return r; };
+    tryAt(g.x, g.y);
+    if (!best) for (let dy = -2; dy <= 2; dy++) for (let dx = -1; dx <= 1; dx++) if (dx || dy) tryAt(g.x + dx * g.sc, g.y + dy * g.sc);   // 숫자 칸만 따로 1~2픽셀 보정
+    return best ? { c: best.cur, m: best.max } : null;
   }
 
 
