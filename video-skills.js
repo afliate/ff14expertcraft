@@ -166,9 +166,8 @@
       const cur = by.get(a.step), nxt = by.get(a.step + 1);
       if (cur && !cur.includes('최종 확인') && nxt && nxt.includes('최종 확인')) a.pre = ['fa'];   // 같은 공정 안에서 최종 확인(공정 번호가 안 올라감)
       if (!cur || !nxt) return;
-      // 장인의 운때 = 성급한 손길이 성공하면 붙는 버프 → 새로 생겼으면 성급한 손길 (같은 변화량을 내는 가공 중에서 고름), 이 버프가 있다가 사라졌고 대담한 손길이 후보면 대담한 손길
-      if (nxt.includes('장인의 운때') && !cur.includes('장인의 운때') && (a.alts.includes('hasty') || a.alts.some((k) => A[k] && A[k].kind === 'qual'))) { a.key = 'hasty'; a.alts = ['hasty']; a.byBuff = true; return; }
-      if (cur.includes('장인의 운때') && !nxt.includes('장인의 운때') && a.alts.includes('daring')) { a.key = 'daring'; a.alts = ['daring']; a.byBuff = true; return; }
+      // 장인의 운때 = 성급한 손길을 쓰고 성공하면 붙는 버프 → 새로 생겼으면 성급한 손길(성공)로 확정 (같은 품질 변화를 내는 가공 중에서 고름)
+      if (nxt.includes('장인의 운때') && !cur.includes('장인의 운때') && a.alts.some((k) => A[k] && A[k].kind === 'qual')) { a.key = 'hasty'; a.alts = ['hasty']; a.byBuff = true; return; }
       const nw = nxt.filter((n) => n !== '?' && n !== '정신 집중' && !cur.includes(n) && BUFF_KEY[n] && A[BUFF_KEY[n]]);
       if (a.key === NONE || (a.alts.includes(NONE) && nw.length)) {
         if (nw.length === 1) { a.key = BUFF_KEY[nw[0]]; a.alts = [a.key]; a.byBuff = true; }
