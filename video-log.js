@@ -138,13 +138,14 @@
     const x0 = Math.round(best.cx + 6 * CZ), y0 = Math.round(best.cy - 7 * CZ), y1 = Math.round(best.cy + 7 * CZ), cols = [];
     for (let xx = x0; xx < Math.min(W, 72 * CZ); xx++) { let ink = 0; for (let yy = Math.max(0, y0); yy < Math.min(H, y1); yy++) { const i = (yy * W + xx) * 4, q = hsv(d[i], d[i + 1], d[i + 2]); if (q[2] < 0.5 || (q[1] > 0.55 && q[2] > 0.6 && q[0] < 45)) ink++; } cols.push(ink >= 2 ? 1 : 0); }
     const f = cols.indexOf(1), l = cols.lastIndexOf(1); if (f < 0) return '?';
+    let inkTot = 0, inkL = 0; for (let xx = f; xx <= l; xx++) { let ink = 0; for (let yy = Math.max(0, y0); yy < Math.min(H, y1); yy++) { const i = ((yy) * W + x0 + xx) * 4, q = hsv(d[i], d[i + 1], d[i + 2]); if (q[2] < 0.5 || (q[1] > 0.55 && q[2] > 0.6 && q[0] < 45)) ink++; } inkTot += ink; if (xx < (f + l) / 2) inkL += ink; }
     let run = 0, mg = 0; for (let i = f; i <= l; i++) { if (!cols[i]) { run++; mg = Math.max(mg, run); } else run = 0; }
     const w = (l - f + 1) / CZ, gap = mg / CZ;
-    readCond2.dbg = { h, sat, val, w, gap, wh: wh / tot, dist: best.dist };
+    readCond2.dbg = { h, sat, val, w, gap, wh: wh / tot, dist: best.dist, ink: inkTot, inkL };
     if (w < 12) return '?';
     if (w <= 19.5) {                                           // 2글자
       if (sat < 0.2 && val > 0.55) return 'normal';
-      if (h >= 180 && h <= 240 && sat > 0.45) return wh / tot >= 0.012 ? 'robust' : 'sturdy';
+      if (h >= 180 && h <= 240 && sat > 0.45) return (wh / tot >= 0.012 || inkTot >= 412) ? 'robust' : 'sturdy';   // 완강은 반짝이 별이 커졌다 줄었다 해서, 글자 획 수(잉크량)도 같이 본다
       if (h >= 35 && h <= 75) return 'centered';
       if (h < 35 || h > 340) return 'goodOmen';
       return '?';
