@@ -6,7 +6,7 @@
   const $ = (id) => document.getElementById(id);
   const WIN = { x: 150, y: 10, w: 316 };               // 1280 기준 제작 창
   const STEP = [272, 46, 34, 20], ICON = [18, 128, 20, 18];   // 창 기준 (x,y,w,h)
-  const KO = { normal: '보통', good: '고품질', excellent: '최고품질', poor: '최악', centered: '안정', sturdy: '견고', pliant: '고효율', malleable: '빠른 진행', primed: '장기 지속', goodOmen: '길조', robust: '완강' };
+  const KO = { normal: '보통', good: '고품질', excellent: '최고품질', poor: '저품질', centered: '안정', sturdy: '견고', pliant: '고효율', malleable: '빠른 진행', primed: '장기 지속', goodOmen: '길조', robust: '완강' };
   const TPL = D.cond.map((c) => ({ n: c.n, t: Float32Array.from(c.t) }));
   const LS = 'vl_learned_v1';
   function loadLearned() { try { return JSON.parse(localStorage.getItem(LS) || '[]'); } catch (e) { return []; } }
@@ -30,11 +30,11 @@
   let fileName = '', duration = 0, running = false, obs = [], lastResult = null;
 
   /* ── 창 위치: 영상 크기 비례 + 사용자가 조정한 값 ── */
+  let auto = null;                                   // 자동으로 찾은 창 위치 {x,y,sc} (영상 픽셀)
   function geom() {
-    const W = video.videoWidth, k = W / 1280;
-    const s = $('os').value / 100;
-    const w = WIN.w * k * s;
-    return { x: WIN.x * k + +$('ox').value * k, y: WIN.y * k + +$('oy').value * k, sc: w / 316 };
+    const k = video.videoWidth / 1280, s = $('os').value / 100;
+    const b = auto || { x: WIN.x * k, y: WIN.y * k, sc: k };
+    return { x: b.x + +$('ox').value * b.sc, y: b.y + +$('oy').value * b.sc, sc: b.sc * s };
   }
   function rect(g, r) { return [g.x + r[0] * g.sc, g.y + r[1] * g.sc, r[2] * g.sc, r[3] * g.sc]; }
 
@@ -68,7 +68,11 @@
     return resizeArea(sub, w, h, TW, TH);
   }
   const dist2 = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) { const d = a[i] - b[i]; s += d * d; } return s; };
-  function readStep() {
+  // src 의 (x,y,k) 위치에 제작 창이 있다고 보고 공정 번호를 읽는다. d 가 작을수록 확실.
+  function stepAt(src, x, y, k) {
+    const a = rect({ x, y, sc: k }, STEP);
+    if (a[0] < 0 || a[1] < 0 || a[2] < 8) return null;
+    sx.drawImage(src, a[0], a[1], a[2], a[3], 0, 0, STEP[2], STEP[3]);
     const m = stepMask(); let best = null;
     for (const n of [1, 2]) {
       let d = 0, str = '';
@@ -77,13 +81,19 @@
         for (const t of DIG) { const e = dist2(t.v, v); if (e < bd) { bd = e; bk = t.k; } }
         d += bd; str += bk;
       }
+      // 숫자 칸 바깥에 먹이 남아 있으면(한 글자만 읽은 경우 등) 벌점
+      const lo = Math.round(CX - n * P / 2), hi = Math.round(CX + n * P / 2); let out = 0;
+      for (let y = 3; y < 18; y++) for (let x = 0; x < STEP[2]; x++) if (x < lo || x >= hi) out += m[y * STEP[2] + x];
+      d += 2 * out / 10;
       if (!best || d < best.d) best = { d, str };
     }
-    readStep.lastD = best.d;
     const v = parseInt(best.str, 10);
-    // 제작 창이 없는 화면은 번호 모양과 너무 다르다 → 버림
-    if (!(v >= 1 && v <= 99) || best.d > 14) return null;
-    return v;
+    return (v >= 1 && v <= 99) ? { v, d: best.d } : null;
+  }
+  function readStep() {
+    const g = geom(), r = stepAt(video, g.x, g.y, g.sc);
+    if (!r || r.d > 18) return null;
+    readStep.lastD = r.d; return r.v;
   }
   function iconVec() {
     const d = ix.getImageData(0, 0, ICON[2], ICON[3]).data, n = ICON[2] * ICON[3], v = new Float32Array(n * 3);
@@ -103,6 +113,93 @@
     const step = readStep(); if (step == null) return null;
     const c = readCond(); if (c.cond === '?' && c.d > 70) return null;
     return { t, step, cond: c.cond };
+  }
+
+
+  /* ── 제작 창 자동 찾기 ──
+   * 1) 작업량·품질 막대(어두운 테두리가 있는 긴 막대 두 줄)로 창 위치/크기 후보를 잡고
+   * 2) 후보 주변을 조금씩 움직여 공정 번호가 가장 또렷하게 읽히는 자리를 고른다. */
+  const fc = document.createElement('canvas'), fcx = fc.getContext('2d', { willReadFrequently: true });
+  function candidates() {
+    fc.width = video.videoWidth; fc.height = video.videoHeight; fcx.drawImage(video, 0, 0);
+    const W = 1280, s = W / fc.width, H = Math.round(fc.height * s);
+    const sm = document.createElement('canvas'); sm.width = W; sm.height = H;
+    const smx = sm.getContext('2d', { willReadFrequently: true }); smx.imageSmoothingQuality = 'high'; smx.drawImage(fc, 0, 0, W, H);
+    const px = smx.getImageData(0, 0, W, H).data, g = new Float32Array(W * H);
+    for (let i = 0; i < W * H; i++) g[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+    // 41x41 평균(적분영상)보다 35 이상 어두운 점 = 테두리 후보
+    const iw = W + 1, I = new Float64Array(iw * (H + 1));
+    for (let y = 0; y < H; y++) { let row = 0; for (let x = 0; x < W; x++) { row += g[y * W + x]; I[(y + 1) * iw + x + 1] = I[y * iw + x + 1] + row; } }
+    const R = 20, runs = [];
+    for (let y = 0; y < H; y++) {
+      const y0 = Math.max(0, y - R), y1 = Math.min(H, y + R + 1); let x = 0;
+      const dark = (xx) => { const x0 = Math.max(0, xx - R), x1 = Math.min(W, xx + R + 1); const a = (I[y1 * iw + x1] - I[y0 * iw + x1] - I[y1 * iw + x0] + I[y0 * iw + x0]) / ((x1 - x0) * (y1 - y0)); return g[y * W + xx] < a - 35; };
+      while (x < W) {
+        if (dark(x)) { let z = x; while (z < W && dark(z)) z++; if (z - x >= 70 && z - x <= 300) runs.push([y, x, z]); x = z; } else x++;
+      }
+    }
+    const cl = [];
+    for (const [y, x0, x1] of runs) {
+      let c = cl.find((c) => Math.abs(c.x0 - x0) <= 4 && Math.abs(c.x1 - x1) <= 4 && y - c.y1 <= 1);
+      if (c) c.y1 = y; else cl.push({ x0, x1, y0: y, y1: y });
+    }
+    const bars = cl.filter((c) => c.y1 - c.y0 <= 6), out = [];
+    for (const a of bars) for (const b of bars) {
+      const w = a.x1 - a.x0;
+      if (b.y0 > a.y0 && Math.abs(a.x0 - b.x0) <= 4 && Math.abs(a.x1 - b.x1) <= 4) {
+        const gap = (b.y0 - a.y0) / w;
+        if (gap >= 0.14 && gap <= 0.22) { const k = w / s / 151; out.push({ e: Math.abs(gap - 0.179), x: a.x0 / s - 99 * k, y: a.y0 / s - 79 * k, k }); }
+      }
+    }
+    out.sort((p, q) => p.e - q.e);
+    return out.slice(0, 6);
+  }
+  function iconDistAt(src, x, y, k) {
+    const b = rect({ x, y, sc: k }, ICON);
+    if (b[0] < 0 || b[1] < 0) return 1e9;
+    ix.drawImage(src, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]);
+    const v = iconVec(); let bd = 1e18;
+    for (const t of TPL) { const e = Math.sqrt(dist2(t.t, v) / v.length); if (e < bd) bd = e; }
+    return bd;
+  }
+  function tuneCand(c) {
+    let best = { d: 1e9 };
+    const tryAt = (x, y, k) => { const r = stepAt(fc, x, y, k); if (r && r.d < best.d) best = { d: r.d, v: r.v, x, y, sc: k }; };
+    for (let ks = 0.94; ks <= 1.061; ks += 0.02) { const k = c.k * ks;
+      for (let dy = -5; dy <= 5; dy++) for (let dx = -5; dx <= 5; dx++) tryAt(c.x + dx * k, c.y + dy * k, k); }
+    if (best.d > 1e8) return best;
+    // 아이콘은 위치에 더 예민하다: 공정 번호가 충분히 잘 읽히는 자리 중 아이콘이 가장 잘 맞는 자리를 고른다
+    const b0 = best; let b1 = { s: 1e9 };
+    for (let ks = 0.97; ks <= 1.031; ks += 0.015) { const k = b0.sc * ks;
+      for (let dy = -3; dy <= 3.01; dy += 0.5) for (let dx = -4; dx <= 4.01; dx += 0.5) {
+        const x = b0.x + dx * k, y = b0.y + dy * k, r = stepAt(fc, x, y, k);
+        if (!r || r.d > 18) continue;
+        const s = iconDistAt(fc, x, y, k) + r.d; if (s < b1.s) b1 = { s, x, y, sc: k, d: r.d, v: r.v };
+      } }
+    return b1.s < 1e8 ? b1 : best;
+  }
+  function findWindow() {                      // 지금 화면에서 창 찾기 → {x,y,sc,d,v} 또는 null
+    let best = null;
+    for (const c of candidates()) { const r = tuneCand(c); if (r.d < 1e8 && (!best || r.d < best.d)) best = r; }
+    return best && best.d < 18 ? best : null;
+  }
+  async function autoFind(quiet) {
+    if (!video.videoWidth || running) return false;
+    $('findMsg').textContent = '제작 창을 찾는 중…';
+    const spots = [video.currentTime]; for (let i = 1; i <= 20; i++) spots.push(duration * i / 21);
+    for (const t of spots) {
+      await seekTo(t); await new Promise((r) => setTimeout(r, 30));
+      const r = findWindow();
+      if (r) {
+        auto = { x: r.x, y: r.y, sc: r.sc }; $('ox').value = $('oy').value = 0; $('os').value = 100;
+        $('seek').value = Math.round(t / duration * 1000); $('seekT').textContent = fmt(t);
+        $('findMsg').textContent = `제작 창을 찾았어요 (${fmt(t)} 장면, ${r.v}공정으로 확인). 상자가 맞는지 보고, 틀리면 슬라이더로 고쳐 주세요.`;
+        drawPreview(); return true;
+      }
+    }
+    if (!quiet) $('findMsg').textContent = '제작 창을 못 찾았어요. 제작 중인 장면으로 옮긴 뒤 다시 눌러 보거나, 슬라이더로 직접 맞춰 주세요.';
+    else $('findMsg').textContent = '제작 창을 자동으로 못 찾았어요. 제작 중인 장면으로 옮긴 뒤 "창 자동 찾기"를 누르거나, 슬라이더로 직접 맞춰 주세요.';
+    return false;
   }
 
   /* ── 미리보기 ── */
@@ -127,7 +224,7 @@
       duration = video.duration;
       $('info').textContent = `${f.name} · ${video.videoWidth}x${video.videoHeight} · 길이 ${fmt(duration)}`;
       $('pvCard').hidden = $('runCard').hidden = false; $('t1').value = 0;
-      seekTo(Math.min(60, duration / 2)).then(drawPreview);
+      auto = null; seekTo(Math.min(60, duration / 2)).then(() => { drawPreview(); autoFind(true); });
       $('seek').value = Math.round(Math.min(60, duration / 2) / duration * 1000);
     };
     video.onerror = () => { $('info').textContent = '이 영상은 브라우저에서 열 수 없어요. (mp4/H.264 가 가장 잘 열려요)'; };
@@ -147,7 +244,8 @@
     applyLearned(); drawPreview();
   };
   $('unlearn').onclick = () => { try { localStorage.removeItem(LS); } catch (e) {} applyLearned(); drawPreview(); };
-  $('reset').onclick = () => { $('ox').value = 0; $('oy').value = 0; $('os').value = 100; drawPreview(); };
+  $('reset').onclick = () => { auto = null; $('ox').value = 0; $('oy').value = 0; $('os').value = 100; drawPreview(); };
+  $('find').onclick = () => { autoFind(false); };
 
   /* ── 분석 ── */
   async function run() {
@@ -225,5 +323,5 @@
     a.download = (fileName.replace(/\.[^.]+$/, '') || 'craftlog') + '_기록.csv'; a.click();
   };
   $('copy').onclick = () => { navigator.clipboard.writeText(rows().map((r) => r.join('\t')).join('\n')).then(() => { $('copy').textContent = '복사됨'; setTimeout(() => { $('copy').textContent = '표 복사'; }, 1200); }); };
-  window.__vl = { sample, summarize, readStep, obsRef: () => obs };   // 테스트용
+  window.__vl = { dbg: (x, y, k) => { fcx.drawImage(video,0,0); const b = rect({ x, y, sc: k }, ICON); ix.drawImage(fc, b[0], b[1], b[2], b[3], 0, 0, ICON[2], ICON[3]); const v = iconVec(); return TPL.map((t) => [t.n, +Math.sqrt(dist2(t.t, v) / v.length).toFixed(1)]).sort((a, b) => a[1] - b[1]).slice(0, 4); }, candidates, tuneCand, sample, summarize, readStep, findWindow, autoFind, obsRef: () => obs, getAuto: () => auto };   // 테스트용
 })();

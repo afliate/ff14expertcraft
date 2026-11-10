@@ -58,18 +58,19 @@ summary{cursor:pointer;color:var(--text-dim)}
   <div class="card" id="pvCard" hidden>
     <h2>2. 제작 창 위치 확인</h2>
     <div class="note">초록 상자가 <b>공정 번호</b>와 <b>상태 아이콘</b> 위에 오도록 맞춰 주세요. 제작 창이 보이는 장면으로 슬라이더를 움직여 확인하세요.</div>
+    <div class="row"><button id="find" class="main">창 자동 찾기</button><span class="note" id="findMsg"></span></div>
     <div class="row"><label>미리보기 위치 <input type="range" id="seek" min="0" max="1000" value="0"></label><span id="seekT" class="note"></span></div>
     <canvas id="pv"></canvas>
     <div class="row">
       <label>가로 이동 <input type="range" id="ox" min="-60" max="60" value="0"></label>
       <label>세로 이동 <input type="range" id="oy" min="-60" max="60" value="0"></label>
       <label>크기 <input type="range" id="os" min="70" max="140" value="100"></label>
-      <button id="reset">기본값</button>
+      <button id="reset">처음 위치로</button>
     </div>
     <div class="note" id="pvRead"></div>
     <div class="row">
       <label>이 장면의 상태는
-        <select id="learnSel"><option value="goodOmen">길조</option><option value="poor">최악</option><option value="excellent">최고품질</option><option value="good">고품질</option><option value="normal">보통</option><option value="centered">안정</option><option value="sturdy">견고</option><option value="pliant">고효율</option><option value="malleable">빠른 진행</option><option value="primed">장기 지속</option><option value="robust">완강</option></select></label>
+        <select id="learnSel"><option value="goodOmen">길조</option><option value="poor">저품질</option><option value="excellent">최고품질</option><option value="good">고품질</option><option value="normal">보통</option><option value="centered">안정</option><option value="sturdy">견고</option><option value="pliant">고효율</option><option value="malleable">빠른 진행</option><option value="primed">장기 지속</option><option value="robust">완강</option></select></label>
       <button id="learn">이 아이콘 기억시키기</button><button id="unlearn">기억한 것 지우기</button><span class="note" id="learnN"></span>
     </div>
     <div class="note">상태를 잘못 읽거나 "모르는 아이콘"으로 나오면, 그 상태가 떠 있는 장면에서 위 버튼을 눌러 알려 주세요. 이 브라우저에 저장돼서 다음에도 써요.</div>

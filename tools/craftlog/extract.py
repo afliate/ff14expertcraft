@@ -18,7 +18,7 @@ FIELDS = {                          # 창 기준 상대 좌표 (x, y, w, h)
     'step': (272, 46, 34, 20), 'dur': (22, 82, 66, 16), 'prog': (254, 74, 62, 17), 'qual': (254, 100, 64, 17),
     'icon': (18, 128, 20, 18),      # 상태 아이콘
 }
-KO = {'normal': '보통', 'good': '고품질', 'excellent': '최고품질', 'poor': '최악', 'centered': '안정', 'sturdy': '견고',
+KO = {'normal': '보통', 'good': '고품질', 'excellent': '최고품질', 'poor': '저품질', 'centered': '안정', 'sturdy': '견고',
       'pliant': '고효율', 'malleable': '빠른 진행', 'primed': '장기 지속', 'goodOmen': '길조', 'robust': '완강'}
 
 def load_templates():
