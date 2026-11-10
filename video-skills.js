@@ -157,6 +157,22 @@
     });
     return { bp: best.bp, bq: best.bq, cost: r.cost, acts, n: seq.length - 1 };
   }
+  // 버프 줄로 스킬을 바로잡는다: 숫자가 안 변하는 스킬(버프·땜질)은 '다음 공정에 새로 생긴 버프'로 정체를 확정한다.
+  const BUFF_KEY = { '확신': 'mm', '공경': 'ven', '혁신': 'inno', '장족의 발전': 'gs', '근검절약': 'wn', '장기 절약': 'wn2', '교묘한 손놀림': 'manip', '일심불란': 'hs', '장인의 초절 기술': 'tp' };
+  function refine(res, rows) {
+    if (!res || !rows) return res;
+    const by = new Map(); rows.forEach((r) => by.set(r.step, r.buffs || null));
+    res.acts.forEach((a) => {
+      const cur = by.get(a.step), nxt = by.get(a.step + 1);
+      if (cur && !cur.includes('최종 확인') && nxt && nxt.includes('최종 확인')) a.pre = ['fa'];   // 같은 공정 안에서 최종 확인(공정 번호가 안 올라감)
+      if (!cur || !nxt) return;
+      const nw = nxt.filter((n) => n !== '?' && n !== '정신 집중' && !cur.includes(n) && BUFF_KEY[n] && A[BUFF_KEY[n]]);
+      if (a.key === NONE || (a.alts.includes(NONE) && nw.length)) {
+        if (nw.length === 1) { a.key = BUFF_KEY[nw[0]]; a.alts = [a.key]; a.byBuff = true; }
+      }
+    });
+    return res;
+  }
   const ko = (k) => (k === NONE ? '버프·땜질 등(변화 없음)' : A[k] ? A[k].ko : k);
-  return { solve, decode, act, prep, deltas, bpCandidates, bqCandidates, ko, KEYS, NONE };
+  return { solve, refine, decode, act, prep, deltas, bpCandidates, bqCandidates, ko, KEYS, NONE };
 });

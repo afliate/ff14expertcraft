@@ -179,7 +179,8 @@
     if (step == null) return null;
     const c = readCond(), cond2 = readCond2(g);
     if (c.cond === '?' && c.d > 70 && cond2 === '?') return null;
-    return { t, step, cond: cond2 !== '?' ? cond2 : c.cond, p: readNum('prog'), q: readNum('qual') };
+    const bf = window.VLBUFF ? VLBUFF.read(video, g).map((b) => b.name) : [];
+    return { t, step, cond: cond2 !== '?' ? cond2 : c.cond, p: readNum('prog'), q: readNum('qual'), buffs: bf };
   }
   // 작업량/품질 숫자 (현재/최대). 못 읽거나 앞뒤가 안 맞으면 null
   function readNum(f) {
@@ -409,7 +410,8 @@
       const steps = keys.map((s, i) => {
         const rs = by.get(s), cnt = {}; rs.forEach((r) => { cnt[r.cond] = (cnt[r.cond] || 0) + 1; });
         const c = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0];
-        return { step: s, cond: c, n: rs.length, t: rs[0].t, p: P[i], q: Q[i] };
+        const bc = {}; rs.forEach((r) => (r.buffs || []).forEach((b) => { bc[b] = (bc[b] || 0) + 1; }));
+        return { step: s, cond: c, n: rs.length, t: rs[0].t, p: P[i], q: Q[i], buffs: Object.keys(bc).filter((b) => bc[b] >= rs.length * 0.4) };
       });
       // 다음 상태가 정해진 상태(길조→고품질, 완강→견고, 최고품질→저품질): 바로 다음 공정이면 읽기 오류를 바로잡는다
       for (let i = 1; i < steps.length; i++) { const f = FORCED[steps[i - 1].cond]; if (f && steps[i].step === steps[i - 1].step + 1) steps[i].cond = f; }
@@ -420,9 +422,9 @@
   // 한 제작의 스킬 추정 (작업량/품질 숫자가 충분히 읽혔을 때만)
   function skillsOf(c) {
     if (!window.VLSkills || c.filter((r) => r.p != null && r.q != null).length < Math.max(4, c.length * 0.6)) return null;
-    try { return VLSkills.solve(c.map((r) => ({ step: r.step, cond: r.cond === '?' ? 'normal' : r.cond === 'robust' ? 'sturdy' : r.cond, p: r.step === 1 ? 0 : r.p, q: r.q }))); } catch (e) { return null; }   // 1공정의 작업량은 항상 0
+    try { return VLSkills.refine(VLSkills.solve(c.map((r) => ({ step: r.step, cond: r.cond === '?' ? 'normal' : r.cond === 'robust' ? 'sturdy' : r.cond, p: r.step === 1 ? 0 : r.p, q: r.q }))), c); } catch (e) { return null; }   // 1공정의 작업량은 항상 0
   }
-  function skName(a) { const n = (k) => VLSkills.ko(k); return a.alts.length > 1 ? `${n(a.key)} <span class="alt">(또는 ${a.alts.filter((k) => k !== a.key).map(n).join(', ')})</span>` : n(a.key); }
+  function skName(a) { const n = (k) => VLSkills.ko(k); return (a.pre ? '최종 확인 → ' : '') + (a.alts.length > 1 ? `${n(a.key)} <span class="alt">(또는 ${a.alts.filter((k) => k !== a.key).map(n).join(', ')})</span>` : n(a.key)); }
   const FORCED = { goodOmen: 'good', excellent: 'poor', robust: 'sturdy' };      // 직전 상태가 이거면 다음 상태가 정해져 있어 확률 표본에서 뺀다
   function show() {
     const crafts = summarize(obs); lastResult = crafts;
